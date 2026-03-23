@@ -53,6 +53,14 @@ articoli/
 FlopocoPractice/
 positMultiplierArticoli/
 tensor_core/
+AlcuniAppuntiMeetingTesi.txt
+CommentiDebugProjettoPyOpenTCU.txt
+F8-MantissaExponent3Mantissa4StudyExamples.txt
+IintermediateProgress.pptx
+stepsToDo1.txt
+ThesisSummaryDraft.docx
+ThesisSummaryDraft.pdf
+values_dot_productFP8_rel5_valuesObtainedByDPU_not4Sim.txt
 
 # Ignore Vivado-generated directories anywhere
 **/*.cache/
