@@ -1,0 +1,8 @@
+this folder contains files about the DPU using fixed point 16 format as input and outputs values of fixed point 32.
+
+-for the inputs which are in 16 bit width, the type of fixed point seems to be: 
+q5.10.... (meaning integer part is of 5 bits, and the mantissa part is of 10 bits, and sign bit is bit width 1) . 
+
+- while the output and c0 values are on 32 bits. with q11.20 ( meaning integer part uses 11 bits, and the mantissa part uses 20 bits , and 1 bit width )
+
+for this dpu the result space that can be represented with the fixed point 32 is this one [-2048, 2047.99999904632568359375 ] . if the operands A0, A1, A2, A3, B0. B1, B2, B3, C0 yield a golden value that is outside of this range, then the dpu will spit out a wrong result as it cannot be represented with the given bits. take that to mind when u test this dpu with the scripts of verification.

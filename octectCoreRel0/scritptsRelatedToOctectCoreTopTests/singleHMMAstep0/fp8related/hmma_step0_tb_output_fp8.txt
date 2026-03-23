@@ -1,0 +1,120 @@
+#Test 1 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+63 6A C9 56
+E1 57 ED 6E
+48 56 E9 69
+E2 E0 59 E2
+#D20
+50 E8 6E EF
+44 68 E0 5E
+E3 EC 60 E8
+58 64 D8 5B
+
+#Test 2 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+50 5B 6B 5E
+46 DC E1 E0
+DA D9 EC E2
+DB 65 E3 5D
+#D20
+E5 4C DC 68
+DE E8 E5 DB
+C7 E9 DF E5
+D8 5F EB D4
+
+#Test 3 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+E8 E6 5B 65
+65 E2 66 5C
+E5 E8 5A 66
+5C E7 70 68
+#D20
+E2 D8 E2 59
+5C 49 69 52
+5D D9 68 56
+C1 60 DB 48
+
+#Test 4 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+5B 68 6C 58
+6C E8 69 69
+D8 66 D5 6A
+E3 5A E6 E2
+#D20
+56 67 D8 6C
+5E E5 64 CC
+40 DF EB EA
+67 E1 6B DA
+
+#Test 5 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+E5 64 42 EF
+E0 66 64 E0
+57 5E 63 5C
+5C EC 56 66
+#D20
+56 E5 4D D4
+D0 3C EA D8
+4A 45 61 54
+C5 E2 E4 60
+
+#Test 6 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+50 6A E6 57
+D4 68 DF 5F
+5A EC 48 5A
+63 E4 D6 E0
+#D20
+2E E1 60 5A
+CC E2 63 DA
+60 52 D6 E2
+DF DA 5C 68
+
+#Test 7 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+E8 D4 61 5D
+E8 62 4C E8
+61 D9 DC 62
+E4 CC E2 43
+#D20
+68 5F DB E5
+EA D6 5F 62
+69 5A 61 D4
+65 5A CE D1
+
+#Test 8 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+ED 69 D8 68
+EC 66 DE 66
+62 EA E1 EB
+58 63 56 63
+#D20
+5D 5B D4 5D
+48 E0 E4 E6
+5B 61 51 5F
+5E DD DF DC
+
+#Test 9 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+CC E7 67 D8
+D3 D4 4A 48
+58 4A E3 DD
+D4 B8 5F 4F
+#D20
+5F E5 C6 E8
+D2 E0 5E D9
+69 51 E6 E2
+DB EA 5A E3
+
+#Test 10 HMMAstep0 related D00 and D20 result submatrices (FP8-E4M3)
+#D00
+DE D9 62 64
+5F 58 47 3C
+EA 5D 4E E7
+EA 65 E2 EB
+#D20
+24 55 E2 E7
+C1 C3 58 49
+CA 61 E1 E6
+60 D8 56 62
+

@@ -1,0 +1,1 @@
+is is a dpu that accepts integer operands of bit width equal to 8. the result however will be of result equal to 16.

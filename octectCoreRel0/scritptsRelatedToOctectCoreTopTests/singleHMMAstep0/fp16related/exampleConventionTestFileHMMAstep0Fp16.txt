@@ -1,0 +1,107 @@
+#first HMMAstep0 test related values(FP16) 
+#A00 
+1.0 4.5 6.7 8.9
+5.6 4.5 6.7 9.0
+4.5 3.1. 9.0 6.8
+19.4 5.6 5.7 5.3
+#A00 encoded
+<A00 submatrix values but encoded in FP16 format>
+#A02 
+1.0 10.0 1.0 10.0
+1.8 6.7 1.8 6.7
+-4.6 -4.5 -5.3 -2.0
+-5.6 -4.6 -5.9 -7.0
+#A02 encoded
+<A02 submatrix values but encoded in FP16 format>
+#B00
+5.2 5.0 5.2 5.9
+9.4 -5.6 -3.1 6.0
+4.8 5.1 8.3 4.6
+6.9 8.9 10.1 11.0
+#B00 encoded
+<B00 submatrix values but encoded in FP16 format>
+#B01 
+5.2 5.0 5.2 5.9
+9.4 -5.6 -3.1 6.0
+4.8 5.1 8.3 4.6
+6.9 8.9 10.1 11.0
+#B01 encoded
+<B01 submatrix values but encoded in FP16 format>
+#C00
+0.9 10.9 6.9 5.2
+0.4 6.8 8.4 6.3
+8.4 -4.6 -3.2 -1.2
+-5.6 -6.7 -7.8 -8.9
+#C00 encoded
+<C00 submatrix values but encoded in FP16 format>
+#C02
+0.1 0.2 0.3 0.4
+0.5 0.6 0.7 0.8
+0.9 1.0 1.1 1.2
+1.3 1.4 1.5 1.6
+#C02 encoded
+<C02 submatrix values but encoded in FP16 format>
+#golden D00 decoded (<4 by 4> result submatrix (A00 * B00 + C00 ) )
+# <4 by 4 D00 decoded result matrix values here>
+#golden  D00 encoded
+# <4 by 4 D00 encoded result matrix values here>
+#golden D02 (<4 by 4> result submatrix (A02 * B00 + C02 ) )
+# <4 by 4 D02 decoded result matrix value here>
+#golden encoded D02 
+# <4 by 4 D00 encoded result matrix values here>
+#second HMMAstep0 test related values (FP16)
+#A00
+0.1 0.2 0.3 0.4
+0.5 0.6 0.7 0.8
+0.9 1.0 1.1 1.2
+1.3 1.4 1.5 1.6
+#A00 encoded
+<A00 submatrix values but encoded in FP16 format>
+#A02
+0.9 10.9 6.9 5.2
+0.4 6.8 8.4 6.3
+8.4 -4.6 -3.2 -1.2
+-5.6 -6.7 -7.8 -8.9
+#A02 encoded
+<A02 submatrix values but encoded in FP16 format>
+#B00
+5.2 5.0 5.2 5.9
+9.4 -5.6 -3.1 6.0
+4.8 5.1 8.3 4.6
+6.9 8.9 10.1 11.0
+#B00 encoded
+<B00 submatrix values but encoded in FP16 format>
+#B01
+5.2 5.0 5.2 5.9
+9.4 -5.6 -3.1 6.0
+4.8 5.1 8.3 4.6
+6.9 8.9 10.1 11.0
+#B01 encoded
+<B01 submatrix values but encoded in FP16 format>
+#C00
+1.0 10.0 1.0 10.0
+1.8 6.7 1.8 6.7
+-4.6 -4.5 -5.3 -2.0
+-5.6 -4.6 -5.9 -7.0
+#C00 encoded
+<C00 submatrix values but encoded in FP16 format>
+#C02
+1.0 4.5 6.7 8.9
+5.6 4.5 6.7 9.0
+4.5 3.1. 9.0 6.8
+19.4 5.6 5.7 5.3
+#C02 encoded
+<C02 submatrix values but encoded in FP16 format>
+#golden D00 decoded (<4 by 4> result submatrix (A00 * B00 + C00 ) )
+# <4 by 4 D00 decoded result matrix values here>
+#golden  D00 encoded
+# <4 by 4 D00 encoded result matrix values here>
+#golden D02 (<4 by 4> result submatrix (A02 * B00 + C02 ) )
+# <4 by 4 D02 decoded result matrix value here>
+#golden encoded D02 
+# <4 by 4 D02 encoded result matrix values here>
+#third HMMA0 test related values (FP16)
+…
+…
+
+

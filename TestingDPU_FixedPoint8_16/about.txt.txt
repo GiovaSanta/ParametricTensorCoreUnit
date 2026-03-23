@@ -1,0 +1,4 @@
+This dot product unit takes specifically the fixed point format of 8 bit width as input (with sign bit width equal to 1 bit, integer part equal to two bits, and fractional part equal to 5 bits) and will return a result still in fixed point format but of 16 bit width ( with sign bit of 1 bit width , integer bit width equal to 5 bits, and fractional part equal to 10 bits) .
+
+the rapresentable results of this dpu lie from [ -32.00, to 31.9990234375 ] if the golden result exceeds this the result of the dpu is not valid and is incorrect
+

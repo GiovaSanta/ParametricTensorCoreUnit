@@ -1,0 +1,62 @@
+2b:
+
+00101.011
+
+e8:
+
+11101.000
+
+58:
+
+01011.000
+
+49: 01001.001 --> 4.5
+
+55:
+01010.101 --> 13
+
+59:
+01011.001 --> 19
+
+2 casi dove mi funziona la dpu FP8:
+
+1.
+A4 DF A5 C6 E0 A2 EA 2F 60 66
+
+# -0.18750 -30.00000 -0.20312 -3.50000 -32.00000 -0.15625 -80.00000 0.46875 32.00000 57.29688		6. corrisponde a golden value while simulating
+
+(-0.18750 * -32.00000) +
+(-30.00000 * -0.15625 ) +
+(-0.20312 * -80.00000 ) +
+(-3.50000 * 0.46875 ) +
+32.00000   =   
+
+
+2.
+
+
+2 casi dove sembra non funzionarmi la dpu fp8:
+
+98 5F D6 33 CE 24 D1 E3 EA 5B
+# -0.06250 30.00000 -14.00000 0.68750 -7.00000 0.18750 -9.00000 -44.00000 -80.00000 21.81250		3. mi sa e' sbagliato in simulation :(
+
+(-0.06250 * -7.00000 ) +
+(30.00000 * 0.18750 ) +
+(-14.00000 * -9.00000 ) +
+( 0.68750 * -44.00000 ) +
+-80.00000 = 
+
+#trying encoding the values myself, maybe chatgpt did a mistake in encoding one of the operands (I hope thats the case lmao though i doubt it )
+
+-0.06250 ---> 1001.1000 : 98
+30.00000 ---> 0101.1111 : 5F
+-14.00000 ---> 1101.0110 : D6
+0.68750 ---> 0011.0011 : 33
+-7.00000 ---> 1100.1110 : CE
+0.18750 --> 0010.0100 : 24
+-9.00000 --> 1101.0001 : D1
+-44.00000 --> 1110.0011: E3
+-80.00000 --> 1110.1010: EA  .... the operands that were encoded by gpt seem correct after decoding them myself..... :(
+
+
+SO MY conclusion after testing the DPU with the minifloat format is that some results are off from their golden value when one of the intermediate products in the dot product is a big integer number. In that case the error of rapresentation of that value using floating point 8 is significant which will lead the result of the overall computation to be different

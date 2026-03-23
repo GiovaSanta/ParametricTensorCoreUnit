@@ -1,0 +1,10 @@
+HMMA STEP0 + STEP1 FP16 VALIDATION REPORT
+Simulator output file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\octectCoreRel0\scritptsRelatedToOctectCoreTopTests\4SetsOfHMMAstep0step1\fp16related\hmma_8instr_tb_output_ctrl_fp16.txt
+Golden reference file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\octectCoreRel0\scritptsRelatedToOctectCoreTopTests\4SetsOfHMMAstep0step1\fp16related\hmma_8instr_fp16_single_experiment.txt
+Tolerance: 0.0
+
+
+====================================
+Total differing entries: 0
+Total missing tests: 0
+Total missing matrices: 0

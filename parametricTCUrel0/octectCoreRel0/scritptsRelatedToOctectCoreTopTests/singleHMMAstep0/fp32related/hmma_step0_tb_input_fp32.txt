@@ -1,0 +1,1044 @@
+#register file ports content for FP32
+#<portA> <portB>
+#For each A/B/C block:
+#  pair00 loads columns 0,1 into slots 0,1 (load_pair = 00)
+#  pair01 loads columns 2,3 into slots 2,3 (load_pair = 01)
+#FIRST TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+418C43F8 C07A5A9A
+#lane1 tg0 row1 cols01
+C1CFC7FD 41F384C6
+#lane2 tg0 row2 cols01
+C1BE67E4 C04B381D
+#lane3 tg0 row3 cols01
+41135161 41A54103
+#lane4 tg4 row0 cols01
+413AE01A C1B8725D
+#lane5 tg4 row1 cols01
+4192E7C1 4128CEAA
+#lane6 tg4 row2 cols01
+C02847EF 408CC82F
+#lane7 tg4 row3 cols01
+412C71D3 BFECC7A6
+#A block pair01
+#lane0 tg0 row0 cols23
+41B79A26 414A1AD8
+#lane1 tg0 row1 cols23
+4185B41A 41927705
+#lane2 tg0 row2 cols23
+C1044D86 41DA80F1
+#lane3 tg0 row3 cols23
+C067C683 C18BA75E
+#lane4 tg4 row0 cols23
+C199A5A2 C1FC3B03
+#lane5 tg4 row1 cols23
+415216DF 418FBBB7
+#lane6 tg4 row2 cols23
+C1B86C87 C1C55C50
+#lane7 tg4 row3 cols23
+40859A82 4187ADEE
+#B block pair00
+#lane0 tg0 row0 cols01
+405F944C C1DF5358
+#lane1 tg0 row1 cols01
+41842414 C114F725
+#lane2 tg0 row2 cols01
+418E8848 C19C5851
+#lane3 tg0 row3 cols01
+C1B100F8 413B712F
+#lane4 tg4 row0 cols01
+C10D80FF C1D31F8D
+#lane5 tg4 row1 cols01
+41D1317D 414C8007
+#lane6 tg4 row2 cols01
+418EB870 415E1876
+#lane7 tg4 row3 cols01
+C1CEA5D8 41CE21E7
+#B block pair01
+#lane0 tg0 row0 cols23
+41A7BF46 4106D308
+#lane1 tg0 row1 cols23
+41F0FF55 41C9472C
+#lane2 tg0 row2 cols23
+C0084F8F C1E9928E
+#lane3 tg0 row3 cols23
+417AA2EE 41EF5D70
+#lane4 tg4 row0 cols23
+C1C394BB 41EC7DDA
+#lane5 tg4 row1 cols23
+C16FBFC9 41F037E3
+#lane6 tg4 row2 cols23
+C04F6A50 C1693982
+#lane7 tg4 row3 cols23
+C03523EC C19863D4
+#C block pair00
+#lane0 tg0 row0 cols01
+C1325AD6 C104A636
+#lane1 tg0 row1 cols01
+C1BD7AEE BFC70676
+#lane2 tg0 row2 cols01
+C080B67F 41AA54CC
+#lane3 tg0 row3 cols01
+41AA1DF5 419C0A13
+#lane4 tg4 row0 cols01
+4109F399 405B7613
+#lane5 tg4 row1 cols01
+C1F038A5 C0819A50
+#lane6 tg4 row2 cols01
+41B4F13F C1883915
+#lane7 tg4 row3 cols01
+C1535C28 4125CD71
+#C block pair01
+#lane0 tg0 row0 cols23
+BFF96617 C19EFD9C
+#lane1 tg0 row1 cols23
+C18BD28A 412DE3B8
+#lane2 tg0 row2 cols23
+414D124B C14022F6
+#lane3 tg0 row3 cols23
+C0E671BC C158C084
+#lane4 tg4 row0 cols23
+40728335 C148C14E
+#lane5 tg4 row1 cols23
+C19221F5 C0BB5556
+#lane6 tg4 row2 cols23
+C1E22625 C15FDCE7
+#lane7 tg4 row3 cols23
+40699A8C 41915B1B
+
+#SECOND TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C1CB0EC4 40B37EFF
+#lane1 tg0 row1 cols01
+40A60362 C11CCE29
+#lane2 tg0 row2 cols01
+41EAC846 BF90F862
+#lane3 tg0 row3 cols01
+BF5A9704 BF1841B1
+#lane4 tg4 row0 cols01
+C084EBD5 41FC18A6
+#lane5 tg4 row1 cols01
+41C815F4 41C971D7
+#lane6 tg4 row2 cols01
+418B4537 41258A88
+#lane7 tg4 row3 cols01
+417CB66A C1733D8D
+#A block pair01
+#lane0 tg0 row0 cols23
+C1A8A80A 41D9A958
+#lane1 tg0 row1 cols23
+40BA31E7 C1F4530D
+#lane2 tg0 row2 cols23
+4190C2AC C1D5A46A
+#lane3 tg0 row3 cols23
+41E02ACA 4092E628
+#lane4 tg4 row0 cols23
+41C889EC 417E931A
+#lane5 tg4 row1 cols23
+3F9A7CD9 C13C7D18
+#lane6 tg4 row2 cols23
+C1015FDE C1CFA211
+#lane7 tg4 row3 cols23
+41DFA5F9 C1849F81
+#B block pair00
+#lane0 tg0 row0 cols01
+BFD92CC1 C16E9DEF
+#lane1 tg0 row1 cols01
+C07A37FA C1F4EF43
+#lane2 tg0 row2 cols01
+C1B83145 405D5501
+#lane3 tg0 row3 cols01
+C1600440 41233FB0
+#lane4 tg4 row0 cols01
+C15AADD7 41D9807E
+#lane5 tg4 row1 cols01
+410930C6 C1C9C7D1
+#lane6 tg4 row2 cols01
+41EEB5F3 40C4B1F5
+#lane7 tg4 row3 cols01
+C0059ADF 4191CC84
+#B block pair01
+#lane0 tg0 row0 cols23
+C12C792D 3FA9592C
+#lane1 tg0 row1 cols23
+41A70FBC 41CAD596
+#lane2 tg0 row2 cols23
+C1C868C3 41305FB5
+#lane3 tg0 row3 cols23
+41687147 41898C2A
+#lane4 tg4 row0 cols23
+C1F3459E 40621758
+#lane5 tg4 row1 cols23
+C1B82569 C0A5A764
+#lane6 tg4 row2 cols23
+41DDB538 419BD532
+#lane7 tg4 row3 cols23
+C1F6DE19 C1C81E47
+#C block pair00
+#lane0 tg0 row0 cols01
+C1C8D62E 41D4FF81
+#lane1 tg0 row1 cols01
+4060ACFC C1042CF3
+#lane2 tg0 row2 cols01
+C13B3FF1 41E7E26E
+#lane3 tg0 row3 cols01
+C179E44A 41DF411A
+#lane4 tg4 row0 cols01
+C1C125DF 41A9879A
+#lane5 tg4 row1 cols01
+40CB8934 41BFC699
+#lane6 tg4 row2 cols01
+418E0802 41F1933C
+#lane7 tg4 row3 cols01
+C1F8DD58 C18A6A86
+#C block pair01
+#lane0 tg0 row0 cols23
+C18A2164 C1ECD843
+#lane1 tg0 row1 cols23
+41A8DA34 419DD323
+#lane2 tg0 row2 cols23
+C15619A2 3F76B22D
+#lane3 tg0 row3 cols23
+C1ABB886 C1E9017A
+#lane4 tg4 row0 cols23
+C1B184B8 C1A436F2
+#lane5 tg4 row1 cols23
+C19B6CEA C1423A83
+#lane6 tg4 row2 cols23
+3D424C2A C1B65311
+#lane7 tg4 row3 cols23
+C1BC81CC 4135EC28
+
+#THIRD TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+41A2154D C1CA18FE
+#lane1 tg0 row1 cols01
+C1B528C8 41A63A63
+#lane2 tg0 row2 cols01
+41D78971 C1AB3F6D
+#lane3 tg0 row3 cols01
+C1C4DE7D C1F52C16
+#lane4 tg4 row0 cols01
+41B713B2 C0185FB1
+#lane5 tg4 row1 cols01
+C16F243D C1B87046
+#lane6 tg4 row2 cols01
+C188EC98 C107AAFC
+#lane7 tg4 row3 cols01
+C0F6DB89 413E3381
+#A block pair01
+#lane0 tg0 row0 cols23
+C1DDEBFF 40C16670
+#lane1 tg0 row1 cols23
+C14237A1 C1B6566B
+#lane2 tg0 row2 cols23
+C15C7257 C1B15996
+#lane3 tg0 row3 cols23
+C1E3A337 C1A69565
+#lane4 tg4 row0 cols23
+C0EB5633 410EE9AD
+#lane5 tg4 row1 cols23
+BFB53AB8 C0AA35E8
+#lane6 tg4 row2 cols23
+C108D06B C130A501
+#lane7 tg4 row3 cols23
+C14FFF9D 41E5D0B5
+#B block pair00
+#lane0 tg0 row0 cols01
+C1E4AB20 40BAA99C
+#lane1 tg0 row1 cols01
+C13A608B 3E9450D4
+#lane2 tg0 row2 cols01
+C1E9BDA3 C1A312A4
+#lane3 tg0 row3 cols01
+4091E26D C0AB7E9B
+#lane4 tg4 row0 cols01
+408504D4 40945673
+#lane5 tg4 row1 cols01
+418720F7 4199369A
+#lane6 tg4 row2 cols01
+41DCCAFF C1C2B247
+#lane7 tg4 row3 cols01
+4121A6EA C0A6B0B1
+#B block pair01
+#lane0 tg0 row0 cols23
+41390D3B C0D9D846
+#lane1 tg0 row1 cols23
+41C000A6 41B3C786
+#lane2 tg0 row2 cols23
+C186C960 C1805046
+#lane3 tg0 row3 cols23
+C1E6C82A C1016B4C
+#lane4 tg4 row0 cols23
+C00B5327 3FB96646
+#lane5 tg4 row1 cols23
+BF008FCD 40CBF7A5
+#lane6 tg4 row2 cols23
+C1C40B00 C1D317CE
+#lane7 tg4 row3 cols23
+418C73DB 412F574A
+#C block pair00
+#lane0 tg0 row0 cols01
+3FC2958B C1CBF1A9
+#lane1 tg0 row1 cols01
+41D984E0 C1CD410B
+#lane2 tg0 row2 cols01
+41F58A4A 419AA323
+#lane3 tg0 row3 cols01
+418ED89C C1BB1BF9
+#lane4 tg4 row0 cols01
+41D52B91 BF9C61BC
+#lane5 tg4 row1 cols01
+41B27685 411C3FDB
+#lane6 tg4 row2 cols01
+41081B8F C158EDBC
+#lane7 tg4 row3 cols01
+41477929 41B8B02B
+#C block pair01
+#lane0 tg0 row0 cols23
+41AABB14 C1E56541
+#lane1 tg0 row1 cols23
+41AFE90E 41CE288E
+#lane2 tg0 row2 cols23
+418F17AE 4111E723
+#lane3 tg0 row3 cols23
+4013BC14 3F69070B
+#lane4 tg4 row0 cols23
+C12FC215 40112412
+#lane5 tg4 row1 cols23
+419BD93F 400607CB
+#lane6 tg4 row2 cols23
+417087D5 C1985E6D
+#lane7 tg4 row3 cols23
+C1BC5D04 40EA3FED
+
+#FOURTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C0FD373F 41F927C5
+#lane1 tg0 row1 cols01
+C1C356C7 41B37927
+#lane2 tg0 row2 cols01
+40B4C09C 413E900C
+#lane3 tg0 row3 cols01
+41A69AC4 C1518D67
+#lane4 tg4 row0 cols01
+414AE02D 41AD0BBE
+#lane5 tg4 row1 cols01
+C1C00A01 3E9478B3
+#lane6 tg4 row2 cols01
+41B3C775 C1B087EC
+#lane7 tg4 row3 cols01
+C16ABE38 4156F142
+#A block pair01
+#lane0 tg0 row0 cols23
+415EFC8A 41E702FD
+#lane1 tg0 row1 cols23
+410C5D19 C1C1937B
+#lane2 tg0 row2 cols23
+C1F9B376 C03B1D17
+#lane3 tg0 row3 cols23
+C029C97D C06C4806
+#lane4 tg4 row0 cols23
+C1EB714A C198B004
+#lane5 tg4 row1 cols23
+417B1299 410521D3
+#lane6 tg4 row2 cols23
+41704083 C19D29AA
+#lane7 tg4 row3 cols23
+41F5DD67 40E470F9
+#B block pair00
+#lane0 tg0 row0 cols01
+C14AD38C 41D63E04
+#lane1 tg0 row1 cols01
+41FE7B54 41C22681
+#lane2 tg0 row2 cols01
+C1C98361 41FF8AA8
+#lane3 tg0 row3 cols01
+C1D1B1C1 41CB47F6
+#lane4 tg4 row0 cols01
+C0BACFEC C19092FE
+#lane5 tg4 row1 cols01
+C1ED8991 C0A71DE1
+#lane6 tg4 row2 cols01
+409464D3 4086B36B
+#lane7 tg4 row3 cols01
+411C1769 C13C325B
+#B block pair01
+#lane0 tg0 row0 cols23
+419005C6 C1C760F5
+#lane1 tg0 row1 cols23
+C15D471B 41AC7DB5
+#lane2 tg0 row2 cols23
+4129A942 4119BA5F
+#lane3 tg0 row3 cols23
+C1F126FA C184B22F
+#lane4 tg4 row0 cols23
+40B4D9E8 C13B59A1
+#lane5 tg4 row1 cols23
+BFD3E7B6 C18C7F17
+#lane6 tg4 row2 cols23
+414ED9A9 41177FCF
+#lane7 tg4 row3 cols23
+41932A51 40494B9F
+#C block pair00
+#lane0 tg0 row0 cols01
+C1B6C5D6 418DB487
+#lane1 tg0 row1 cols01
+412004FE C1ED7C15
+#lane2 tg0 row2 cols01
+40D8EF4D 419A5BD3
+#lane3 tg0 row3 cols01
+C1E2B27F 419A17EF
+#lane4 tg4 row0 cols01
+C1E41889 40EE3366
+#lane5 tg4 row1 cols01
+41569BB1 C1A75BC9
+#lane6 tg4 row2 cols01
+41F5C61F C029BC51
+#lane7 tg4 row3 cols01
+40944D58 C1B5B17D
+#C block pair01
+#lane0 tg0 row0 cols23
+C19A84FA 41D23F2C
+#lane1 tg0 row1 cols23
+C1FD384D C1E58D18
+#lane2 tg0 row2 cols23
+C185DC68 41B2E5B7
+#lane3 tg0 row3 cols23
+41DB0801 418B51CB
+#lane4 tg4 row0 cols23
+C1EA5107 41C4AEBF
+#lane5 tg4 row1 cols23
+C1D109F2 C1A207EF
+#lane6 tg4 row2 cols23
+4191730F 410BAEA1
+#lane7 tg4 row3 cols23
+41E45D51 C14B6CD6
+
+#FIFTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C1E38C9A C160A765
+#lane1 tg0 row1 cols01
+C13E92BD 41788466
+#lane2 tg0 row2 cols01
+41B68D76 C102CDDD
+#lane3 tg0 row3 cols01
+C1C2BA47 C10A5294
+#lane4 tg4 row0 cols01
+C1D4EED6 C1833E05
+#lane5 tg4 row1 cols01
+4118BA87 412E49C3
+#lane6 tg4 row2 cols01
+C10897D0 4021E785
+#lane7 tg4 row3 cols01
+BF8EC419 4189898E
+#A block pair01
+#lane0 tg0 row0 cols23
+C129D9D1 C1A76D46
+#lane1 tg0 row1 cols23
+C1F87B7E 41A78346
+#lane2 tg0 row2 cols23
+C1B159A6 40CE856A
+#lane3 tg0 row3 cols23
+41EAB73B 41FDAD85
+#lane4 tg4 row0 cols23
+41AFEAD1 410CE40D
+#lane5 tg4 row1 cols23
+41869B39 C1E23F9B
+#lane6 tg4 row2 cols23
+C1256BAA 41B05F89
+#lane7 tg4 row3 cols23
+41B43B61 3E9D01DF
+#B block pair00
+#lane0 tg0 row0 cols01
+418B5155 C141934E
+#lane1 tg0 row1 cols01
+C0E5B341 4110451C
+#lane2 tg0 row2 cols01
+3FCD85FC C1AC28CA
+#lane3 tg0 row3 cols01
+41FA6FA4 40654033
+#lane4 tg4 row0 cols01
+416DFDCE C075658D
+#lane5 tg4 row1 cols01
+41F08B9B 41F81A9E
+#lane6 tg4 row2 cols01
+417FFBAF C11D30FA
+#lane7 tg4 row3 cols01
+418DFFEB BF28C26A
+#B block pair01
+#lane0 tg0 row0 cols23
+41402B44 4152560C
+#lane1 tg0 row1 cols23
+C1FA81E8 C194F665
+#lane2 tg0 row2 cols23
+C1AB0E41 41AC3013
+#lane3 tg0 row3 cols23
+41AD9A8C 41FB0B71
+#lane4 tg4 row0 cols23
+4059835F 411DCD06
+#lane5 tg4 row1 cols23
+C158DAB2 416F5D14
+#lane6 tg4 row2 cols23
+C1C09424 C1EB0900
+#lane7 tg4 row3 cols23
+41F898B9 C00F77FE
+#C block pair00
+#lane0 tg0 row0 cols01
+C1B780BE C053FC68
+#lane1 tg0 row1 cols01
+4182BAA3 C0879EDC
+#lane2 tg0 row2 cols01
+C1A35D95 41D06FE3
+#lane3 tg0 row3 cols01
+C154EE66 BF209A7D
+#lane4 tg4 row0 cols01
+41D1B0D5 40B26E09
+#lane5 tg4 row1 cols01
+BD9B1049 4000A8DD
+#lane6 tg4 row2 cols01
+41D5AD49 4105F8E3
+#lane7 tg4 row3 cols01
+C19DE636 C1F34A62
+#C block pair01
+#lane0 tg0 row0 cols23
+C0DC02D6 C1D703C8
+#lane1 tg0 row1 cols23
+BFFB4615 C1B2DAFE
+#lane2 tg0 row2 cols23
+C1E923C1 C188C796
+#lane3 tg0 row3 cols23
+40B10A2B BEDBDFC3
+#lane4 tg4 row0 cols23
+41B35727 C1233C2B
+#lane5 tg4 row1 cols23
+C1CA4019 C0CFC3B4
+#lane6 tg4 row2 cols23
+C1A51DDB C1250307
+#lane7 tg4 row3 cols23
+41DADC19 C054248D
+
+#SIXTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+41752D86 419A0BD7
+#lane1 tg0 row1 cols01
+40F9A58A 41B75C33
+#lane2 tg0 row2 cols01
+41358AD4 C1F0D750
+#lane3 tg0 row3 cols01
+412FBB45 C18651A5
+#lane4 tg4 row0 cols01
+4181014F 4027594A
+#lane5 tg4 row1 cols01
+C187A15A C132D95B
+#lane6 tg4 row2 cols01
+41782232 40B9D868
+#lane7 tg4 row3 cols01
+C1846AE2 C135C491
+#A block pair01
+#lane0 tg0 row0 cols23
+C1E6EE3B C187EB02
+#lane1 tg0 row1 cols23
+C1FDB229 3F6FAFE8
+#lane2 tg0 row2 cols23
+C0CA0619 41CA90A8
+#lane3 tg0 row3 cols23
+41B49FBA C11B9DA7
+#lane4 tg4 row0 cols23
+C15CA151 41CB432A
+#lane5 tg4 row1 cols23
+41D170F1 3FF2022E
+#lane6 tg4 row2 cols23
+411D1F2B C14D6E77
+#lane7 tg4 row3 cols23
+C1B069F7 41BFA622
+#B block pair00
+#lane0 tg0 row0 cols01
+41B4E998 C14DE1B7
+#lane1 tg0 row1 cols01
+C1669443 41C5EADF
+#lane2 tg0 row2 cols01
+C121DDE8 415EDCCC
+#lane3 tg0 row3 cols01
+C1508677 C0BC88EE
+#lane4 tg4 row0 cols01
+C1960167 C14AADC0
+#lane5 tg4 row1 cols01
+C1FF2654 C1C69EB6
+#lane6 tg4 row2 cols01
+3F05D060 BF2BFFC7
+#lane7 tg4 row3 cols01
+418FA855 41AEB241
+#B block pair01
+#lane0 tg0 row0 cols23
+40B8F9D3 C0D31116
+#lane1 tg0 row1 cols23
+C19FF3B9 C1D49393
+#lane2 tg0 row2 cols23
+419D67AD 41FF5B4A
+#lane3 tg0 row3 cols23
+C1B9F290 40995674
+#lane4 tg4 row0 cols23
+C0D8D496 C0AAC892
+#lane5 tg4 row1 cols23
+41B9BC47 C1FF5E61
+#lane6 tg4 row2 cols23
+C12AE95D C08CA46B
+#lane7 tg4 row3 cols23
+C1756731 C135C511
+#C block pair00
+#lane0 tg0 row0 cols01
+41FEC2D0 414DB3C0
+#lane1 tg0 row1 cols01
+41D4A20A BE4A12EF
+#lane2 tg0 row2 cols01
+C1DD9C55 C1989634
+#lane3 tg0 row3 cols01
+4109C4EC C12077F1
+#lane4 tg4 row0 cols01
+C15DF484 407BDC4E
+#lane5 tg4 row1 cols01
+C07C5EB1 BFC28008
+#lane6 tg4 row2 cols01
+41A1184A 41CE1B8E
+#lane7 tg4 row3 cols01
+407EA6BD C1CBD487
+#C block pair01
+#lane0 tg0 row0 cols23
+40C2FEF3 C0DC6D98
+#lane1 tg0 row1 cols23
+C1BB3443 C109DA3A
+#lane2 tg0 row2 cols23
+C1F6F41E C03F5D8F
+#lane3 tg0 row3 cols23
+C0A30EE2 41EB1D7A
+#lane4 tg4 row0 cols23
+41957DAC 41915165
+#lane5 tg4 row1 cols23
+41FD498C 4132C9AE
+#lane6 tg4 row2 cols23
+41933EFA C1A1302C
+#lane7 tg4 row3 cols23
+411C979E 41E9238F
+
+#SEVENTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C1C75B93 40F610D4
+#lane1 tg0 row1 cols01
+40B8B85B 41B2E930
+#lane2 tg0 row2 cols01
+40F3F4B5 C1ACACE3
+#lane3 tg0 row3 cols01
+C17BA25A 41D66C20
+#lane4 tg4 row0 cols01
+41C2C135 401446E2
+#lane5 tg4 row1 cols01
+C1E62248 40C1ACAA
+#lane6 tg4 row2 cols01
+41AC2854 C1F6B3A9
+#lane7 tg4 row3 cols01
+41BF6E50 C17C3F5F
+#A block pair01
+#lane0 tg0 row0 cols23
+C18447E8 408DBF0C
+#lane1 tg0 row1 cols23
+C1FD9289 41B4ECD7
+#lane2 tg0 row2 cols23
+418BBE73 41B602FD
+#lane3 tg0 row3 cols23
+C03A8AD8 40D3D033
+#lane4 tg4 row0 cols23
+40F96E1A C168419E
+#lane5 tg4 row1 cols23
+C1522BB2 41278C47
+#lane6 tg4 row2 cols23
+40C40595 C1899599
+#lane7 tg4 row3 cols23
+40E2DB74 405B4DA4
+#B block pair00
+#lane0 tg0 row0 cols01
+41F823FC C10DC97C
+#lane1 tg0 row1 cols01
+41993284 40CE4D96
+#lane2 tg0 row2 cols01
+C13ABDB9 C1D8022D
+#lane3 tg0 row3 cols01
+C1F64128 C1AB4530
+#lane4 tg4 row0 cols01
+C1CA6FE4 41CED596
+#lane5 tg4 row1 cols01
+C1CCDED3 C197593A
+#lane6 tg4 row2 cols01
+41F55CEE C0FB9B92
+#lane7 tg4 row3 cols01
+C0D7CC49 C1393555
+#B block pair01
+#lane0 tg0 row0 cols23
+41A0566C C139F595
+#lane1 tg0 row1 cols23
+C19139D4 C0B01316
+#lane2 tg0 row2 cols23
+C1F0B97F C11D34B3
+#lane3 tg0 row3 cols23
+41669675 415515DE
+#lane4 tg4 row0 cols23
+41BB2C53 4198A03A
+#lane5 tg4 row1 cols23
+41797260 C1F426FB
+#lane6 tg4 row2 cols23
+41609377 41C66FB8
+#lane7 tg4 row3 cols23
+40DEB3AB 40A5DDC2
+#C block pair00
+#lane0 tg0 row0 cols01
+41744E6B C13B3C33
+#lane1 tg0 row1 cols01
+C1BF797A C1B66A82
+#lane2 tg0 row2 cols01
+3EEEF79D 41FBC9DD
+#lane3 tg0 row3 cols01
+41FC7595 40AD5720
+#lane4 tg4 row0 cols01
+C0D4A6A8 4135E238
+#lane5 tg4 row1 cols01
+41844FEB 41F78271
+#lane6 tg4 row2 cols01
+C1F99D8C 4197910E
+#lane7 tg4 row3 cols01
+C1CFD5CD 41C7810C
+#C block pair01
+#lane0 tg0 row0 cols23
+41C7B0A1 40C02A3B
+#lane1 tg0 row1 cols23
+4145BACF C1A773E4
+#lane2 tg0 row2 cols23
+C1FDF2B7 C1F782DA
+#lane3 tg0 row3 cols23
+C1BF05A8 41CB6B32
+#lane4 tg4 row0 cols23
+41673028 408916AF
+#lane5 tg4 row1 cols23
+C0A55485 3F6EEDC1
+#lane6 tg4 row2 cols23
+3FA5B987 C0BC7EB8
+#lane7 tg4 row3 cols23
+C0D70672 413AF6AC
+
+#EIGHTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C1633641 C19887E9
+#lane1 tg0 row1 cols01
+C0015D8D C1765567
+#lane2 tg0 row2 cols01
+41EB2D9C 411C2DFE
+#lane3 tg0 row3 cols01
+C17D8157 C15226C7
+#lane4 tg4 row0 cols01
+C04D6056 C1826D6A
+#lane5 tg4 row1 cols01
+41BFC850 C12488BC
+#lane6 tg4 row2 cols01
+C182AA08 C1AD701C
+#lane7 tg4 row3 cols01
+418E01F6 3F90AEE5
+#A block pair01
+#lane0 tg0 row0 cols23
+C1A0E343 3FB45324
+#lane1 tg0 row1 cols23
+C1E8DF12 BF979F79
+#lane2 tg0 row2 cols23
+BE933DBC C1C7535E
+#lane3 tg0 row3 cols23
+41879455 41C0E03D
+#lane4 tg4 row0 cols23
+41574A85 41B3E223
+#lane5 tg4 row1 cols23
+3FFCB9F7 C180D0E0
+#lane6 tg4 row2 cols23
+41E14A2C 41C6A679
+#lane7 tg4 row3 cols23
+BF19E142 3FF3AD2F
+#B block pair00
+#lane0 tg0 row0 cols01
+41CDA400 41F81960
+#lane1 tg0 row1 cols01
+C1DB3A21 C1B97320
+#lane2 tg0 row2 cols01
+C1CE58EA 41B10C4D
+#lane3 tg0 row3 cols01
+C1AB5C50 C17CAA99
+#lane4 tg4 row0 cols01
+41965761 C1937AAF
+#lane5 tg4 row1 cols01
+410E5998 C1FED162
+#lane6 tg4 row2 cols01
+C1E03944 C02AF56C
+#lane7 tg4 row3 cols01
+41077525 C0DB48E2
+#B block pair01
+#lane0 tg0 row0 cols23
+41F6F8C4 41E7EF81
+#lane1 tg0 row1 cols23
+C14839ED 4058ABD7
+#lane2 tg0 row2 cols23
+40EF1DDD 402D864C
+#lane3 tg0 row3 cols23
+C1ADEB95 41B43095
+#lane4 tg4 row0 cols23
+41D8FA20 C07DFE9D
+#lane5 tg4 row1 cols23
+41FC9ACC C1605CB3
+#lane6 tg4 row2 cols23
+C1BDEFC6 C1B2023C
+#lane7 tg4 row3 cols23
+41D7FD0B C1392F0A
+#C block pair00
+#lane0 tg0 row0 cols01
+40AC7FA8 4170C5C5
+#lane1 tg0 row1 cols01
+C0C2DB67 418520AF
+#lane2 tg0 row2 cols01
+41E21162 C1C23977
+#lane3 tg0 row3 cols01
+C1711C7A 41B165A2
+#lane4 tg4 row0 cols01
+4015C857 C08603CA
+#lane5 tg4 row1 cols01
+41E78D46 BF93343A
+#lane6 tg4 row2 cols01
+405EE3E4 C195A616
+#lane7 tg4 row3 cols01
+C1C3188D 41D56D28
+#C block pair01
+#lane0 tg0 row0 cols23
+C150DCC3 C103D659
+#lane1 tg0 row1 cols23
+418B71DA C1961C8A
+#lane2 tg0 row2 cols23
+41CAD083 C1CC98F1
+#lane3 tg0 row3 cols23
+C1A4199D C0B1034C
+#lane4 tg4 row0 cols23
+C1BC8AA1 C1BFA8FD
+#lane5 tg4 row1 cols23
+41E80A8E C1AC3FA7
+#lane6 tg4 row2 cols23
+C17CBD2D C1F09CB0
+#lane7 tg4 row3 cols23
+C136C00E 40DD72D9
+
+#NINTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+4123D5EB C14A429C
+#lane1 tg0 row1 cols01
+41743C27 C0C65E6E
+#lane2 tg0 row2 cols01
+3F12608C 41D06D9E
+#lane3 tg0 row3 cols01
+C1216BBE C0BC185B
+#lane4 tg4 row0 cols01
+C0659C25 41DF3333
+#lane5 tg4 row1 cols01
+40367863 BF26B82A
+#lane6 tg4 row2 cols01
+C182F790 41D349B9
+#lane7 tg4 row3 cols01
+41F4D736 417ADF0F
+#A block pair01
+#lane0 tg0 row0 cols23
+41E52363 C108DF5A
+#lane1 tg0 row1 cols23
+407D35D9 41610EAC
+#lane2 tg0 row2 cols23
+C0A54586 411699FD
+#lane3 tg0 row3 cols23
+C0758E05 C1BF9639
+#lane4 tg4 row0 cols23
+41B53D71 C1360D18
+#lane5 tg4 row1 cols23
+41076018 C129DEBC
+#lane6 tg4 row2 cols23
+41D90614 41AFC804
+#lane7 tg4 row3 cols23
+41878277 41867235
+#B block pair00
+#lane0 tg0 row0 cols01
+C1D10998 412B827A
+#lane1 tg0 row1 cols01
+C1F5E12C C1319DB4
+#lane2 tg0 row2 cols01
+41B8A48C C181B31C
+#lane3 tg0 row3 cols01
+C1663E6B C1B90247
+#lane4 tg4 row0 cols01
+4127604A C1C6BC47
+#lane5 tg4 row1 cols01
+C09CAE72 4055BFDD
+#lane6 tg4 row2 cols01
+411C59E9 41FBECEE
+#lane7 tg4 row3 cols01
+C1CF4211 41694FC1
+#B block pair01
+#lane0 tg0 row0 cols23
+411F400B 4126D1CE
+#lane1 tg0 row1 cols23
+C19AB8AB 418E69DD
+#lane2 tg0 row2 cols23
+412BE0A6 C1BDC429
+#lane3 tg0 row3 cols23
+C15DACBB 4132EE23
+#lane4 tg4 row0 cols23
+41AA4147 C1A5B49E
+#lane5 tg4 row1 cols23
+3D48D765 413EA17E
+#lane6 tg4 row2 cols23
+41FFB43A 3F86D5DF
+#lane7 tg4 row3 cols23
+41F40D50 C13A08A6
+#C block pair00
+#lane0 tg0 row0 cols01
+41D2165E C1984EFC
+#lane1 tg0 row1 cols01
+41E7E574 40E16764
+#lane2 tg0 row2 cols01
+C137D12A 41F3C71A
+#lane3 tg0 row3 cols01
+C1F41B84 C0CCAC96
+#lane4 tg4 row0 cols01
+BF9EDCBF C0325F2F
+#lane5 tg4 row1 cols01
+C157BC76 C1780112
+#lane6 tg4 row2 cols01
+C18FF207 41A1D218
+#lane7 tg4 row3 cols01
+C1FC280A C127CD8C
+#C block pair01
+#lane0 tg0 row0 cols23
+402C5B11 414E3978
+#lane1 tg0 row1 cols23
+C17AC540 41007D59
+#lane2 tg0 row2 cols23
+C0CD7699 413DE0C4
+#lane3 tg0 row3 cols23
+41C00E1B 40E1BEED
+#lane4 tg4 row0 cols23
+C1850110 41144B7C
+#lane5 tg4 row1 cols23
+40B00C84 C0B85B27
+#lane6 tg4 row2 cols23
+41B89C9F C1AA234A
+#lane7 tg4 row3 cols23
+41985357 41ADA832
+
+#TENTH TEST VALUES OF HMMAstep0 (FP32)
+#A block pair00
+#lane0 tg0 row0 cols01
+C1CECC9B C1B1651A
+#lane1 tg0 row1 cols01
+C1E4F678 C1FFBC02
+#lane2 tg0 row2 cols01
+C1EE29AB 411BE96B
+#lane3 tg0 row3 cols01
+C1B4CE47 41B8BAE8
+#lane4 tg4 row0 cols01
+4088078D 405085B6
+#lane5 tg4 row1 cols01
+C1F26466 C1E6AD4B
+#lane6 tg4 row2 cols01
+C1759227 C0A697A3
+#lane7 tg4 row3 cols01
+407AC50A C0EAC368
+#A block pair01
+#lane0 tg0 row0 cols23
+400A9BD3 C1DD6E38
+#lane1 tg0 row1 cols23
+C0826C69 418C9B80
+#lane2 tg0 row2 cols23
+41A570F2 C1A9FBCB
+#lane3 tg0 row3 cols23
+41A57097 401F8167
+#lane4 tg4 row0 cols23
+41A8374D 415795E7
+#lane5 tg4 row1 cols23
+40CFFDE1 BF623AA2
+#lane6 tg4 row2 cols23
+41840CD2 41A7399F
+#lane7 tg4 row3 cols23
+C16ACE78 3FB38E5D
+#B block pair00
+#lane0 tg0 row0 cols01
+41A36E2B C1D08247
+#lane1 tg0 row1 cols01
+C1785E83 41813141
+#lane2 tg0 row2 cols01
+C010AC16 C1074416
+#lane3 tg0 row3 cols01
+4180C367 C1C31E2F
+#lane4 tg4 row0 cols01
+41C6D7D6 41DBFD43
+#lane5 tg4 row1 cols01
+C1C4F3EF 40F4E0BA
+#lane6 tg4 row2 cols01
+41822FE0 41A3BDFD
+#lane7 tg4 row3 cols01
+C1E961E2 C0CA3598
+#B block pair01
+#lane0 tg0 row0 cols23
+C0D81A13 41738134
+#lane1 tg0 row1 cols23
+3E88ECAD 418022DD
+#lane2 tg0 row2 cols23
+C18FC66E C1954F4E
+#lane3 tg0 row3 cols23
+C1D3FA1F C1A5BD23
+#lane4 tg4 row0 cols23
+C1CCE2F2 C1C9027B
+#lane5 tg4 row1 cols23
+C1C18D49 41B46B75
+#lane6 tg4 row2 cols23
+3FD57CE3 41FE4C7A
+#lane7 tg4 row3 cols23
+C13449F2 41E5B4DD
+#C block pair00
+#lane0 tg0 row0 cols01
+C1A638FB 41A56E5D
+#lane1 tg0 row1 cols01
+C1B9BF72 411D398B
+#lane2 tg0 row2 cols01
+41C00B09 41F38146
+#lane3 tg0 row3 cols01
+C18EF393 411FD1D5
+#lane4 tg4 row0 cols01
+C13DB247 40834450
+#lane5 tg4 row1 cols01
+C1FF7416 C1935069
+#lane6 tg4 row2 cols01
+C1A7F4D0 41C7D0AE
+#lane7 tg4 row3 cols01
+41DEFF5B C1E18AF6
+#C block pair01
+#lane0 tg0 row0 cols23
+C0CFDBC2 41FB1432
+#lane1 tg0 row1 cols23
+C0520102 C0DB4DB7
+#lane2 tg0 row2 cols23
+41BEE75F C19D8AC4
+#lane3 tg0 row3 cols23
+C157FA79 41705BC9
+#lane4 tg4 row0 cols23
+4134E45D C1DE2ADE
+#lane5 tg4 row1 cols23
+41C9FD69 4115CD3F
+#lane6 tg4 row2 cols23
+BFF61EF6 BFC3DB38
+#lane7 tg4 row3 cols23
+C191D427 40AFA8E0

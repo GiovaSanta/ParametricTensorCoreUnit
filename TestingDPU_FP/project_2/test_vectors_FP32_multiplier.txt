@@ -1,0 +1,4 @@
+# FP32 Test Vectors
+# Format: entrada_x entrada_y expected_output
+3f5388f1 3e6911b6 3e409645
+be37ebdd bf54f9fa 3e1902eb

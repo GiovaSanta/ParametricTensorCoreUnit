@@ -1,0 +1,1 @@
+anche se i file sono scritti con il " _0 " alla fine del nome, questa dop product unit opera in posit16 con 1 bit nel exponent field , non 0.

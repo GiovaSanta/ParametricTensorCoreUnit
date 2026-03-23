@@ -1,0 +1,30 @@
+# FP8 Test Vectors
+# Format: entrada_x entrada_y expected_output
+#3F 40 2A
+#20 10 08
+#7F 7F 7F
+#01 02 00
+#80 40 00
+#3C 2A 18
+#50 20 10
+#60 60 36
+#10 30 0C
+#7E 7E 7E
+#15 25 0A
+#33 44 20
+#08 08 02
+#1F 1F 0A
+#4F 5F 30
+#00 00 00
+#FF FF FF
+#this formats on the bottom aren't supposed to give overflow
+08 38 08
+08 40 10
+08 48 18
+08 50 20
+08 58 28
+08 60 30
+08 68 38
+10 30 08
+10 38 10
+10 40 18

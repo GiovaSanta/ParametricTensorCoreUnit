@@ -1,0 +1,51 @@
+98 CE 2E
+# -0.06250 -7.00000 0.43750
+5F 24 4B
+# 30.00000 0.18750 5.62500
+D6 D1 70
+#11010.110 11010.001
+# -14.00000 -9.00000 126.00000
+33 E3 DF
+# 0.68750 -44.00000 -30.25000
+
+#.43750 + 5.62500 + 126 + -30.2500 + -80
+
+#-80 is c0.
+
+
+#126:
+#126_2 : 01111110
+#normalize:
+#1.11111 : mantissa has 3 bits space so is 111
+#exponent: 5+7 = 12
+#0.1100.111
+
+
+#testing if the fp8 multiplier is able to produce the least normal floating point 8 value: .125 * .125 = 0.015625
+
+# 0.0100.000 * 0.0100.000 = 0.0001.000
+20 20 08
+
+#ok, after testing, the multiplier did spit out this value, so the least normal number is able to be generated.
+
+#testing if the fp8 multiplier is able to produce the greatest subnormal floating point 8 value... 
+#greatest subnormal value: 0.0000.111 ( 0.0.013671875 )…   we feed 0.125 * 0.109375 ( which is exactly equal to 0.013671875 )
+
+20 1E 00
+
+#after running the test, the multiplier spat out a result that wasn't 0 like I had expected... (and the value it spat out wasn't really the best representation (which is 1F) )
+
+#testing if the fp8 multiplier is able to produce the second-greatest subnormal floating point 8 value... 
+#running the test 0.125 * 0.09375 = 0.01171875
+
+20 1C 00
+#after the test, discovered that it doesn't give underflow... ahahahah
+
+#0.0859375 * 0.0859375 
+1B 1B 00
+
+1C 1C 00
+
+
+
+

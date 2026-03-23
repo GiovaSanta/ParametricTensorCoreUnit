@@ -1,0 +1,196 @@
+#register file ports content for FP8 E4M3
+#<portA> <portB>
+#Each 32-bit portA contains one packed 1x4 FP8 row
+#Byte order: [v3 v2 v1 v0], so v0 is the least significant byte
+#portB is written as 00000000
+#Single experiment = 4 HMMA set pairs (step0 + step1)
+#Only set0 contains external C inputs.
+#For sets 1..3 accumulator inputs must be provided by previous computed results inside the TB.
+
+#================ SET 0 ================
+#A00
+#thread0
+3C383733 00000000
+#thread1
+36B83FB4 00000000
+#thread2
+363639AF 00000000
+#thread3
+AD2ABAB1 00000000
+#A10
+#thread16
+3539BA3A 00000000
+#thread17
+3B3A1A3D 00000000
+#thread18
+3FBE1EC0 00000000
+#thread19
+B82D1BBD 00000000
+#B00_T_for_HMMA
+#thread0
+34B0BE21 00000000
+#thread1
+36B2ACBF 00000000
+#thread2
+B6C0B708 00000000
+#thread3
+BA3FB324 00000000
+#B01_T_for_HMMA
+#thread16
+B92EBB37 00000000
+#thread17
+BAAD3232 00000000
+#thread18
+1C231EB1 00000000
+#thread19
+BCBFB7C0 00000000
+#C00
+#thread0
+BB40BA38 00000000
+#thread1
+BB363A3C 00000000
+#thread2
+32BC3A37 00000000
+#thread3
+1BAEA2B1 00000000
+#C10
+#thread16
+403EBFBB 00000000
+#thread17
+3B3F3720 00000000
+#thread18
+BBA2B1BE 00000000
+#thread19
+B7BC3A0F 00000000
+#C01
+#thread0
+313B3E2D 00000000
+#thread1
+B03132BE 00000000
+#thread2
+3DBF2999 00000000
+#thread3
+3DAAB69A 00000000
+#C11
+#thread16
+383DBD38 00000000
+#thread17
+242D2B30 00000000
+#thread18
+3939B9BA 00000000
+#thread19
+3F31AF3E 00000000
+
+#================ SET 1 ================
+#A01
+#thread0
+2CB632B2 00000000
+#thread1
+35313529 00000000
+#thread2
+3F2C3C36 00000000
+#thread3
+BA2228BD 00000000
+#A11
+#thread16
+39B63F3F 00000000
+#thread17
+373CAE37 00000000
+#thread18
+3FB836C0 00000000
+#thread19
+B9C03D2E 00000000
+#B10_T_for_HMMA
+#thread0
+362839BA 00000000
+#thread1
+BDBE2DB0 00000000
+#thread2
+BBB3212E 00000000
+#thread3
+BC301639 00000000
+#B11_T_for_HMMA
+#thread16
+3E3D3BB1 00000000
+#thread17
+3DB12E30 00000000
+#thread18
+3A3C2299 00000000
+#thread19
+BC3DBE3B 00000000
+
+#================ SET 2 ================
+#A02
+#thread0
+11AA3938 00000000
+#thread1
+B7BE283D 00000000
+#thread2
+9C3630BC 00000000
+#thread3
+B139292C 00000000
+#A12
+#thread16
+BE2D30B4 00000000
+#thread17
+1F2D3D38 00000000
+#thread18
+26BFBFAF 00000000
+#thread19
+30BBBCB9 00000000
+#B20_T_for_HMMA
+#thread0
+B4B6AC34 00000000
+#thread1
+21A92FBD 00000000
+#thread2
+B2B9B43D 00000000
+#thread3
+9C3CBA31 00000000
+#B21_T_for_HMMA
+#thread16
+B7B13CA3 00000000
+#thread17
+BC323F32 00000000
+#thread18
+BFAEA33C 00000000
+#thread19
+BB3DB39C 00000000
+
+#================ SET 3 ================
+#A03
+#thread0
+3DB7BBB3 00000000
+#thread1
+2C248C35 00000000
+#thread2
+3DB125B6 00000000
+#thread3
+BF283EB8 00000000
+#A13
+#thread16
+B8BCBEC0 00000000
+#thread17
+BE3AA43C 00000000
+#thread18
+99B23F40 00000000
+#thread19
+3E3C37BD 00000000
+#B30_T_for_HMMA
+#thread0
+2BB9BD9B 00000000
+#thread1
+B9373F39 00000000
+#thread2
+383BA93D 00000000
+#thread3
+373DB23A 00000000
+#B31_T_for_HMMA
+#thread16
+BDAEB1BA 00000000
+#thread17
+2CB4AFBD 00000000
+#thread18
+32403EBB 00000000
+#thread19
+3B39BE39 00000000

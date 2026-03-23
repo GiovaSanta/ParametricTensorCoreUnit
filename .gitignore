@@ -1,0 +1,67 @@
+# Office temporary files
+~$*.docx
+~$*.doc
+~$*.xlsx
+~$*.xls
+~$*.pptx
+~$*.ppt
+
+# Windows junk
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# Python
+__pycache__/
+*.pyc
+
+# Vivado / Xilinx generated files
+*.jou
+*.str
+*.wdb
+*.pb
+*.wcfg
+*.wdf
+*.wpc
+*.lpr
+*.db
+
+.Xil/
+.cache/
+.hw/
+.ip_user_files/
+.sim/
+.runs/
+.gen/
+xsim.dir/
+
+pyOpenTCU/
+
+# Ignore Vivado-generated directories anywhere
+**/*.cache/
+**/*.hw/
+**/*.ip_user_files/
+**/*.sim/
+**/*.runs/
+**/*.gen/
+**/.Xil/
+
+# Embedded repo
+FlexGripPlus/Open-GPGPU-FlexGrip-/
+
+# Optional: generic backup files
+*.backup.jou
+*.backup.log

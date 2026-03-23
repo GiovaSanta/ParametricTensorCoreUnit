@@ -1,0 +1,4 @@
+this folder contains the relevant scripts utilized to create files related to the simulation process of the hardware related to one octect of threads executing 4 sets of step0 and step1 HMMA instructions. in this related folder, the testing and simulation was related to submatrices with the floating point 16 encoding format specifically.
+
+*********scripts descriptions***************
+manyTestsFP16HMMA4setsOfstep0andstep1.py : 

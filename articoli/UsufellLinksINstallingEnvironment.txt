@@ -1,0 +1,2 @@
+https://github.com/billzorn/sfpy/blob/master/BUILDING.md
+(or I mean just search for sfpy on google and go from there....)

@@ -1,0 +1,7 @@
+a. piu test scenarios per Floating Point 8. ok fatto
+b. adaptation to integer Numbers.
+c. adaptation to posit format.
+
+d. flopoco related.
+
+next meeting at Wednesday March 26 @ 11 am.

@@ -1,0 +1,120 @@
+#Test 1 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+63 6A C9 56
+E1 57 ED 6E
+48 56 E9 69
+E2 E0 59 E2
+#D20
+50 E8 6E EF
+44 68 E0 5E
+E3 EC 60 E8
+58 64 D8 5B
+
+#Test 2 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+54 56 6B 60
+50 5B 6B 5E
+46 DC E1 E0
+DA D9 EC E2
+#D20
+E3 C0 D8 68
+E5 4C DC 68
+DE E8 E5 DB
+C7 E9 DF E5
+
+#Test 3 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+E9 E2 56 65
+E8 E6 5B 65
+65 E2 66 5C
+E5 E8 5A 66
+#D20
+E5 D2 E3 52
+E2 D8 E2 59
+5C 49 69 52
+5D D9 68 56
+
+#Test 4 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+5F 65 6D 40
+5B 68 6C 58
+6C E8 69 69
+D8 66 D5 6A
+#D20
+5E 67 D5 6C
+56 67 D8 6C
+5E E5 64 CC
+40 DF EB EA
+
+#Test 5 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+E5 65 BC ED
+E5 64 42 EF
+E0 66 64 E0
+57 5E 63 5C
+#D20
+A4 E5 CB C8
+56 E5 4D D4
+D0 3C EA D8
+4A 45 61 54
+
+#Test 6 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+CB 6A E7 53
+50 6A E6 57
+D4 68 DF 5F
+5A EC 48 5A
+#D20
+51 E1 60 55
+2E E1 60 5A
+CC E2 63 DA
+60 52 D6 E2
+
+#Test 7 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+E8 CB 60 5B
+E8 D4 61 5D
+E8 62 4C E8
+61 D9 DC 62
+#D20
+68 5F DB E4
+68 5F DB E5
+EA D6 5F 62
+69 5A 61 D4
+
+#Test 8 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+EC 69 D1 68
+ED 69 D8 68
+EC 66 DE 66
+62 EA E1 EB
+#D20
+5B 5D C5 61
+5D 5B D4 5D
+48 E0 E4 E6
+5B 61 51 5F
+
+#Test 9 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+D4 E5 66 DB
+CC E7 67 D8
+D3 D4 4A 48
+58 4A E3 DD
+#D20
+60 E5 CF E9
+5F E5 C6 E8
+D2 E0 5E D9
+69 51 E6 E2
+
+#Test 10 HMMAstep0 related D00 and D20 result submatrices (FP8, FSM wrapper)
+#D00
+D9 DF 63 63
+DE D9 62 64
+5F 58 47 3C
+EA 5D 4E E7
+#D20
+45 54 E3 E4
+24 55 E2 E7
+C1 C3 58 49
+CA 61 E1 E6
+

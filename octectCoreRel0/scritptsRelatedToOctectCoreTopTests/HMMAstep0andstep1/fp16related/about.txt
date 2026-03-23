@@ -1,0 +1,24 @@
+The scripts in this folder are used when observing the execution 
+of 2 hmma instructions (hmma instruction step 0 and hmma instruction step 1).
+the testbench related to these scripts makes the observation of 
+how the fsm , the buffers and the dpu array related to one octect execute 
+a step0 hmma instruction and a step1 hmma instruction , assuming that
+the values of the operands of the related submatrices are ready at the registerfiles
+ports of the thread after decode.
+
+****scripts description****
+
+manyTestsFP16HMMAstep0andstap1.py : python script which generates 
+hmma_step0andstep1_fp16_tests.txt file containing A00, A10, B00, B01, C00, C10,
+C01, C11 4 by 4 submatrices (with random values in the fp16 number format).
+it computes the expected results related to the first hmma instruction (hmma step0)
+of the two resulting 4by4 submatrices D00 and D10 related to threadgroup0 and 
+threadgroup4 of the octect0 respectively. it also produces the expected results
+related to the step1 hmma instruction executed by the same threadgroups D01 and D11.
+finally, this script also produces another output file "hmma_step0andstep1_tb_input.txt"
+which is intended input to the "octectCorewithFSMFP16_2instrTB.vhd" testbench file.
+that file contains the values at the ports of the register files of the thread groups
+(which are needed for the execution of the hmma step0 and hmma step 1 instructions)
+in order for the simulation to begin (simulation places values from ports in the buffers which unlike the rf files are implemented in the associated dut).
+
+compare_hmma_step0andstep1_results.py : python script which takes as input the output of the testbench testing step0andstep1 instructions execution related to an octect and confronts it with the exepected result which are in file "hmma_step0andstep1_fp16_tests.txt". and for the elements which differ, the absolute difference is shown in that file. 

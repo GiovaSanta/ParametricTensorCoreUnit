@@ -1,0 +1,28 @@
+op1: 8a3d op2:30a4 resSim: e99fff14
+op1:-29.4404296875 op2: 12.16015625 resSim:-358.0002250671387
+resSim is the correct value
+
+op1: 8a3d op2:30a4 'resGold': e9a02752
+op1:-29.4404296875 op2: 12.16015625 'resGold':-357.99040031433105
+
+ANOTHER Example:
+
+op1: 9c29 op2: 8ccd resSim: 2ced78d5
+op1: -24.9599609375 op2: -28.7998046875 resSim: 718.8420000076294
+resSim is the correct Value
+
+op1: 9c29 op2: 8ccd resGold: 2ced9168 
+op1: -24.9599609375 op2: -28.7998046875 resGold: 718.8479995727539
+
+YET ANOTHER EXAMPLE:
+
+op1: 3d71 op2: 428f  resSim: 0ff9741f
+op1: 15.3603515625  op2: 16.6396484375  resSim: 255.5908498764038
+resSim is the correct Value
+
+op1: 3d71 op2: 428f resGold: 0ff97247
+op1: 15.3603515625 op2: 16.6396484375 resGold: 255.59039974212646
+
+
+CONCLUSION.... the golden result (that were constructed by chatgpt are less accurate then what the result given by the MAC circuit's output it seems.)
+

@@ -1,0 +1,9 @@
+These scripts were used in conjunction to the octectCoreTopv2Extensive_fp32_tb to verify if the output expressed on the W0 and W1 16FP precision output lines output the correct results… 
+
+they target the test of what happens to two threadgroups related to one octect when executing a single hmmastep0 instruction, .. the format used is fp32 in the related testbench and in the matrix input files to the scripts.
+
+***Scripts description****
+
+manyTestsFP32HMMAstep0.py: script which doesnt take anything as input. it creates a file "hmma_Step0_fp32_tests.txt" that contains about 10 tests related to hmma step0 instruction execution for a single octect. the values of each of the submatrices generated for each test (4by4 matrices: A00, A20, B00, B01, C00, C20 both encoded and decoded versions. In that file there are also the D00 and D20 expected 4by4 result matrices of that steps for the octect). then it also produces another file "hmma_step0_tb_input_fp32.txt" which is the input of a the "octectCoreTopV2Extensive_fp32_tb" testbench. that file mimics the relative RF lanes containing the values of the operand matrices that are supposed to be fed to the tensorCoreBuffers.
+
+compare_hmma_step0_results.py: script which takes as input 2 files. the file "hmma_Step0_fp32_tests.txt" which contains for each test the expected D00 and D20 resulting matrices for each test, and the second file is "hmma_step0_tb_output_fp32.txt" which was the output file by the "octectCoreTopv2Extensive_fp32_tb.vhd" containing the resulting D00 and D20 submatrices produced by the hardware. the validation of the results is generated in the "hmma_step0_validation_report_fp32.txt" file.
