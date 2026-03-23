@@ -50,6 +50,9 @@ xsim.dir/
 
 pyOpenTCU/
 articoli/
+FlopocoPractice/
+positMultiplierArticoli/
+tensor_core/
 
 # Ignore Vivado-generated directories anywhere
 **/*.cache/
