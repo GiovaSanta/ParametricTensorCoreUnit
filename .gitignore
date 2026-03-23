@@ -49,6 +49,7 @@ __pycache__/
 xsim.dir/
 
 pyOpenTCU/
+articoli/
 
 # Ignore Vivado-generated directories anywhere
 **/*.cache/
