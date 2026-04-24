@@ -1,0 +1,286 @@
+HMMA 4-SET STEP0/STEP1 FXP8/FXP16 VALIDATION REPORT (DUAL TC, 4 OCTECTS)
+Simulator output file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\doubleParametricTCUsRel0\doubleParametricTCUsRelatedScripts\4SetsOfHMMAstep0step1\fixedPoint8related\hmma_8instr_dualTC_4octects_tb_output_ctrl_fxp8.txt
+Golden reference file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\doubleParametricTCUsRel0\doubleParametricTCUsRelatedScripts\4SetsOfHMMAstep0step1\fixedPoint8related\hmma_8instr_dualTC_4octects_fxp8fxp16_single_experiment_compact.txt
+Format: signed_5_M10 on 16 bits
+
+
+========== SET 0 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+========== SET 1 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+========== SET 2 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+========== SET 3 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+
+========== FINAL 16x16 RESULT vs FINAL_CHAINED_16x16_FROM_DUAL_TC_FXP16 ==========
+FINAL_16x16_RESULT:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+Match within encoded-word equality.
+
+========== FINAL 16x16 RESULT vs FINAL_IDEAL_16x16_ONE_SHOT_REFERENCE ==========
+FINAL_16x16_RESULT:
+row col | obtained(hex) obtained(val) | golden(hex) golden(val) | abs diff
+All entries match within tolerance and encoded-word equality.
+Match within encoded-word equality.
+
+====================================
+Total differing entries: 0
+Total hex mismatches: 0
+Total missing items: 0

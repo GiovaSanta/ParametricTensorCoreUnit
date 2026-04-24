@@ -5,17 +5,17 @@ use ieee.std_logic_textio.all;
 use std.textio.all;
 use work.dpuArray_package.all;
 
-entity doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
-end doubleTensorCorewithFSMFP16_4setsOfstep01_tb; 
+entity doubleTensorCorewithFSMPosit16_1_4setsOfstep01_tb is
+end doubleTensorCorewithFSMPosit16_1_4setsOfstep01_tb; 
 
--- Testbench for FP16 HMMA execution on dualTensorCoreWrapper.
+-- Testbench for posit16,1 HMMA-style execution on dualTensorCoreWrapper.
 -- It verifies 4 chained sets of HMMA step0/step1 operations executed in parallel
 -- across 2 tensor cores = 4 octects total (32 lanes total).
 -- Set 0 instructions uses external C inputs, while sets 1..3 reuse the previously
 -- computed results as chained accumulator inputs.
 -- The full staged execution reconstructs a complete 16x16 GEMM-ACC result.
 
-architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
+architecture sim of doubleTensorCorewithFSMPosit16_1_4setsOfstep01_tb is
 
     --dut generics
     constant REG_W  : integer := 32;
@@ -23,8 +23,10 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     
     --clock/config
     constant CLK_PERIOD : time := 10 ns;
-    constant WIDTH_FP16 : std_logic_vector(1 downto 0) := "01";
-    constant TYPE_FP    : std_logic_vector(2 downto 0) := "000";
+    constant WIDTH_POSIT16 : std_logic_vector(1 downto 0) := "01";
+    -- TODO: replace with the actual wrapper encoding for posit operands.
+    -- The FP16 testbench used TYPE_FP = "000".
+    constant TYPE_POSIT    : std_logic_vector(2 downto 0) := "001";
     
     --dut signals
     signal clk        : std_logic := '0';
@@ -43,6 +45,12 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     signal rf1_rd_data_port_a : arraySize16_32;
     signal rf1_rd_data_port_b : arraySize16_32;
     
+    -- NOTE:
+    -- This testbench assumes posit16 results appear on the same 16-bit wrapper buses
+    -- used by the FP16 flow: *_16_X3. If your wrapper exposes posit results on
+    -- different signals, only the capture_step0_outputs/capture_step1_outputs
+    -- connections below need to be redirected.
+
     --outputs tc0
     --octect0 signals for its outputs
     signal W0_tc0_oct0_8_X3  : arraySize4_8;
@@ -80,15 +88,18 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     signal step_done : std_logic;
     
     --tb-only types
-    type matrix4x4_fp16_t is array (0 to 3, 0 to 3) of std_logic_vector(15 downto 0);
+    type matrix4x4_posit16_t is array (0 to 3, 0 to 3) of std_logic_vector(15 downto 0);
     type lane_block16_t     is array (0 to 15) of std_logic_vector(31 downto 0);
     
+    -- The stimulus file format stays unchanged versus FP16: each lane line carries
+    -- two packed 32-bit words, each word holding two 16-bit encoded posit values.
+
     --related input and output files of tb
     file tb_file : text open read_mode is
-        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/fp16related/hmma_8instr_dualTC_4octects_fp16_single_experiment_tb_input.txt";
+        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/posit16related/hmma_8instr_dualTC_4octects_posit16_single_experiment_tb_input.txt";
 
     file tb_out_file : text open write_mode is
-        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/fp16related/hmma_8instr_dualTC_4octects_tb_output_ctrl_fp16.txt";
+        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/posit16related/hmma_8instr_dualTC_4octects_tb_output_ctrl_posit16.txt";
     
     --helper procedures
 
@@ -195,7 +206,7 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
 --5
     procedure write_matrix4x4_hex(
         file f : text;
-        constant M : in matrix4x4_fp16_t
+        constant M : in matrix4x4_posit16_t
     ) is
         variable L : line;
     begin
@@ -213,7 +224,7 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     
 --6
     procedure clear_matrix4x4(
-        variable M : out matrix4x4_fp16_t
+        variable M : out matrix4x4_posit16_t
     ) is
     begin
         for r in 0 to 3 loop
@@ -237,7 +248,7 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     
 --8
     procedure matrix4x4_to_lane_block16(
-        constant M      : in matrix4x4_fp16_t;
+        constant M      : in matrix4x4_posit16_t;
         constant base_lane : in integer;  -- the top threadgroup uses base_lane = 0, for bottom threadgroup use base_lane =4 inside the local 8lane block
                                           -- rapresentation because your lane block is indexed 0 to 7.
         variable block_a : inout lane_block16_t;
@@ -253,15 +264,15 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
 --9
     procedure build_accumulator_blocks_from_previous_results(
     --related to octect 0 outputs
-        constant prev_D00 : in matrix4x4_fp16_t ;
-        constant prev_D10 : in matrix4x4_fp16_t ;
-        constant prev_D01 : in matrix4x4_fp16_t ;
-        constant prev_D11 : in matrix4x4_fp16_t ;
+        constant prev_D00 : in matrix4x4_posit16_t ;
+        constant prev_D10 : in matrix4x4_posit16_t ;
+        constant prev_D01 : in matrix4x4_posit16_t ;
+        constant prev_D11 : in matrix4x4_posit16_t ;
     --related to octect 1 outputs
-        constant prev_D20 : in matrix4x4_fp16_t ;
-        constant prev_D30 : in matrix4x4_fp16_t ;
-        constant prev_D21 : in matrix4x4_fp16_t ;
-        constant prev_D31 : in matrix4x4_fp16_t ;
+        constant prev_D20 : in matrix4x4_posit16_t ;
+        constant prev_D30 : in matrix4x4_posit16_t ;
+        constant prev_D21 : in matrix4x4_posit16_t ;
+        constant prev_D31 : in matrix4x4_posit16_t ;
         
         variable C0_blk_a : out lane_block16_t ;
         variable C0_blk_b : out lane_block16_t ;
@@ -313,15 +324,15 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
         signal W0_tc1_oct1_16_X3 : in arraySize16_16;
         signal W1_tc1_oct1_16_X3 : in arraySize16_16;
         
-        variable D00    : out matrix4x4_fp16_t;
-        variable D10    : out matrix4x4_fp16_t;
-        variable D20    : out matrix4x4_fp16_t;
-        variable D30    : out matrix4x4_fp16_t;
+        variable D00    : out matrix4x4_posit16_t;
+        variable D10    : out matrix4x4_posit16_t;
+        variable D20    : out matrix4x4_posit16_t;
+        variable D30    : out matrix4x4_posit16_t;
         
-        variable D02    : out matrix4x4_fp16_t;
-        variable D12    : out matrix4x4_fp16_t;
-        variable D22    : out matrix4x4_fp16_t;
-        variable D32    : out matrix4x4_fp16_t
+        variable D02    : out matrix4x4_posit16_t;
+        variable D12    : out matrix4x4_posit16_t;
+        variable D22    : out matrix4x4_posit16_t;
+        variable D32    : out matrix4x4_posit16_t
     ) is
     begin
         --for r in 0 to 3 loop
@@ -367,15 +378,15 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
         signal W0_tc1_oct1_16_X3 : in arraySize16_16;
         signal W1_tc1_oct1_16_X3 : in arraySize16_16;
         
-        variable D01 : out matrix4x4_fp16_t;
-        variable D11 : out matrix4x4_fp16_t;
-        variable D21 : out matrix4x4_fp16_t;
-        variable D31 : out matrix4x4_fp16_t;
+        variable D01 : out matrix4x4_posit16_t;
+        variable D11 : out matrix4x4_posit16_t;
+        variable D21 : out matrix4x4_posit16_t;
+        variable D31 : out matrix4x4_posit16_t;
         
-        variable D03 : out matrix4x4_fp16_t;
-        variable D13 : out matrix4x4_fp16_t;
-        variable D23 : out matrix4x4_fp16_t;
-        variable D33 : out matrix4x4_fp16_t
+        variable D03 : out matrix4x4_posit16_t;
+        variable D13 : out matrix4x4_posit16_t;
+        variable D23 : out matrix4x4_posit16_t;
+        variable D33 : out matrix4x4_posit16_t
         
     ) is
     begin
@@ -417,24 +428,24 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
         constant set_idx    : in integer;
         
         --TC0  
-        constant D00_step0  : in matrix4x4_fp16_t;
-        constant D10_step0  : in matrix4x4_fp16_t;
-        constant D01_step1  : in matrix4x4_fp16_t;
-        constant D11_step1  : in matrix4x4_fp16_t;
-        constant D20_step0  : in matrix4x4_fp16_t;
-        constant D30_step0  : in matrix4x4_fp16_t;
-        constant D21_step1  : in matrix4x4_fp16_t;
-        constant D31_step1  : in matrix4x4_fp16_t;
+        constant D00_step0  : in matrix4x4_posit16_t;
+        constant D10_step0  : in matrix4x4_posit16_t;
+        constant D01_step1  : in matrix4x4_posit16_t;
+        constant D11_step1  : in matrix4x4_posit16_t;
+        constant D20_step0  : in matrix4x4_posit16_t;
+        constant D30_step0  : in matrix4x4_posit16_t;
+        constant D21_step1  : in matrix4x4_posit16_t;
+        constant D31_step1  : in matrix4x4_posit16_t;
         
         --TC1
-        constant D02_step0  : in matrix4x4_fp16_t;
-        constant D12_step0  : in matrix4x4_fp16_t;
-        constant D03_step1  : in matrix4x4_fp16_t;
-        constant D13_step1  : in matrix4x4_fp16_t;
-        constant D22_step0  : in matrix4x4_fp16_t;
-        constant D32_step0  : in matrix4x4_fp16_t;
-        constant D23_step1  : in matrix4x4_fp16_t;
-        constant D33_step1  : in matrix4x4_fp16_t
+        constant D02_step0  : in matrix4x4_posit16_t;
+        constant D12_step0  : in matrix4x4_posit16_t;
+        constant D03_step1  : in matrix4x4_posit16_t;
+        constant D13_step1  : in matrix4x4_posit16_t;
+        constant D22_step0  : in matrix4x4_posit16_t;
+        constant D32_step0  : in matrix4x4_posit16_t;
+        constant D23_step1  : in matrix4x4_posit16_t;
+        constant D33_step1  : in matrix4x4_posit16_t
     ) is
         variable L : line;
     begin
@@ -469,25 +480,25 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
 --13
     procedure write_final_16x16_result(
     file f : text;
-    constant D00 : in matrix4x4_fp16_t;
-    constant D10 : in matrix4x4_fp16_t;
-    constant D20 : in matrix4x4_fp16_t;
-    constant D30 : in matrix4x4_fp16_t;
+    constant D00 : in matrix4x4_posit16_t;
+    constant D10 : in matrix4x4_posit16_t;
+    constant D20 : in matrix4x4_posit16_t;
+    constant D30 : in matrix4x4_posit16_t;
     
-    constant D01 : in matrix4x4_fp16_t;
-    constant D11 : in matrix4x4_fp16_t;
-    constant D21 : in matrix4x4_fp16_t;
-    constant D31 : in matrix4x4_fp16_t;
+    constant D01 : in matrix4x4_posit16_t;
+    constant D11 : in matrix4x4_posit16_t;
+    constant D21 : in matrix4x4_posit16_t;
+    constant D31 : in matrix4x4_posit16_t;
     
-    constant D02 : in matrix4x4_fp16_t;
-    constant D12 : in matrix4x4_fp16_t;
-    constant D22 : in matrix4x4_fp16_t;
-    constant D32 : in matrix4x4_fp16_t;
+    constant D02 : in matrix4x4_posit16_t;
+    constant D12 : in matrix4x4_posit16_t;
+    constant D22 : in matrix4x4_posit16_t;
+    constant D32 : in matrix4x4_posit16_t;
     
-    constant D03 : in matrix4x4_fp16_t;
-    constant D13 : in matrix4x4_fp16_t;
-    constant D23 : in matrix4x4_fp16_t;
-    constant D33 : in matrix4x4_fp16_t
+    constant D03 : in matrix4x4_posit16_t;
+    constant D13 : in matrix4x4_posit16_t;
+    constant D23 : in matrix4x4_posit16_t;
+    constant D33 : in matrix4x4_posit16_t
     ) is
     variable L : line;
     begin
@@ -690,97 +701,97 @@ begin
             
             --outputs set 0
             --octect0 (living in tc0)
-            variable D00_set0_step0 : matrix4x4_fp16_t;
-            variable D10_set0_step0 : matrix4x4_fp16_t;
-            variable D01_set0_step1 : matrix4x4_fp16_t;
-            variable D11_set0_step1 : matrix4x4_fp16_t;
+            variable D00_set0_step0 : matrix4x4_posit16_t;
+            variable D10_set0_step0 : matrix4x4_posit16_t;
+            variable D01_set0_step1 : matrix4x4_posit16_t;
+            variable D11_set0_step1 : matrix4x4_posit16_t;
             --octect1 (living in tc0)
-            variable D20_set0_step0 : matrix4x4_fp16_t;
-            variable D30_set0_step0 : matrix4x4_fp16_t;
-            variable D21_set0_step1 : matrix4x4_fp16_t;
-            variable D31_set0_step1 : matrix4x4_fp16_t;
+            variable D20_set0_step0 : matrix4x4_posit16_t;
+            variable D30_set0_step0 : matrix4x4_posit16_t;
+            variable D21_set0_step1 : matrix4x4_posit16_t;
+            variable D31_set0_step1 : matrix4x4_posit16_t;
             --octect2 (living in tc1)
-            variable D02_set0_step0 : matrix4x4_fp16_t;
-            variable D12_set0_step0 : matrix4x4_fp16_t;
-            variable D03_set0_step1 : matrix4x4_fp16_t;
-            variable D13_set0_step1 : matrix4x4_fp16_t;
+            variable D02_set0_step0 : matrix4x4_posit16_t;
+            variable D12_set0_step0 : matrix4x4_posit16_t;
+            variable D03_set0_step1 : matrix4x4_posit16_t;
+            variable D13_set0_step1 : matrix4x4_posit16_t;
             --octect3 (living in tc1)
-            variable D22_set0_step0 : matrix4x4_fp16_t;
-            variable D32_set0_step0 : matrix4x4_fp16_t;
-            variable D23_set0_step1 : matrix4x4_fp16_t;
-            variable D33_set0_step1 : matrix4x4_fp16_t;
+            variable D22_set0_step0 : matrix4x4_posit16_t;
+            variable D32_set0_step0 : matrix4x4_posit16_t;
+            variable D23_set0_step1 : matrix4x4_posit16_t;
+            variable D33_set0_step1 : matrix4x4_posit16_t;
             
             --outputs set 1
             --octect 0
-            variable D00_set1_step0 : matrix4x4_fp16_t;
-            variable D10_set1_step0 : matrix4x4_fp16_t;
-            variable D01_set1_step1 : matrix4x4_fp16_t;
-            variable D11_set1_step1 : matrix4x4_fp16_t;
+            variable D00_set1_step0 : matrix4x4_posit16_t;
+            variable D10_set1_step0 : matrix4x4_posit16_t;
+            variable D01_set1_step1 : matrix4x4_posit16_t;
+            variable D11_set1_step1 : matrix4x4_posit16_t;
             --octect 1
-            variable D20_set1_step0 : matrix4x4_fp16_t;
-            variable D30_set1_step0 : matrix4x4_fp16_t;
-            variable D21_set1_step1 : matrix4x4_fp16_t;
-            variable D31_set1_step1 : matrix4x4_fp16_t;
+            variable D20_set1_step0 : matrix4x4_posit16_t;
+            variable D30_set1_step0 : matrix4x4_posit16_t;
+            variable D21_set1_step1 : matrix4x4_posit16_t;
+            variable D31_set1_step1 : matrix4x4_posit16_t;
             --octect2 (living in tc1)
-            variable D02_set1_step0 : matrix4x4_fp16_t;
-            variable D12_set1_step0 : matrix4x4_fp16_t;
-            variable D03_set1_step1 : matrix4x4_fp16_t;
-            variable D13_set1_step1 : matrix4x4_fp16_t;
+            variable D02_set1_step0 : matrix4x4_posit16_t;
+            variable D12_set1_step0 : matrix4x4_posit16_t;
+            variable D03_set1_step1 : matrix4x4_posit16_t;
+            variable D13_set1_step1 : matrix4x4_posit16_t;
             --octect3 (living in tc1)
-            variable D22_set1_step0 : matrix4x4_fp16_t;
-            variable D32_set1_step0 : matrix4x4_fp16_t;
-            variable D23_set1_step1 : matrix4x4_fp16_t;
-            variable D33_set1_step1 : matrix4x4_fp16_t;
+            variable D22_set1_step0 : matrix4x4_posit16_t;
+            variable D32_set1_step0 : matrix4x4_posit16_t;
+            variable D23_set1_step1 : matrix4x4_posit16_t;
+            variable D33_set1_step1 : matrix4x4_posit16_t;
             
             --outputs set 2
             --octect 0
-            variable D00_set2_step0 : matrix4x4_fp16_t;
-            variable D10_set2_step0 : matrix4x4_fp16_t;
-            variable D01_set2_step1 : matrix4x4_fp16_t;
-            variable D11_set2_step1 : matrix4x4_fp16_t;
+            variable D00_set2_step0 : matrix4x4_posit16_t;
+            variable D10_set2_step0 : matrix4x4_posit16_t;
+            variable D01_set2_step1 : matrix4x4_posit16_t;
+            variable D11_set2_step1 : matrix4x4_posit16_t;
             --octect 1
-            variable D20_set2_step0 : matrix4x4_fp16_t;
-            variable D30_set2_step0 : matrix4x4_fp16_t;
-            variable D21_set2_step1 : matrix4x4_fp16_t;
-            variable D31_set2_step1 : matrix4x4_fp16_t;
+            variable D20_set2_step0 : matrix4x4_posit16_t;
+            variable D30_set2_step0 : matrix4x4_posit16_t;
+            variable D21_set2_step1 : matrix4x4_posit16_t;
+            variable D31_set2_step1 : matrix4x4_posit16_t;
             --octect2 (living in tc1)
-            variable D02_set2_step0 : matrix4x4_fp16_t;
-            variable D12_set2_step0 : matrix4x4_fp16_t;
-            variable D03_set2_step1 : matrix4x4_fp16_t;
-            variable D13_set2_step1 : matrix4x4_fp16_t;
+            variable D02_set2_step0 : matrix4x4_posit16_t;
+            variable D12_set2_step0 : matrix4x4_posit16_t;
+            variable D03_set2_step1 : matrix4x4_posit16_t;
+            variable D13_set2_step1 : matrix4x4_posit16_t;
             --octect3 (living in tc1)
-            variable D22_set2_step0 : matrix4x4_fp16_t;
-            variable D32_set2_step0 : matrix4x4_fp16_t;
-            variable D23_set2_step1 : matrix4x4_fp16_t;
-            variable D33_set2_step1 : matrix4x4_fp16_t;
+            variable D22_set2_step0 : matrix4x4_posit16_t;
+            variable D32_set2_step0 : matrix4x4_posit16_t;
+            variable D23_set2_step1 : matrix4x4_posit16_t;
+            variable D33_set2_step1 : matrix4x4_posit16_t;
             
             --outputs set 3
             --octect 0
-            variable D00_set3_step0 : matrix4x4_fp16_t;
-            variable D10_set3_step0 : matrix4x4_fp16_t;
-            variable D01_set3_step1 : matrix4x4_fp16_t;
-            variable D11_set3_step1 : matrix4x4_fp16_t;
+            variable D00_set3_step0 : matrix4x4_posit16_t;
+            variable D10_set3_step0 : matrix4x4_posit16_t;
+            variable D01_set3_step1 : matrix4x4_posit16_t;
+            variable D11_set3_step1 : matrix4x4_posit16_t;
             --octect 1
-            variable D20_set3_step0 : matrix4x4_fp16_t;
-            variable D30_set3_step0 : matrix4x4_fp16_t;
-            variable D21_set3_step1 : matrix4x4_fp16_t;
-            variable D31_set3_step1 : matrix4x4_fp16_t;
+            variable D20_set3_step0 : matrix4x4_posit16_t;
+            variable D30_set3_step0 : matrix4x4_posit16_t;
+            variable D21_set3_step1 : matrix4x4_posit16_t;
+            variable D31_set3_step1 : matrix4x4_posit16_t;
             --octect2 (living in tc1)
-            variable D02_set3_step0 : matrix4x4_fp16_t;
-            variable D12_set3_step0 : matrix4x4_fp16_t;
-            variable D03_set3_step1 : matrix4x4_fp16_t;
-            variable D13_set3_step1 : matrix4x4_fp16_t;
+            variable D02_set3_step0 : matrix4x4_posit16_t;
+            variable D12_set3_step0 : matrix4x4_posit16_t;
+            variable D03_set3_step1 : matrix4x4_posit16_t;
+            variable D13_set3_step1 : matrix4x4_posit16_t;
             --octect3 (living in tc1)
-            variable D22_set3_step0 : matrix4x4_fp16_t;
-            variable D32_set3_step0 : matrix4x4_fp16_t;
-            variable D23_set3_step1 : matrix4x4_fp16_t;
-            variable D33_set3_step1 : matrix4x4_fp16_t;
+            variable D22_set3_step0 : matrix4x4_posit16_t;
+            variable D32_set3_step0 : matrix4x4_posit16_t;
+            variable D23_set3_step1 : matrix4x4_posit16_t;
+            variable D33_set3_step1 : matrix4x4_posit16_t;
             
         begin
         
         --initial setup
-        widthSel <= WIDTH_FP16;
-        typeSel <= TYPE_FP;
+        widthSel <= WIDTH_POSIT16;
+        typeSel <= TYPE_POSIT;
         start       <= '0';
         hmma_step  <= '0';
         clear_wrapper_rf_ports(rf0_rd_data_port_a, rf0_rd_data_port_b, 
@@ -1238,7 +1249,7 @@ begin
                 D02_set3_step0, D12_set3_step0, D22_set3_step0, D32_set3_step0,
                 D03_set3_step1, D13_set3_step1, D23_set3_step1, D33_set3_step1 );
             
-            report "Completed chained HMMA FP16 dualtensorCoreTop test #" & integer'image(test_idx);
+            report "Completed chained HMMA posit16 dualtensorCoreTop test #" & integer'image(test_idx);
           
             clear_wrapper_rf_ports(rf0_rd_data_port_a, rf0_rd_data_port_b,
                                    rf1_rd_data_port_a, rf1_rd_data_port_b);
@@ -1248,7 +1259,7 @@ begin
         
         wait for 5*CLK_PERIOD;
         assert false
-            report "End of file reached. End of dualtensorCoreTop FP16 chained testbench."
+            report "End of file reached. End of dualtensorCoreTop posit16 chained testbench."
             severity failure;
     end process;
     

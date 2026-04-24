@@ -10,7 +10,6 @@ entity octectRelatedFSM is
         
         Fp32Op      : in std_logic; --if operands are of 32bits, 
                                     --2 load cycles required per buffer to load related submatrix
-        w16op       : in std_logic;
         hmma_step   : in std_logic;
         --control outputs toward octectCoreTop
         load_en     : out std_logic;
@@ -20,9 +19,7 @@ entity octectRelatedFSM is
         
         --status
         busy        : out std_logic;
-        done        : out std_logic;
-        
-        typeSel     : in std_logic_vector(2 downto 0)
+        done        : out std_logic
     );
 end octectRelatedFSM;
 
@@ -30,12 +27,7 @@ architecture rtl of octectRelatedFSM is
 
     type state_t is (
         S_IDLE,
-        S_LOAD_A,
-        S_LOAD_A2, --needed in the case operands are 32 bit wide
-        S_LOAD_B,
-        S_LOAD_B2, --needed in the case operands are 32 bit wide
-        S_LOAD_C,
-        S_LOAD_C2, --needed in the case operands are 32 bit wide
+        S_LOAD,
         S_EXEC_0,
         S_EXEC_1,
         S_EXEC_2,
@@ -61,7 +53,7 @@ begin
     
     --Next state logic
     
-    process(state_reg, start, Fp32Op, hmma_step, typeSel)
+    process(state_reg, start, Fp32Op, hmma_step)
     begin
         state_next <= state_reg;
         
@@ -69,16 +61,12 @@ begin
         
         when S_IDLE => 
             if start = '1' then
-                if hmma_step = '0' then
-                    state_next <= S_LOAD_A;
-                else
-                    state_next <= S_LOAD_C;
-                end if;
+                state_next <= S_LOAD;
             else 
                 state_next <= S_IDLE;
             end if;
             
-        when S_LOAD_A => 
+        when S_LOAD => 
             if Fp32Op = '0' then
                 state_next <= S_LOAD_B ;
             else
@@ -99,14 +87,10 @@ begin
             state_next <= S_LOAD_C ;
         
         when S_LOAD_C =>
-            if w16op = '0' and Fp32Op = '0' then --8 bitwidth
+            if Fp32Op = '0' then
                 state_next <= S_EXEC_0 ;
             else
-                if w16op = '1' and (typeSel /= "010" or typeSel /= "011")  then
-                    state_next <= S_EXEC_0 ;
-                else
-                    state_next <= S_LOAD_C2 ;
-                end if;
+                state_next <= S_LOAD_C2 ;
             end if;
         
         when S_LOAD_C2 =>
@@ -150,37 +134,37 @@ begin
                 busy <= '0';
                 
             when S_LOAD_A =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "00"; --A
                 load_pair <= "00";
             
             when S_LOAD_A2 =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "00";
                 load_pair <= "01";
                 
             when S_LOAD_B =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "01"; --B
                 load_pair <= "00";
             
             when S_LOAD_B2 =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "01";
                 load_pair <= "01";
             
             when S_LOAD_C =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "10"; --C
-                load_pair <= "00"; 
+                load_pair <= "00";
             
             when S_LOAD_C2 =>
-                busy <= '0';
+                busy <= '1';
                 load_en <= '1';
                 load_ph <= "10";
                 load_pair <= "01";

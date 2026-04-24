@@ -12,7 +12,7 @@ entity octectCoreTop is
     );
     port(
         clk     : in std_logic; 
-        rst     : in std_logic;
+        rst     : in std_logic; 
         
         --control
         widthSel    : in std_logic_vector(1 downto 0);
@@ -29,14 +29,14 @@ entity octectCoreTop is
         rf_rd_data_port_b   : in arraySize8_32;
         
         --exposed results for the active octect (TG0 and TG4)
-        W0_8_X3     : out arraySize4_8;
-        W1_8_X3     : out arraySize4_8;
-        W0_16_X3    : out arraySize4_16;
-        W1_16_X3    : out arraySize4_16;
-        W0_32_X3    : out arraySize4_32;
-        W1_32_X3    : out arraySize4_32;
+        W0_8_X3     : out arraySize16_8;
+        W1_8_X3     : out arraySize16_8;
+        W0_16_X3    : out arraySize16_16;
+        W1_16_X3    : out arraySize16_16;
+        W0_32_X3    : out arraySize16_32;
+        W1_32_X3    : out arraySize16_32;
         
-        step_done   : out std_logic
+        step_done   : out std_logic 
     );
         
 end octectCoreTop;
@@ -68,6 +68,7 @@ component octectRelatedBuffers is
         B_blk_out   : out arraySize16_32;
         C_tg0_out   : out arraySize4_32;
         C_tg4_out   : out arraySize4_32
+        
     );
 end component;
 
@@ -94,14 +95,16 @@ component dpuArrayrel0 is --dpu Array consisting of 8 dpus.
         AccumulatorBuffer_0out32: in arraySize4_32;
         AccumulatorBuffer_1out32: in arraySize4_32;
         
-        W0_8_X3: out arraySize4_8;
-        W1_8_X3: out arraySize4_8;
+        W0_8_X3: out arraySize16_8;
+        W1_8_X3: out arraySize16_8;
         
-        W0_16_X3: out arraySize4_16;
-        W1_16_X3: out arraySize4_16;
+        W0_16_X3: out arraySize16_16;
+        W1_16_X3: out arraySize16_16;
         
-        W0_32_X3: out arraySize4_32;
-        W1_32_X3: out arraySize4_32
+        W0_32_X3: out arraySize16_32;
+        W1_32_X3: out arraySize16_32;
+        
+        exec_step: in std_logic_vector(1 downto 0)
     );
 end component;
 
@@ -292,7 +295,9 @@ begin
         W1_16_X3 => W1_16_X3,
         
         W0_32_X3 => W0_32_X3,
-        W1_32_X3 => W1_32_X3
+        W1_32_X3 => W1_32_X3,
+        
+        exec_step => exec_step
     );
     
     step_done <= '1' when exec_step = "11" else '0' ;

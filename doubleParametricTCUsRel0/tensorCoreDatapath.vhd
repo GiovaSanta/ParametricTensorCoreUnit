@@ -29,20 +29,20 @@ entity tensorCoreDatapath is
         rf_rd_data_port_b : in arraySize16_32;
 
         -- exposed results from octect 0
-        W0_oct0_8_X3  : out arraySize4_8;
-        W1_oct0_8_X3  : out arraySize4_8;
-        W0_oct0_16_X3 : out arraySize4_16;
-        W1_oct0_16_X3 : out arraySize4_16;
-        W0_oct0_32_X3 : out arraySize4_32;
-        W1_oct0_32_X3 : out arraySize4_32;
+        W0_oct0_8_X3  : out arraySize16_8;
+        W1_oct0_8_X3  : out arraySize16_8;
+        W0_oct0_16_X3 : out arraySize16_16;
+        W1_oct0_16_X3 : out arraySize16_16;
+        W0_oct0_32_X3 : out arraySize16_32;
+        W1_oct0_32_X3 : out arraySize16_32;
 
         -- exposed results from octect 1
-        W0_oct1_8_X3  : out arraySize4_8;
-        W1_oct1_8_X3  : out arraySize4_8;
-        W0_oct1_16_X3 : out arraySize4_16;
-        W1_oct1_16_X3 : out arraySize4_16;
-        W0_oct1_32_X3 : out arraySize4_32;
-        W1_oct1_32_X3 : out arraySize4_32;
+        W0_oct1_8_X3  : out arraySize16_8;
+        W1_oct1_8_X3  : out arraySize16_8;
+        W0_oct1_16_X3 : out arraySize16_16;
+        W1_oct1_16_X3 : out arraySize16_16;
+        W0_oct1_32_X3 : out arraySize16_32;
+        W1_oct1_32_X3 : out arraySize16_32;
 
         -- local completion from the two octects combined
         step_done : out std_logic
@@ -73,12 +73,12 @@ architecture rtl of tensorCoreDatapath is
             rf_rd_data_port_a : in arraySize8_32;
             rf_rd_data_port_b : in arraySize8_32;
 
-            W0_8_X3   : out arraySize4_8;
-            W1_8_X3   : out arraySize4_8;
-            W0_16_X3  : out arraySize4_16;
-            W1_16_X3  : out arraySize4_16;
-            W0_32_X3  : out arraySize4_32;
-            W1_32_X3  : out arraySize4_32;
+            W0_8_X3   : out arraySize16_8;
+            W1_8_X3   : out arraySize16_8;
+            W0_16_X3  : out arraySize16_16;
+            W1_16_X3  : out arraySize16_16;
+            W0_32_X3  : out arraySize16_32;
+            W1_32_X3  : out arraySize16_32;
 
             step_done : out std_logic
         );
@@ -167,7 +167,7 @@ begin
         W0_32_X3  => W0_oct1_32_X3,
         W1_32_X3  => W1_oct1_32_X3,
 
-        step_done => step_done_oct1_s
+        step_done => step_done_oct1_s  
     );
 
     -- combine local completion

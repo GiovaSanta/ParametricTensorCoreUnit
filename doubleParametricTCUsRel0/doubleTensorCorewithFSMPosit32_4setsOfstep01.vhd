@@ -5,17 +5,17 @@ use ieee.std_logic_textio.all;
 use std.textio.all;
 use work.dpuArray_package.all;
 
-entity doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
-end doubleTensorCorewithFSMFP32_4setsOfstep01_tb; 
+entity doubleTensorCorewithFSMPosit32_4setsOfstep01_tb is
+end doubleTensorCorewithFSMPosit32_4setsOfstep01_tb; 
 
--- Testbench for FP32 HMMA execution on dualTensorCoreWrapper.
+-- Testbench for posit32 HMMA execution on dualTensorCoreWrapper.
 -- It verifies 4 chained sets of HMMA step0/step1 operations executed in parallel
 -- across 2 tensor cores = 4 octects total (32 lanes total).
 --
 -- Set 0 uses external C inputs.
 -- Sets 1..3 reuse previously computed results as chained accumulators.
 --
--- FP32 loading convention:
+-- posit32 loading convention:
 -- each 4x4 submatrix is loaded in 2 cycles:
 --   pair00 -> columns 0,1
 --   pair01 -> columns 2,3
@@ -26,7 +26,7 @@ end doubleTensorCorewithFSMFP32_4setsOfstep01_tb;
 -- step1 loads:
 --   only C1(pair00,pair01)
 
-architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
+architecture sim of doubleTensorCorewithFSMPosit32_4setsOfstep01_tb is
 
     --dut generics
     constant REG_W  : integer := 32;
@@ -34,8 +34,8 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     
     --clock/config
     constant CLK_PERIOD : time := 10 ns;
-    constant WIDTH_FP32 : std_logic_vector(1 downto 0) := "10";
-    constant TYPE_FP    : std_logic_vector(2 downto 0) := "000";
+    constant WIDTH_POSIT32 : std_logic_vector(1 downto 0) := "10";
+    constant TYPE_POSIT : std_logic_vector(2 downto 0) := "001";  -- TODO: confirm posit typeSel code in dualTensorCoreWrapper
     
     --dut signals
     signal clk        : std_logic := '0';
@@ -60,7 +60,7 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     signal W1_tc0_oct0_8_X3  : arraySize4_8;
     signal W0_tc0_oct0_16_X3 : arraySize16_16;
     signal W1_tc0_oct0_16_X3 : arraySize16_16;
-    signal W0_tc0_oct0_32_X3 : arraySize4_32;
+    signal W0_tc0_oct0_32_X3 : arraySize4_32;  -- TODO: if posit32 uses different DUT output buses, redirect capture procedures here
     signal W1_tc0_oct0_32_X3 : arraySize4_32;
     --octect1 signals for its outputs
     signal W0_tc0_oct1_8_X3  : arraySize4_8;
@@ -91,15 +91,15 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     signal step_done : std_logic;
     
     --tb-only types
-    type matrix4x4_fp32_t is array (0 to 3, 0 to 3) of std_logic_vector(31 downto 0);
+    type matrix4x4_posit32_t is array (0 to 3, 0 to 3) of std_logic_vector(31 downto 0);
     type lane_block16_t     is array (0 to 15) of std_logic_vector(31 downto 0);
     
     --related input and output files of tb
     file tb_file : text open read_mode is
-        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/fp32related/hmma_8instr_dualTC_4octects_fp32_single_experiment_tb_input.txt";
+        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/posit32related/hmma_8instr_dualTC_4octects_posit32_single_experiment_tb_input.txt";
 
     file tb_out_file : text open write_mode is
-        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/fp32related/hmma_8instr_dualTC_4octects_tb_output_ctrl_fp32.txt";
+        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/doubleParametricTCUsRel0/doubleParametricTCUsRelatedScripts/4SetsOfHMMAstep0step1/posit32related/hmma_8instr_dualTC_4octects_tb_output_ctrl_posit32.txt";
     
     --helper procedures
 
@@ -206,7 +206,7 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
 --5
     procedure write_matrix4x4_hex(
         file f : text;
-        constant M : in matrix4x4_fp32_t
+        constant M : in matrix4x4_posit32_t
     ) is
         variable L : line;
     begin
@@ -224,7 +224,7 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     
 --6
     procedure clear_matrix4x4(
-        variable M : out matrix4x4_fp32_t
+        variable M : out matrix4x4_posit32_t
     ) is
     begin
         for r in 0 to 3 loop
@@ -248,7 +248,7 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     
 --8
     procedure matrix4x4_to_lane_block16(
-        constant M      : in matrix4x4_fp32_t;
+        constant M      : in matrix4x4_posit32_t;
         constant base_lane : in integer;  -- the top threadgroup uses base_lane = 0, for bottom threadgroup use base_lane =4 inside the local 8lane block
                                           -- rapresentation because your lane block is indexed 0 to 7.
         variable pair00_a : inout lane_block16_t;
@@ -269,15 +269,15 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
 --9
     procedure build_accumulator_blocks_from_previous_results(
     --related to octect 0 outputs
-        constant prev_D00 : in matrix4x4_fp32_t ;
-        constant prev_D10 : in matrix4x4_fp32_t ;
-        constant prev_D01 : in matrix4x4_fp32_t ;
-        constant prev_D11 : in matrix4x4_fp32_t ;
+        constant prev_D00 : in matrix4x4_posit32_t ;
+        constant prev_D10 : in matrix4x4_posit32_t ;
+        constant prev_D01 : in matrix4x4_posit32_t ;
+        constant prev_D11 : in matrix4x4_posit32_t ;
     --related to octect 1 outputs
-        constant prev_D20 : in matrix4x4_fp32_t ;
-        constant prev_D30 : in matrix4x4_fp32_t ;
-        constant prev_D21 : in matrix4x4_fp32_t ;
-        constant prev_D31 : in matrix4x4_fp32_t ;
+        constant prev_D20 : in matrix4x4_posit32_t ;
+        constant prev_D30 : in matrix4x4_posit32_t ;
+        constant prev_D21 : in matrix4x4_posit32_t ;
+        constant prev_D31 : in matrix4x4_posit32_t ;
         
         variable C0_pair00_a : out lane_block16_t ;
         variable C0_pair00_b : out lane_block16_t ;
@@ -346,15 +346,15 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
         signal W0_tc1_oct1_32_X3 : in arraySize4_32;
         signal W1_tc1_oct1_32_X3 : in arraySize4_32;
         
-        variable D00    : out matrix4x4_fp32_t;
-        variable D10    : out matrix4x4_fp32_t;
-        variable D20    : out matrix4x4_fp32_t;
-        variable D30    : out matrix4x4_fp32_t;
+        variable D00    : out matrix4x4_posit32_t;
+        variable D10    : out matrix4x4_posit32_t;
+        variable D20    : out matrix4x4_posit32_t;
+        variable D30    : out matrix4x4_posit32_t;
         
-        variable D02    : out matrix4x4_fp32_t;
-        variable D12    : out matrix4x4_fp32_t;
-        variable D22    : out matrix4x4_fp32_t;
-        variable D32    : out matrix4x4_fp32_t
+        variable D02    : out matrix4x4_posit32_t;
+        variable D12    : out matrix4x4_posit32_t;
+        variable D22    : out matrix4x4_posit32_t;
+        variable D32    : out matrix4x4_posit32_t
     ) is
     begin
         for r in 0 to 3 loop
@@ -386,15 +386,15 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
         signal W0_tc1_oct1_32_X3 : in arraySize4_32;
         signal W1_tc1_oct1_32_X3 : in arraySize4_32;
         
-        variable D01 : out matrix4x4_fp32_t;
-        variable D11 : out matrix4x4_fp32_t;
-        variable D21 : out matrix4x4_fp32_t;
-        variable D31 : out matrix4x4_fp32_t;
+        variable D01 : out matrix4x4_posit32_t;
+        variable D11 : out matrix4x4_posit32_t;
+        variable D21 : out matrix4x4_posit32_t;
+        variable D31 : out matrix4x4_posit32_t;
         
-        variable D03 : out matrix4x4_fp32_t;
-        variable D13 : out matrix4x4_fp32_t;
-        variable D23 : out matrix4x4_fp32_t;
-        variable D33 : out matrix4x4_fp32_t
+        variable D03 : out matrix4x4_posit32_t;
+        variable D13 : out matrix4x4_posit32_t;
+        variable D23 : out matrix4x4_posit32_t;
+        variable D33 : out matrix4x4_posit32_t
     ) is
     begin
         for r in 0 to 3 loop
@@ -419,24 +419,24 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
         constant set_idx    : in integer;
         
         --TC0  
-        constant D00_step0  : in matrix4x4_fp32_t;
-        constant D10_step0  : in matrix4x4_fp32_t;
-        constant D01_step1  : in matrix4x4_fp32_t;
-        constant D11_step1  : in matrix4x4_fp32_t;
-        constant D20_step0  : in matrix4x4_fp32_t;
-        constant D30_step0  : in matrix4x4_fp32_t;
-        constant D21_step1  : in matrix4x4_fp32_t;
-        constant D31_step1  : in matrix4x4_fp32_t;
+        constant D00_step0  : in matrix4x4_posit32_t;
+        constant D10_step0  : in matrix4x4_posit32_t;
+        constant D01_step1  : in matrix4x4_posit32_t;
+        constant D11_step1  : in matrix4x4_posit32_t;
+        constant D20_step0  : in matrix4x4_posit32_t;
+        constant D30_step0  : in matrix4x4_posit32_t;
+        constant D21_step1  : in matrix4x4_posit32_t;
+        constant D31_step1  : in matrix4x4_posit32_t;
         
         --TC1
-        constant D02_step0  : in matrix4x4_fp32_t;
-        constant D12_step0  : in matrix4x4_fp32_t;
-        constant D03_step1  : in matrix4x4_fp32_t;
-        constant D13_step1  : in matrix4x4_fp32_t;
-        constant D22_step0  : in matrix4x4_fp32_t;
-        constant D32_step0  : in matrix4x4_fp32_t;
-        constant D23_step1  : in matrix4x4_fp32_t;
-        constant D33_step1  : in matrix4x4_fp32_t
+        constant D02_step0  : in matrix4x4_posit32_t;
+        constant D12_step0  : in matrix4x4_posit32_t;
+        constant D03_step1  : in matrix4x4_posit32_t;
+        constant D13_step1  : in matrix4x4_posit32_t;
+        constant D22_step0  : in matrix4x4_posit32_t;
+        constant D32_step0  : in matrix4x4_posit32_t;
+        constant D23_step1  : in matrix4x4_posit32_t;
+        constant D33_step1  : in matrix4x4_posit32_t
     ) is
         variable L : line;
     begin
@@ -471,25 +471,25 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
 --13
     procedure write_final_16x16_result(
     file f : text;
-    constant D00 : in matrix4x4_fp32_t;
-    constant D10 : in matrix4x4_fp32_t;
-    constant D20 : in matrix4x4_fp32_t;
-    constant D30 : in matrix4x4_fp32_t;
+    constant D00 : in matrix4x4_posit32_t;
+    constant D10 : in matrix4x4_posit32_t;
+    constant D20 : in matrix4x4_posit32_t;
+    constant D30 : in matrix4x4_posit32_t;
     
-    constant D01 : in matrix4x4_fp32_t;
-    constant D11 : in matrix4x4_fp32_t;
-    constant D21 : in matrix4x4_fp32_t;
-    constant D31 : in matrix4x4_fp32_t;
+    constant D01 : in matrix4x4_posit32_t;
+    constant D11 : in matrix4x4_posit32_t;
+    constant D21 : in matrix4x4_posit32_t;
+    constant D31 : in matrix4x4_posit32_t;
     
-    constant D02 : in matrix4x4_fp32_t;
-    constant D12 : in matrix4x4_fp32_t;
-    constant D22 : in matrix4x4_fp32_t;
-    constant D32 : in matrix4x4_fp32_t;
+    constant D02 : in matrix4x4_posit32_t;
+    constant D12 : in matrix4x4_posit32_t;
+    constant D22 : in matrix4x4_posit32_t;
+    constant D32 : in matrix4x4_posit32_t;
     
-    constant D03 : in matrix4x4_fp32_t;
-    constant D13 : in matrix4x4_fp32_t;
-    constant D23 : in matrix4x4_fp32_t;
-    constant D33 : in matrix4x4_fp32_t
+    constant D03 : in matrix4x4_posit32_t;
+    constant D13 : in matrix4x4_posit32_t;
+    constant D23 : in matrix4x4_posit32_t;
+    constant D33 : in matrix4x4_posit32_t
     ) is
     variable L : line;
     begin
@@ -720,97 +720,97 @@ begin
             
             --outputs set 0
             --octect0 (living in tc0)
-            variable D00_set0_step0 : matrix4x4_fp32_t;
-            variable D10_set0_step0 : matrix4x4_fp32_t;
-            variable D01_set0_step1 : matrix4x4_fp32_t;
-            variable D11_set0_step1 : matrix4x4_fp32_t;
+            variable D00_set0_step0 : matrix4x4_posit32_t;
+            variable D10_set0_step0 : matrix4x4_posit32_t;
+            variable D01_set0_step1 : matrix4x4_posit32_t;
+            variable D11_set0_step1 : matrix4x4_posit32_t;
             --octect1 (living in tc0)
-            variable D20_set0_step0 : matrix4x4_fp32_t;
-            variable D30_set0_step0 : matrix4x4_fp32_t;
-            variable D21_set0_step1 : matrix4x4_fp32_t;
-            variable D31_set0_step1 : matrix4x4_fp32_t;
+            variable D20_set0_step0 : matrix4x4_posit32_t;
+            variable D30_set0_step0 : matrix4x4_posit32_t;
+            variable D21_set0_step1 : matrix4x4_posit32_t;
+            variable D31_set0_step1 : matrix4x4_posit32_t;
             --octect2 (living in tc1)
-            variable D02_set0_step0 : matrix4x4_fp32_t;
-            variable D12_set0_step0 : matrix4x4_fp32_t;
-            variable D03_set0_step1 : matrix4x4_fp32_t;
-            variable D13_set0_step1 : matrix4x4_fp32_t;
+            variable D02_set0_step0 : matrix4x4_posit32_t;
+            variable D12_set0_step0 : matrix4x4_posit32_t;
+            variable D03_set0_step1 : matrix4x4_posit32_t;
+            variable D13_set0_step1 : matrix4x4_posit32_t;
             --octect3 (living in tc1)
-            variable D22_set0_step0 : matrix4x4_fp32_t;
-            variable D32_set0_step0 : matrix4x4_fp32_t;
-            variable D23_set0_step1 : matrix4x4_fp32_t;
-            variable D33_set0_step1 : matrix4x4_fp32_t;
+            variable D22_set0_step0 : matrix4x4_posit32_t;
+            variable D32_set0_step0 : matrix4x4_posit32_t;
+            variable D23_set0_step1 : matrix4x4_posit32_t;
+            variable D33_set0_step1 : matrix4x4_posit32_t;
             
             --outputs set 1
             --octect 0
-            variable D00_set1_step0 : matrix4x4_fp32_t;
-            variable D10_set1_step0 : matrix4x4_fp32_t;
-            variable D01_set1_step1 : matrix4x4_fp32_t;
-            variable D11_set1_step1 : matrix4x4_fp32_t;
+            variable D00_set1_step0 : matrix4x4_posit32_t;
+            variable D10_set1_step0 : matrix4x4_posit32_t;
+            variable D01_set1_step1 : matrix4x4_posit32_t;
+            variable D11_set1_step1 : matrix4x4_posit32_t;
             --octect 1
-            variable D20_set1_step0 : matrix4x4_fp32_t;
-            variable D30_set1_step0 : matrix4x4_fp32_t;
-            variable D21_set1_step1 : matrix4x4_fp32_t;
-            variable D31_set1_step1 : matrix4x4_fp32_t;
+            variable D20_set1_step0 : matrix4x4_posit32_t;
+            variable D30_set1_step0 : matrix4x4_posit32_t;
+            variable D21_set1_step1 : matrix4x4_posit32_t;
+            variable D31_set1_step1 : matrix4x4_posit32_t;
             --octect2 (living in tc1)
-            variable D02_set1_step0 : matrix4x4_fp32_t;
-            variable D12_set1_step0 : matrix4x4_fp32_t;
-            variable D03_set1_step1 : matrix4x4_fp32_t;
-            variable D13_set1_step1 : matrix4x4_fp32_t;
+            variable D02_set1_step0 : matrix4x4_posit32_t;
+            variable D12_set1_step0 : matrix4x4_posit32_t;
+            variable D03_set1_step1 : matrix4x4_posit32_t;
+            variable D13_set1_step1 : matrix4x4_posit32_t;
             --octect3 (living in tc1)
-            variable D22_set1_step0 : matrix4x4_fp32_t;
-            variable D32_set1_step0 : matrix4x4_fp32_t;
-            variable D23_set1_step1 : matrix4x4_fp32_t;
-            variable D33_set1_step1 : matrix4x4_fp32_t;
+            variable D22_set1_step0 : matrix4x4_posit32_t;
+            variable D32_set1_step0 : matrix4x4_posit32_t;
+            variable D23_set1_step1 : matrix4x4_posit32_t;
+            variable D33_set1_step1 : matrix4x4_posit32_t;
             
             --outputs set 2
             --octect 0
-            variable D00_set2_step0 : matrix4x4_fp32_t;
-            variable D10_set2_step0 : matrix4x4_fp32_t;
-            variable D01_set2_step1 : matrix4x4_fp32_t;
-            variable D11_set2_step1 : matrix4x4_fp32_t;
+            variable D00_set2_step0 : matrix4x4_posit32_t;
+            variable D10_set2_step0 : matrix4x4_posit32_t;
+            variable D01_set2_step1 : matrix4x4_posit32_t;
+            variable D11_set2_step1 : matrix4x4_posit32_t;
             --octect 1
-            variable D20_set2_step0 : matrix4x4_fp32_t;
-            variable D30_set2_step0 : matrix4x4_fp32_t;
-            variable D21_set2_step1 : matrix4x4_fp32_t;
-            variable D31_set2_step1 : matrix4x4_fp32_t;
+            variable D20_set2_step0 : matrix4x4_posit32_t;
+            variable D30_set2_step0 : matrix4x4_posit32_t;
+            variable D21_set2_step1 : matrix4x4_posit32_t;
+            variable D31_set2_step1 : matrix4x4_posit32_t;
             --octect2 (living in tc1)
-            variable D02_set2_step0 : matrix4x4_fp32_t;
-            variable D12_set2_step0 : matrix4x4_fp32_t;
-            variable D03_set2_step1 : matrix4x4_fp32_t;
-            variable D13_set2_step1 : matrix4x4_fp32_t;
+            variable D02_set2_step0 : matrix4x4_posit32_t;
+            variable D12_set2_step0 : matrix4x4_posit32_t;
+            variable D03_set2_step1 : matrix4x4_posit32_t;
+            variable D13_set2_step1 : matrix4x4_posit32_t;
             --octect3 (living in tc1)
-            variable D22_set2_step0 : matrix4x4_fp32_t;
-            variable D32_set2_step0 : matrix4x4_fp32_t;
-            variable D23_set2_step1 : matrix4x4_fp32_t;
-            variable D33_set2_step1 : matrix4x4_fp32_t;
+            variable D22_set2_step0 : matrix4x4_posit32_t;
+            variable D32_set2_step0 : matrix4x4_posit32_t;
+            variable D23_set2_step1 : matrix4x4_posit32_t;
+            variable D33_set2_step1 : matrix4x4_posit32_t;
             
             --outputs set 3
             --octect 0
-            variable D00_set3_step0 : matrix4x4_fp32_t;
-            variable D10_set3_step0 : matrix4x4_fp32_t;
-            variable D01_set3_step1 : matrix4x4_fp32_t;
-            variable D11_set3_step1 : matrix4x4_fp32_t;
+            variable D00_set3_step0 : matrix4x4_posit32_t;
+            variable D10_set3_step0 : matrix4x4_posit32_t;
+            variable D01_set3_step1 : matrix4x4_posit32_t;
+            variable D11_set3_step1 : matrix4x4_posit32_t;
             --octect 1
-            variable D20_set3_step0 : matrix4x4_fp32_t;
-            variable D30_set3_step0 : matrix4x4_fp32_t;
-            variable D21_set3_step1 : matrix4x4_fp32_t;
-            variable D31_set3_step1 : matrix4x4_fp32_t;
+            variable D20_set3_step0 : matrix4x4_posit32_t;
+            variable D30_set3_step0 : matrix4x4_posit32_t;
+            variable D21_set3_step1 : matrix4x4_posit32_t;
+            variable D31_set3_step1 : matrix4x4_posit32_t;
             --octect2 (living in tc1)
-            variable D02_set3_step0 : matrix4x4_fp32_t;
-            variable D12_set3_step0 : matrix4x4_fp32_t;
-            variable D03_set3_step1 : matrix4x4_fp32_t;
-            variable D13_set3_step1 : matrix4x4_fp32_t;
+            variable D02_set3_step0 : matrix4x4_posit32_t;
+            variable D12_set3_step0 : matrix4x4_posit32_t;
+            variable D03_set3_step1 : matrix4x4_posit32_t;
+            variable D13_set3_step1 : matrix4x4_posit32_t;
             --octect3 (living in tc1)
-            variable D22_set3_step0 : matrix4x4_fp32_t;
-            variable D32_set3_step0 : matrix4x4_fp32_t;
-            variable D23_set3_step1 : matrix4x4_fp32_t;
-            variable D33_set3_step1 : matrix4x4_fp32_t;
+            variable D22_set3_step0 : matrix4x4_posit32_t;
+            variable D32_set3_step0 : matrix4x4_posit32_t;
+            variable D23_set3_step1 : matrix4x4_posit32_t;
+            variable D33_set3_step1 : matrix4x4_posit32_t;
             
         begin
         
         --initial setup
-        widthSel <= WIDTH_FP32;
-        typeSel <= TYPE_FP;
+        widthSel <= WIDTH_POSIT32;
+        typeSel <= TYPE_POSIT;
         start       <= '0';
         hmma_step  <= '0';
         clear_wrapper_rf_ports(rf0_rd_data_port_a, rf0_rd_data_port_b, 
@@ -1428,7 +1428,7 @@ begin
                 D02_set3_step0, D12_set3_step0, D22_set3_step0, D32_set3_step0,
                 D03_set3_step1, D13_set3_step1, D23_set3_step1, D33_set3_step1 );
             
-            report "Completed chained HMMA FP32 dualtensorCoreTop test #" & integer'image(test_idx);
+            report "Completed chained HMMA posit32 dualtensorCoreTop test #" & integer'image(test_idx);
           
             clear_wrapper_rf_ports(rf0_rd_data_port_a, rf0_rd_data_port_b,
                                    rf1_rd_data_port_a, rf1_rd_data_port_b);
@@ -1438,7 +1438,7 @@ begin
         
         wait for 5*CLK_PERIOD;
         assert false
-            report "End of file reached. End of dualtensorCoreTop FP32 chained testbench."
+            report "End of file reached. End of dualtensorCoreTop posit32 chained testbench."
             severity failure;
     end process;
     

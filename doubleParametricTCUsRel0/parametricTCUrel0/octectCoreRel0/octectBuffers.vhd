@@ -40,6 +40,7 @@ entity octectRelatedBuffers is
         C_tg0_out       : out arraySize4_32;
         --current Accumulator row vector for tg4, tg5, tg6, tg7
         C_tg4_out       : out arraySize4_32
+        
     );
 end octectRelatedBuffers;
 
@@ -92,6 +93,7 @@ begin
                 
                 s0 := slot_base(load_pair); --0 or 2
                 
+                
                 for lane in 0 to LANES-1 loop
                 regA_lane := rf_rd_data_port_a(lane);
                 regB_lane := rf_rd_data_port_b(lane);
@@ -99,8 +101,8 @@ begin
                 case load_ph is
                 
                     when "00" => --LOAD A buffer related to a specific octect. 
-                                --example for octet0: threadgroup0 content is stored in pointer A_buf[lane0], A_buf[lane1], A_buf[lane2], A_buf[lane3]. 
-                                --                    while threadgroup4 content is stored in A_buf[lane4], A_buf[lane5], A_buf[lane6], A_buf[lane7]
+                                 --example for octet0: threadgroup0 content is stored in pointer A_buf[lane0], A_buf[lane1], A_buf[lane2], A_buf[lane3]. 
+                                 --                    while threadgroup4 content is stored in A_buf[lane4], A_buf[lane5], A_buf[lane6], A_buf[lane7]
                         A_buf(lane)(s0)     <= regA_lane;
                         A_buf(lane)(s0+1)   <= regB_lane;
                         

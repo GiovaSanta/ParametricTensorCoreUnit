@@ -28,39 +28,40 @@ entity dualTensorCoreWrapper is
         rf1_rd_data_port_b : in arraySize16_32;
         
         --outputs from tensor core datapath 0
-        W0_tc0_oct0_8_X3 : out arraySize4_8;
-        W1_tc0_oct0_8_X3 : out arraySize4_8;
-        W0_tc0_oct0_16_X3 : out arraySize4_16;
-        W1_tc0_oct0_16_X3 : out arraySize4_16;
-        W0_tc0_oct0_32_X3 : out arraySize4_32;
-        W1_tc0_oct0_32_X3 : out arraySize4_32;
+        W0_tc0_oct0_8_X3 : out arraySize16_8;
+        W1_tc0_oct0_8_X3 : out arraySize16_8;
+        W0_tc0_oct0_16_X3 : out arraySize16_16;
+        W1_tc0_oct0_16_X3 : out arraySize16_16;
+        W0_tc0_oct0_32_X3 : out arraySize16_32;
+        W1_tc0_oct0_32_X3 : out arraySize16_32;
         
-        W0_tc0_oct1_8_X3 : out arraySize4_8;
-        W1_tc0_oct1_8_X3 : out arraySize4_8;
-        W0_tc0_oct1_16_X3 : out arraySize4_16;
-        W1_tc0_oct1_16_X3 : out arraySize4_16;
-        W0_tc0_oct1_32_X3 : out arraySize4_32;
-        W1_tc0_oct1_32_X3 : out arraySize4_32;
+        W0_tc0_oct1_8_X3 : out arraySize16_8;
+        W1_tc0_oct1_8_X3 : out arraySize16_8;
+        W0_tc0_oct1_16_X3 : out arraySize16_16;
+        W1_tc0_oct1_16_X3 : out arraySize16_16;
+        W0_tc0_oct1_32_X3 : out arraySize16_32;
+        W1_tc0_oct1_32_X3 : out arraySize16_32;
         
         --outputs from tensor core datapath 1
-        W0_tc1_oct0_8_X3 : out arraySize4_8;
-        W1_tc1_oct0_8_X3 : out arraySize4_8;
-        W0_tc1_oct0_16_X3 : out arraySize4_16;
-        W1_tc1_oct0_16_X3 : out arraySize4_16;
-        W0_tc1_oct0_32_X3 : out arraySize4_32;
-        W1_tc1_oct0_32_X3 : out arraySize4_32;
+        W0_tc1_oct0_8_X3 : out arraySize16_8;
+        W1_tc1_oct0_8_X3 : out arraySize16_8;
+        W0_tc1_oct0_16_X3 : out arraySize16_16;
+        W1_tc1_oct0_16_X3 : out arraySize16_16;
+        W0_tc1_oct0_32_X3 : out arraySize16_32;
+        W1_tc1_oct0_32_X3 : out arraySize16_32;
         
-        W0_tc1_oct1_8_X3 : out arraySize4_8;
-        W1_tc1_oct1_8_X3 : out arraySize4_8;
-        W0_tc1_oct1_16_X3 : out arraySize4_16;
-        W1_tc1_oct1_16_X3 : out arraySize4_16;
-        W0_tc1_oct1_32_X3 : out arraySize4_32;
-        W1_tc1_oct1_32_X3 : out arraySize4_32;
+        W0_tc1_oct1_8_X3 : out arraySize16_8;
+        W1_tc1_oct1_8_X3 : out arraySize16_8;
+        W0_tc1_oct1_16_X3 : out arraySize16_16;
+        W1_tc1_oct1_16_X3 : out arraySize16_16;
+        W0_tc1_oct1_32_X3 : out arraySize16_32;
+        W1_tc1_oct1_32_X3 : out arraySize16_32;
         
         --status 
         busy : out std_logic;
         done : out std_logic;
         step_done : out std_logic
+       
     );
 end dualTensorCoreWrapper;
 
@@ -74,6 +75,7 @@ architecture rtl of dualTensorCoreWrapper is
             start : in std_logic;
 
             Fp32Op    : in std_logic;
+            w16op     : in std_logic;
             hmma_step : in std_logic;
 
             load_en   : out std_logic;
@@ -82,7 +84,9 @@ architecture rtl of dualTensorCoreWrapper is
             exec_step : out std_logic_vector(1 downto 0);
 
             busy : out std_logic;
-            done : out std_logic
+            done : out std_logic;
+            
+            typeSel : in std_logic_vector(2 downto 0)
         );
     end component;
     
@@ -108,21 +112,22 @@ architecture rtl of dualTensorCoreWrapper is
             rf_rd_data_port_a : in arraySize16_32;
             rf_rd_data_port_b : in arraySize16_32;
 
-            W0_oct0_8_X3  : out arraySize4_8;
-            W1_oct0_8_X3  : out arraySize4_8;
-            W0_oct0_16_X3 : out arraySize4_16;
-            W1_oct0_16_X3 : out arraySize4_16;
-            W0_oct0_32_X3 : out arraySize4_32;
-            W1_oct0_32_X3 : out arraySize4_32;
+            W0_oct0_8_X3  : out arraySize16_8;
+            W1_oct0_8_X3  : out arraySize16_8;
+            W0_oct0_16_X3 : out arraySize16_16;
+            W1_oct0_16_X3 : out arraySize16_16;
+            W0_oct0_32_X3 : out arraySize16_32;
+            W1_oct0_32_X3 : out arraySize16_32;
 
-            W0_oct1_8_X3  : out arraySize4_8;
-            W1_oct1_8_X3  : out arraySize4_8;
-            W0_oct1_16_X3 : out arraySize4_16;
-            W1_oct1_16_X3 : out arraySize4_16;
-            W0_oct1_32_X3 : out arraySize4_32;
-            W1_oct1_32_X3 : out arraySize4_32;
+            W0_oct1_8_X3  : out arraySize16_8;
+            W1_oct1_8_X3  : out arraySize16_8;
+            W0_oct1_16_X3 : out arraySize16_16;
+            W1_oct1_16_X3 : out arraySize16_16;
+            W0_oct1_32_X3 : out arraySize16_32;
+            W1_oct1_32_X3 : out arraySize16_32;
 
             step_done : out std_logic
+
         );
     end component;
     
@@ -135,7 +140,7 @@ architecture rtl of dualTensorCoreWrapper is
     --local step_done from each tensor core datapath
     signal step_done_tc0_s : std_logic;
     signal step_done_tc1_s : std_logic;
-    
+        
 begin
     --FSM controlling both tensor cores:
     
@@ -145,6 +150,7 @@ begin
         rst       => rst,
         start     => start,
         Fp32Op    => widthSel(1),
+        w16op     => widthSel(0),
         hmma_step => hmma_step,
 
         load_en   => load_en_s,
@@ -153,7 +159,9 @@ begin
         exec_step => exec_step_s,
 
         busy      => busy,
-        done      => done
+        done      => done,
+        
+        typeSel   => typeSel
     );
     
     --tensor core datapath 0

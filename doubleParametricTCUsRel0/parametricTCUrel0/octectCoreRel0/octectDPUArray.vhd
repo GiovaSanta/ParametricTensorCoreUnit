@@ -23,16 +23,27 @@ entity dpuArrayrel0 is --dpu array consisting of 8 dpus used by an octect
 		BufferB_0out32: in arraySize16_32;
 		AccumulatorBuffer_0out32: in arraySize4_32;
 		AccumulatorBuffer_1out32: in arraySize4_32;
-		W0_8_X3: out arraySize4_8; --w0 means: is the 1by4 submatrix result related to threadgroup 0 managed result
-		W1_8_X3: out arraySize4_8; --w1 means: is the 1by4 submatrix result related to threadgroup 4 managed result
-		W0_16_X3: out arraySize4_16;
-		W1_16_X3: out arraySize4_16;
-        W0_32_X3: out arraySize4_32;
-		W1_32_X3: out arraySize4_32
+		W0_8_X3: out arraySize16_8; --w0 means: is the 1by4 submatrix result related to threadgroup 0 managed result
+		W1_8_X3: out arraySize16_8; --w1 means: is the 1by4 submatrix result related to threadgroup 4 managed result
+		W0_16_X3: out arraySize16_16;
+		W1_16_X3: out arraySize16_16;
+        W0_32_X3: out arraySize16_32;
+		W1_32_X3: out arraySize16_32;
+		
+		exec_step: in std_logic_vector(1 downto 0)
 	    );
 end dpuArrayrel0;
 
 architecture ar of dpuArrayrel0 is
+
+    signal W0_16_X3_i : arraySize4_16;
+    signal W1_16_X3_i : arraySize4_16;
+    
+    signal W0_32_X3_i : arraySize4_32;
+    signal W1_32_X3_i : arraySize4_32;
+    
+    signal W0_8_X3_i : arraySize4_8;
+    signal W1_8_X3_i : arraySize4_8;
 
 	component parametricDPUrel0 is
 	   Port ( 
@@ -71,8 +82,6 @@ architecture ar of dpuArrayrel0 is
 	end component;
 
 	begin
-
-	-- description of the 16 cores...
 	
 	--Reserved to Octet 0(threaGroups 0 and 4) parametric DPUs: DPPU0 - DPU7 
 	
@@ -103,7 +112,7 @@ port map(
 	      B0_32 => BufferB_0out32(0) , B1_32 => BufferB_0out32(1) , 
 	      B2_32 => BufferB_0out32(2) , B3_32 => BufferB_0out32(3) ,
 	      C0_32 => AccumulatorBuffer_0out32(0),
-	      res_8 => W0_8_X3(0) ,res_16 => W0_16_X3(0) ,res_32 => W0_32_X3(0) );
+	      res_8 => W0_8_X3_i(0) ,res_16 => W0_16_X3_i(0) ,res_32 => W0_32_X3_i(0) );
 	
 	DPU1: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -122,7 +131,7 @@ port map(
 	      B0_32 => BufferB_0out32(4) , B1_32 => BufferB_0out32(5) , 
 	      B2_32 => BufferB_0out32(6)  , B3_32 => BufferB_0out32(7) ,
 	      C0_32 =>  AccumulatorBuffer_0out32(1),
-	      res_8 =>  W0_8_X3(1) ,res_16 => W0_16_X3(1),res_32 => W0_32_X3(1) );
+	      res_8 =>  W0_8_X3_i(1) ,res_16 => W0_16_X3_i(1),res_32 => W0_32_X3_i(1) );
 	
 	DPU2: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -141,7 +150,7 @@ port map(
 	      B0_32 => BufferB_0out32(8) , B1_32 => BufferB_0out32(9) , 
 	      B2_32 => BufferB_0out32(10) , B3_32 => BufferB_0out32(11) ,
 	      C0_32 => AccumulatorBuffer_0out32(2),
-	      res_8 => W0_8_X3(2) ,res_16 => W0_16_X3(2),res_32 => W0_32_X3(2) );
+	      res_8 => W0_8_X3_i(2) ,res_16 => W0_16_X3_i(2),res_32 => W0_32_X3_i(2) );
 	
 	DPU3: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -160,7 +169,7 @@ port map(
 	      B0_32 => BufferB_0out32(12) , B1_32 => BufferB_0out32(13) , 
 	      B2_32 => BufferB_0out32(14) , B3_32 => BufferB_0out32(15) ,
 	      C0_32 =>  AccumulatorBuffer_0out32(3),
-	      res_8 => W0_8_X3(3) ,res_16 => W0_16_X3(3),res_32 => W0_32_X3(3) );
+	      res_8 => W0_8_X3_i(3) ,res_16 => W0_16_X3_i(3),res_32 => W0_32_X3_i(3) );
 
     --DPU4 to DPU7 ---> reserved for threadGroup4
     
@@ -181,7 +190,7 @@ port map(
 	      B0_32 => BufferB_0out32(0) , B1_32 => BufferB_0out32(1) , 
 	      B2_32 => BufferB_0out32(2) , B3_32 => BufferB_0out32(3) ,
 	      C0_32 =>  AccumulatorBuffer_1out32(0),
-	      res_8 => W1_8_X3(0) ,res_16 => W1_16_X3(0),res_32 => W1_32_X3(0) );
+	      res_8 => W1_8_X3_i(0) ,res_16 => W1_16_X3_i(0),res_32 => W1_32_X3_i(0) );
 	
 	DPU5: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -200,7 +209,7 @@ port map(
 	      B0_32 => BufferB_0out32(4) , B1_32 => BufferB_0out32(5) , 
 	      B2_32 => BufferB_0out32(6) , B3_32 => BufferB_0out32(7) ,
 	      C0_32 => AccumulatorBuffer_1out32(1) ,
-	      res_8 => W1_8_X3(1),res_16 => W1_16_X3(1),res_32 => W1_32_X3(1) );
+	      res_8 => W1_8_X3_i(1),res_16 => W1_16_X3_i(1),res_32 => W1_32_X3_i(1) );
 	      
 	DPU6: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -219,7 +228,7 @@ port map(
 	      B0_32 => BufferB_0out32(8) , B1_32 => BufferB_0out32(9) , 
 	      B2_32 => BufferB_0out32(10) , B3_32 => BufferB_0out32(11) ,
 	      C0_32 => AccumulatorBuffer_1out32(2),
-	      res_8 => W1_8_X3(2) ,res_16 => W1_16_X3(2), res_32 => W1_32_X3(2) );
+	      res_8 => W1_8_X3_i(2) ,res_16 => W1_16_X3_i(2), res_32 => W1_32_X3_i(2) );
 	      
 	DPU7: parametricDPUrel0 port map( 
 	      widthSel => widthSel , typeSel => typeSel , 
@@ -238,6 +247,147 @@ port map(
 	      B0_32 => BufferB_0out32(12) , B1_32 => BufferB_0out32(13) , 
 	      B2_32 => BufferB_0out32(14) , B3_32 => BufferB_0out32(15) ,
 	      C0_32 => AccumulatorBuffer_1out32(3)  ,
-	      res_8 => W1_8_X3(3) ,res_16 => W1_16_X3(3),res_32 => W1_32_X3(3) );
+	      res_8 => W1_8_X3_i(3) ,res_16 => W1_16_X3_i(3),res_32 => W1_32_X3_i(3) );
+		
+	process(W0_16_X3_i, W1_16_X3_i, W0_32_X3_i, W1_32_X3_i, W0_8_X3_i, W1_8_X3_i, exec_step)
+begin
+    -- default all outputs to zero
+
+    case exec_step is
+        when "00" =>
+            W0_16_X3(0) <= W0_16_X3_i(0);
+            W0_16_X3(1) <= W0_16_X3_i(1);
+            W0_16_X3(2) <= W0_16_X3_i(2);
+            W0_16_X3(3) <= W0_16_X3_i(3);
+
+            W1_16_X3(0) <= W1_16_X3_i(0);
+            W1_16_X3(1) <= W1_16_X3_i(1);
+            W1_16_X3(2) <= W1_16_X3_i(2);
+            W1_16_X3(3) <= W1_16_X3_i(3);
+            
+            W0_32_X3(0) <= W0_32_X3_i(0);
+            W0_32_X3(1) <= W0_32_X3_i(1);
+            W0_32_X3(2) <= W0_32_X3_i(2);
+            W0_32_X3(3) <= W0_32_X3_i(3);
+
+            W1_32_X3(0) <= W1_32_X3_i(0);
+            W1_32_X3(1) <= W1_32_X3_i(1);
+            W1_32_X3(2) <= W1_32_X3_i(2);
+            W1_32_X3(3) <= W1_32_X3_i(3);
+            
+            W0_8_X3(0) <= W0_8_X3_i(0);
+            W0_8_X3(1) <= W0_8_X3_i(1);
+            W0_8_X3(2) <= W0_8_X3_i(2);
+            W0_8_X3(3) <= W0_8_X3_i(3);
+
+            W1_8_X3(0) <= W1_8_X3_i(0);
+            W1_8_X3(1) <= W1_8_X3_i(1);
+            W1_8_X3(2) <= W1_8_X3_i(2);
+            W1_8_X3(3) <= W1_8_X3_i(3);
+            
+            for i in 4 to 15 loop
+                W0_16_X3(i) <= (others => '0');
+                W1_16_X3(i) <= (others => '0');
+                W0_32_X3(i) <= (others => '0');
+				W1_32_X3(i) <= (others => '0');
+				W0_8_X3(i) 	<= (others => '0');
+				W1_8_X3(i) 	<= (others => '0');
+            end loop;
+
+        when "01" =>
+            W0_16_X3(4) <= W0_16_X3_i(0);
+            W0_16_X3(5) <= W0_16_X3_i(1);
+            W0_16_X3(6) <= W0_16_X3_i(2);
+            W0_16_X3(7) <= W0_16_X3_i(3);
+
+            W1_16_X3(4) <= W1_16_X3_i(0);
+            W1_16_X3(5) <= W1_16_X3_i(1);
+            W1_16_X3(6) <= W1_16_X3_i(2);
+            W1_16_X3(7) <= W1_16_X3_i(3);
+            
+            W0_32_X3(4) <= W0_32_X3_i(0);
+            W0_32_X3(5) <= W0_32_X3_i(1);
+            W0_32_X3(6) <= W0_32_X3_i(2);
+            W0_32_X3(7) <= W0_32_X3_i(3);
+
+            W1_32_X3(4) <= W1_32_X3_i(0);
+            W1_32_X3(5) <= W1_32_X3_i(1);
+            W1_32_X3(6) <= W1_32_X3_i(2);
+            W1_32_X3(7) <= W1_32_X3_i(3);
+
+			W0_8_X3(4) <= W0_8_X3_i(0);
+            W0_8_X3(5) <= W0_8_X3_i(1);
+            W0_8_X3(6) <= W0_8_X3_i(2);
+            W0_8_X3(7) <= W0_8_X3_i(3);
+
+            W1_8_X3(4) <= W1_8_X3_i(0);
+            W1_8_X3(5) <= W1_8_X3_i(1);
+            W1_8_X3(6) <= W1_8_X3_i(2);
+            W1_8_X3(7) <= W1_8_X3_i(3);
+
+        when "10" =>
+            W0_16_X3(8)  <= W0_16_X3_i(0);
+            W0_16_X3(9)  <= W0_16_X3_i(1);
+            W0_16_X3(10) <= W0_16_X3_i(2);
+            W0_16_X3(11) <= W0_16_X3_i(3);
+
+            W1_16_X3(8)  <= W1_16_X3_i(0);
+            W1_16_X3(9)  <= W1_16_X3_i(1);
+            W1_16_X3(10) <= W1_16_X3_i(2);
+            W1_16_X3(11) <= W1_16_X3_i(3);
+            
+            W0_32_X3(8)  <= W0_32_X3_i(0);
+            W0_32_X3(9)  <= W0_32_X3_i(1);
+            W0_32_X3(10) <= W0_32_X3_i(2);
+            W0_32_X3(11) <= W0_32_X3_i(3);
+
+            W1_32_X3(8)  <= W1_32_X3_i(0);
+            W1_32_X3(9)  <= W1_32_X3_i(1);
+            W1_32_X3(10) <= W1_32_X3_i(2);
+            W1_32_X3(11) <= W1_32_X3_i(3);
+
+			W0_8_X3(8)  <= W0_8_X3_i(0);
+            W0_8_X3(9)  <= W0_8_X3_i(1);
+            W0_8_X3(10) <= W0_8_X3_i(2);
+            W0_8_X3(11) <= W0_8_X3_i(3);
+
+            W1_8_X3(8)  <= W1_8_X3_i(0);
+            W1_8_X3(9)  <= W1_8_X3_i(1);
+            W1_8_X3(10) <= W1_8_X3_i(2);
+            W1_8_X3(11) <= W1_8_X3_i(3);
+
+        when others =>
+            W0_16_X3(12) <= W0_16_X3_i(0);
+            W0_16_X3(13) <= W0_16_X3_i(1);
+            W0_16_X3(14) <= W0_16_X3_i(2);
+            W0_16_X3(15) <= W0_16_X3_i(3);
+
+            W1_16_X3(12) <= W1_16_X3_i(0);
+            W1_16_X3(13) <= W1_16_X3_i(1);
+            W1_16_X3(14) <= W1_16_X3_i(2);
+            W1_16_X3(15) <= W1_16_X3_i(3);
+            
+            W0_32_X3(12) <= W0_32_X3_i(0);
+            W0_32_X3(13) <= W0_32_X3_i(1);
+            W0_32_X3(14) <= W0_32_X3_i(2);
+            W0_32_X3(15) <= W0_32_X3_i(3);
+
+            W1_32_X3(12) <= W1_32_X3_i(0);
+            W1_32_X3(13) <= W1_32_X3_i(1);
+            W1_32_X3(14) <= W1_32_X3_i(2);
+            W1_32_X3(15) <= W1_32_X3_i(3);
+
+			W0_8_X3(12) <= W0_8_X3_i(0);
+            W0_8_X3(13) <= W0_8_X3_i(1);
+            W0_8_X3(14) <= W0_8_X3_i(2);
+            W0_8_X3(15) <= W0_8_X3_i(3);
+
+            W1_8_X3(12) <= W1_8_X3_i(0);
+            W1_8_X3(13) <= W1_8_X3_i(1);
+            W1_8_X3(14) <= W1_8_X3_i(2);
+            W1_8_X3(15) <= W1_8_X3_i(3);
+            
+    end case;
+end process;
 
 end ar;
