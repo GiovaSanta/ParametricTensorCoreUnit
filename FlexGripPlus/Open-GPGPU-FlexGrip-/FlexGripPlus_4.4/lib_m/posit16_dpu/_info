@@ -1,0 +1,542 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m
+Edotproductunitposit16
+Z1 w1744987000
+Z2 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z4 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z5 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_DPU.vhd
+Z6 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_DPU.vhd
+l0
+L5
+VI;LG>]^g7FlTNc=:C84CB2
+!s100 4f9mc@o09XhIFPHSf58ne3
+Z7 OV;C;10.5b;63
+33
+Z8 !s110 1775814834
+!i10b 1
+Z9 !s108 1775814834.000000
+Z10 !s90 -reportprogress|300|-2008|-work|posit16_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_DPU.vhd|
+Z11 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_DPU.vhd|
+!i113 1
+Z12 o-2008 -work posit16_dpu
+Z13 tOptimize_1164 0 Explicit 1 NoCoverage 1 CvgOpt 0
+Abehavioral
+R2
+R3
+R4
+DEx4 work 21 dotproductunitposit16 0 22 I;LG>]^g7FlTNc=:C84CB2
+l48
+L20
+VWMB?o^GNj?L1<f6mWfRWn3
+!s100 ZlW0>:Ybz698Qab?CdKKH2
+R7
+33
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Pdpuarray_package
+R2
+R3
+R4
+w1773060009
+R0
+8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd
+F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd
+l0
+L5
+VYM:MPPAhcnWXBzdc6mho32
+!s100 AGm02iXhO@V[Md20I=^XV1
+R7
+33
+!s110 1775814798
+!i10b 1
+!s108 1775814798.000000
+!s90 -reportprogress|300|-2008|-work|posit16_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd|
+!s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd|
+!i113 1
+R12
+R13
+Elzcshifter_15_to_15_counting_16_f0_uid14
+Z14 w1744986548
+Z15 DPx4 ieee 18 std_logic_unsigned 0 22 ;eZjO2D4ZDz<]0>8AL<ne1
+Z16 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+R3
+R4
+R0
+Z17 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Add.vhd
+Z18 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Add.vhd
+l0
+L372
+V9`3<Z>IZ^Pe=c1;d0i5`91
+!s100 G_1Dh7a5kA5MVX3dT89D42
+R7
+33
+Z19 !s110 1775814826
+!i10b 1
+Z20 !s108 1775814826.000000
+Z21 !s90 -reportprogress|300|-2008|-work|posit16_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Add.vhd|
+Z22 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Add.vhd|
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 40 lzcshifter_15_to_15_counting_16_f0_uid14 0 22 9`3<Z>IZ^Pe=c1;d0i5`91
+l389
+L378
+VJ5ecQ0A_64d83MKLmHhJ:0
+!s100 LZQKPI@ag^=B4]L:<>J5>1
+R7
+33
+Z23 !s110 1775814828
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Elzocshifter_14_to_14_counting_16_f0_uid10
+Z24 w1744986707
+R15
+R16
+R3
+R4
+R0
+Z25 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Mul.vhd
+Z26 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Mul.vhd
+l0
+L170
+VSSNbAIz2gN8j^[_o=QXZA0
+!s100 Jgc`2AjkXmM8:OSaElM8Q0
+R7
+33
+Z27 !s110 1775814831
+!i10b 1
+Z28 !s108 1775814830.000000
+Z29 !s90 -reportprogress|300|-2008|-work|posit16_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Mul.vhd|
+Z30 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/posit16DPU/posit16_0_Mul.vhd|
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 41 lzocshifter_14_to_14_counting_16_f0_uid10 0 22 SSNbAIz2gN8j^[_o=QXZA0
+l189
+L177
+VkAQK_m6D?hQHJ`VIIdT=S2
+!s100 WKl_GmGTemalL@`I`IBia0
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Elzocshifter_14_to_14_counting_16_f0_uid6
+R24
+R15
+R16
+R3
+R4
+R0
+R25
+R26
+l0
+L22
+VjBR^0e7YIfNEoTZO2G^M42
+!s100 B`hMIekeal0nlT3ddP[:B0
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 40 lzocshifter_14_to_14_counting_16_f0_uid6 0 22 jBR^0e7YIfNEoTZO2G^M42
+l41
+L29
+V?9e2ic0d3I22ZjjKj?Al^1
+!s100 WdG8nBIB4lo6Je21Q;kH72
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Emux_rel0
+Z31 w1751896412
+R3
+R4
+R0
+Z32 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd
+Z33 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd
+l0
+L4
+VPLW88F3:IHcLB_8f_U[9n0
+!s100 k[FnfH9^m;1dJm9?OJJOz0
+R7
+33
+Z34 !s110 1775814799
+!i10b 1
+Z35 !s108 1775814799.000000
+Z36 !s90 -reportprogress|300|-2008|-work|posit16_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd|
+Z37 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd|
+!i113 1
+R12
+R13
+Abehavioral
+R3
+R4
+DEx4 work 8 mux_rel0 0 22 PLW88F3:IHcLB_8f_U[9n0
+l25
+L23
+V:^LGdk[>1EUTo_S30e[dJ3
+!s100 `n9X50:U08VZhF[CQ>GS<1
+R7
+33
+R34
+!i10b 1
+R35
+R36
+R37
+!i113 1
+R12
+R13
+Epositadd
+R14
+R15
+R16
+R3
+R4
+R0
+R17
+R18
+l0
+L485
+VVC[nb`Q[eze;g=l]Me4DP0
+!s100 jk<maH;T1=6DS=ENiFTUG0
+R7
+33
+R23
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 8 positadd 0 22 VC[nb`Q[eze;g=l]Me4DP0
+l592
+L491
+VJTY=KSc<i?3az;2`g_kSZ0
+!s100 f4SOVC>Ymza=mGLz7@1P81
+R7
+33
+R23
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Epositdecoder_16_1_f0_uid4
+R24
+R15
+R16
+R3
+R4
+R0
+R25
+R26
+l0
+L82
+VJLUONnk`VFom9@k6zmVEn1
+!s100 __<0Pz>GC[^;TD>W2ha310
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 25 positdecoder_16_1_f0_uid4 0 22 JLUONnk`VFom9@k6zmVEn1
+l112
+L93
+VlcQ@Z9CaVaXdi]ONXQ]040
+!s100 lSY`>^j44G<C^lSd=;]2F1
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Epositdecoder_16_1_f0_uid8
+R24
+R15
+R16
+R3
+R4
+R0
+R25
+R26
+l0
+L230
+V[T3SUb4?gM1[Ed7ikAck;1
+!s100 d[menUSfJ4bd]j7TY1j6Y1
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 25 positdecoder_16_1_f0_uid8 0 22 [T3SUb4?gM1[Ed7ikAck;1
+l260
+L241
+V6S35LoZ3HhN04eQX1>EzC3
+!s100 j]PXKb_P5l<CfmGIafDD^2
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Epositmult_16_1_f0_uid2
+R24
+R15
+R16
+R3
+R4
+R0
+R25
+R26
+l0
+L373
+V:5gWAKZ>[Zf;4DaNaBMTn3
+!s100 I14VN@R8Rc?be;^PE@hHz3
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 22 positmult_16_1_f0_uid2 0 22 :5gWAKZ>[Zf;4DaNaBMTn3
+l450
+L379
+V@1LgUzehF[6jc>aE@5ib23
+!s100 ES2XfI?=e84A4dX<_g^Bm1
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Erightshiftersticky15_by_max_15_f0_uid12
+R14
+R15
+R16
+R3
+R4
+R0
+R17
+R18
+l0
+L318
+Vl6j;QXO63oH@RcaIHc6;31
+!s100 B:YegRhFkQDI@H49n<[RX3
+R7
+33
+R19
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 39 rightshiftersticky15_by_max_15_f0_uid12 0 22 l6j;QXO63oH@RcaIHc6;31
+l336
+L325
+V0z8a=3=9G^9_BEWI8C;2I2
+!s100 F]A1;eAh7>e_82lSZiSb40
+R7
+33
+R19
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Erightshiftersticky18_by_max_15_f0_uid16
+R14
+R15
+R16
+R3
+R4
+R0
+R17
+R18
+l0
+L429
+Vf<DNldFDY<oAa<ziZ5dml2
+!s100 f0TKYMnkVAM1@oK:7ZRMe1
+R7
+33
+R23
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 39 rightshiftersticky18_by_max_15_f0_uid16 0 22 f<DNldFDY<oAa<ziZ5dml2
+l448
+L437
+V1`OLmC3`V3`bRg0fMJ`KA1
+!s100 ]EL?hJFP<7cjnikkYb]9R3
+R7
+33
+R23
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R12
+R13
+Erightshiftersticky28_by_max_15_f0_uid12
+R24
+R15
+R16
+R3
+R4
+R0
+R25
+R26
+l0
+L318
+V][^ZC__5NoR[Z3RY;ijI41
+!s100 n[^P4G>JDJXf?kf]5M9lC2
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13
+Aarch
+R15
+R16
+R3
+R4
+DEx4 work 39 rightshiftersticky28_by_max_15_f0_uid12 0 22 ][^ZC__5NoR[Z3RY;ijI41
+l337
+L326
+VRf_MWQcTOaZJW[bNh97:23
+!s100 ^ZJVkYHSTQoUmN2DV5bfg3
+R7
+33
+R27
+!i10b 1
+R28
+R29
+R30
+!i113 1
+R12
+R13

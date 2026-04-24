@@ -1,0 +1,284 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m
+Edotproductunitfp32
+Z1 w1745668571
+Z2 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z4 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z5 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/DPU_FP32e8m23flopoco.vhd
+Z6 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/DPU_FP32e8m23flopoco.vhd
+l0
+L5
+V0BH1=^4H05S[8?n4^dGM@1
+!s100 zzj@@OhlgK<Hh1i9=L28?0
+Z7 OV;C;10.5b;63
+33
+Z8 !s110 1775814818
+!i10b 1
+Z9 !s108 1775814818.000000
+Z10 !s90 -reportprogress|300|-2008|-work|fp32_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/DPU_FP32e8m23flopoco.vhd|
+Z11 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/DPU_FP32e8m23flopoco.vhd|
+!i113 1
+Z12 o-2008 -work fp32_dpu
+Z13 tOptimize_1164 0 Explicit 1 NoCoverage 1 CvgOpt 0
+Abehavioral
+R2
+R3
+R4
+DEx4 work 18 dotproductunitfp32 0 22 0BH1=^4H05S[8?n4^dGM@1
+l34
+L20
+V<]6_YJAPbPOT?7C^b@9z70
+!s100 :_IZf;mXeo8D`h[EOH3TR0
+R7
+33
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Pdpuarray_package
+R2
+R3
+R4
+w1773060009
+R0
+8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd
+F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd
+l0
+L5
+VDO@5TKc8j7:G@W_ji0cWg1
+!s100 AGm02iXhO@V[Md20I=^XV1
+R7
+33
+Z14 !s110 1775814798
+!i10b 1
+Z15 !s108 1775814798.000000
+!s90 -reportprogress|300|-2008|-work|fp32_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd|
+!s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/dpuArray_package.vhd|
+!i113 1
+R12
+R13
+Eieeefpfma_8_23_comb_uid2
+Z16 w1745613798
+Z17 DPx4 ieee 18 std_logic_unsigned 0 22 ;eZjO2D4ZDz<]0>8AL<ne1
+Z18 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+R3
+R4
+R0
+Z19 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/FMA_FP32e8m23flopoco.vhd
+Z20 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/FMA_FP32e8m23flopoco.vhd
+l0
+L184
+VNfd74RWPz;`E:X?Teo=bK0
+!s100 5U8Q]O3KZhHe9Chi7Oddg2
+R7
+33
+Z21 !s110 1775814815
+!i10b 1
+Z22 !s108 1775814813.000000
+Z23 !s90 -reportprogress|300|-2008|-work|fp32_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/FMA_FP32e8m23flopoco.vhd|
+Z24 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP32DPU/FMA_FP32e8m23flopoco.vhd|
+!i113 1
+R12
+R13
+Aarch
+R17
+R18
+R3
+R4
+DEx4 work 24 ieeefpfma_8_23_comb_uid2 0 22 Nfd74RWPz;`E:X?Teo=bK0
+l296
+L194
+Vf6jC<[e_V<Jo>cdY8EAWi2
+!s100 FczUNh<@[d2;nKIWA[VBk0
+R7
+33
+R21
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Eleftshifter76_by_max_75_comb_uid8
+R16
+R17
+R18
+R3
+R4
+R0
+R19
+R20
+l0
+L133
+VUG22HR@cgj;VgVWU]W9HE2
+!s100 HXz3i`^5lgg1E=[C=^DKb2
+R7
+33
+Z25 !s110 1775814814
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Aarch
+R17
+R18
+R3
+R4
+DEx4 work 33 leftshifter76_by_max_75_comb_uid8 0 22 UG22HR@cgj;VgVWU]W9HE2
+l149
+L139
+V[8PSKcSn9gV3>`10nm6?U0
+!s100 HeNCQii6]lXTZPa?e5a6:3
+R7
+33
+R25
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Elzc_52_comb_uid6
+R16
+R17
+R18
+R3
+R4
+R0
+R19
+R20
+l0
+L72
+VI=if><B[=`nf2aH6h1[Oh1
+!s100 Y_dC5YjnL35VAA7QH`PF92
+R7
+33
+R25
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Aarch
+R17
+R18
+R3
+R4
+DEx4 work 16 lzc_52_comb_uid6 0 22 I=if><B[=`nf2aH6h1[Oh1
+l89
+L77
+V5IJ:]=;@h:L[5ANQOKJ<b3
+!s100 Vbg1JPS5oKN36U`6`==0o2
+R7
+33
+R25
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Emux_rel0
+Z26 w1751896412
+R3
+R4
+R0
+Z27 8../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd
+Z28 F../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd
+l0
+L4
+VY?o<CCaF?;BM<`VJ=VeZ?0
+!s100 k[FnfH9^m;1dJm9?OJJOz0
+R7
+33
+R14
+!i10b 1
+R15
+Z29 !s90 -reportprogress|300|-2008|-work|fp32_dpu|../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd|
+Z30 !s107 ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd|
+!i113 1
+R12
+R13
+Abehavioral
+R3
+R4
+DEx4 work 8 mux_rel0 0 22 Y?o<CCaF?;BM<`VJ=VeZ?0
+l25
+L23
+Vh>[>=l4hbBJF4Hji0QiEn3
+!s100 `n9X50:U08VZhF[CQ>GS<1
+R7
+33
+R14
+!i10b 1
+R15
+R29
+R30
+!i113 1
+R12
+R13
+Erightshifter24_by_max_76_comb_uid4
+R16
+R17
+R18
+R3
+R4
+R0
+R19
+R20
+l0
+L22
+V[VHi73kNZj<cEMXN1DUEi1
+!s100 zGza1b]doAC>CgCL]TcdS0
+R7
+33
+!s110 1775814813
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13
+Aarch
+R17
+R18
+R3
+R4
+DEx4 work 34 rightshifter24_by_max_76_comb_uid4 0 22 [VHi73kNZj<cEMXN1DUEi1
+l38
+L28
+V^hZ?M`?BWB:mQ<B=mmGE`2
+!s100 KGXdoKTz9;O1o?OJ:Oo1f1
+R7
+33
+R25
+!i10b 1
+R22
+R23
+R24
+!i113 1
+R12
+R13

@@ -72,7 +72,7 @@ values_dot_productFP8_rel5_valuesObtainedByDPU_not4Sim.txt
 **/.Xil/
 
 # Embedded repo
-FlexGripPlus/Open-GPGPU-FlexGrip-/
+#FlexGripPlus/Open-GPGPU-FlexGrip-/
 
 # Optional: generic backup files
 *.backup.jou
