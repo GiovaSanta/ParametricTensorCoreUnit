@@ -2364,3 +2364,5 @@
 #    Time: 95 ns  Iteration: 1  Instance: /tb_top_level
 # Break key hit
 # Break in ForLoop loop at ../RTL/SMP/Pipeline/Read/predicate_lut.vhd line 55
+# End time: 14:35:51 on Apr 24,2026, Elapsed time: 1:38:24
+# Errors: 3, Warnings: 4

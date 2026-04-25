@@ -45,35 +45,35 @@ architecture sim of doubleTensorCorewithFSMFP16_4setsOfstep01_tb is
     
     --outputs tc0
     --octect0 signals for its outputs
-    signal W0_tc0_oct0_8_X3  : arraySize4_8;
-    signal W1_tc0_oct0_8_X3  : arraySize4_8;
+    signal W0_tc0_oct0_8_X3  : arraySize16_8;
+    signal W1_tc0_oct0_8_X3  : arraySize16_8;
     signal W0_tc0_oct0_16_X3 : arraySize16_16;
     signal W1_tc0_oct0_16_X3 : arraySize16_16;
-    signal W0_tc0_oct0_32_X3 : arraySize4_32;
-    signal W1_tc0_oct0_32_X3 : arraySize4_32;
+    signal W0_tc0_oct0_32_X3 : arraySize16_32;
+    signal W1_tc0_oct0_32_X3 : arraySize16_32;
     --octect1 signals for its outputs
-    signal W0_tc0_oct1_8_X3  : arraySize4_8;
-    signal W1_tc0_oct1_8_X3  : arraySize4_8;
+    signal W0_tc0_oct1_8_X3  : arraySize16_8;
+    signal W1_tc0_oct1_8_X3  : arraySize16_8;
     signal W0_tc0_oct1_16_X3 : arraySize16_16;
     signal W1_tc0_oct1_16_X3 : arraySize16_16;
-    signal W0_tc0_oct1_32_X3 : arraySize4_32;
-    signal W1_tc0_oct1_32_X3 : arraySize4_32;
+    signal W0_tc0_oct1_32_X3 : arraySize16_32;
+    signal W1_tc0_oct1_32_X3 : arraySize16_32;
     
     --outputs tc1
     --octect0 signals for its outputs (octect 0 of tc1 corresponds to octect 2 from global perspective)
-    signal W0_tc1_oct0_8_X3  : arraySize4_8;
-    signal W1_tc1_oct0_8_X3  : arraySize4_8;
+    signal W0_tc1_oct0_8_X3  : arraySize16_8;
+    signal W1_tc1_oct0_8_X3  : arraySize16_8;
     signal W0_tc1_oct0_16_X3 : arraySize16_16;
     signal W1_tc1_oct0_16_X3 : arraySize16_16;
-    signal W0_tc1_oct0_32_X3 : arraySize4_32;
-    signal W1_tc1_oct0_32_X3 : arraySize4_32;
+    signal W0_tc1_oct0_32_X3 : arraySize16_32;
+    signal W1_tc1_oct0_32_X3 : arraySize16_32;
     --octect1 signals for its outputs (octect 1 of tc1 corresponds to octect 3 in a global perspective)
-    signal W0_tc1_oct1_8_X3  : arraySize4_8;
-    signal W1_tc1_oct1_8_X3  : arraySize4_8;
+    signal W0_tc1_oct1_8_X3  : arraySize16_8;
+    signal W1_tc1_oct1_8_X3  : arraySize16_8;
     signal W0_tc1_oct1_16_X3 : arraySize16_16;
     signal W1_tc1_oct1_16_X3 : arraySize16_16;
-    signal W0_tc1_oct1_32_X3 : arraySize4_32;
-    signal W1_tc1_oct1_32_X3 : arraySize4_32;
+    signal W0_tc1_oct1_32_X3 : arraySize16_32;
+    signal W1_tc1_oct1_32_X3 : arraySize16_32;
     
     signal busy      : std_logic;
     signal done      : std_logic;

@@ -56,35 +56,35 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
     
     --outputs tc0
     --octect0 signals for its outputs
-    signal W0_tc0_oct0_8_X3  : arraySize4_8;
-    signal W1_tc0_oct0_8_X3  : arraySize4_8;
+    signal W0_tc0_oct0_8_X3  : arraySize16_8;
+    signal W1_tc0_oct0_8_X3  : arraySize16_8;
     signal W0_tc0_oct0_16_X3 : arraySize16_16;
     signal W1_tc0_oct0_16_X3 : arraySize16_16;
-    signal W0_tc0_oct0_32_X3 : arraySize4_32;
-    signal W1_tc0_oct0_32_X3 : arraySize4_32;
+    signal W0_tc0_oct0_32_X3 : arraySize16_32;
+    signal W1_tc0_oct0_32_X3 : arraySize16_32;
     --octect1 signals for its outputs
-    signal W0_tc0_oct1_8_X3  : arraySize4_8;
-    signal W1_tc0_oct1_8_X3  : arraySize4_8;
+    signal W0_tc0_oct1_8_X3  : arraySize16_8;
+    signal W1_tc0_oct1_8_X3  : arraySize16_8;
     signal W0_tc0_oct1_16_X3 : arraySize16_16;
     signal W1_tc0_oct1_16_X3 : arraySize16_16;
-    signal W0_tc0_oct1_32_X3 : arraySize4_32;
-    signal W1_tc0_oct1_32_X3 : arraySize4_32;
+    signal W0_tc0_oct1_32_X3 : arraySize16_32;
+    signal W1_tc0_oct1_32_X3 : arraySize16_32;
     
     --outputs tc1
     --octect0 signals for its outputs (octect 0 of tc1 corresponds to octect 2 from global perspective)
-    signal W0_tc1_oct0_8_X3  : arraySize4_8;
-    signal W1_tc1_oct0_8_X3  : arraySize4_8;
+    signal W0_tc1_oct0_8_X3  : arraySize16_8;
+    signal W1_tc1_oct0_8_X3  : arraySize16_8;
     signal W0_tc1_oct0_16_X3 : arraySize16_16;
     signal W1_tc1_oct0_16_X3 : arraySize16_16;
-    signal W0_tc1_oct0_32_X3 : arraySize4_32;
-    signal W1_tc1_oct0_32_X3 : arraySize4_32;
+    signal W0_tc1_oct0_32_X3 : arraySize16_32;
+    signal W1_tc1_oct0_32_X3 : arraySize16_32;
     --octect1 signals for its outputs (octect 1 of tc1 corresponds to octect 3 in a global perspective)
-    signal W0_tc1_oct1_8_X3  : arraySize4_8;
-    signal W1_tc1_oct1_8_X3  : arraySize4_8;
+    signal W0_tc1_oct1_8_X3  : arraySize16_8;
+    signal W1_tc1_oct1_8_X3  : arraySize16_8;
     signal W0_tc1_oct1_16_X3 : arraySize16_16;
     signal W1_tc1_oct1_16_X3 : arraySize16_16;
-    signal W0_tc1_oct1_32_X3 : arraySize4_32;
-    signal W1_tc1_oct1_32_X3 : arraySize4_32;
+    signal W0_tc1_oct1_32_X3 : arraySize16_32;
+    signal W1_tc1_oct1_32_X3 : arraySize16_32;
     
     signal busy      : std_logic;
     signal done      : std_logic;
@@ -336,15 +336,15 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
 --10
     procedure capture_step0_outputs(
         --TC0
-        signal W0_tc0_oct0_32_X3 : in arraySize4_32;
-        signal W1_tc0_oct0_32_X3 : in arraySize4_32;
-        signal W0_tc0_oct1_32_X3 : in arraySize4_32;
-        signal W1_tc0_oct1_32_X3 : in arraySize4_32;
+        signal W0_tc0_oct0_32_X3 : in arraySize16_32;
+        signal W1_tc0_oct0_32_X3 : in arraySize16_32;
+        signal W0_tc0_oct1_32_X3 : in arraySize16_32;
+        signal W1_tc0_oct1_32_X3 : in arraySize16_32;
         --TC1
-        signal W0_tc1_oct0_32_X3 : in arraySize4_32;
-        signal W1_tc1_oct0_32_X3 : in arraySize4_32;
-        signal W0_tc1_oct1_32_X3 : in arraySize4_32;
-        signal W1_tc1_oct1_32_X3 : in arraySize4_32;
+        signal W0_tc1_oct0_32_X3 : in arraySize16_32;
+        signal W1_tc1_oct0_32_X3 : in arraySize16_32;
+        signal W0_tc1_oct1_32_X3 : in arraySize16_32;
+        signal W1_tc1_oct1_32_X3 : in arraySize16_32;
         
         variable D00    : out matrix4x4_fp32_t;
         variable D10    : out matrix4x4_fp32_t;
@@ -357,34 +357,50 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
         variable D32    : out matrix4x4_fp32_t
     ) is
     begin
+        --for r in 0 to 3 loop
+         --   wait until falling_edge(clk);
+          --  for c in 0 to 3 loop
+           --     D00(r, c) := W0_tc0_oct0_32_X3(c);
+             --   D10(r, c) := W1_tc0_oct0_32_X3(c);
+             --   D20(r, c) := W0_tc0_oct1_32_X3(c);
+             --   D30(r, c) := W1_tc0_oct1_32_X3(c);
+                
+             --   D02(r, c) := W0_tc1_oct0_32_X3(c);
+             --   D12(r, c) := W1_tc1_oct0_32_X3(c);
+             --   D22(r, c) := W0_tc1_oct1_32_X3(c);
+             --   D32(r, c) := W1_tc1_oct1_32_X3(c);
+            --end loop;
+        --end loop;
+        
         for r in 0 to 3 loop
             wait until falling_edge(clk);
             for c in 0 to 3 loop
-                D00(r, c) := W0_tc0_oct0_32_X3(c);
-                D10(r, c) := W1_tc0_oct0_32_X3(c);
-                D20(r, c) := W0_tc0_oct1_32_X3(c);
-                D30(r, c) := W1_tc0_oct1_32_X3(c);
+                D00(r, c) := W0_tc0_oct0_32_X3(r*4+c);
+                D10(r, c) := W1_tc0_oct0_32_X3(r*4+c);
+                D20(r, c) := W0_tc0_oct1_32_X3(r*4+c);
+                D30(r, c) := W1_tc0_oct1_32_X3(r*4+c);
                 
-                D02(r, c) := W0_tc1_oct0_32_X3(c);
-                D12(r, c) := W1_tc1_oct0_32_X3(c);
-                D22(r, c) := W0_tc1_oct1_32_X3(c);
-                D32(r, c) := W1_tc1_oct1_32_X3(c);
+                D02(r, c) := W0_tc1_oct0_32_X3(r*4+c);
+                D12(r, c) := W1_tc1_oct0_32_X3(r*4+c);
+                D22(r, c) := W0_tc1_oct1_32_X3(r*4+c);
+                D32(r, c) := W1_tc1_oct1_32_X3(r*4+c);
             end loop;
         end loop;
+        
     end procedure;
     
 --11
     procedure capture_step1_outputs(
     --TC0
-        signal W0_tc0_oct0_32_X3 : in arraySize4_32;
-        signal W1_tc0_oct0_32_X3 : in arraySize4_32;
-        signal W0_tc0_oct1_32_X3 : in arraySize4_32;
-        signal W1_tc0_oct1_32_X3 : in arraySize4_32;
+        signal W0_tc0_oct0_32_X3 : in arraySize16_32;
+        signal W1_tc0_oct0_32_X3 : in arraySize16_32;
+        signal W0_tc0_oct1_32_X3 : in arraySize16_32;
+        signal W1_tc0_oct1_32_X3 : in arraySize16_32;
     --TC1
-        signal W0_tc1_oct0_32_X3 : in arraySize4_32;
-        signal W1_tc1_oct0_32_X3 : in arraySize4_32;
-        signal W0_tc1_oct1_32_X3 : in arraySize4_32;
-        signal W1_tc1_oct1_32_X3 : in arraySize4_32;
+        signal W0_tc1_oct0_32_X3 : in arraySize16_32;
+        signal W1_tc1_oct0_32_X3 : in arraySize16_32;
+        signal W0_tc1_oct1_32_X3 : in arraySize16_32;
+        signal W1_tc1_oct1_32_X3 : in arraySize16_32;
         
         variable D01 : out matrix4x4_fp32_t;
         variable D11 : out matrix4x4_fp32_t;
@@ -397,20 +413,36 @@ architecture sim of doubleTensorCorewithFSMFP32_4setsOfstep01_tb is
         variable D33 : out matrix4x4_fp32_t
     ) is
     begin
+        --for r in 0 to 3 loop
+         --   wait until falling_edge(clk);
+         --   for c in 0 to 3 loop
+         --       D01(r, c) := W0_tc0_oct0_32_X3(c);
+         --       D11(r, c) := W1_tc0_oct0_32_X3(c);
+         --       D21(r, c) := W0_tc0_oct1_32_X3(c);
+         --       D31(r, c) := W1_tc0_oct1_32_X3(c);
+                
+         --       D03(r, c) := W0_tc1_oct0_32_X3(c);
+         --       D13(r, c) := W1_tc1_oct0_32_X3(c);
+         --       D23(r, c) := W0_tc1_oct1_32_X3(c);
+         --       D33(r, c) := W1_tc1_oct1_32_X3(c);
+         --   end loop;
+        --end loop;
+        
         for r in 0 to 3 loop
             wait until falling_edge(clk);
             for c in 0 to 3 loop
-                D01(r, c) := W0_tc0_oct0_32_X3(c);
-                D11(r, c) := W1_tc0_oct0_32_X3(c);
-                D21(r, c) := W0_tc0_oct1_32_X3(c);
-                D31(r, c) := W1_tc0_oct1_32_X3(c);
+                D01(r, c) := W0_tc0_oct0_32_X3(r*4+c);
+                D11(r, c) := W1_tc0_oct0_32_X3(r*4+c);
+                D21(r, c) := W0_tc0_oct1_32_X3(r*4+c);
+                D31(r, c) := W1_tc0_oct1_32_X3(r*4+c);
                 
-                D03(r, c) := W0_tc1_oct0_32_X3(c);
-                D13(r, c) := W1_tc1_oct0_32_X3(c);
-                D23(r, c) := W0_tc1_oct1_32_X3(c);
-                D33(r, c) := W1_tc1_oct1_32_X3(c);
+                D03(r, c) := W0_tc1_oct0_32_X3(r*4+c);
+                D13(r, c) := W1_tc1_oct0_32_X3(r*4+c);
+                D23(r, c) := W0_tc1_oct1_32_X3(r*4+c);
+                D33(r, c) := W1_tc1_oct1_32_X3(r*4+c);
             end loop;
         end loop;
+        
     end procedure;
     
 --12
