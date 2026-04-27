@@ -13,7 +13,7 @@ end TP_instructions;
 
 architecture arch of TP_instructions is
 
-    constant TP_INSTRUCTIONS : integer := 108; --the total number of instructions of this program
+    constant TP_INSTRUCTIONS : integer := 120; --the total number of instructions of this program
 
 begin
 
@@ -177,49 +177,68 @@ begin
             when 82 => instruction_out <= x"20003469" ; --IADD R26, R26, R25
             when 83 => instruction_out <= x"04064780" ;
 
-            when 84 => instruction_out <= x"21003469" ; --IADD R26, R26, c[0x0][0x4] adress of C in global
-            when 85 => instruction_out <= x"04010780" ;
+            when 84 => instruction_out <= x"2000366D" ; --IADD R27, R27, R26   -- copying R26 into R27 will be needed again for the storage of matrix D (result matrix) inside of global
+            when 85 => instruction_out <= x"04068780" ;
+
+            when 86 => instruction_out <= x"21003469" ; --IADD R26, R26, c[0x0][0x4] adress of C in global
+            when 87 => instruction_out <= x"04010780" ;
 
             --loading of cols __ of matrix C into R4 register
-            when 86 => instruction_out <= x"D0003411" ; --GLD R4, global0[R26]
-            when 87 => instruction_out <= x"80C00780" ;
+            when 88 => instruction_out <= x"D0003411" ; --GLD R4, global0[R26]
+            when 89 => instruction_out <= x"80C00780" ;
 
-            when 88 => instruction_out <= x"21003469" ; --IADD R26, R26, c[0x0][0x2]
-            when 89 => instruction_out <= x"04008780" ;
+            when 90 => instruction_out <= x"21003469" ; --IADD R26, R26, c[0x0][0x2]
+            when 91 => instruction_out <= x"04008780" ;
 
             --loading of cols __ of matrix C into R6 register
 
-            when 90 => instruction_out <= x"D0003419" ; --GLD R6, global0[R26]
-            when 91 => instruction_out <= x"80C00780" ;
+            when 92 => instruction_out <= x"D0003419" ; --GLD R6, global0[R26]
+            when 93 => instruction_out <= x"80C00780" ;
 
             --HMMA sequence utiling tensor cores
             --SET 0 step 0
-            when 92 => instruction_out <= x"500C2C11" ; -- hmma.fp8.step0 R4, R22, R12, R4
-            when 93 => instruction_out <= x"00010780" ;
+            when 94 => instruction_out <= x"500C2C11" ; -- hmma.fp8.step0 R4, R22, R12, R4
+            when 95 => instruction_out <= x"00010780" ;
             --SET 0 step 1
-            when 94 => instruction_out <= x"500C2C19" ; -- hmma.fp8.step1 R6, R22, R12, R6
-            when 95 => instruction_out <= x"10018780" ;  
+            when 96 => instruction_out <= x"500C2C19" ; -- hmma.fp8.step1 R6, R22, R12, R6
+            when 97 => instruction_out <= x"10018780" ;  
             --SET 1 step 0
-            when 96 => instruction_out <= x"500E2011" ; -- hmma.fp8.step0 R4, R16, R14, R4
-            when 97 => instruction_out <= x"00010780" ;
+            when 98 => instruction_out <= x"500E2011" ; -- hmma.fp8.step0 R4, R16, R14, R4
+            when 99 => instruction_out <= x"00010780" ;
             --SET 1 step 1
-            when 98 => instruction_out <= x"500E2019" ; -- hmma.fp8.step1 R6, R16, R14, R6
-            when 99 => instruction_out <= x"10018780" ;
+            when 100 => instruction_out <= x"500E2019" ; -- hmma.fp8.step1 R6, R16, R14, R6
+            when 101 => instruction_out <= x"10018780" ;
             --SET 2 step 0
-            when 100 => instruction_out <= x"50082411" ; -- hmma.fp8.step0 R4, R18, R8, R4
-            when 101 => instruction_out <= x"00010780" ;
+            when 102 => instruction_out <= x"50082411" ; -- hmma.fp8.step0 R4, R18, R8, R4
+            when 103 => instruction_out <= x"00010780" ;
             --SET 2 step 1
-            when 102 => instruction_out <= x"50082419" ; -- hmma.fp8.step1 R6, R18, R8, R6
-            when 103 => instruction_out <= x"10018780" ;
+            when 104 => instruction_out <= x"50082419" ; -- hmma.fp8.step1 R6, R18, R8, R6
+            when 105 => instruction_out <= x"10018780" ;
             --SET 3 step 0
-            when 104 => instruction_out <= x"500A0411" ; -- hmma.fp8.step0 R4, R2, R10, R4
-            when 105 => instruction_out <= x"00010780" ;
+            when 106 => instruction_out <= x"500A0411" ; -- hmma.fp8.step0 R4, R2, R10, R4
+            when 107 => instruction_out <= x"00010780" ;
             --SET 3 step 1
-            when 106 => instruction_out <= x"500A0419" ; -- hmma.fp8.step1 R6, R2, R10, R6
-            when 107 => instruction_out <= x"10018780" ;
+            when 108 => instruction_out <= x"500A0419" ; -- hmma.fp8.step1 R6, R2, R10, R6
+            when 109 => instruction_out <= x"10018780" ;
 
-            --when 10 => instruction_out <= x"" ; --RET
-            --when 11 => instruction_out <= x"" ;
+            when 110 => instruction_out <= x"2100366D" ; -- IADD R27, R27, c[0x0][0x5] adress of D in global
+            when 111 => instruction_out <= x"04014780" ;
+
+            --storing R4 content  of matrix D in global mem 
+
+            when 112 => instruction_out <= x"D00E3611" ; --GST global0[R27], R4
+            when 113 => instruction_out <= x"A0C00781" ;
+
+            when 114 => instruction_out <= x"2100366D" ; --IADD R27, R27, c[0x0][0x2]
+            when 115 => instruction_out <= x"04008780" ;
+
+            --storing R6 content of matrix D in global mem
+
+            when 116 => instruction_out <= x"D00E3619" ; --GST global0[R27], R6
+            when 117 => instruction_out <= x"A0C00781" ;
+
+            when 118 => instruction_out <= x"30000003";   -- RET
+			when 119 => instruction_out <= x"00000780";
             
             when others => null;
         

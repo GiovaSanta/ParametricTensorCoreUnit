@@ -14,6 +14,17 @@ Thumbs.db
 # LaTeX
 *.aux
 *.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/fixedPoint16operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/fixedPoint8operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/fp8e4m3eoperands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/fp16operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/fp32operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/int8operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/int16operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/softPosit8_0operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/softPosit16_1operands/gpgpu_rdata.log
+!FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/softPosit32_2operands/gpgpu_rdata.log
+
 *.out
 *.toc
 *.lof
@@ -23,6 +34,15 @@ Thumbs.db
 *.synctex.gz
 *.bbl
 *.blg
+
+# ModelSim / Questa generated files
+**/lib_m/work/
+**/lib_m/transcript
+**/lib_m/wlft*
+**/lib_m/*.wlf
+**/lib_m/*.qdb
+**/lib_m/*.qpg
+**/lib_m/*.qtl
 
 # Python
 __pycache__/

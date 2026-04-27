@@ -72,14 +72,18 @@ package pick_bench is
     constant BENCH_CMEMREG9 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG10 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG11 : std_logic_vector(7 downto 0) := x"00";
-    constant BENCH_CMEMREG12 : std_logic_vector(7 downto 0) := x"00";
+    constant BENCH_CMEMREG12 : std_logic_vector(7 downto 0) := x"00"; --adress of B little endian
     constant BENCH_CMEMREG13 : std_logic_vector(7 downto 0) := x"02";
     constant BENCH_CMEMREG14 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG15 : std_logic_vector(7 downto 0) := x"00";
-    constant BENCH_CMEMREG16 : std_logic_vector(7 downto 0) := x"00";
+    constant BENCH_CMEMREG16 : std_logic_vector(7 downto 0) := x"00"; --adress of C little endian
     constant BENCH_CMEMREG17 : std_logic_vector(7 downto 0) := x"04";
     constant BENCH_CMEMREG18 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG19 : std_logic_vector(7 downto 0) := x"00";
+    constant BENCH_CMEMREG20 : std_logic_vector(7 downto 0) := x"00"; --adress of D little endian
+    constant BENCH_CMEMREG21 : std_logic_vector(7 downto 0) := x"08";
+    constant BENCH_CMEMREG22 : std_logic_vector(7 downto 0) := x"00";
+    constant BENCH_CMEMREG23 : std_logic_vector(7 downto 0) := x"00";
     
 
     constant cmem_regs_default : cmem_regs_type := ( -- 63(3F)

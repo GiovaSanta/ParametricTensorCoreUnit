@@ -13,7 +13,7 @@ end TP_instructions;
 
 architecture arch of TP_instructions is
 
-    constant TP_INSTRUCTIONS : integer := 230; --the total number of instructions of this program
+    constant TP_INSTRUCTIONS : integer := 266; --the total number of instructions of this program
 
 begin
 
@@ -322,85 +322,139 @@ begin
             when 180 => instruction_out <= x"20005AB5" ; --IADD R45, R45, R44
             when 181 => instruction_out <= x"040B0780" ;
 
-            when 182 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x4] adress of C in global
-            when 183 => instruction_out <= x"04010780" ;
+            when 182 => instruction_out <= x"20005CB9" ; --IADD R46, R46, R45   -- (instruction analogous to a mov) copying R45 into R46 will be needed again for the offsers for storage of matrix D -row major- (result matrix) inside of global
+            when 183 => instruction_out <= x"040B4780" ;
+
+            when 184 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x4] adress of C in global
+            when 185 => instruction_out <= x"04010780" ;
 
             --loading of cols __ of matrix C into R6, R7, R8, R9 registers
-            when 184 => instruction_out <= x"D0005A19" ; --GLD R6, global0[R45]
-            when 185 => instruction_out <= x"80C00780" ;
+            when 186 => instruction_out <= x"D0005A19" ; --GLD R6, global0[R45]
+            when 187 => instruction_out <= x"80C00780" ;
 
-            when 186 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 187 => instruction_out <= x"04008780" ;
+            when 188 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 189 => instruction_out <= x"04008780" ;
 
-            when 188 => instruction_out <= x"D0005A1D" ; --GLD R7, global0[R45]
-            when 189 => instruction_out <= x"80C00780" ;
+            when 190 => instruction_out <= x"D0005A1D" ; --GLD R7, global0[R45]
+            when 191 => instruction_out <= x"80C00780" ;
 
-            when 190 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 191 => instruction_out <= x"04008780" ;
+            when 192 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 193 => instruction_out <= x"04008780" ;
 
-            when 192 => instruction_out <= x"D0005A21" ; --GLD R8, global0[R45]
-            when 193 => instruction_out <= x"80C00780" ;
+            when 194 => instruction_out <= x"D0005A21" ; --GLD R8, global0[R45]
+            when 195 => instruction_out <= x"80C00780" ;
 
-            when 194 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 195 => instruction_out <= x"04008780" ;
+            when 196 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 197 => instruction_out <= x"04008780" ;
 
-            when 196 => instruction_out <= x"D0005A25" ; --GLD R9, global0[R45]
-            when 197 => instruction_out <= x"80C00780" ;
+            when 198 => instruction_out <= x"D0005A25" ; --GLD R9, global0[R45]
+            when 199 => instruction_out <= x"80C00780" ;
 
-            when 198 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 199 => instruction_out <= x"04008780" ;
+            when 200 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 201 => instruction_out <= x"04008780" ;
 
             --loading of cols __ of matrix C into R10, R11, R12, R13 registers
 
-            when 200 => instruction_out <= x"D0005A29" ; --GLD R10, global0[R45]
-            when 201 => instruction_out <= x"80C00780" ;
+            when 202 => instruction_out <= x"D0005A29" ; --GLD R10, global0[R45]
+            when 203 => instruction_out <= x"80C00780" ;
 
-            when 202 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 203 => instruction_out <= x"04008780" ;
+            when 204 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 205 => instruction_out <= x"04008780" ;
 
-            when 204 => instruction_out <= x"D0005A2D" ; --GLD R11, global0[R45]
-            when 205 => instruction_out <= x"80C00780" ;
+            when 206 => instruction_out <= x"D0005A2D" ; --GLD R11, global0[R45]
+            when 207 => instruction_out <= x"80C00780" ;
 
-            when 206 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 207 => instruction_out <= x"04008780" ;
+            when 208 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 209 => instruction_out <= x"04008780" ;
 
-            when 208 => instruction_out <= x"D0005A31" ; --GLD R12, global0[R45]
-            when 209 => instruction_out <= x"80C00780" ;
+            when 210 => instruction_out <= x"D0005A31" ; --GLD R12, global0[R45]
+            when 211 => instruction_out <= x"80C00780" ;
 
-            when 210 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
-            when 211 => instruction_out <= x"04008780" ;
+            when 212 => instruction_out <= x"21005AB5" ; --IADD R45, R45, c[0x0][0x2]
+            when 213 => instruction_out <= x"04008780" ;
 
-            when 212 => instruction_out <= x"D0005A35" ; --GLD R13, global0[R45]
-            when 213 => instruction_out <= x"80C00780" ;
+            when 214 => instruction_out <= x"D0005A35" ; --GLD R13, global0[R45]
+            when 215 => instruction_out <= x"80C00780" ;
 
             --HMMA sequence utiling tensor cores --continue from here
             --SET 0 step 0
-            when 214 => instruction_out <= x"50164C19" ; -- hmma.posit32.step0 (R6-R9), (R38-R41), (R22-R25), (R6-R9)
-            when 215 => instruction_out <= x"20818780" ;
+            when 216 => instruction_out <= x"50164C19" ; -- hmma.posit32.step0 (R6-R9), (R38-R41), (R22-R25), (R6-R9)
+            when 217 => instruction_out <= x"20818780" ;
             --SET 0 step 1
-            when 216 => instruction_out <= x"50164C29" ; -- hmma.posit32.step1 (R10-R13), (R38-R41), (R22-R25), (R10-R13)
-            when 217 => instruction_out <= x"30828780" ;  --
+            when 218 => instruction_out <= x"50164C29" ; -- hmma.posit32.step1 (R10-R13), (R38-R41), (R22-R25), (R10-R13)
+            when 219 => instruction_out <= x"30828780" ;  --
             --SET 1 step 0
-            when 218 => instruction_out <= x"501A3C19" ; -- hmma.posit32.step0 (R6-R9), (R30-R33), (R26-R29), (R6-R9)
-            when 219 => instruction_out <= x"20818780" ;
+            when 220 => instruction_out <= x"501A3C19" ; -- hmma.posit32.step0 (R6-R9), (R30-R33), (R26-R29), (R6-R9)
+            when 221 => instruction_out <= x"20818780" ;
             --SET 1 step 1
-            when 220 => instruction_out <= x"501A3C29" ; -- hmma.posit32.step1 (R10-R13), (R30-R33), (R26-R29), (R10-R13)
-            when 221 => instruction_out <= x"30828780" ;
+            when 222 => instruction_out <= x"501A3C29" ; -- hmma.posit32.step1 (R10-R13), (R30-R33), (R26-R29), (R10-R13)
+            when 223 => instruction_out <= x"30828780" ;
             --SET 2 step 0
-            when 222 => instruction_out <= x"500E4419" ; -- hmma.posit32.step0 (R6-R9), (R34-R37), (R14-R17), (R6-R9)
-            when 223 => instruction_out <= x"20818780" ;
+            when 224 => instruction_out <= x"500E4419" ; -- hmma.posit32.step0 (R6-R9), (R34-R37), (R14-R17), (R6-R9)
+            when 225 => instruction_out <= x"20818780" ;
             --SET 2 step 1
-            when 224 => instruction_out <= x"500E4429" ; -- hmma.posit32.step1 (R10-R13), (R34-R37), (R14-R17), (R10-R13)
-            when 225 => instruction_out <= x"30828780" ;
+            when 226 => instruction_out <= x"500E4429" ; -- hmma.posit32.step1 (R10-R13), (R34-R37), (R14-R17), (R10-R13)
+            when 227 => instruction_out <= x"30828780" ;
             --SET 3 step 0
-            when 226 => instruction_out <= x"50120419" ; -- hmma.posit32.step0 (R6-R9), (R2-R5), (R18-R21), (R6-R9)
-            when 227 => instruction_out <= x"20818780" ;
+            when 228 => instruction_out <= x"50120419" ; -- hmma.posit32.step0 (R6-R9), (R2-R5), (R18-R21), (R6-R9)
+            when 229 => instruction_out <= x"20818780" ;
             --SET 3 step 1
-            when 228 => instruction_out <= x"50120429" ; -- hmma.posit32.step1 (R10-R13), (R2-R5), (R18-R21), (R10-R13)
-            when 229 => instruction_out <= x"30828780" ;
+            when 230 => instruction_out <= x"50120429" ; -- hmma.posit32.step1 (R10-R13), (R2-R5), (R18-R21), (R10-R13)
+            when 231 => instruction_out <= x"30828780" ;
 
-            --when 10 => instruction_out <= x"" ; --RET
-            --when 11 => instruction_out <= x"" ;
+            when 232 => instruction_out <= x"21005CB9" ; -- IADD R46, R46, c[0x0][0x5] adress of D in global
+            when 233 => instruction_out <= x"04014780" ;
+
+            --storing R6, R7, R8, R9 content  of matrix D 
+            when 234 => instruction_out <= x"D00E5C19" ; --GST global0[R46], R6
+            when 235 => instruction_out <= x"A0C00781" ;
+
+            when 236 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 237 => instruction_out <= x"04008780" ;
+
+            when 238 => instruction_out <= x"D00E5C1D" ; --GST global0[R46], R7
+            when 239 => instruction_out <= x"A0C00781" ;
+
+            when 240 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 241 => instruction_out <= x"04008780" ;
+
+            when 242 => instruction_out <= x"D00E5C21" ; --GST global0[R46], R8
+            when 243 => instruction_out <= x"A0C00781" ;
+
+            when 244 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 245 => instruction_out <= x"04008780" ;
+
+            when 246 => instruction_out <= x"D00E5C25" ; --GST global0[R46], R9
+            when 247 => instruction_out <= x"A0C00781" ;
+
+            when 248 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 249 => instruction_out <= x"04008780" ;
+
+            --storing R10, R11, R12, R13 content of matrix D 
+
+            when 250 => instruction_out <= x"D00E5C29" ; --GST global0[R46], R10
+            when 251 => instruction_out <= x"A0C00781" ;
+
+            when 252 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 253 => instruction_out <= x"04008780" ;
+
+            when 254 => instruction_out <= x"D00E5C2D" ; --GST global0[R46], R11
+            when 255 => instruction_out <= x"A0C00781" ;
+
+            when 256 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 257 => instruction_out <= x"04008780" ;
+
+            when 258 => instruction_out <= x"D00E5C31" ; --GST global0[R46], R12
+            when 259 => instruction_out <= x"A0C00781" ;
+
+            when 260 => instruction_out <= x"21005CB9" ; --IADD R46, R46, c[0x0][0x2]
+            when 261 => instruction_out <= x"04008780" ;
+
+            when 262 => instruction_out <= x"D00E5C35" ; --GST global0[R46], R13
+            when 263 => instruction_out <= x"A0C00781" ;
+
+            when 264 => instruction_out <= x"30000003";   -- RET
+			when 265 => instruction_out <= x"00000780";
             
             when others => null;
         
