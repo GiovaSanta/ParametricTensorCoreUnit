@@ -10,19 +10,19 @@
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:00 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/configuration/pick_bench.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
 # -- Loading package std_logic_1164
 # -- Loading package NUMERIC_STD
 # -- Compiling package pick_bench
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:00 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:02 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/gpgpu_package.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -32,12 +32,12 @@
 # -- Compiling package gpgpu_package
 # -- Compiling package body gpgpu_package
 # -- Loading package gpgpu_package
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:03 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:04 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/shift_register.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -47,12 +47,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity shift_register
 # -- Compiling architecture arch of shift_register
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:04 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:05 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/effective_address.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -62,12 +62,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity effective_address
 # -- Compiling architecture arch of effective_address
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/dp_regfile.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -75,12 +75,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity dp_regfile
 # -- Compiling architecture dp_regfile_archi of dp_regfile
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/address_register_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -90,12 +90,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity address_register_controller
 # -- Compiling architecture arch of address_register_controller
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/address_register_file.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -105,12 +105,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity address_register_file
 # -- Compiling architecture address_register_file_archi of address_register_file
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/predicate_register_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -120,12 +120,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity predicate_register_controller
 # -- Compiling architecture arch of predicate_register_controller
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/predicate_register_file.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -135,12 +135,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity predicate_register_file
 # -- Compiling architecture predicate_register_file_archi of predicate_register_file
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:06 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/vector_register_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -150,12 +150,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity vector_register_controller
 # -- Compiling architecture arch of vector_register_controller
-# End time: 20:54:52 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:06 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:52 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/vector_register_file.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -165,12 +165,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity vector_register_file
 # -- Compiling architecture vector_register_file_archi of vector_register_file
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/memory_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -180,12 +180,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity memory_controller
 # -- Compiling architecture arch of memory_controller
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/constant_memory_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -195,12 +195,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity constant_memory_controller
 # -- Compiling architecture arch of constant_memory_controller
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/global_memory_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -210,12 +210,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity global_memory_controller
 # -- Compiling architecture arch of global_memory_controller
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/shared_memory_controller.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -225,12 +225,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity shared_memory_controller
 # -- Compiling architecture arch of shared_memory_controller
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/SMPController/block_id_calc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -239,12 +239,12 @@
 # -- Compiling entity block_id_calc
 # -- Compiling architecture block_id_calc_archi of block_id_calc
 # ** Warning: ../RTL/SMP/SMPController/block_id_calc.vhd(35): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 3
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:07 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/SMPController/thread_id_calc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -255,12 +255,12 @@
 # ** Warning: ../RTL/SMP/SMPController/thread_id_calc.vhd(45): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/SMPController/thread_id_calc.vhd(45): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/SMPController/thread_id_calc.vhd(45): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:07 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 5
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/SMPController/warps_per_block_calc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -268,12 +268,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity warps_per_block_calc
 # -- Compiling architecture warps_per_block_calc_archi of warps_per_block_calc
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/SMPController/streaming_multiprocessor_cntlr.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -283,12 +283,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity streaming_multiprocessor_cntlr
 # -- Compiling architecture arch of streaming_multiprocessor_cntlr
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/fence_registers.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -298,12 +298,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fence_registers
 # -- Compiling architecture arch of fence_registers
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warps_done_mask_LUT.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -313,12 +313,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warps_done_lut
 # -- Compiling architecture arch of warps_done_lut
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warp_id_calc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -328,12 +328,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warp_id_calc
 # -- Compiling architecture warp_id_calc_archi of warp_id_calc
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:08 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warp_generator.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -343,12 +343,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warp_generator
 # -- Compiling architecture arch of warp_generator
-# End time: 20:54:53 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:08 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:53 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warp_scheduler.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -358,12 +358,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warp_scheduler
 # -- Compiling architecture arch of warp_scheduler
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warp_checker.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -373,12 +373,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warp_checker
 # -- Compiling architecture arch of warp_checker
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/WarpUnit/warp_unit.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -388,12 +388,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity warp_unit
 # -- Compiling architecture arch of warp_unit
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/bshift.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -401,12 +401,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity bshift
 # -- Compiling architecture arch of bshift
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/stack.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -416,12 +416,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity stack
 # -- Compiling architecture arch of stack
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:09 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Fetch/pipeline_fetch.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -431,12 +431,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity pipeline_fetch
 # -- Compiling architecture arch of pipeline_fetch
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:09 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/arbiter.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -444,12 +444,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity arbiter
 # -- Compiling architecture arch of arbiter
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/predicate_lut.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -459,12 +459,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity predicate_lut
 # -- Compiling architecture arch of predicate_lut
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/convert_data_types.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -474,12 +474,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity convert_data_types
 # -- Compiling architecture arch of convert_data_types
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/calculate_address.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -487,12 +487,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity calculate_address
 # -- Compiling architecture calc_addr_archi of calculate_address
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/read_source_ops.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -502,12 +502,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity read_source_ops
 # -- Compiling architecture arch of read_source_ops
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:10 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Read/pipeline_read.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -517,12 +517,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity pipeline_read
 # -- Compiling architecture arch of pipeline_read
-# End time: 20:54:54 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:10 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:54 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Decode/pipeline_decode.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -532,12 +532,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity pipeline_decode
 # -- Compiling architecture arch of pipeline_decode
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/shift_logic.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -545,12 +545,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity shift_logical
 # -- Compiling architecture shift_logic_archi of shift_logical
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/min_max.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -558,12 +558,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity min_max
 # -- Compiling architecture min_max_archi of min_max
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/boolean_functions.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -571,12 +571,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity boolean_functions
 # -- Compiling architecture bool_func_archi of boolean_functions
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/compute_set_pred_i.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -584,12 +584,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity compute_set_pred_i
 # -- Compiling architecture comp_set_pred_i_archi of compute_set_pred_i
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/convert_int_int.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -599,12 +599,12 @@
 # -- Compiling architecture convert_i_i_archi of convert_int_int
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/convert_int_int.vhd(50): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/convert_int_int.vhd(52): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 4
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:11 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_add_subtract.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -616,12 +616,12 @@
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_add_subtract.vhd(51): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_add_subtract.vhd(55): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_add_subtract.vhd(57): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:11 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 6
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_mult_24.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -633,12 +633,12 @@
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_mult_24.vhd(62): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_mult_24.vhd(64): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/ScalarProcessor/integer_mult_24.vhd(65): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 6
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/ScalarProcessor/scalar_processor.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -648,12 +648,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity scalar_processor
 # -- Compiling architecture arch of scalar_processor
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_add_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -663,12 +663,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_add
 # -- Compiling architecture rtl of fpu_add
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_conv_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -680,12 +680,12 @@
 # -- Compiling architecture rtl of fpu_conv
 # ** Warning: ../RTL/SMP/Pipeline/Execution/FPU/fpu_conv_32.vhd(53): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/FPU/fpu_conv_32.vhd(69): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 4
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_exceptions_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -695,12 +695,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_exceptions
 # -- Compiling architecture rtl of fpu_exceptions
-# End time: 20:54:55 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:55 on Apr 27,2026
+# Start time: 16:49:12 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_fma_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -710,12 +710,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_fma
 # -- Compiling architecture arch of fpu_fma
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:12 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_mul_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -725,12 +725,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_mul
 # -- Compiling architecture rtl of fpu_mul
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_round_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -740,12 +740,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_round
 # -- Compiling architecture rtl of fpu_round
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_sub_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -755,12 +755,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_sub
 # -- Compiling architecture rtl of fpu_sub
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_set_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -770,12 +770,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_set
 # -- Compiling architecture rtl of fpu_set
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/a_s.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -785,12 +785,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity a_s
 # -- Compiling architecture a_s_cel_arch of a_s
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/divisor.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -800,12 +800,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity div_nr_wsticky
 # -- Compiling architecture div_arch of div_nr_wsticky
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:13 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:13 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_rcp_32.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -815,12 +815,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_rcp
 # -- Compiling architecture Behavioral of fpu_rcp
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/FPU/fpu_top_32_new.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -830,12 +830,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fpu_single
 # -- Compiling architecture arch of fpu_single
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:56 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Components/CLZ.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -843,12 +843,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity CLZ
 # -- Compiling architecture Behavioral of CLZ
-# End time: 20:54:56 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Components/SFU_Exceptions.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -856,12 +856,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity SFU_Exceptions
 # -- Compiling architecture SFU_Exceptions_arch of SFU_Exceptions
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/fused_accm_tree/Booth_PP.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -869,12 +869,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity Booth_PP
 # -- Compiling architecture Booth_PP_arch of Booth_PP
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/fused_accm_tree/CSA_4_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -882,12 +882,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity CSA_4_2
 # -- Compiling architecture CSA_4_2_arch of CSA_4_2
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:14 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/fused_accm_tree/fused_accum_tree.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -897,12 +897,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity fused_accum_tree
 # -- Compiling architecture fused_accum_tree_arch of fused_accum_tree
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:14 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_cos.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -910,12 +910,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_cos
 # -- Compiling architecture behav of LUT_C0_cos
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_exp.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -923,12 +923,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_exp
 # -- Compiling architecture behav of LUT_C0_exp
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_ln2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -936,12 +936,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_ln2
 # -- Compiling architecture behav of LUT_C0_ln2
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_ln2e0.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -949,12 +949,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_ln2e0
 # -- Compiling architecture behav of LUT_C0_ln2e0
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_reci.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -962,12 +962,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_reci
 # -- Compiling architecture behav of LUT_C0_reci
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_reci_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -975,12 +975,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_reci_sqrt_1_2
 # -- Compiling architecture behav of LUT_C0_reci_sqrt_1_2
-# End time: 20:54:57 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:57 on Apr 27,2026
+# Start time: 16:49:15 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_reci_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -988,12 +988,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_reci_sqrt_2_4
 # -- Compiling architecture behav of LUT_C0_reci_sqrt_2_4
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:15 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:16 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_sin.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1001,12 +1001,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_sin
 # -- Compiling architecture behav of LUT_C0_sin
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:16 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:16 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1014,12 +1014,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_sqrt_1_2
 # -- Compiling architecture behav of LUT_C0_sqrt_1_2
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:16 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:16 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C0_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1027,12 +1027,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C0_sqrt_2_4
 # -- Compiling architecture behav of LUT_C0_sqrt_2_4
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:16 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:16 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_cos.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1040,12 +1040,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_cos
 # -- Compiling architecture behav of LUT_C1_cos
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:16 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:16 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_exp.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1053,12 +1053,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_exp
 # -- Compiling architecture behav of LUT_C1_exp
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:16 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:17 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_ln2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1066,12 +1066,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_ln2
 # -- Compiling architecture behav of LUT_C1_ln2
-# End time: 20:54:58 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:17 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:58 on Apr 27,2026
+# Start time: 16:49:17 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_ln2e0.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1079,12 +1079,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_ln2e0
 # -- Compiling architecture behav of LUT_C1_ln2e0
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:17 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:59 on Apr 27,2026
+# Start time: 16:49:17 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_reci.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1092,12 +1092,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_reci
 # -- Compiling architecture behav of LUT_C1_reci
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:17 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:59 on Apr 27,2026
+# Start time: 16:49:17 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_reci_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1105,12 +1105,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_reci_sqrt_1_2
 # -- Compiling architecture behav of LUT_C1_reci_sqrt_1_2
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:17 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:59 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_reci_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1118,12 +1118,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_reci_sqrt_2_4
 # -- Compiling architecture behav of LUT_C1_reci_sqrt_2_4
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:18 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:59 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_sin.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1131,12 +1131,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_sin
 # -- Compiling architecture behav of LUT_C1_sin
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:18 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:54:59 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1144,12 +1144,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_sqrt_1_2
 # -- Compiling architecture behav of LUT_C1_sqrt_1_2
-# End time: 20:54:59 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:18 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C1_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1157,12 +1157,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C1_sqrt_2_4
 # -- Compiling architecture behav of LUT_C1_sqrt_2_4
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:18 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_cos.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1170,12 +1170,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_cos
 # -- Compiling architecture behav of LUT_C2_cos
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:18 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:18 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_exp.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1183,12 +1183,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_exp
 # -- Compiling architecture behav of LUT_C2_exp
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:19 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:19 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_ln2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1196,12 +1196,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_ln2
 # -- Compiling architecture behav of LUT_C2_ln2
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:19 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:19 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_ln2e0.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1209,12 +1209,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_ln2e0
 # -- Compiling architecture behav of LUT_C2_ln2e0
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:19 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:19 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_reci.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1222,12 +1222,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_reci
 # -- Compiling architecture behav of LUT_C2_reci
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:19 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:19 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_reci_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1235,12 +1235,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_reci_sqrt_1_2
 # -- Compiling architecture behav of LUT_C2_reci_sqrt_1_2
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:19 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:20 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_reci_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1248,12 +1248,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_reci_sqrt_2_4
 # -- Compiling architecture behav of LUT_C2_reci_sqrt_2_4
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:20 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:20 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_sin.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1261,12 +1261,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_sin
 # -- Compiling architecture behav of LUT_C2_sin
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:20 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:00 on Apr 27,2026
+# Start time: 16:49:20 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_sqrt_1_2.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1274,12 +1274,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_sqrt_1_2
 # -- Compiling architecture behav of LUT_C2_sqrt_1_2
-# End time: 20:55:00 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:20 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:20 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Single_LUTS/LUT_C2_sqrt_2_4.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1287,12 +1287,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity LUT_C2_sqrt_2_4
 # -- Compiling architecture behav of LUT_C2_sqrt_2_4
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:20 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:20 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/squaring.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1302,12 +1302,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity squaring
 # -- Compiling architecture behav of squaring
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:21 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:21 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/ROM.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1317,12 +1317,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity ROM
 # -- Compiling architecture behav of ROM
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:21 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:21 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/Quadratic_Interpolator/Quadratic_Interpolator.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1332,12 +1332,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity Quadratic_Interpolator
 # -- Compiling architecture Quadratic_Interpolator_arch of Quadratic_Interpolator
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:21 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:21 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/sfu.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1347,12 +1347,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity sfu
 # -- Compiling architecture sfu_arch of sfu
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:21 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:21 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/SFU/sfu_proc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1362,12 +1362,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity sfu_proc
 # -- Compiling architecture structure of sfu_proc
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:22 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:23 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_DPU.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1375,12 +1375,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity DotProductUnitFP16
 # -- Compiling architecture Behavioral of DotProductUnitFP16
-# End time: 20:55:01 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:23 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:01 on Apr 27,2026
+# Start time: 16:49:23 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_FMA.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1431,12 +1431,12 @@
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_FMA.vhd(431): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_FMA.vhd(432): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_FMA.vhd(432): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:55:02 on Apr 27,2026, Elapsed time: 0:00:01
+# End time: 16:49:23 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 38
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:02 on Apr 27,2026
+# Start time: 16:49:25 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/DPU_FP8e4m3flopoco.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1444,12 +1444,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity DotProductUnitFP8e4m3
 # -- Compiling architecture Behavioral of DotProductUnitFP8e4m3
-# End time: 20:55:02 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:25 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:02 on Apr 27,2026
+# Start time: 16:49:26 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1494,24 +1494,24 @@
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd(421): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd(422): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
 # ** Warning: ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd(422): (vcom-1514) Range choice direction (downto) does not determine aggregate index range direction (to).
-# End time: 20:55:02 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:27 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 32
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:02 on Apr 27,2026
+# Start time: 16:49:28 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
 # -- Loading package std_logic_1164
 # -- Compiling entity mux_rel0
 # -- Compiling architecture Behavioral of mux_rel0
-# End time: 20:55:02 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:28 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:29 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectBuffers.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1521,12 +1521,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity octectRelatedBuffers
 # -- Compiling architecture rtl of octectRelatedBuffers
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:29 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:29 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectCoreTop.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1536,12 +1536,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity octectCoreTop
 # -- Compiling architecture rtl of octectCoreTop
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:29 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:29 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectDPUArray.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1551,12 +1551,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity dpuArrayrel0
 # -- Compiling architecture ar of dpuArrayrel0
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectRelatedFSM.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1564,24 +1564,24 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity octectRelatedFSM
 # -- Compiling architecture rtl of octectRelatedFSM
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/parametricDPU.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
 # -- Loading package std_logic_1164
 # -- Compiling entity parametricDPUrel0
 # -- Compiling architecture Behavioral of parametricDPUrel0
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/tensorCoreDatapath.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1591,12 +1591,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity tensorCoreDatapath
 # -- Compiling architecture rtl of tensorCoreDatapath
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/dualTensorCoreWrapper4FlexGripPlus.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1606,12 +1606,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity dualTensorCoreWrapper
 # -- Compiling architecture rtl of dualTensorCoreWrapper
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/Components/fp_leading_zeros_and_shift.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1620,12 +1620,12 @@
 # -- Loading package STD_LOGIC_UNSIGNED
 # -- Compiling entity fp_leading_zeros_and_shift
 # -- Compiling architecture Behavioral of fp_leading_zeros_and_shift
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:30 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:03 on Apr 27,2026
+# Start time: 16:49:30 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/Components/right_shifter.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1635,12 +1635,12 @@
 # -- Compiling entity right_shifter
 # -- Compiling architecture Behavioral of right_shifter
 # ** Warning: ../RTL/SMP/Pipeline/Execution/RRO/Components/right_shifter.vhd(22): (vcom-1074) Non-locally static OTHERS choice is allowed only if it is the only choice of the only association.
-# End time: 20:55:03 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 3
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/Components/add_sub.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1649,12 +1649,12 @@
 # -- Loading package STD_LOGIC_UNSIGNED
 # -- Compiling entity add_sub
 # -- Compiling architecture Behavioral of add_sub
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/Components/multFP.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1662,12 +1662,12 @@
 # -- Loading package NUMERIC_STD
 # -- Compiling entity multFP
 # -- Compiling architecture ar of multFP
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/RRO_trig.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1677,12 +1677,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity RRO_trig
 # -- Compiling architecture Reduce_model of RRO_trig
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/rro.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1692,12 +1692,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity rro
 # -- Compiling architecture rtl of rro
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/RRO/rro_proc.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1707,12 +1707,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity rro_proc
 # -- Compiling architecture structure of rro_proc
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:31 on Apr 29,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:31 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/branch_exec_unit.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1722,12 +1722,12 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity branch_exec_unit
 # -- Compiling architecture branch_exec_unit_arch of branch_exec_unit
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
+# End time: 16:49:32 on Apr 29,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 2
 # ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
 # ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
 # Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
+# Start time: 16:49:32 on Apr 29,2026
 # vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd 
 # -- Loading package STANDARD
 # -- Loading package TEXTIO
@@ -1737,638 +1737,28 @@
 # -- Loading package gpgpu_package
 # -- Compiling entity pipeline_execute
 # -- Compiling architecture p_exec_arch of pipeline_execute
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:04 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Write/compute_pred_flags.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity compute_pred_flags
-# -- Compiling architecture arch of compute_pred_flags
-# End time: 20:55:04 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Write/increment_address.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity increment_address
-# -- Compiling architecture arch of increment_address
-# End time: 20:55:05 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/Pipeline/Write/pipeline_write.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity pipeline_write
-# -- Compiling architecture arch of pipeline_write
-# End time: 20:55:05 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/SMP/streaming_multiprocessor.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity streaming_multiprocessor
-# -- Compiling architecture arch of streaming_multiprocessor
-# End time: 20:55:05 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/block_scheduler.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity block_scheduler
-# -- Compiling architecture arch of block_scheduler
-# End time: 20:55:05 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/dp_ram.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package std_logic_textio
-# -- Compiling entity dp_ram
-# -- Compiling architecture dp_ram_archi of dp_ram
-# ** Warning: ../RTL/dp_ram.vhd(66): (vcom-1236) Shared variables must be of a protected type.
-# End time: 20:55:05 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 3
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:05 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/gpgpu_configuration.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity gpgpu_configuration
-# -- Compiling architecture arch of gpgpu_configuration
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:01
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/system_memory_cntlr.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity system_memory_cntlr
-# -- Compiling architecture arch of system_memory_cntlr
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/gpgpu_ml605_top_level.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity gpgpu_ml605_top_level
-# -- Compiling architecture arch of gpgpu_ml605_top_level
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/txt_util.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Compiling package txt_util
-# -- Compiling package body txt_util
-# -- Loading package txt_util
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/read_data.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package txt_util
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity read_data
-# -- Compiling architecture Behavioral of read_data
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/write_instructions.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Compiling entity write_instructions
-# -- Compiling architecture arch of write_instructions
-# ** Warning: ../RTL/TB/write_instructions.vhd(130): Nonresolved signal 'max_instruction_length' may have multiple sources.
-#   Drivers:
-#     ../RTL/TB/write_instructions.vhd(216):Instantiation uTP_short_Instructions
-#     ../RTL/TB/write_instructions.vhd(207):Instantiation uTP_long_Instructions
-#     ../RTL/TB/write_instructions.vhd(198):Instantiation uTPInstructions
-#     ../RTL/TB/write_instructions.vhd(189):Instantiation uReductionInstructions
-#     ../RTL/TB/write_instructions.vhd(180):Instantiation uBitonicSortInstructions
-#     ../RTL/TB/write_instructions.vhd(170):Instantiation uTransposeInstructions
-#     ../RTL/TB/write_instructions.vhd(161):Instantiation uAutocorInstructions
-#     ../RTL/TB/write_instructions.vhd(152):Instantiation uMatrixMultCubinInstructions
-#     ../RTL/TB/write_instructions.vhd(143):Instantiation uMatrixMultSassInstructions
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 3
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/TP/TP_configuration.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity TP_configuration
-# -- Compiling architecture Behavioral of TP_configuration
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/TP/TP_instructions.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Compiling entity TP_instructions
-# -- Compiling architecture arch of TP_instructions
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:06 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/tb_configuration.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity tb_configuration
-# -- Compiling architecture Behavioral of tb_configuration
-# End time: 20:55:06 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vcom-159) Mode option -64 is not supported in this context and will be ignored.
-# ** Warning: Multiple occurences of ini variable Optimize_1164 are found, only first occurence will be considered.
-# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-# Start time: 20:55:07 on Apr 27,2026
-# vcom -reportprogress 300 -64 -2008 -work work ../RTL/TB/tb_top_level.vhd 
-# -- Loading package STANDARD
-# -- Loading package TEXTIO
-# -- Loading package std_logic_1164
-# -- Loading package NUMERIC_STD
-# -- Loading package ENV
-# -- Loading package pick_bench
-# -- Loading package gpgpu_package
-# -- Compiling entity tb_top_level
-# -- Compiling architecture behavior of tb_top_level
-# End time: 20:55:07 on Apr 27,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 2
-# ** Warning: (vsim-159) Mode option -64 is not supported in this context and will be ignored.
-# vsim -64 -voptargs="+acc" work.tb_top_level 
-# Start time: 20:55:07 on Apr 27,2026
-# Loading std.standard
-# Loading std.textio(body)
-# Loading ieee.std_logic_1164(body)
-# Loading ieee.numeric_std(body)
-# Loading work.pick_bench
-# Loading std.env(body)
-# Loading work.gpgpu_package(body)
-# Loading work.tb_top_level(behavior)
-# Loading work.gpgpu_ml605_top_level(arch)
-# Loading work.gpgpu_configuration(arch)
-# Loading work.block_scheduler(arch)
-# Loading work.streaming_multiprocessor(arch)
-# Loading work.streaming_multiprocessor_cntlr(arch)
-# Loading work.block_id_calc(block_id_calc_archi)
-# Loading work.warps_per_block_calc(warps_per_block_calc_archi)
-# Loading work.thread_id_calc(thread_id_calc_archi)
-# Loading work.warp_unit(arch)
-# Loading work.warp_generator(arch)
-# Loading work.warp_id_calc(warp_id_calc_archi)
-# Loading work.warp_scheduler(arch)
-# Loading work.warps_done_lut(arch)
-# Loading work.warp_checker(arch)
-# Loading work.dp_regfile(dp_regfile_archi)
-# Loading work.fence_registers(arch)
-# Loading work.pipeline_fetch(arch)
-# Loading work.pipeline_decode(arch)
-# Loading work.pipeline_read(arch)
-# Loading work.read_source_ops(arch)
-# Loading work.convert_data_types(arch)
-# Loading work.effective_address(arch)
-# Loading work.bshift(arch)
-# Loading work.calculate_address(calc_addr_archi)
-# Loading work.arbiter(arch)
-# Loading work.vector_register_controller(arch)
-# Loading work.predicate_register_controller(arch)
-# Loading work.address_register_controller(arch)
-# Loading work.shared_memory_controller(arch)
-# Loading work.memory_controller(arch)
-# Loading work.constant_memory_controller(arch)
-# Loading work.global_memory_controller(arch)
-# Loading work.predicate_lut(arch)
-# Loading work.pipeline_execute(p_exec_arch)
-# Loading work.branch_exec_unit(branch_exec_unit_arch)
-# Loading work.scalar_processor(arch)
-# Loading work.integer_add_subtract(int_addsub_archi)
-# Loading work.integer_mult_24(int_mult24_archi)
-# Loading work.shift_logical(shift_logic_archi)
-# Loading work.boolean_functions(bool_func_archi)
-# Loading work.min_max(min_max_archi)
-# Loading work.convert_int_int(convert_i_i_archi)
-# Loading work.compute_set_pred_i(comp_set_pred_i_archi)
-# Loading work.fpu_single(arch)
-# Loading work.fpu_add(rtl)
-# Loading work.fpu_sub(rtl)
-# Loading work.fpu_mul(rtl)
-# Loading work.fpu_fma(arch)
-# Loading work.fpu_round(rtl)
-# Loading work.fpu_exceptions(rtl)
-# Loading work.fpu_conv(rtl)
-# Loading work.fpu_set(rtl)
-# Loading work.fpu_rcp(behavioral)
-# Loading work.div_nr_wsticky(div_arch)
-# Loading work.a_s(a_s_cel_arch)
-# Loading work.sfu_proc(structure)
-# Loading work.sfu(sfu_arch)
-# Loading work.quadratic_interpolator(quadratic_interpolator_arch)
-# Loading work.rom(behav)
-# Loading work.lut_c0_reci(behav)
-# Loading work.lut_c0_sqrt_1_2(behav)
-# Loading work.lut_c0_sqrt_2_4(behav)
-# Loading work.lut_c0_reci_sqrt_1_2(behav)
-# Loading work.lut_c0_reci_sqrt_2_4(behav)
-# Loading work.lut_c0_exp(behav)
-# Loading work.lut_c0_ln2(behav)
-# Loading work.lut_c0_ln2e0(behav)
-# Loading work.lut_c0_sin(behav)
-# Loading work.lut_c0_cos(behav)
-# Loading work.lut_c1_reci(behav)
-# Loading work.lut_c1_sqrt_1_2(behav)
-# Loading work.lut_c1_sqrt_2_4(behav)
-# Loading work.lut_c1_reci_sqrt_1_2(behav)
-# Loading work.lut_c1_reci_sqrt_2_4(behav)
-# Loading work.lut_c1_exp(behav)
-# Loading work.lut_c1_ln2(behav)
-# Loading work.lut_c1_ln2e0(behav)
-# Loading work.lut_c1_sin(behav)
-# Loading work.lut_c1_cos(behav)
-# Loading work.lut_c2_reci(behav)
-# Loading work.lut_c2_sqrt_1_2(behav)
-# Loading work.lut_c2_sqrt_2_4(behav)
-# Loading work.lut_c2_reci_sqrt_1_2(behav)
-# Loading work.lut_c2_reci_sqrt_2_4(behav)
-# Loading work.lut_c2_exp(behav)
-# Loading work.lut_c2_ln2(behav)
-# Loading work.lut_c2_ln2e0(behav)
-# Loading work.lut_c2_sin(behav)
-# Loading work.lut_c2_cos(behav)
-# Loading work.squaring(behav)
-# Loading work.fused_accum_tree(fused_accum_tree_arch)
-# Loading work.booth_pp(booth_pp_arch)
-# Loading work.csa_4_2(csa_4_2_arch)
-# Loading work.clz(behavioral)
-# Loading work.sfu_exceptions(sfu_exceptions_arch)
-# Loading work.dualtensorcorewrapper(rtl)
-# Loading work.octectrelatedfsm(rtl)
-# Loading work.tensorcoredatapath(rtl)
-# Loading work.octectcoretop(rtl)
-# Loading work.octectrelatedbuffers(rtl)
-# Loading work.dpuarrayrel0(ar)
-# Loading work.parametricdpurel0(behavioral)
-# Loading fp8_dpu.dotproductunitfp8e4m3(behavioral)
-# Loading ieee.std_logic_arith(body)
-# Loading ieee.std_logic_unsigned(body)
-# Loading fp8_dpu.ieeefpfma_4_3_comb_uid2(arch)
-# Loading fp8_dpu.rightshifter4_by_max_16_comb_uid4(arch)
-# Loading fp8_dpu.lzc_12_comb_uid6(arch)
-# Loading fp8_dpu.leftshifter16_by_max_15_comb_uid8(arch)
-# Loading fp16_dpu.dotproductunitfp16(behavioral)
-# Loading fp16_dpu.ieeefpfma_5_10_comb_uid2(arch)
-# Loading fp16_dpu.rightshifter11_by_max_37_comb_uid4(arch)
-# Loading fp16_dpu.lzc_26_comb_uid6(arch)
-# Loading fp16_dpu.leftshifter37_by_max_36_comb_uid8(arch)
-# Loading fp32_dpu.dotproductunitfp32(behavioral)
-# Loading fp32_dpu.ieeefpfma_8_23_comb_uid2(arch)
-# Loading fp32_dpu.rightshifter24_by_max_76_comb_uid4(arch)
-# Loading fp32_dpu.lzc_52_comb_uid6(arch)
-# Loading fp32_dpu.leftshifter76_by_max_75_comb_uid8(arch)
-# Loading posit8_dpu.dotproductunitposit(behavioral)
-# Loading posit8_dpu.positmult_8_0_f0_uid2(arch)
-# Loading posit8_dpu.positdecoder_8_0_f0_uid4(arch)
-# Loading posit8_dpu.lzocshifter_6_to_6_counting_8_f0_uid6(arch)
-# Loading posit8_dpu.positdecoder_8_0_f0_uid8(arch)
-# Loading posit8_dpu.lzocshifter_6_to_6_counting_8_f0_uid10(arch)
-# Loading posit8_dpu.rightshiftersticky13_by_max_7_f0_uid12(arch)
-# Loading posit8_dpu.mypositadder(arch)
-# Loading posit8_dpu.posit2pif_8_0_comb_uid4(arch)
-# Loading posit8_dpu.normalizer_zo_6_6_7_comb_uid6(arch)
-# Loading posit8_dpu.posit2pif_8_0_comb_uid8(arch)
-# Loading posit8_dpu.normalizer_zo_6_6_7_comb_uid10(arch)
-# Loading posit8_dpu.pifadd_5_5_comb_uid12(arch)
-# Loading posit8_dpu.rightshiftersticky9_by_max_9_comb_uid14(arch)
-# Loading posit8_dpu.normalizer_zo_11_11_15_comb_uid16(arch)
-# Loading posit8_dpu.pif2posit_8_0_comb_uid18(arch)
-# Loading posit8_dpu.rightshiftersticky8_by_max_8_comb_uid20(arch)
-# Loading posit16_dpu.dotproductunitposit16(behavioral)
-# Loading posit16_dpu.positmult_16_1_f0_uid2(arch)
-# Loading posit16_dpu.positdecoder_16_1_f0_uid4(arch)
-# Loading posit16_dpu.lzocshifter_14_to_14_counting_16_f0_uid6(arch)
-# Loading posit16_dpu.positdecoder_16_1_f0_uid8(arch)
-# Loading posit16_dpu.lzocshifter_14_to_14_counting_16_f0_uid10(arch)
-# Loading posit16_dpu.rightshiftersticky28_by_max_15_f0_uid12(arch)
-# Loading posit16_dpu.positadd(arch)
-# Loading posit16_dpu.rightshiftersticky15_by_max_15_f0_uid12(arch)
-# Loading posit16_dpu.lzcshifter_15_to_15_counting_16_f0_uid14(arch)
-# Loading posit16_dpu.rightshiftersticky18_by_max_15_f0_uid16(arch)
-# Loading posit32_dpu.dotproductunitposit32(behavioral)
-# Loading posit32_dpu.positmult_32_2_f0_uid2(arch)
-# Loading posit32_dpu.positdecoder_32_2_f0_uid4(arch)
-# Loading posit32_dpu.lzocshifter_30_to_30_counting_32_f0_uid6(arch)
-# Loading posit32_dpu.positdecoder_32_2_f0_uid8(arch)
-# Loading posit32_dpu.lzocshifter_30_to_30_counting_32_f0_uid10(arch)
-# Loading posit32_dpu.rightshiftersticky59_by_max_31_f0_uid12(arch)
-# Loading posit32_dpu.positadd2_32_2_f0_uid2(arch)
-# Loading posit32_dpu.rightshiftersticky30_by_max_30_f0_uid12(arch)
-# Loading posit32_dpu.lzcshifter_30_to_30_counting_32_f0_uid14(arch)
-# Loading posit32_dpu.rightshiftersticky34_by_max_31_f0_uid16(arch)
-# Loading fixedp8_16_dpu.dotproductunit_fixedpoint8_16(behavioral)
-# Loading fixedp8_16_dpu.fixmultadd_signed_x_2_m5_y_2_m5_a_5_m10_r_5_m10_comb_uid2(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_2_signedx2_signed_comb_uid5(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid7_fixp8_16(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_signed_comb_uid9(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid11(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_signed_comb_uid13(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid15(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_2_signedx2_comb_uid17(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid19(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid21(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid23(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid25(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid27(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_2_signedx2_comb_uid29(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid31(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid33(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid35(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid37(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid39(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_2_signedx2_comb_uid41(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid43(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid45(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid47(arch)
-# Loading fixedp8_16_dpu.intmultiplierlut_3x2_comb_uid49(arch)
-# Loading fixedp8_16_dpu.multtable_comb_uid51(arch)
-# Loading fixedp8_16_dpu.compressor_23_3_comb_uid54(arch)
-# Loading fixedp8_16_dpu.compressor_3_2_comb_uid57(arch)
-# Loading fixedp8_16_dpu.compressor_14_3_comb_uid60(arch)
-# Loading fixedp8_16_dpu.compressor_6_3_comb_uid65(arch)
-# Loading fixedp8_16_dpu.intadder_11_comb_uid95(arch)
-# Loading fixedp16_32_dpu.dotproductunit(behavioral)
-# Loading fixedp16_32_dpu.fixmultadd_signed_x_5_m10_y_5_m10_a_11_m20_r_11_m20_comb_uid2(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_signed_comb_uid5(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid7_fixp16_32(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_signed_comb_uid9(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid11(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_signed_comb_uid13(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid15(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_signed_comb_uid17(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid19(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_signed_comb_uid21(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid23(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_signed_comb_uid25(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid27(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid29(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid31(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid33(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid35(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid37(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid39(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid41(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid43(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid45(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid47(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid49(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid51(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid53(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid55(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid57(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid59(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid61(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid63(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid65(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid67(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid69(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid71(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid73(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid75(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid77(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid79(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid81(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid83(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid85(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid87(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid89(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid91(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid93(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid95(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid97(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid99(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid101(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid103(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid105(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid107(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid109(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid111(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid113(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid115(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid117(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid119(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid121(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid123(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid125(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid127(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid129(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid131(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid133(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid135(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid137(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid139(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid141(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid143(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid145(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid147(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid149(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid151(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid153(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid155(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid157(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid159(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid161(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid163(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid165(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid167(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid169(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid171(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_1_signedx2_comb_uid173(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid175(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid177(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid179(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid181(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid183(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid185(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid187(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid189(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid191(arch)
-# Loading fixedp16_32_dpu.intmultiplierlut_3x2_comb_uid193(arch)
-# Loading fixedp16_32_dpu.multtable_comb_uid195(arch)
-# Loading fixedp16_32_dpu.compressor_23_3_comb_uid198(arch)
-# Loading fixedp16_32_dpu.compressor_3_2_comb_uid201(arch)
-# Loading fixedp16_32_dpu.compressor_14_3_comb_uid204(arch)
-# Loading fixedp16_32_dpu.compressor_6_3_comb_uid209(arch)
-# Loading fixedp16_32_dpu.intadder_25_comb_uid315(arch)
-# Loading int8_16_dpu.dot_unit_coreint8(ar)
-# Loading int8_16_dpu.intmultiplier_8x8_16_comb_uid2(arch)
-# Loading int8_16_dpu.intmultiplierlut_2_signedx2_signed_comb_uid6(arch)
-# Loading int8_16_dpu.multtable_comb_uid8(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_signed_comb_uid10(arch)
-# Loading int8_16_dpu.multtable_comb_uid12(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_signed_comb_uid14(arch)
-# Loading int8_16_dpu.multtable_comb_uid16(arch)
-# Loading int8_16_dpu.intmultiplierlut_2_signedx2_comb_uid18(arch)
-# Loading int8_16_dpu.multtable_comb_uid20(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid22(arch)
-# Loading int8_16_dpu.multtable_comb_uid24(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid26(arch)
-# Loading int8_16_dpu.multtable_comb_uid28(arch)
-# Loading int8_16_dpu.intmultiplierlut_2_signedx2_comb_uid30(arch)
-# Loading int8_16_dpu.multtable_comb_uid32(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid34(arch)
-# Loading int8_16_dpu.multtable_comb_uid36(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid38(arch)
-# Loading int8_16_dpu.multtable_comb_uid40(arch)
-# Loading int8_16_dpu.intmultiplierlut_2_signedx2_comb_uid42(arch)
-# Loading int8_16_dpu.multtable_comb_uid44(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid46(arch)
-# Loading int8_16_dpu.multtable_comb_uid48(arch)
-# Loading int8_16_dpu.intmultiplierlut_3x2_comb_uid50(arch)
-# Loading int8_16_dpu.multtable_comb_uid52(arch)
-# Loading int8_16_dpu.compressor_23_3_comb_uid55(arch)
-# Loading int8_16_dpu.compressor_3_2_comb_uid58(arch)
-# Loading int8_16_dpu.compressor_14_3_comb_uid61(arch)
-# Loading int8_16_dpu.compressor_6_3_comb_uid65(arch)
-# Loading int8_16_dpu.intadder_10_comb_uid88(arch)
-# Loading int8_16_dpu.intadder_16_comb_uid2(arch)
-# Loading int16_32_dpu.dot_unit_coreint(ar)
-# Loading int16_32_dpu.multiplier(behavioral)
-# Loading int16_32_dpu.adder(behavioral)
-# Loading work.mux_rel0(behavioral)
-# Loading work.rro_proc(structure)
-# Loading work.rro(rtl)
-# Loading work.rro_trig(reduce_model)
-# Loading work.multfp(ar)
-# Loading work.add_sub(behavioral)
-# Loading work.right_shifter(behavioral)
-# Loading work.fp_leading_zeros_and_shift(behavioral)
-# Loading work.pipeline_write(arch)
-# Loading work.increment_address(arch)
-# Loading work.compute_pred_flags(arch)
-# Loading work.vector_register_file(vector_register_file_archi)
-# Loading work.stack(arch)
-# Loading work.address_register_file(address_register_file_archi)
-# Loading work.predicate_register_file(predicate_register_file_archi)
-# Loading ieee.std_logic_textio(body)
-# Loading work.dp_ram(dp_ram_archi)
-# Loading work.system_memory_cntlr(arch)
-# Loading work.tb_configuration(behavioral)
-# Loading work.tp_configuration(behavioral)
-# Loading work.write_instructions(arch)
-# Loading work.tp_instructions(arch)
-# Loading work.txt_util(body)
-# Loading work.read_data(behavioral)
-# ** Warning: Design size of 1806661 statements exceeds ModelSim-Intel FPGA Starter Edition recommended capacity.
-# Expect performance to be adversely affected.
-# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
-#           File in use by: giovi  Hostname: BOOK-CI84SRJIDA  ProcessID: 72728
-#           Attempting to use alternate WLF file "./wlfteray1z".
-# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
-#           Using alternate file: ./wlfteray1z
-# iee754s_fp
-# 32
-# 2
-# ** Error: (vish-4014) No objects found matching '/tb_top_level/uGPGPU/uStreamingMultiProcessor/uPipelineFetch/mem_wr_data_a_out'.
-# Executing ONERROR command at macro ./wave_custom_JDGB.do line 347
-# (vsim-4077) Logging very large object: /tb_top_level/uGPGPU/uGlobalMemory/ram 
-# ** Note: TB: Write instructions
-#    Time: 95 ns  Iteration: 1  Instance: /tb_top_level
-# ** Note: KERNEL DONE@'123625 ns                     '
-#    Time: 123625 ns  Iteration: 1  Instance: /tb_top_level
-# ** Note: READDATA DONE@'338845 ns                     '
-#    Time: 338845 ns  Iteration: 1  Instance: /tb_top_level
-# ** Failure:  simulation Ends 
-#    Time: 338855 ns  Iteration: 1  Process: /tb_top_level/pStimulationProcess File: ../RTL/TB/tb_top_level.vhd
-# Break in Process pStimulationProcess at ../RTL/TB/tb_top_level.vhd line 671
-# End time: 21:35:26 on Apr 27,2026, Elapsed time: 0:40:19
-# Errors: 3, Warnings: 4
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(203): near ".": syntax error
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(850): Illegal target for signal assignment.
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(850): (vcom-1136) Unknown identifier "selec_phase_corrector".
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(850): Enumeration literal '0' is not of type (error).
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(938): (vcom-1136) Unknown identifier "selec_phase_corrector".
+# ** Error: ../RTL/SMP/Pipeline/Execution/pipeline_execute.vhd(976): VHDL Compiler exiting
+# End time: 16:49:32 on Apr 29,2026, Elapsed time: 0:00:00
+# Errors: 6, Warnings: 2
+# ** Error: C:/intelFPGA/18.1/modelsim_ase/win32aloem/vcom failed.
+# Error in macro ././gpgpu_compile.tcl line 183
+# C:/intelFPGA/18.1/modelsim_ase/win32aloem/vcom failed.
+#     while executing
+# "vcom -64 -2008 -work work $src"
+#     invoked from within
+# "if [expr {[string first # $src] eq 0}] {puts $src} else {
+# 		#exec >@stdout 2>@stderr
+# 		vcom -64 -2008 -work work $src
+# 	#	vcom +cover=cbesxf -coveropt ..."
+#     ("foreach" body line 2)
+#     invoked from within
+# "foreach src $gpgpu_vhdls {
+# 	if [expr {[string first # $src] eq 0}] {puts $src} else {
+# 		#exec >@stdout 2>@stderr
+# 		vcom -64 -2008 -work work $src
+# 	#	v..."

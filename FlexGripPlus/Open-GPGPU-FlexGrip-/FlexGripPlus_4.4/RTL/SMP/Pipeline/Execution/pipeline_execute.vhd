@@ -143,6 +143,7 @@ architecture p_exec_arch of pipeline_execute is
   signal src2_i : vector_register;
   signal src3_i : vector_register;
 
+
   signal cvt_type_i             : std_logic_vector(2 downto 0);
   signal w32_i                  : std_logic;
   signal is_signed_i            : std_logic;
@@ -185,71 +186,21 @@ architecture p_exec_arch of pipeline_execute is
   signal done_tcu_i             : std_logic;
   signal step_done_tcu_i        : std_logic;
 
-  signal hmma_tc0_src1_a_pair00_q          : arraySize16_32; 
-  signal hmma_tc0_src1_b_pair00_q          : arraySize16_32;
-  signal hmma_tc0_src2_a_pair00_q          : arraySize16_32;
-  signal hmma_tc0_src2_b_pair00_q          : arraySize16_32;
-  signal hmma_tc0_src3_a_pair00_q          : arraySize16_32;
-  signal hmma_tc0_src3_b_pair00_q          : arraySize16_32;
-
-  signal hmma_tc0_src1_a_pair01_q          : arraySize16_32; 
-  signal hmma_tc0_src1_b_pair01_q          : arraySize16_32;
-  signal hmma_tc0_src2_a_pair01_q          : arraySize16_32;
-  signal hmma_tc0_src2_b_pair01_q          : arraySize16_32;
-  signal hmma_tc0_src3_a_pair01_q          : arraySize16_32;
-  signal hmma_tc0_src3_b_pair01_q          : arraySize16_32;
-
-  signal hmma_tc1_src1_a_pair00_q          : arraySize16_32;
-  signal hmma_tc1_src1_b_pair00_q          : arraySize16_32;
-  signal hmma_tc1_src2_a_pair00_q          : arraySize16_32;
-  signal hmma_tc1_src2_b_pair00_q          : arraySize16_32;
-  signal hmma_tc1_src3_a_pair00_q          : arraySize16_32;
-  signal hmma_tc1_src3_b_pair00_q          : arraySize16_32;
-
-  signal hmma_tc1_src1_a_pair01_q          : arraySize16_32;
-  signal hmma_tc1_src1_b_pair01_q          : arraySize16_32;
-  signal hmma_tc1_src2_a_pair01_q          : arraySize16_32;
-  signal hmma_tc1_src2_b_pair01_q          : arraySize16_32;
-  signal hmma_tc1_src3_a_pair01_q          : arraySize16_32;
-  signal hmma_tc1_src3_b_pair01_q          : arraySize16_32;
+  signal hmmaSRCs : hmmaSRCs_TCU_port_pair; 
 
   signal rf0_rd_data_port_a_i   : arraySize16_32;
   signal rf0_rd_data_port_b_i   : arraySize16_32;
   signal rf1_rd_data_port_a_i   : arraySize16_32;
   signal rf1_rd_data_port_b_i   : arraySize16_32;
   
-  signal W0_tc0_oct0_8_X3_i     : arraySize16_8;
-  signal W1_tc0_oct0_8_X3_i     : arraySize16_8;
-  signal W0_tc0_oct0_16_X3_i    : arraySize16_16;
-  signal W1_tc0_oct0_16_X3_i    : arraySize16_16;
-  signal W0_tc0_oct0_32_X3_i    : arraySize16_32;
-  signal W1_tc0_oct0_32_X3_i    : arraySize16_32;
-  
-  signal W0_tc0_oct1_8_X3_i     : arraySize16_8;
-  signal W1_tc0_oct1_8_X3_i     : arraySize16_8;
-  signal W0_tc0_oct1_16_X3_i    : arraySize16_16;
-  signal W1_tc0_oct1_16_X3_i    : arraySize16_16;
-  signal W0_tc0_oct1_32_X3_i    : arraySize16_32;
-  signal W1_tc0_oct1_32_X3_i    : arraySize16_32; 
-
-  signal W0_tc1_oct0_8_X3_i     : arraySize16_8;
-  signal W1_tc1_oct0_8_X3_i     : arraySize16_8;
-  signal W0_tc1_oct0_16_X3_i    : arraySize16_16;
-  signal W1_tc1_oct0_16_X3_i    : arraySize16_16;
-  signal W0_tc1_oct0_32_X3_i    : arraySize16_32;
-  signal W1_tc1_oct0_32_X3_i    : arraySize16_32;
-  
-  signal W0_tc1_oct1_8_X3_i     : arraySize16_8;
-  signal W1_tc1_oct1_8_X3_i     : arraySize16_8;
-  signal W0_tc1_oct1_16_X3_i    : arraySize16_16;
-  signal W1_tc1_oct1_16_X3_i    : arraySize16_16;
-  signal W0_tc1_oct1_32_X3_i    : arraySize16_32;
-  signal W1_tc1_oct1_32_X3_i    : arraySize16_32; 
+  signal Wres_8  : Wres8_thgr_tcu_oct ;
+  signal Wres_16 : Wres16_thgr_tcu_oct ;
+  signal Wres_32 : Wres32_thgr_tcu_oct ;
    
   -- RRO signals definitions JDGB
   signal start_RRO			    : std_logic;
   signal rro_signal_start       : std_logic; 
-  signal stall_RRO  			: std_logic;
+  signal stall_RRO  			: std_logic; 
   signal selec_phase_corrector  : std_logic;
   signal Result_RRO             : vector_register;
   signal reset_n_RRO		   	: std_logic;
@@ -289,6 +240,10 @@ begin
 					  
   --
   pPipelineExecute : process(clk_in, reset)
+
+  variable lane : integer;
+  variable base : integer;
+
   begin
     if (reset = '1') then
 	    start_SFU_i <= '0';   -- JERC SFU
@@ -338,32 +293,11 @@ begin
       fpu_instr                      <= UNKNOWN;
       round_mode                     <= "00";
 
-   hmma_tc0_src1_a_pair00_q          <= (others => (others => '0')) ; 
-   hmma_tc0_src1_b_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc0_src2_a_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc0_src2_b_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc0_src3_a_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc0_src3_b_pair00_q          <= (others => (others => '0')) ;
-
-   hmma_tc0_src1_a_pair01_q          <= (others => (others => '0')) ; 
-   hmma_tc0_src1_b_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc0_src2_a_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc0_src2_b_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc0_src3_a_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc0_src3_b_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc1_src1_a_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc1_src1_b_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc1_src2_a_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc1_src2_b_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc1_src3_a_pair00_q          <= (others => (others => '0')) ;
-   hmma_tc1_src3_b_pair00_q          <= (others => (others => '0')) ;
-
-   hmma_tc1_src1_a_pair01_q          <=  (others => (others => '0')) ;
-   hmma_tc1_src1_b_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc1_src2_a_pair01_q          <= (others => (others => '0')) ;
-   hmma_tc1_src2_b_pair01_q          <= (others => (others => '0') );
-   hmma_tc1_src3_a_pair01_q          <= (others => (others => '0')) ;
-  hmma_tc1_src3_b_pair01_q          <= (others => (others => '0')) ;
+      hmmaSRCs <= (others => 
+                    (others =>
+                      (others =>
+                        (others =>
+                          (others => (others => '0'))))));
     
       elsif (rising_edge(clk_in)) then
       
@@ -411,468 +345,37 @@ begin
                   --tensor core 0 wire mapping to from outputreadstage to srcs. tc0 executes content from threadgroup0 and threadgroup4 (octect0 ) and threadgroup1 and threadgroup5 (octect 1)
                   --octect0 related- from thrgroup0 
                   --src1 related
-                  hmma_tc0_src1_a_pair00_q(0) <= temp_vector_register_in(0)(0)(0); 
-                  hmma_tc0_src1_a_pair00_q(1) <= temp_vector_register_in(1)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(2) <= temp_vector_register_in(2)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(3) <= temp_vector_register_in(3)(0)(0);
-                  hmma_tc0_src1_b_pair00_q(0) <= temp_vector_register_in(0)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(1) <= temp_vector_register_in(1)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(2) <= temp_vector_register_in(2)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(3) <= temp_vector_register_in(3)(0)(1);
 
-                  hmma_tc0_src1_a_pair01_q(0) <= temp_vector_register_in(0)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(1) <= temp_vector_register_in(1)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(2) <= temp_vector_register_in(2)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(3) <= temp_vector_register_in(3)(0)(2);
-                  hmma_tc0_src1_b_pair01_q(0) <= temp_vector_register_in(0)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(1) <= temp_vector_register_in(1)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(2) <= temp_vector_register_in(2)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(3) <= temp_vector_register_in(3)(0)(3);
 
-                  --src2 related
-                  hmma_tc0_src2_a_pair00_q(0) <= temp_vector_register_in(0)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(1) <= temp_vector_register_in(1)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(2) <= temp_vector_register_in(2)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(3) <= temp_vector_register_in(3)(2)(0);
-                  hmma_tc0_src2_b_pair00_q(0) <= temp_vector_register_in(0)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(1) <= temp_vector_register_in(1)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(2) <= temp_vector_register_in(2)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(3) <= temp_vector_register_in(3)(2)(1);
+                -- mod CORES avoids out-of-range indexing when the design is configured
+                -- with fewer physical cores than warp lanes. In that case, logical lanes
+                -- are folded onto available cores.
 
-                  hmma_tc0_src2_a_pair01_q(0) <= temp_vector_register_in(0)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(1) <= temp_vector_register_in(1)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(2) <= temp_vector_register_in(2)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(3) <= temp_vector_register_in(3)(2)(2);
-                  hmma_tc0_src2_b_pair01_q(0) <= temp_vector_register_in(0)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(1) <= temp_vector_register_in(1)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(2) <= temp_vector_register_in(2)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(3) <= temp_vector_register_in(3)(2)(3);
-
-                  --src3 related 
-                  hmma_tc0_src3_a_pair00_q(0) <= temp_vector_register_in(0)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(1) <= temp_vector_register_in(1)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(2) <= temp_vector_register_in(2)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(3) <= temp_vector_register_in(3)(4)(0);
-                  hmma_tc0_src3_b_pair00_q(0) <= temp_vector_register_in(0)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(1) <= temp_vector_register_in(1)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(2) <= temp_vector_register_in(2)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(3) <= temp_vector_register_in(3)(4)(1);
-
-                  hmma_tc0_src3_a_pair01_q(0) <= temp_vector_register_in(0)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(1) <= temp_vector_register_in(1)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(2) <= temp_vector_register_in(2)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(3) <= temp_vector_register_in(3)(4)(2);
-                  hmma_tc0_src3_b_pair01_q(0) <= temp_vector_register_in(0)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(1) <= temp_vector_register_in(1)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(2) <= temp_vector_register_in(2)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(3) <= temp_vector_register_in(3)(4)(3);
-                  
-                  --octect0 related- from thrgroup4
-                  --src1 related 
-                  hmma_tc0_src1_a_pair00_q(4) <= temp_vector_register_in(16)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(5) <= temp_vector_register_in(17)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(6) <= temp_vector_register_in(18)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(7) <= temp_vector_register_in(19)(0)(0);
-                  hmma_tc0_src1_b_pair00_q(4) <= temp_vector_register_in(16)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(5) <= temp_vector_register_in(17)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(6) <= temp_vector_register_in(18)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(7) <= temp_vector_register_in(19)(0)(1);
-
-                  hmma_tc0_src1_a_pair01_q(4) <= temp_vector_register_in(16)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(5) <= temp_vector_register_in(17)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(6) <= temp_vector_register_in(18)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(7) <= temp_vector_register_in(19)(0)(2);
-                  hmma_tc0_src1_b_pair01_q(4) <= temp_vector_register_in(16)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(5) <= temp_vector_register_in(17)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(6) <= temp_vector_register_in(18)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(7) <= temp_vector_register_in(19)(0)(3);
-
-                  --src2 related 
-                  hmma_tc0_src2_a_pair00_q(4) <= temp_vector_register_in(16)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(5) <= temp_vector_register_in(17)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(6) <= temp_vector_register_in(18)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(7) <= temp_vector_register_in(19)(2)(0);
-                  hmma_tc0_src2_b_pair00_q(4) <= temp_vector_register_in(16)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(5) <= temp_vector_register_in(17)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(6) <= temp_vector_register_in(18)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(7) <= temp_vector_register_in(19)(2)(1);
-
-                  hmma_tc0_src2_a_pair01_q(4) <= temp_vector_register_in(16)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(5) <= temp_vector_register_in(17)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(6) <= temp_vector_register_in(18)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(7) <= temp_vector_register_in(19)(2)(2);
-                  hmma_tc0_src2_b_pair01_q(4) <= temp_vector_register_in(16)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(5) <= temp_vector_register_in(17)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(6) <= temp_vector_register_in(18)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(7) <= temp_vector_register_in(19)(2)(3);
-
-                  --src3 related 
-                  hmma_tc0_src3_a_pair00_q(4) <= temp_vector_register_in(16)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(5) <= temp_vector_register_in(17)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(6) <= temp_vector_register_in(18)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(7) <= temp_vector_register_in(19)(4)(0);
-                  hmma_tc0_src3_b_pair00_q(4) <= temp_vector_register_in(16)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(5) <= temp_vector_register_in(17)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(6) <= temp_vector_register_in(18)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(7) <= temp_vector_register_in(19)(4)(1);
-
-                  hmma_tc0_src3_a_pair01_q(4) <= temp_vector_register_in(16)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(5) <= temp_vector_register_in(17)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(6) <= temp_vector_register_in(18)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(7) <= temp_vector_register_in(19)(4)(2);
-                  hmma_tc0_src3_b_pair01_q(4) <= temp_vector_register_in(16)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(5) <= temp_vector_register_in(17)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(6) <= temp_vector_register_in(18)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(7) <= temp_vector_register_in(19)(4)(3);
-
-                  --octect1 related- from thrgrp1
-                  --src1 related
-                  hmma_tc0_src1_a_pair00_q(8) <= temp_vector_register_in(4)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(9) <= temp_vector_register_in(5)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(10) <= temp_vector_register_in(6)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(11) <= temp_vector_register_in(7)(0)(0);
-                  hmma_tc0_src1_b_pair00_q(8) <= temp_vector_register_in(4)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(9) <= temp_vector_register_in(5)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(10) <= temp_vector_register_in(6)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(11) <= temp_vector_register_in(7)(0)(1);
-
-                  hmma_tc0_src1_a_pair01_q(8) <= temp_vector_register_in(4)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(9) <= temp_vector_register_in(5)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(10) <= temp_vector_register_in(6)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(11) <= temp_vector_register_in(7)(0)(2);
-                  hmma_tc0_src1_b_pair01_q(8) <= temp_vector_register_in(4)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(9) <= temp_vector_register_in(5)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(10) <= temp_vector_register_in(6)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(11) <= temp_vector_register_in(7)(0)(3);
-
-                  --src2 related 
-                  hmma_tc0_src2_a_pair00_q(8) <= temp_vector_register_in(4)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(9) <= temp_vector_register_in(5)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(10) <= temp_vector_register_in(6)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(11) <= temp_vector_register_in(7)(2)(0);
-                  hmma_tc0_src2_b_pair00_q(8) <= temp_vector_register_in(4)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(9) <= temp_vector_register_in(5)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(10) <= temp_vector_register_in(6)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(11) <= temp_vector_register_in(7)(2)(1);
-
-                  hmma_tc0_src2_a_pair01_q(8) <= temp_vector_register_in(4)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(9) <= temp_vector_register_in(5)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(10) <= temp_vector_register_in(6)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(11) <= temp_vector_register_in(7)(2)(2);
-                  hmma_tc0_src2_b_pair01_q(8) <= temp_vector_register_in(4)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(9) <= temp_vector_register_in(5)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(10) <= temp_vector_register_in(6)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(11) <= temp_vector_register_in(7)(2)(3);
-
-                  --src3 related
-                  hmma_tc0_src3_a_pair00_q(8) <= temp_vector_register_in(4)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(9) <= temp_vector_register_in(5)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(10) <= temp_vector_register_in(6)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(11) <= temp_vector_register_in(7)(4)(0);
-                  hmma_tc0_src3_b_pair00_q(8) <= temp_vector_register_in(4)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(9) <= temp_vector_register_in(5)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(10) <= temp_vector_register_in(6)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(11) <= temp_vector_register_in(7)(4)(1);
-
-                  hmma_tc0_src3_a_pair01_q(8) <= temp_vector_register_in(4)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(9) <= temp_vector_register_in(5)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(10) <= temp_vector_register_in(6)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(11) <= temp_vector_register_in(7)(4)(2);
-                  hmma_tc0_src3_b_pair01_q(8) <= temp_vector_register_in(4)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(9) <= temp_vector_register_in(5)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(10) <= temp_vector_register_in(6)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(11) <= temp_vector_register_in(7)(4)(3);
-
-                  --octect1 related- from thrgrp5 --
-                  --src1 related 
-                  hmma_tc0_src1_a_pair00_q(12) <= temp_vector_register_in(20)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(13) <= temp_vector_register_in(21)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(14) <= temp_vector_register_in(22)(0)(0);
-                  hmma_tc0_src1_a_pair00_q(15) <= temp_vector_register_in(23)(0)(0);
-                  hmma_tc0_src1_b_pair00_q(12) <= temp_vector_register_in(20)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(13) <= temp_vector_register_in(21)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(14) <= temp_vector_register_in(22)(0)(1);
-                  hmma_tc0_src1_b_pair00_q(15) <= temp_vector_register_in(23)(0)(1);
-
-                  hmma_tc0_src1_a_pair01_q(12) <= temp_vector_register_in(20)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(13) <= temp_vector_register_in(21)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(14) <= temp_vector_register_in(22)(0)(2);
-                  hmma_tc0_src1_a_pair01_q(15) <= temp_vector_register_in(23)(0)(2);
-                  hmma_tc0_src1_b_pair01_q(12) <= temp_vector_register_in(20)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(13) <= temp_vector_register_in(21)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(14) <= temp_vector_register_in(22)(0)(3);
-                  hmma_tc0_src1_b_pair01_q(15) <= temp_vector_register_in(23)(0)(3);
-                  
-                  --src2 related 
-                  hmma_tc0_src2_a_pair00_q(12) <= temp_vector_register_in(20)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(13) <= temp_vector_register_in(21)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(14) <= temp_vector_register_in(22)(2)(0);
-                  hmma_tc0_src2_a_pair00_q(15) <= temp_vector_register_in(23)(2)(0);
-                  hmma_tc0_src2_b_pair00_q(12) <= temp_vector_register_in(20)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(13) <= temp_vector_register_in(21)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(14) <= temp_vector_register_in(22)(2)(1);
-                  hmma_tc0_src2_b_pair00_q(15) <= temp_vector_register_in(23)(2)(1);
-
-                  hmma_tc0_src2_a_pair01_q(12) <= temp_vector_register_in(20)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(13) <= temp_vector_register_in(21)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(14) <= temp_vector_register_in(22)(2)(2);
-                  hmma_tc0_src2_a_pair01_q(15) <= temp_vector_register_in(23)(2)(2);
-                  hmma_tc0_src2_b_pair01_q(12) <= temp_vector_register_in(20)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(13) <= temp_vector_register_in(21)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(14) <= temp_vector_register_in(22)(2)(3);
-                  hmma_tc0_src2_b_pair01_q(15) <= temp_vector_register_in(23)(2)(3);
-
-                  --src3 related 
-                  hmma_tc0_src3_a_pair00_q(12) <= temp_vector_register_in(20)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(13) <= temp_vector_register_in(21)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(14) <= temp_vector_register_in(22)(4)(0);
-                  hmma_tc0_src3_a_pair00_q(15) <= temp_vector_register_in(23)(4)(0);
-                  hmma_tc0_src3_b_pair00_q(12) <= temp_vector_register_in(20)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(13) <= temp_vector_register_in(21)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(14) <= temp_vector_register_in(22)(4)(1);
-                  hmma_tc0_src3_b_pair00_q(15) <= temp_vector_register_in(23)(4)(1);
-
-                  hmma_tc0_src3_a_pair01_q(12) <= temp_vector_register_in(20)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(13) <= temp_vector_register_in(21)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(14) <= temp_vector_register_in(22)(4)(2);
-                  hmma_tc0_src3_a_pair01_q(15) <= temp_vector_register_in(23)(4)(2);
-                  hmma_tc0_src3_b_pair01_q(12) <= temp_vector_register_in(20)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(13) <= temp_vector_register_in(21)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(14) <= temp_vector_register_in(22)(4)(3);
-                  hmma_tc0_src3_b_pair01_q(15) <= temp_vector_register_in(23)(4)(3);
-
-                --tensor core 1 wire mapping to from outputreadstage to srcs. tc1 executes content from threadgroup2 and threadgroup6 (octect2 ) and threadgroup3 and threadgroup7 (octect 3)
-                  --octect2 related- from thrgroup2 
-                  --src1 means matrix A related elements
-                  hmma_tc1_src1_a_pair00_q(0) <= temp_vector_register_in(8)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(1) <= temp_vector_register_in(9)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(2) <= temp_vector_register_in(10)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(3) <= temp_vector_register_in(11)(0)(0);
-                  hmma_tc1_src1_b_pair00_q(0) <= temp_vector_register_in(8)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(1) <= temp_vector_register_in(9)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(2) <= temp_vector_register_in(10)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(3) <= temp_vector_register_in(11)(0)(1);
-
-                  hmma_tc1_src1_a_pair01_q(0) <= temp_vector_register_in(8)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(1) <= temp_vector_register_in(9)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(2) <= temp_vector_register_in(10)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(3) <= temp_vector_register_in(11)(0)(2);
-                  hmma_tc1_src1_b_pair01_q(0) <= temp_vector_register_in(8)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(1) <= temp_vector_register_in(9)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(2) <= temp_vector_register_in(10)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(3) <= temp_vector_register_in(11)(0)(3);
-
-                  --src2 means matrix B related elements
-                  hmma_tc1_src2_a_pair00_q(0) <= temp_vector_register_in(8)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(1) <= temp_vector_register_in(9)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(2) <= temp_vector_register_in(10)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(3) <= temp_vector_register_in(11)(2)(0);
-                  hmma_tc1_src2_b_pair00_q(0) <= temp_vector_register_in(8)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(1) <= temp_vector_register_in(9)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(2) <= temp_vector_register_in(10)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(3) <= temp_vector_register_in(11)(2)(1);
-
-                  hmma_tc1_src2_a_pair01_q(0) <= temp_vector_register_in(8)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(1) <= temp_vector_register_in(9)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(2) <= temp_vector_register_in(10)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(3) <= temp_vector_register_in(11)(2)(2);
-                  hmma_tc1_src2_b_pair01_q(0) <= temp_vector_register_in(8)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(1) <= temp_vector_register_in(9)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(2) <= temp_vector_register_in(10)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(3) <= temp_vector_register_in(11)(2)(3);
-
-                  --src3 related 
-                  hmma_tc1_src3_a_pair00_q(0) <= temp_vector_register_in(8)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(1) <= temp_vector_register_in(9)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(2) <= temp_vector_register_in(10)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(3) <= temp_vector_register_in(11)(4)(0);
-                  hmma_tc1_src3_b_pair00_q(0) <= temp_vector_register_in(8)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(1) <= temp_vector_register_in(9)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(2) <= temp_vector_register_in(10)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(3) <= temp_vector_register_in(11)(4)(1);
-
-                  hmma_tc1_src3_a_pair01_q(0) <= temp_vector_register_in(8)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(1) <= temp_vector_register_in(9)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(2) <= temp_vector_register_in(10)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(3) <= temp_vector_register_in(11)(4)(2);
-                  hmma_tc1_src3_b_pair01_q(0) <= temp_vector_register_in(8)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(1) <= temp_vector_register_in(9)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(2) <= temp_vector_register_in(10)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(3) <= temp_vector_register_in(11)(4)(3);
-
-                  --octect2 related- from thrgroup6
-                  --src1 related 
-                  hmma_tc1_src1_a_pair00_q(4) <= temp_vector_register_in(24)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(5) <= temp_vector_register_in(25)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(6) <= temp_vector_register_in(26)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(7) <= temp_vector_register_in(27)(0)(0);
-                  hmma_tc1_src1_b_pair00_q(4) <= temp_vector_register_in(24)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(5) <= temp_vector_register_in(25)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(6) <= temp_vector_register_in(26)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(7) <= temp_vector_register_in(27)(0)(1);
-
-                  hmma_tc1_src1_a_pair01_q(4) <= temp_vector_register_in(24)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(5) <= temp_vector_register_in(25)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(6) <= temp_vector_register_in(26)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(7) <= temp_vector_register_in(27)(0)(2);
-                  hmma_tc1_src1_b_pair01_q(4) <= temp_vector_register_in(24)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(5) <= temp_vector_register_in(25)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(6) <= temp_vector_register_in(26)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(7) <= temp_vector_register_in(27)(0)(3);
-
-                  --src2 related 
-                  hmma_tc1_src2_a_pair00_q(4) <= temp_vector_register_in(24)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(5) <= temp_vector_register_in(25)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(6) <= temp_vector_register_in(26)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(7) <= temp_vector_register_in(27)(2)(0);
-                  hmma_tc1_src2_b_pair00_q(4) <= temp_vector_register_in(24)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(5) <= temp_vector_register_in(25)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(6) <= temp_vector_register_in(26)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(7) <= temp_vector_register_in(27)(2)(1);
-
-                  hmma_tc1_src2_a_pair01_q(4) <= temp_vector_register_in(24)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(5) <= temp_vector_register_in(25)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(6) <= temp_vector_register_in(26)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(7) <= temp_vector_register_in(27)(2)(2);
-                  hmma_tc1_src2_b_pair01_q(4) <= temp_vector_register_in(24)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(5) <= temp_vector_register_in(25)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(6) <= temp_vector_register_in(26)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(7) <= temp_vector_register_in(27)(2)(3);
-                  
-                  --src3 related 
-                  hmma_tc1_src3_a_pair00_q(4) <= temp_vector_register_in(24)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(5) <= temp_vector_register_in(25)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(6) <= temp_vector_register_in(26)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(7) <= temp_vector_register_in(27)(4)(0);
-                  hmma_tc1_src3_b_pair00_q(4) <= temp_vector_register_in(24)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(5) <= temp_vector_register_in(25)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(6) <= temp_vector_register_in(26)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(7) <= temp_vector_register_in(27)(4)(1);
-
-                  hmma_tc1_src3_a_pair01_q(4) <= temp_vector_register_in(24)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(5) <= temp_vector_register_in(25)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(6) <= temp_vector_register_in(26)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(7) <= temp_vector_register_in(27)(4)(2);
-                  hmma_tc1_src3_b_pair01_q(4) <= temp_vector_register_in(24)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(5) <= temp_vector_register_in(25)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(6) <= temp_vector_register_in(26)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(7) <= temp_vector_register_in(27)(4)(3);
-
-                  --octect3 related- from thrgrp3
-                  --src1 related 
-                  hmma_tc1_src1_a_pair00_q(8)   <= temp_vector_register_in(12)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(9)   <= temp_vector_register_in(13)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(10)  <= temp_vector_register_in(14)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(11)  <= temp_vector_register_in(15)(0)(0);
-                  hmma_tc1_src1_b_pair00_q(8)   <= temp_vector_register_in(12)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(9)   <= temp_vector_register_in(13)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(10)  <= temp_vector_register_in(14)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(11)  <= temp_vector_register_in(15)(0)(1);
-
-                  hmma_tc1_src1_a_pair01_q(8)   <= temp_vector_register_in(12)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(9)   <= temp_vector_register_in(13)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(10)  <= temp_vector_register_in(14)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(11)  <= temp_vector_register_in(15)(0)(2);
-                  hmma_tc1_src1_b_pair01_q(8)   <= temp_vector_register_in(12)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(9)   <= temp_vector_register_in(13)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(10)  <= temp_vector_register_in(14)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(11)  <= temp_vector_register_in(15)(0)(3);
-                  
-                  --src2 related 
-                  hmma_tc1_src2_a_pair00_q(8)   <= temp_vector_register_in(12)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(9)   <= temp_vector_register_in(13)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(10)  <= temp_vector_register_in(14)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(11)  <= temp_vector_register_in(15)(2)(0);
-                  hmma_tc1_src2_b_pair00_q(8)   <= temp_vector_register_in(12)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(9)   <= temp_vector_register_in(13)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(10)  <= temp_vector_register_in(14)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(11)  <= temp_vector_register_in(15)(2)(1);
-
-                  hmma_tc1_src2_a_pair01_q(8)   <= temp_vector_register_in(12)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(9)   <= temp_vector_register_in(13)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(10)  <= temp_vector_register_in(14)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(11)  <= temp_vector_register_in(15)(2)(2);
-                  hmma_tc1_src2_b_pair01_q(8)   <= temp_vector_register_in(12)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(9)   <= temp_vector_register_in(13)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(10)  <= temp_vector_register_in(14)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(11)  <= temp_vector_register_in(15)(2)(3);
-                  
-                  --src3 related 
-                  hmma_tc1_src3_a_pair00_q(8)   <= temp_vector_register_in(12)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(9)   <= temp_vector_register_in(13)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(10)  <= temp_vector_register_in(14)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(11)  <= temp_vector_register_in(15)(4)(0);
-                  hmma_tc1_src3_b_pair00_q(8)   <= temp_vector_register_in(12)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(9)   <= temp_vector_register_in(13)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(10)  <= temp_vector_register_in(14)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(11)  <= temp_vector_register_in(15)(4)(1);
-
-                  hmma_tc1_src3_a_pair01_q(8)   <= temp_vector_register_in(12)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(9)   <= temp_vector_register_in(13)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(10)  <= temp_vector_register_in(14)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(11)  <= temp_vector_register_in(15)(4)(2);
-                  hmma_tc1_src3_b_pair01_q(8)   <= temp_vector_register_in(12)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(9)   <= temp_vector_register_in(13)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(10)  <= temp_vector_register_in(14)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(11)  <= temp_vector_register_in(15)(4)(3);
-
-                  --octect3 related- from thrgrp7
-                  --src1 related 
-                  hmma_tc1_src1_a_pair00_q(12) <= temp_vector_register_in(28)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(13) <= temp_vector_register_in(29)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(14) <= temp_vector_register_in(30)(0)(0);
-                  hmma_tc1_src1_a_pair00_q(15) <= temp_vector_register_in(31)(0)(0);
-                  hmma_tc1_src1_b_pair00_q(12) <= temp_vector_register_in(28)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(13) <= temp_vector_register_in(29)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(14) <= temp_vector_register_in(30)(0)(1);
-                  hmma_tc1_src1_b_pair00_q(15) <= temp_vector_register_in(31)(0)(1);
-
-                  hmma_tc1_src1_a_pair01_q(12) <= temp_vector_register_in(28)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(13) <= temp_vector_register_in(29)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(14) <= temp_vector_register_in(30)(0)(2);
-                  hmma_tc1_src1_a_pair01_q(15) <= temp_vector_register_in(31)(0)(2);
-                  hmma_tc1_src1_b_pair01_q(12) <= temp_vector_register_in(28)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(13) <= temp_vector_register_in(29)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(14) <= temp_vector_register_in(30)(0)(3);
-                  hmma_tc1_src1_b_pair01_q(15) <= temp_vector_register_in(31)(0)(3);
-                  
-                  --src2 related 
-                  hmma_tc1_src2_a_pair00_q(12) <= temp_vector_register_in(28)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(13) <= temp_vector_register_in(29)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(14) <= temp_vector_register_in(30)(2)(0);
-                  hmma_tc1_src2_a_pair00_q(15) <= temp_vector_register_in(31)(2)(0);
-                  hmma_tc1_src2_b_pair00_q(12) <= temp_vector_register_in(28)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(13) <= temp_vector_register_in(29)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(14) <= temp_vector_register_in(30)(2)(1);
-                  hmma_tc1_src2_b_pair00_q(15) <= temp_vector_register_in(31)(2)(1);
-
-                  hmma_tc1_src2_a_pair01_q(12) <= temp_vector_register_in(28)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(13) <= temp_vector_register_in(29)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(14) <= temp_vector_register_in(30)(2)(2);
-                  hmma_tc1_src2_a_pair01_q(15) <= temp_vector_register_in(31)(2)(2);
-                  hmma_tc1_src2_b_pair01_q(12) <= temp_vector_register_in(28)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(13) <= temp_vector_register_in(29)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(14) <= temp_vector_register_in(30)(2)(3);
-                  hmma_tc1_src2_b_pair01_q(15) <= temp_vector_register_in(31)(2)(3);
-
-                  --src3 related 
-                  hmma_tc1_src3_a_pair00_q(12) <= temp_vector_register_in(28)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(13) <= temp_vector_register_in(29)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(14) <= temp_vector_register_in(30)(4)(0);
-                  hmma_tc1_src3_a_pair00_q(15) <= temp_vector_register_in(31)(4)(0);
-                  hmma_tc1_src3_b_pair00_q(12) <= temp_vector_register_in(28)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(13) <= temp_vector_register_in(29)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(14) <= temp_vector_register_in(30)(4)(1);
-                  hmma_tc1_src3_b_pair00_q(15) <= temp_vector_register_in(31)(4)(1);
-
-                  hmma_tc1_src3_a_pair01_q(12) <= temp_vector_register_in(28)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(13) <= temp_vector_register_in(29)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(14) <= temp_vector_register_in(30)(4)(2);
-                  hmma_tc1_src3_a_pair01_q(15) <= temp_vector_register_in(31)(4)(2);
-                  hmma_tc1_src3_b_pair01_q(12) <= temp_vector_register_in(28)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(13) <= temp_vector_register_in(29)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(14) <= temp_vector_register_in(30)(4)(3);
-                  hmma_tc1_src3_b_pair01_q(15) <= temp_vector_register_in(31)(4)(3);
+                for i in 0 to 2 loop --source 1 2 3 
+                  for j in 0 to 1 loop --port a or b
+                    for k in 0 to 1 loop -- pair 00 or pair 01 
+                      for kk in 0 to 31 loop
+                        if (kk < 4 ) then --TCU0 related 
+                          hmmaSRCs(i)(0)(j)(k)(kk) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 8 ) then--TCU0
+                          hmmaSRCs(i)(0)(j)(k)(kk + 4 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 12 ) then--TCU1 related
+                          hmmaSRCs(i)(1)(j)(k)(kk - 8 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 16) then--TCU1 related
+                          hmmaSRCs(i)(1)(j)(k)(kk - 4 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 20 ) then--TCU0 related
+                          hmmaSRCs(i)(0)(j)(k)(kk - 12 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 24 ) then--TCU0 related
+                          hmmaSRCs(i)(0)(j)(k)(kk - 8 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 28 ) then--TCU1 related
+                          hmmaSRCs(i)(1)(j)(k)(kk - 20 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        elsif(kk < 32 ) then--TCU1 related
+                          hmmaSRCs(i)(1)(j)(k)(kk - 16 ) <= temp_vector_register_in(kk mod CORES)( i*2 )(k*2+j) ;
+                        end if;
+                      end loop;
+                    end loop;
+                  end loop;
+                end loop; 
 
               end if;
             
@@ -1087,208 +590,26 @@ begin
 				        temp_vector_register_out(i)(5)                <= temp_vector_register_in(i)(5);
 			        end loop;
             elsif(tcu_signal_start = '1') then
-                --tcu0 related (octect0 and octect 1)
-                --octect0, threadgroup0 related 
-                --execstep0 related
-                temp_vector_register_out(0)(TEMP_REG_DEST)(0) <= W0_tc0_oct0_16_X3_i(1) & W0_tc0_oct0_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) )  else W0_tc0_oct0_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else (W0_tc0_oct0_8_X3_i(3) & W0_tc0_oct0_8_X3_i(2) & W0_tc0_oct0_8_X3_i(1) & W0_tc0_oct0_8_X3_i(0)) ;
-                temp_vector_register_out(0)(TEMP_REG_DEST)(1) <= W0_tc0_oct0_16_X3_i(3) & W0_tc0_oct0_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(1) ;
-                temp_vector_register_out(0)(TEMP_REG_DEST)(2) <= W0_tc0_oct0_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(0)(TEMP_REG_DEST)(3) <= W0_tc0_oct0_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(1)(TEMP_REG_DEST)(0) <= W0_tc0_oct0_16_X3_i(5) & W0_tc0_oct0_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct0_8_X3_i(7) & W0_tc0_oct0_8_X3_i(6) & W0_tc0_oct0_8_X3_i(5) & W0_tc0_oct0_8_X3_i(4) ;
-                temp_vector_register_out(1)(TEMP_REG_DEST)(1) <= W0_tc0_oct0_16_X3_i(7) & W0_tc0_oct0_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(5);
-                temp_vector_register_out(1)(TEMP_REG_DEST)(2) <= W0_tc0_oct0_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(1)(TEMP_REG_DEST)(3) <= W0_tc0_oct0_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
 
-                --execstep2 related
-                temp_vector_register_out(2)(TEMP_REG_DEST)(0) <= W0_tc0_oct0_16_X3_i(9) & W0_tc0_oct0_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct0_8_X3_i(11) & W0_tc0_oct0_8_X3_i(10) & W0_tc0_oct0_8_X3_i(9) & W0_tc0_oct0_8_X3_i(8) ;
-                temp_vector_register_out(2)(TEMP_REG_DEST)(1) <= W0_tc0_oct0_16_X3_i(11) & W0_tc0_oct0_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(9);
-                temp_vector_register_out(2)(TEMP_REG_DEST)(2) <= W0_tc0_oct0_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(2)(TEMP_REG_DEST)(3) <= W0_tc0_oct0_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(3)(TEMP_REG_DEST)(0) <= W0_tc0_oct0_16_X3_i(13) & W0_tc0_oct0_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct0_8_X3_i(15) & W0_tc0_oct0_8_X3_i(14) & W0_tc0_oct0_8_X3_i(13) & W0_tc0_oct0_8_X3_i(12) ;
-                temp_vector_register_out(3)(TEMP_REG_DEST)(1) <= W0_tc0_oct0_16_X3_i(15) & W0_tc0_oct0_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct0_32_X3_i(13);
-                temp_vector_register_out(3)(TEMP_REG_DEST)(2) <= W0_tc0_oct0_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(3)(TEMP_REG_DEST)(3) <= W0_tc0_oct0_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
+                for thgr in 0 to 1 loop       -- W0/W1 threadgroup half. 0 related to threagroupX , 1 related to threadGroupX+4
+                  for tcu in 0 to 1 loop      -- TCU0 or TCU1
+                    for oct in 0 to 1 loop    -- octect 0 or 1 relative to a specific TCU
+                      for step in 0 to 3 loop -- execstep
 
-                --octect0, threadgroup4 related 
-                --execstep0 related
-                temp_vector_register_out(16)(TEMP_REG_DEST)(0) <= W1_tc0_oct0_16_X3_i(1) & W1_tc0_oct0_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct0_8_X3_i(3) & W1_tc0_oct0_8_X3_i(2) & W1_tc0_oct0_8_X3_i(1) & W1_tc0_oct0_8_X3_i(0)  ;
-                temp_vector_register_out(16)(TEMP_REG_DEST)(1) <= W1_tc0_oct0_16_X3_i(3) & W1_tc0_oct0_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(1);
-                temp_vector_register_out(16)(TEMP_REG_DEST)(2) <= W1_tc0_oct0_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(16)(TEMP_REG_DEST)(3) <= W1_tc0_oct0_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(17)(TEMP_REG_DEST)(0) <= W1_tc0_oct0_16_X3_i(5) & W1_tc0_oct0_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct0_8_X3_i(7) & W1_tc0_oct0_8_X3_i(6) & W1_tc0_oct0_8_X3_i(5) & W1_tc0_oct0_8_X3_i(4) ;
-                temp_vector_register_out(17)(TEMP_REG_DEST)(1) <= W1_tc0_oct0_16_X3_i(7) & W1_tc0_oct0_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(5);
-                temp_vector_register_out(17)(TEMP_REG_DEST)(2) <= W1_tc0_oct0_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(17)(TEMP_REG_DEST)(3) <= W1_tc0_oct0_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep2 related
-                temp_vector_register_out(18)(TEMP_REG_DEST)(0) <= W1_tc0_oct0_16_X3_i(9) & W1_tc0_oct0_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct0_8_X3_i(11) & W1_tc0_oct0_8_X3_i(10) & W1_tc0_oct0_8_X3_i(9) & W1_tc0_oct0_8_X3_i(8) ;
-                temp_vector_register_out(18)(TEMP_REG_DEST)(1) <= W1_tc0_oct0_16_X3_i(11) & W1_tc0_oct0_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(9);
-                temp_vector_register_out(18)(TEMP_REG_DEST)(2) <= W1_tc0_oct0_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(18)(TEMP_REG_DEST)(3) <= W1_tc0_oct0_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(19)(TEMP_REG_DEST)(0) <= W1_tc0_oct0_16_X3_i(13) & W1_tc0_oct0_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct0_8_X3_i(15) & W1_tc0_oct0_8_X3_i(14) & W1_tc0_oct0_8_X3_i(13) & W1_tc0_oct0_8_X3_i(12) ;
-                temp_vector_register_out(19)(TEMP_REG_DEST)(1) <= W1_tc0_oct0_16_X3_i(15) & W1_tc0_oct0_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct0_32_X3_i(13);
-                temp_vector_register_out(19)(TEMP_REG_DEST)(2) <= W1_tc0_oct0_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(19)(TEMP_REG_DEST)(3) <= W1_tc0_oct0_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
+                        lane := thgr*16 + tcu*8 + oct*4 + step;
+                        base := step*4;
 
-                --octect1, threadgroup1 related
-                --execstep0 related
-                temp_vector_register_out(4)(TEMP_REG_DEST)(0) <= W0_tc0_oct1_16_X3_i(1) & W0_tc0_oct1_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct1_8_X3_i(3) & W0_tc0_oct1_8_X3_i(2) & W0_tc0_oct1_8_X3_i(1) & W0_tc0_oct1_8_X3_i(0) ;
-                temp_vector_register_out(4)(TEMP_REG_DEST)(1) <= W0_tc0_oct1_16_X3_i(3) & W0_tc0_oct1_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(1);
-                temp_vector_register_out(4)(TEMP_REG_DEST)(2) <= W0_tc0_oct1_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(4)(TEMP_REG_DEST)(3) <= W0_tc0_oct1_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(5)(TEMP_REG_DEST)(0) <= W0_tc0_oct1_16_X3_i(5) & W0_tc0_oct1_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) )else W0_tc0_oct1_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct1_8_X3_i(7) & W0_tc0_oct1_8_X3_i(6) & W0_tc0_oct1_8_X3_i(5) & W0_tc0_oct1_8_X3_i(4) ;
-                temp_vector_register_out(5)(TEMP_REG_DEST)(1) <= W0_tc0_oct1_16_X3_i(7) & W0_tc0_oct1_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(5);
-                temp_vector_register_out(5)(TEMP_REG_DEST)(2) <= W0_tc0_oct1_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(5)(TEMP_REG_DEST)(3) <= W0_tc0_oct1_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep2 related
-                temp_vector_register_out(6)(TEMP_REG_DEST)(0) <= W0_tc0_oct1_16_X3_i(9) & W0_tc0_oct1_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct1_8_X3_i(11) & W0_tc0_oct1_8_X3_i(10) & W0_tc0_oct1_8_X3_i(9) & W0_tc0_oct1_8_X3_i(8) ;
-                temp_vector_register_out(6)(TEMP_REG_DEST)(1) <= W0_tc0_oct1_16_X3_i(11) & W0_tc0_oct1_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(9);
-                temp_vector_register_out(6)(TEMP_REG_DEST)(2) <= W0_tc0_oct1_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(6)(TEMP_REG_DEST)(3) <= W0_tc0_oct1_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(7)(TEMP_REG_DEST)(0) <= W0_tc0_oct1_16_X3_i(13) & W0_tc0_oct1_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc0_oct1_8_X3_i(15) & W0_tc0_oct1_8_X3_i(14) & W0_tc0_oct1_8_X3_i(13) & W0_tc0_oct1_8_X3_i(12) ;
-                temp_vector_register_out(7)(TEMP_REG_DEST)(1) <= W0_tc0_oct1_16_X3_i(15) & W0_tc0_oct1_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc0_oct1_32_X3_i(13);
-                temp_vector_register_out(7)(TEMP_REG_DEST)(2) <= W0_tc0_oct1_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(7)(TEMP_REG_DEST)(3) <= W0_tc0_oct1_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
+                        temp_vector_register_out(lane)(TEMP_REG_DEST)(0) <= Wres_16(thgr)(tcu)(oct)(base+1) & Wres_16(thgr)(tcu)(oct)(base+0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else Wres_32(thgr)(tcu)(oct)(base+0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else ( Wres_8(thgr)(tcu)(oct)(base+3) & Wres_8(thgr)(tcu)(oct)(base+2) & Wres_8(thgr)(tcu)(oct)(base+1) & Wres_8(thgr)(tcu)(oct)(base+0) ) ;
+                        temp_vector_register_out(lane)(TEMP_REG_DEST)(1) <= Wres_16(thgr)(tcu)(oct)(base+3) & Wres_16(thgr)(tcu)(oct)(base+2) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else Wres_32(thgr)(tcu)(oct)(base+1) ;
+                        temp_vector_register_out(lane)(TEMP_REG_DEST)(2) <= Wres_32(thgr)(tcu)(oct)(base+2);
+                        temp_vector_register_out(lane)(TEMP_REG_DEST)(3) <= Wres_32(thgr)(tcu)(oct)(base+3);
 
-                --octect1, threadgroup5 related
-                --execstep0 related
-                temp_vector_register_out(20)(TEMP_REG_DEST)(0) <= W1_tc0_oct1_16_X3_i(1) & W1_tc0_oct1_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct1_8_X3_i(3) & W1_tc0_oct1_8_X3_i(2) & W1_tc0_oct1_8_X3_i(1) & W1_tc0_oct1_8_X3_i(0) ;
-                temp_vector_register_out(20)(TEMP_REG_DEST)(1) <= W1_tc0_oct1_16_X3_i(3) & W1_tc0_oct1_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(1);
-                temp_vector_register_out(20)(TEMP_REG_DEST)(2) <= W1_tc0_oct1_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(20)(TEMP_REG_DEST)(3) <= W1_tc0_oct1_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
+                      end loop;
+                    end loop;
+                  end loop;
+                end loop;
                 
-                --execstep1 related
-                temp_vector_register_out(21)(TEMP_REG_DEST)(0) <= W1_tc0_oct1_16_X3_i(5) & W1_tc0_oct1_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct1_8_X3_i(7) & W1_tc0_oct1_8_X3_i(6) & W1_tc0_oct1_8_X3_i(5) & W1_tc0_oct1_8_X3_i(4) ;
-                temp_vector_register_out(21)(TEMP_REG_DEST)(1) <= W1_tc0_oct1_16_X3_i(7) & W1_tc0_oct1_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(5);
-                temp_vector_register_out(21)(TEMP_REG_DEST)(2) <= W1_tc0_oct1_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(21)(TEMP_REG_DEST)(3) <= W1_tc0_oct1_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --execstep2 related
-                temp_vector_register_out(22)(TEMP_REG_DEST)(0) <= W1_tc0_oct1_16_X3_i(9) & W1_tc0_oct1_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct1_8_X3_i(11) & W1_tc0_oct1_8_X3_i(10) & W1_tc0_oct1_8_X3_i(9) & W1_tc0_oct1_8_X3_i(8)  ;
-                temp_vector_register_out(22)(TEMP_REG_DEST)(1) <= W1_tc0_oct1_16_X3_i(11) & W1_tc0_oct1_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(9);
-                temp_vector_register_out(22)(TEMP_REG_DEST)(2) <= W1_tc0_oct1_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(22)(TEMP_REG_DEST)(3) <= W1_tc0_oct1_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
                 
-                --execstep3 related
-                temp_vector_register_out(23)(TEMP_REG_DEST)(0) <= W1_tc0_oct1_16_X3_i(13) & W1_tc0_oct1_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc0_oct1_8_X3_i(15) & W1_tc0_oct1_8_X3_i(14) & W1_tc0_oct1_8_X3_i(13) & W1_tc0_oct1_8_X3_i(12) ;
-                temp_vector_register_out(23)(TEMP_REG_DEST)(1) <= W1_tc0_oct1_16_X3_i(15) & W1_tc0_oct1_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc0_oct1_32_X3_i(13);
-                temp_vector_register_out(23)(TEMP_REG_DEST)(2) <= W1_tc0_oct1_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(23)(TEMP_REG_DEST)(3) <= W1_tc0_oct1_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --tcu1 related
-                --octect2, threadgroup2 related 
-                --execstep0 related
-                temp_vector_register_out(8)(TEMP_REG_DEST)(0) <= W0_tc1_oct0_16_X3_i(1) & W0_tc1_oct0_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct0_8_X3_i(3) & W0_tc1_oct0_8_X3_i(2) & W0_tc1_oct0_8_X3_i(1) & W0_tc1_oct0_8_X3_i(0) ;
-                temp_vector_register_out(8)(TEMP_REG_DEST)(1) <= W0_tc1_oct0_16_X3_i(3) & W0_tc1_oct0_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(1);
-                temp_vector_register_out(8)(TEMP_REG_DEST)(2) <= W0_tc1_oct0_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(8)(TEMP_REG_DEST)(3) <= W0_tc1_oct0_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(9)(TEMP_REG_DEST)(0) <= W0_tc1_oct0_16_X3_i(5) & W0_tc1_oct0_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) )else W0_tc1_oct0_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct0_8_X3_i(7) & W0_tc1_oct0_8_X3_i(6) & W0_tc1_oct0_8_X3_i(5) & W0_tc1_oct0_8_X3_i(4) ;
-                temp_vector_register_out(9)(TEMP_REG_DEST)(1) <= W0_tc1_oct0_16_X3_i(7) & W0_tc1_oct0_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(5);
-                temp_vector_register_out(9)(TEMP_REG_DEST)(2) <= W0_tc1_oct0_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(9)(TEMP_REG_DEST)(3) <= W0_tc1_oct0_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep2 related
-                temp_vector_register_out(10)(TEMP_REG_DEST)(0) <= W0_tc1_oct0_16_X3_i(9) & W0_tc1_oct0_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct0_8_X3_i(11) & W0_tc1_oct0_8_X3_i(10) & W0_tc1_oct0_8_X3_i(9) & W0_tc1_oct0_8_X3_i(8) ;
-                temp_vector_register_out(10)(TEMP_REG_DEST)(1) <= W0_tc1_oct0_16_X3_i(11) & W0_tc1_oct0_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(9);
-                temp_vector_register_out(10)(TEMP_REG_DEST)(2) <= W0_tc1_oct0_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(10)(TEMP_REG_DEST)(3) <= W0_tc1_oct0_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(11)(TEMP_REG_DEST)(0) <= W0_tc1_oct0_16_X3_i(13) & W0_tc1_oct0_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) )else W0_tc1_oct0_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct0_8_X3_i(15) & W0_tc1_oct0_8_X3_i(14) & W0_tc1_oct0_8_X3_i(13) & W0_tc1_oct0_8_X3_i(12) ;
-                temp_vector_register_out(11)(TEMP_REG_DEST)(1) <= W0_tc1_oct0_16_X3_i(15) & W0_tc1_oct0_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct0_32_X3_i(13);
-                temp_vector_register_out(11)(TEMP_REG_DEST)(2) <= W0_tc1_oct0_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(11)(TEMP_REG_DEST)(3) <= W0_tc1_oct0_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --octect2, threadgroup6 related 
-                --execstep0 related
-                temp_vector_register_out(24)(TEMP_REG_DEST)(0) <= W1_tc1_oct0_16_X3_i(1) & W1_tc1_oct0_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct0_8_X3_i(3) & W1_tc1_oct0_8_X3_i(2) & W1_tc1_oct0_8_X3_i(1) & W1_tc1_oct0_8_X3_i(0) ;
-                temp_vector_register_out(24)(TEMP_REG_DEST)(1) <= W1_tc1_oct0_16_X3_i(3) & W1_tc1_oct0_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(1);
-                temp_vector_register_out(24)(TEMP_REG_DEST)(2) <= W1_tc1_oct0_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(24)(TEMP_REG_DEST)(3) <= W1_tc1_oct0_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(25)(TEMP_REG_DEST)(0) <= W1_tc1_oct0_16_X3_i(5) & W1_tc1_oct0_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct0_8_X3_i(7) & W1_tc1_oct0_8_X3_i(6) & W1_tc1_oct0_8_X3_i(5) & W1_tc1_oct0_8_X3_i(4) ;
-                temp_vector_register_out(25)(TEMP_REG_DEST)(1) <= W1_tc1_oct0_16_X3_i(7) & W1_tc1_oct0_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(5);
-                temp_vector_register_out(25)(TEMP_REG_DEST)(2) <= W1_tc1_oct0_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(25)(TEMP_REG_DEST)(3) <= W1_tc1_oct0_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep2 related
-                temp_vector_register_out(26)(TEMP_REG_DEST)(0) <= W1_tc1_oct0_16_X3_i(9) & W1_tc1_oct0_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct0_8_X3_i(11) & W1_tc1_oct0_8_X3_i(10) & W1_tc1_oct0_8_X3_i(9) & W1_tc1_oct0_8_X3_i(8)  ;
-                temp_vector_register_out(26)(TEMP_REG_DEST)(1) <= W1_tc1_oct0_16_X3_i(11) & W1_tc1_oct0_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(9);
-                temp_vector_register_out(26)(TEMP_REG_DEST)(2) <= W1_tc1_oct0_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(26)(TEMP_REG_DEST)(3) <= W1_tc1_oct0_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(27)(TEMP_REG_DEST)(0) <= W1_tc1_oct0_16_X3_i(13) & W1_tc1_oct0_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) )else W1_tc1_oct0_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct0_8_X3_i(15) & W1_tc1_oct0_8_X3_i(14) & W1_tc1_oct0_8_X3_i(13) & W1_tc1_oct0_8_X3_i(12)  ;
-                temp_vector_register_out(27)(TEMP_REG_DEST)(1) <= W1_tc1_oct0_16_X3_i(15) & W1_tc1_oct0_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct0_32_X3_i(13);
-                temp_vector_register_out(27)(TEMP_REG_DEST)(2) <= W1_tc1_oct0_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(27)(TEMP_REG_DEST)(3) <= W1_tc1_oct0_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --octect3, threadgroup3 related
-                --execstep0 related
-                temp_vector_register_out(12)(TEMP_REG_DEST)(0) <= W0_tc1_oct1_16_X3_i(1) & W0_tc1_oct1_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct1_8_X3_i(3) & W0_tc1_oct1_8_X3_i(2) & W0_tc1_oct1_8_X3_i(1) & W0_tc1_oct1_8_X3_i(0) ;
-                temp_vector_register_out(12)(TEMP_REG_DEST)(1) <= W0_tc1_oct1_16_X3_i(3) & W0_tc1_oct1_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(1);
-                temp_vector_register_out(12)(TEMP_REG_DEST)(2) <= W0_tc1_oct1_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(12)(TEMP_REG_DEST)(3) <= W0_tc1_oct1_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --execstep1 related
-                temp_vector_register_out(13)(TEMP_REG_DEST)(0) <= W0_tc1_oct1_16_X3_i(5) & W0_tc1_oct1_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct1_8_X3_i(7) & W0_tc1_oct1_8_X3_i(6) & W0_tc1_oct1_8_X3_i(5) & W0_tc1_oct1_8_X3_i(4) ;
-                temp_vector_register_out(13)(TEMP_REG_DEST)(1) <= W0_tc1_oct1_16_X3_i(7) & W0_tc1_oct1_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(5);
-                temp_vector_register_out(13)(TEMP_REG_DEST)(2) <= W0_tc1_oct1_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(13)(TEMP_REG_DEST)(3) <= W0_tc1_oct1_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --execstep2 related
-                temp_vector_register_out(14)(TEMP_REG_DEST)(0) <= W0_tc1_oct1_16_X3_i(9) & W0_tc1_oct1_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct1_8_X3_i(11) & W0_tc1_oct1_8_X3_i(10) & W0_tc1_oct1_8_X3_i(9) & W0_tc1_oct1_8_X3_i(8)  ;
-                temp_vector_register_out(14)(TEMP_REG_DEST)(1) <= W0_tc1_oct1_16_X3_i(11) & W0_tc1_oct1_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(9);
-                temp_vector_register_out(14)(TEMP_REG_DEST)(2) <= W0_tc1_oct1_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(14)(TEMP_REG_DEST)(3) <= W0_tc1_oct1_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --execstep3 related
-                temp_vector_register_out(15)(TEMP_REG_DEST)(0) <= W0_tc1_oct1_16_X3_i(13) & W0_tc1_oct1_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W0_tc1_oct1_8_X3_i(15) & W0_tc1_oct1_8_X3_i(14) & W0_tc1_oct1_8_X3_i(13) & W0_tc1_oct1_8_X3_i(12) ;
-                temp_vector_register_out(15)(TEMP_REG_DEST)(1) <= W0_tc1_oct1_16_X3_i(15) & W0_tc1_oct1_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W0_tc1_oct1_32_X3_i(13);
-                temp_vector_register_out(15)(TEMP_REG_DEST)(2) <= W0_tc1_oct1_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(15)(TEMP_REG_DEST)(3) <= W0_tc1_oct1_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
-
-                --octect3, threadgroup7 related
-                --execstep0 related
-                temp_vector_register_out(28)(TEMP_REG_DEST)(0) <= W1_tc1_oct1_16_X3_i(1) & W1_tc1_oct1_16_X3_i(0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct1_8_X3_i(3) & W1_tc1_oct1_8_X3_i(2) & W1_tc1_oct1_8_X3_i(1) & W1_tc1_oct1_8_X3_i(0) ;
-                temp_vector_register_out(28)(TEMP_REG_DEST)(1) <= W1_tc1_oct1_16_X3_i(3) & W1_tc1_oct1_16_X3_i(2) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(1);
-                temp_vector_register_out(28)(TEMP_REG_DEST)(2) <= W1_tc1_oct1_32_X3_i(2) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(28)(TEMP_REG_DEST)(3) <= W1_tc1_oct1_32_X3_i(3) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep1 related
-                temp_vector_register_out(29)(TEMP_REG_DEST)(0) <= W1_tc1_oct1_16_X3_i(5) & W1_tc1_oct1_16_X3_i(4) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(4) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct1_8_X3_i(7) & W1_tc1_oct1_8_X3_i(6) & W1_tc1_oct1_8_X3_i(5) & W1_tc1_oct1_8_X3_i(4) ;
-                temp_vector_register_out(29)(TEMP_REG_DEST)(1) <= W1_tc1_oct1_16_X3_i(7) & W1_tc1_oct1_16_X3_i(6) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(5);
-                temp_vector_register_out(29)(TEMP_REG_DEST)(2) <= W1_tc1_oct1_32_X3_i(6) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(29)(TEMP_REG_DEST)(3) <= W1_tc1_oct1_32_X3_i(7) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep2 releted
-                temp_vector_register_out(30)(TEMP_REG_DEST)(0) <= W1_tc1_oct1_16_X3_i(9) & W1_tc1_oct1_16_X3_i(8) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(8) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct1_8_X3_i(11) & W1_tc1_oct1_8_X3_i(10) & W1_tc1_oct1_8_X3_i(9) & W1_tc1_oct1_8_X3_i(8) ;
-                temp_vector_register_out(30)(TEMP_REG_DEST)(1) <= W1_tc1_oct1_16_X3_i(11) & W1_tc1_oct1_16_X3_i(10) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(9);
-                temp_vector_register_out(30)(TEMP_REG_DEST)(2) <= W1_tc1_oct1_32_X3_i(10) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(30)(TEMP_REG_DEST)(3) <= W1_tc1_oct1_32_X3_i(11) ; --useful only in case the elements of result matrix are width 32 bits
-                
-                --execstep3 related
-                temp_vector_register_out(31)(TEMP_REG_DEST)(0) <= W1_tc1_oct1_16_X3_i(13) & W1_tc1_oct1_16_X3_i(12) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(12) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else W1_tc1_oct1_8_X3_i(15) & W1_tc1_oct1_8_X3_i(14) & W1_tc1_oct1_8_X3_i(13) & W1_tc1_oct1_8_X3_i(12) ;
-                temp_vector_register_out(31)(TEMP_REG_DEST)(1) <= W1_tc1_oct1_16_X3_i(15) & W1_tc1_oct1_16_X3_i(14) when ( ( w16_in = '1' and (alu_opcode_in /= IHMMA  and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else W1_tc1_oct1_32_X3_i(13);
-                temp_vector_register_out(31)(TEMP_REG_DEST)(2) <= W1_tc1_oct1_32_X3_i(14) ; --useful only in case the elements of result matrix are width 32 bits
-                temp_vector_register_out(31)(TEMP_REG_DEST)(3) <= W1_tc1_oct1_32_X3_i(15) ; --useful only in case the elements of result matrix are width 32 bits
-              
               for i in 1 to CORES - 1 loop
 				        temp_vector_register_out(i)(1)                <= temp_vector_register_in(i)(1);
 				        temp_vector_register_out(i)(2)                <= temp_vector_register_in(i)(2);
@@ -1544,61 +865,61 @@ doubleParametricTCUmodule : dualTensorCoreWrapper
     widthSel => w32_in & w16_in, --fixing 16 bit operands for now
     typeSel  => instr_subop_in, -- "000" for selecting floating point type others to determine
 
-    tc0_src1_rf_port_a_pair00 => hmma_tc0_src1_a_pair00_q, 
-    tc0_src1_rf_port_b_pair00 => hmma_tc0_src1_b_pair00_q, 
-    tc0_src2_rf_port_a_pair00 => hmma_tc0_src2_a_pair00_q, 
-    tc0_src2_rf_port_b_pair00 => hmma_tc0_src2_b_pair00_q, 
-    tc0_src3_rf_port_a_pair00 => hmma_tc0_src3_a_pair00_q,
-    tc0_src3_rf_port_b_pair00 => hmma_tc0_src3_b_pair00_q,
+    tc0_src1_rf_port_a_pair00 =>  hmmaSRCs(0)(0)(0)(0),
+    tc0_src1_rf_port_b_pair00 =>  hmmaSRCs(0)(0)(1)(0),
+    tc0_src2_rf_port_a_pair00 =>  hmmaSRCs(1)(0)(0)(0),
+    tc0_src2_rf_port_b_pair00 =>  hmmaSRCs(1)(0)(1)(0),
+    tc0_src3_rf_port_a_pair00 =>  hmmaSRCs(2)(0)(0)(0),
+    tc0_src3_rf_port_b_pair00 =>  hmmaSRCs(2)(0)(1)(0),
 
-    tc0_src1_rf_port_a_pair01 => hmma_tc0_src1_a_pair01_q, 
-    tc0_src1_rf_port_b_pair01 => hmma_tc0_src1_b_pair01_q,
-    tc0_src2_rf_port_a_pair01 => hmma_tc0_src2_a_pair01_q, 
-    tc0_src2_rf_port_b_pair01 => hmma_tc0_src2_b_pair01_q, 
-    tc0_src3_rf_port_a_pair01 => hmma_tc0_src3_a_pair01_q,
-    tc0_src3_rf_port_b_pair01 => hmma_tc0_src3_b_pair01_q,
+    tc0_src1_rf_port_a_pair01 =>  hmmaSRCs(0)(0)(0)(1),
+    tc0_src1_rf_port_b_pair01 =>  hmmaSRCs(0)(0)(1)(1),
+    tc0_src2_rf_port_a_pair01 =>  hmmaSRCs(1)(0)(0)(1),
+    tc0_src2_rf_port_b_pair01 =>  hmmaSRCs(1)(0)(1)(1),
+    tc0_src3_rf_port_a_pair01 =>  hmmaSRCs(2)(0)(0)(1),
+    tc0_src3_rf_port_b_pair01 =>  hmmaSRCs(2)(0)(1)(1),
 
-    tc1_src1_rf_port_a_pair00 => hmma_tc1_src1_a_pair00_q,
-    tc1_src1_rf_port_b_pair00 => hmma_tc1_src1_b_pair00_q,
-    tc1_src2_rf_port_a_pair00 => hmma_tc1_src2_a_pair00_q,
-    tc1_src2_rf_port_b_pair00 => hmma_tc1_src2_b_pair00_q,
-    tc1_src3_rf_port_a_pair00 => hmma_tc1_src3_a_pair00_q,
-    tc1_src3_rf_port_b_pair00 => hmma_tc1_src3_b_pair00_q,
+    tc1_src1_rf_port_a_pair00 =>  hmmaSRCs(0)(1)(0)(0),
+    tc1_src1_rf_port_b_pair00 =>  hmmaSRCs(0)(1)(1)(0),
+    tc1_src2_rf_port_a_pair00 =>  hmmaSRCs(1)(1)(0)(0),
+    tc1_src2_rf_port_b_pair00 =>  hmmaSRCs(1)(1)(1)(0),
+    tc1_src3_rf_port_a_pair00 =>  hmmaSRCs(2)(1)(0)(0),
+    tc1_src3_rf_port_b_pair00 =>  hmmaSRCs(2)(1)(1)(0),
     
-    tc1_src1_rf_port_a_pair01 => hmma_tc1_src1_a_pair01_q,
-    tc1_src1_rf_port_b_pair01 => hmma_tc1_src1_b_pair01_q,
-    tc1_src2_rf_port_a_pair01 => hmma_tc1_src2_a_pair01_q,
-    tc1_src2_rf_port_b_pair01 => hmma_tc1_src2_b_pair01_q,
-    tc1_src3_rf_port_a_pair01 => hmma_tc1_src3_a_pair01_q,
-    tc1_src3_rf_port_b_pair01 => hmma_tc1_src3_b_pair01_q,
+    tc1_src1_rf_port_a_pair01 =>  hmmaSRCs(0)(1)(0)(1),
+    tc1_src1_rf_port_b_pair01 =>  hmmaSRCs(0)(1)(1)(1),
+    tc1_src2_rf_port_a_pair01 =>  hmmaSRCs(1)(1)(0)(1),
+    tc1_src2_rf_port_b_pair01 =>  hmmaSRCs(1)(1)(1)(1),
+    tc1_src3_rf_port_a_pair01 =>  hmmaSRCs(2)(1)(0)(1),
+    tc1_src3_rf_port_b_pair01 =>  hmmaSRCs(2)(1)(1)(1),
 
-    W0_tc0_oct0_8_X3  => W0_tc0_oct0_8_X3_i,  --array of 4 (8bit) bytes related to octect0 outputs to tcu0 
-    W1_tc0_oct0_8_X3  => W1_tc0_oct0_8_X3_i,  --array of 4 (8bit) bytes related to octect0 outputs to tcu0
-    W0_tc0_oct0_16_X3 => W0_tc0_oct0_16_X3_i, --array of 4 (16bit) halfwords related to octect0 outputs to tcu0
-    W1_tc0_oct0_16_X3 => W1_tc0_oct0_16_X3_i, --array of 4 (16bit) halfwords related to octect0 outputs to tcu0
-    W0_tc0_oct0_32_X3 => W0_tc0_oct0_32_X3_i, --array of 4 (32bit) words related to octect0 outputs to tcu0
-    W1_tc0_oct0_32_X3 => W1_tc0_oct0_32_X3_i, --array of 4 (32bit) words related to octect0 outputs to tcu0
+    W0_tc0_oct0_8_X3  =>  Wres_8(0)(0)(0),  --array of 16 (8bit) bytes related to octect0 outputs to tcu0 
+    W1_tc0_oct0_8_X3  =>  Wres_8(1)(0)(0),  --array of 16 (8bit) bytes related to octect0 outputs to tcu0
+    W0_tc0_oct0_16_X3 =>  Wres_16(0)(0)(0), --array of 16 (16bit) halfwords related to octect0 outputs to tcu0
+    W1_tc0_oct0_16_X3 =>  Wres_16(1)(0)(0), --array of 16 (16bit) halfwords related to octect0 outputs to tcu0
+    W0_tc0_oct0_32_X3 =>  Wres_32(0)(0)(0), --array of 16 (32bit) words related to octect0 outputs to tcu0
+    W1_tc0_oct0_32_X3 =>  Wres_32(1)(0)(0), --array of 16 (32bit) words related to octect0 outputs to tcu0
             
-    W0_tc0_oct1_8_X3  => W0_tc0_oct1_8_X3_i, --array of 4 (8bit) bytes related to octect1 outputs to tcu0 
-    W1_tc0_oct1_8_X3  => W1_tc0_oct1_8_X3_i, --array of 4 (8bit) bytes related to octect1 outputs to tcu0 
-    W0_tc0_oct1_16_X3 => W0_tc0_oct1_16_X3_i, --array of 4 (16bit) halfwords related to octect1 outputs to tcu0
-    W1_tc0_oct1_16_X3 => W1_tc0_oct1_16_X3_i, --array of 4 (16bit) halfwords related to octect1 outputs to tcu0
-    W0_tc0_oct1_32_X3 => W0_tc0_oct1_32_X3_i, --array of 4 (32bit) words related to octect1 outputs to tcu0
-    W1_tc0_oct1_32_X3 => W1_tc0_oct1_32_X3_i, --array of 4 (32bit) words related to octect1 outputs to tcu0
+    W0_tc0_oct1_8_X3  =>  Wres_8(0)(0)(1), --array of 16 (8bit) bytes related to octect1 outputs to tcu0 
+    W1_tc0_oct1_8_X3  =>  Wres_8(1)(0)(1), --array of 16 (8bit) bytes related to octect1 outputs to tcu0 
+    W0_tc0_oct1_16_X3 =>  Wres_16(0)(0)(1), --array of 16 (16bit) halfwords related to octect1 outputs to tcu0
+    W1_tc0_oct1_16_X3 =>  Wres_16(1)(0)(1), --array of 16 (16bit) halfwords related to octect1 outputs to tcu0
+    W0_tc0_oct1_32_X3 =>  Wres_32(0)(0)(1), --array of 16 (32bit) words related to octect1 outputs to tcu0
+    W1_tc0_oct1_32_X3 =>  Wres_32(1)(0)(1), --array of 16 (32bit) words related to octect1 outputs to tcu0
            
-    W0_tc1_oct0_8_X3  => W0_tc1_oct0_8_X3_i, --array of 4 (8bit) bytes related to octect2 outputs to tcu1
-    W1_tc1_oct0_8_X3  => W1_tc1_oct0_8_X3_i , --array of 4 (8bit) bytes related to octect2 outputs to tcu1
-    W0_tc1_oct0_16_X3 => W0_tc1_oct0_16_X3_i , --array of 4 (16bit) halfwords related to octect2 outputs to tcu1
-    W1_tc1_oct0_16_X3 => W1_tc1_oct0_16_X3_i, --array of 4 (16bit) halfwords related to octect2 outputs to tcu1
-    W0_tc1_oct0_32_X3 => W0_tc1_oct0_32_X3_i , --array of 4 (32bit) words related to octect2 outputs to tcu1
-    W1_tc1_oct0_32_X3 => W1_tc1_oct0_32_X3_i, --array of 4 (32bit) words related to octect2 outputs to tcu1
+    W0_tc1_oct0_8_X3  =>  Wres_8(0)(1)(0), --array of 16 (8bit) bytes related to octect2 outputs to tcu1
+    W1_tc1_oct0_8_X3  =>  Wres_8(1)(1)(0), --array of 16 (8bit) bytes related to octect2 outputs to tcu1
+    W0_tc1_oct0_16_X3 =>  Wres_16(0)(1)(0), --array of 16 (16bit) halfwords related to octect2 outputs to tcu1
+    W1_tc1_oct0_16_X3 =>  Wres_16(1)(1)(0), --array of 16 (16bit) halfwords related to octect2 outputs to tcu1
+    W0_tc1_oct0_32_X3 =>  Wres_32(0)(1)(0), --array of 16 (32bit) words related to octect2 outputs to tcu1
+    W1_tc1_oct0_32_X3 =>  Wres_32(1)(1)(0), --array of 16 (32bit) words related to octect2 outputs to tcu1
 
-    W0_tc1_oct1_8_X3  => W0_tc1_oct1_8_X3_i , --array of 4 (8bit) bytes related to octect3 outputs to tcu1
-    W1_tc1_oct1_8_X3  => W1_tc1_oct1_8_X3_i , --array of 4 (8bit) bytes related to octect3 outputs to tcu1
-    W0_tc1_oct1_16_X3 => W0_tc1_oct1_16_X3_i, --array of 4 (16bit) halfwords related to octect3 outputs to tcu1
-    W1_tc1_oct1_16_X3 => W1_tc1_oct1_16_X3_i, --array of 4 (16bit) halfwords related to octect3 outputs to tcu1
-    W0_tc1_oct1_32_X3 => W0_tc1_oct1_32_X3_i, --array of 4 (32bit) words related to octect3 outputs to tcu1
-    W1_tc1_oct1_32_X3 => W1_tc1_oct1_32_X3_i, --array of 4 (32bit) words related to octect3 outputs to tcu1
+    W0_tc1_oct1_8_X3  => Wres_8(0)(1)(1), --array of 16 (8bit) bytes related to octect3 outputs to tcu1
+    W1_tc1_oct1_8_X3  => Wres_8(1)(1)(1), --array of 16 (8bit) bytes related to octect3 outputs to tcu1
+    W0_tc1_oct1_16_X3 => Wres_16(0)(1)(1), --array of 16 (16bit) halfwords related to octect3 outputs to tcu1
+    W1_tc1_oct1_16_X3 => Wres_16(1)(1)(1), --array of 16 (16bit) halfwords related to octect3 outputs to tcu1
+    W0_tc1_oct1_32_X3 => Wres_32(0)(1)(1),--array of 16 (32bit) words related to octect3 outputs to tcu1
+    W1_tc1_oct1_32_X3 => Wres_32(1)(1)(1),--array of 16 (32bit) words related to octect3 outputs to tcu1
 
     busy      => busy_tcu_i,
     done      => done_tcu_i,

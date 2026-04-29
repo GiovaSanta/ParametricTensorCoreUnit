@@ -280,14 +280,37 @@ package gpgpu_package is
 	type vector_flag_register is array (CORES - 1 downto 0) of std_logic_vector(3 downto 0);
 	type vector_pred_register is array (31 downto 0) of std_logic_vector(3 downto 0);
 
+	type arraySize16_32 is array(15 downto 0) of std_logic_vector(31 downto 0) ;
 
+	subtype hmma_words is arraySize16_32;	
+	type hmma_pair is array (1 downto 0) of hmma_words ;
+	type hmma_port_pair is array (1 downto 0) of hmma_pair ;
+	type hmmaTCU_port_pair is array (1 downto 0) of hmma_port_pair ;
+	type hmmaSRCs_TCU_port_pair is array (2 downto 0) of hmmaTCU_port_pair ;
+
+	type arraySize16_16  is array(15 downto 0) of std_logic_vector(15 downto 0) ;
+	
+	type arraySize16_8 is array(15 downto 0) of std_logic_vector(7 downto 0);
+	
+	subtype Wres16 is arraySize16_16;
+	type Wres16_oct is array(1 downto 0) of Wres16;
+	type Wres16_tcu_oct is array(1 downto 0) of Wres16_oct;
+	type Wres16_thgr_tcu_oct is array(1 downto 0) of Wres16_tcu_oct;
+
+	subtype Wres32 is arraySize16_32;
+	type Wres32_oct is array(1 downto 0) of Wres32;
+	type Wres32_tcu_oct is array(1 downto 0) of Wres32_oct;
+	type Wres32_thgr_tcu_oct is array(1 downto 0) of Wres32_tcu_oct;
+
+	subtype Wres8 is arraySize16_8;
+	type Wres8_oct is array(1 downto 0) of Wres8;
+	type Wres8_tcu_oct is array(1 downto 0) of Wres8_oct;
+	type Wres8_thgr_tcu_oct is array(1 downto 0) of Wres8_tcu_oct;
+	
 	type arraySize4_8 is array(3 downto 0) of std_logic_vector(7 downto 0);
 	type arraySize4_16 is array(3 downto 0) of std_logic_vector(15 downto 0) ;
 	type arraySize4_32 is array(3 downto 0) of std_logic_vector(31 downto 0) ;		
 	type arraySize8_32 is array(7 downto 0) of std_logic_vector(31 downto 0) ;
-	type arraySize16_8 is array(15 downto 0) of std_logic_vector(7 downto 0);
-	type arraySize16_16  is array(15 downto 0) of std_logic_vector(15 downto 0) ;
-	type arraySize16_32 is array(15 downto 0) of std_logic_vector(31 downto 0) ;
 
 	-- [BOYANG] All components declaration
 	component warps_done_lut is
