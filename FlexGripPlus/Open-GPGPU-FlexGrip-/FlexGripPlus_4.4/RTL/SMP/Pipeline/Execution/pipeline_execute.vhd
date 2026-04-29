@@ -206,7 +206,7 @@ architecture p_exec_arch of pipeline_execute is
   signal reset_n_RRO		   	: std_logic;
 
   --tcu signals definition gio
-  signal tcu_signal_start   : std_logic;
+  signal tcu_signal_start   : std_logic; 
   signal stall_TCU         : std_logic; 
   signal load_pair_s       : std_logic_vector(1 downto 0);
   
@@ -596,7 +596,7 @@ begin
                     for oct in 0 to 1 loop    -- octect 0 or 1 relative to a specific TCU
                       for step in 0 to 3 loop -- execstep
 
-                        lane := thgr*16 + tcu*8 + oct*4 + step;
+                        lane := (thgr*16 + tcu*8 + oct*4 + step) mod CORES ;
                         base := step*4;
 
                         temp_vector_register_out(lane)(TEMP_REG_DEST)(0) <= Wres_16(thgr)(tcu)(oct)(base+1) & Wres_16(thgr)(tcu)(oct)(base+0) when ( (w16_in = '1' and (alu_opcode_in /= IHMMA and alu_opcode_in /= FXPHMMA )) or (w16_in = '0' and (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA)) ) else Wres_32(thgr)(tcu)(oct)(base+0) when w32_in = '1' or ( (alu_opcode_in = IHMMA or alu_opcode_in = FXPHMMA) and w16_in = '1') else ( Wres_8(thgr)(tcu)(oct)(base+3) & Wres_8(thgr)(tcu)(oct)(base+2) & Wres_8(thgr)(tcu)(oct)(base+1) & Wres_8(thgr)(tcu)(oct)(base+0) ) ;

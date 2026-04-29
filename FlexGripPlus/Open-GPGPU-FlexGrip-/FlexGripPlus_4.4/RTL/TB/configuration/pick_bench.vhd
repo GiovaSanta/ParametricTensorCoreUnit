@@ -73,15 +73,15 @@ package pick_bench is
     constant BENCH_CMEMREG10 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG11 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG12 : std_logic_vector(7 downto 0) := x"00";
-    constant BENCH_CMEMREG13 : std_logic_vector(7 downto 0) := x"02";
+    constant BENCH_CMEMREG13 : std_logic_vector(7 downto 0) := x"01";
     constant BENCH_CMEMREG14 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG15 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG16 : std_logic_vector(7 downto 0) := x"00";
-    constant BENCH_CMEMREG17 : std_logic_vector(7 downto 0) := x"04";
+    constant BENCH_CMEMREG17 : std_logic_vector(7 downto 0) := x"02";
     constant BENCH_CMEMREG18 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG19 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG20 : std_logic_vector(7 downto 0) := x"00";
-    constant BENCH_CMEMREG21 : std_logic_vector(7 downto 0) := x"06";
+    constant BENCH_CMEMREG21 : std_logic_vector(7 downto 0) := x"03";
     constant BENCH_CMEMREG22 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG23 : std_logic_vector(7 downto 0) := x"00";
     
