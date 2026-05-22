@@ -7,7 +7,7 @@ ips/OoO
 ips/S1
 ips/T02x
 ips/T03x
-ips/T13x
+#ips/T13x
 ips/fT13x
 ips/KPrim
 ips/KFPU
