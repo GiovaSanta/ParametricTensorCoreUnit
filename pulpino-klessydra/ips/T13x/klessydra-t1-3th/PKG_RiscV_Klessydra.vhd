@@ -232,7 +232,7 @@ package riscv_klessydra is
   constant KBCASTLD_bit_position : natural := 11;
 
   constant KADDV_bit_position    : natural := 0;
-  constant KSUBV_bit_position    : natural := 1;
+  constant KSUBV_bit_position    : natural := 1; 
   constant KVMUL_bit_position    : natural := 2;
   constant KVRED_bit_position    : natural := 3;
   constant KDOTP_bit_position    : natural := 4;
