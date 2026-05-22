@@ -15,7 +15,7 @@
 library ieee; 
 use ieee.std_logic_1164.all;
 use ieee.std_logic_misc.all;
-use ieee.numeric_std.all;oijij
+use ieee.numeric_std.all;
 use std.textio.all;
 
 -- local packages ------------
@@ -135,10 +135,12 @@ begin
       instr_rvalid_IE <= '0';
       ie_instr_req    <= '0';
       ls_instr_req    <= '0';
+      tcu_instr_req   <= '0';
       comparator_en   <= '0'; 
     elsif rising_edge(clk_i) then
       ls_instr_req <= '0';
       ie_instr_req <= '0';
+      tcu_instr_req <= '0';
       if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
         halt_IE  <= '1';
         halt_LSU <= '1';
@@ -167,6 +169,7 @@ begin
 
         comparator_en    <= '0';
         ie_instr_req     <= '0';
+        tcu_instr_req    <= '0';
         amo_load_skip    <= '0';
         amo_load         <= '0';
         load_op          <= '0';
@@ -506,6 +509,45 @@ begin
                 decoded_instruction_IE <= ILL_pattern;
             end case;
 
+          when KTCU => -- new addition for TCU -gio-
+
+            if accl_en = 1 then 
+              if (FUNCT3_wires = HMMA_STEP0) or
+                 (FUNCT3_wires = HMMA_STEP1) then
+
+                if (FUNCT7_wires = TCU_FP8)      or
+                   (FUNCT7_wires = TCU_FP16)     or
+                   (FUNCT7_wires = TCU_FP32)     or
+                   (FUNCT7_wires = TCU_POSIT8)   or
+                   (FUNCT7_wires = TCU_POSIT16)  or
+                   (FUNCT7_wires = TCU_POSIT32)  or
+                   (FUNCT7_wires = TCU_INT8)     or
+                   (FUNCT7_wires = TCU_INT16)    or
+                   (FUNCT7_wires = TCU_FIXED8)   or
+                   (FUNCT7_wires = TCU_FIXED16) then
+
+                  -- Valid HMMA / TCU instruction.
+                  -- Do not request IE, LS, or DSP.
+                  tcu_instr_req <= '1';
+
+                else
+                  -- Invalid TCU numeric mode.
+                  ie_instr_req <= '1';
+                  decoded_instruction_IE <= ILL_pattern;
+                end if;
+
+              else
+                -- Invalid HMMA step instruction
+                ie_instr_req <= '1';
+                decoded_instruction_IE <= ILL_pattern;
+              end if;
+
+            else
+              -- Accelerator disabled.
+              ie_instr_req <= '1';
+              decoded_instruction_IE <= ILL_pattern;
+            end if;
+          
           when KMEM =>
             if accl_en = 1 then
               case FUNCT7_wires is
@@ -524,6 +566,7 @@ begin
               end case;
             end if;
 
+          
           when KDSP =>
             if accl_en = 1 then
               if busy_DSP(harc_ID_to_DSP) = '0' then

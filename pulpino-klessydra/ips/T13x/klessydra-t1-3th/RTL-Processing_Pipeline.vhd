@@ -156,6 +156,7 @@ architecture Pipe of Pipeline is
   signal ie_csr_wdata_i         : std_logic_vector(31 downto 0);
   signal ie_instr_req           : std_logic;
   signal ls_instr_req           : std_logic;
+  signal tcu_instr_req          : std_logic;
   signal core_busy_LS           : std_logic;
   signal busy_LS                : std_logic;
   signal busy_DSP               : std_logic_vector(accl_range);
@@ -337,6 +338,7 @@ architecture Pipe of Pipeline is
     ls_instr_req               : out std_logic;
     ie_instr_req               : out std_logic;
     dsp_instr_req              : out std_logic_vector(ACCL_NUM-1 downto 0);
+    tcu_instr_req              : out std_logic;
     decoded_instruction_IE     : out std_logic_vector(EXEC_UNIT_INSTR_SET_SIZE-1 downto 0);
     decoded_instruction_LS     : out std_logic_vector(LS_UNIT_INSTR_SET_SIZE-1 downto 0);
     decoded_instruction_DSP    : out std_logic_vector(DSP_UNIT_INSTR_SET_SIZE-1 downto 0);
@@ -761,7 +763,8 @@ begin
     comparator_en              => comparator_en,
     ie_instr_req               => ie_instr_req,        
     ls_instr_req               => ls_instr_req,        
-    dsp_instr_req              => dsp_instr_req,       
+    dsp_instr_req              => dsp_instr_req,     
+    tcu_instr_req              => tcu_instr_req,  
     decoded_instruction_IE     => decoded_instruction_IE, 
     decoded_instruction_LS     => decoded_instruction_LS, 
     decoded_instruction_DSP    => decoded_instruction_DSP,
@@ -781,7 +784,7 @@ begin
     busy_DSP                   => busy_DSP,
     busy_ID                    => busy_ID,
     ls_parallel_exec           => ls_parallel_exec,
-    dsp_parallel_exec          => dsp_parallel_exec,
+    dsp_parallel_exec          => dsp_parallel_exec, 
     dsp_to_jump                => dsp_to_jump,
     pc_IE                      => pc_IE,
     instr_rvalid_ID            => instr_rvalid_ID,
