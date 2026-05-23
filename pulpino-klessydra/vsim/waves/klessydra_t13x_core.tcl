@@ -12,6 +12,8 @@ add wave -group "CoreRF" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RI
 #add wave -group "SC"  -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/SCI/*
 #add wave -group "SC"  -radix hexadecimal sim:tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/SCI/SC/*
 
+add wave -group "TCUrelated" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/*
+
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/clk_i
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/LSU/nextstate_LS
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/LSU/state_LS

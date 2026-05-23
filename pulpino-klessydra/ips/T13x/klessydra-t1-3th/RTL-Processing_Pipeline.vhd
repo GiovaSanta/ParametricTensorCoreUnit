@@ -156,7 +156,16 @@ architecture Pipe of Pipeline is
   signal ie_csr_wdata_i         : std_logic_vector(31 downto 0);
   signal ie_instr_req           : std_logic;
   signal ls_instr_req           : std_logic;
+  --new signals for tcu integration to core.
   signal tcu_instr_req          : std_logic;
+  signal tcu_valid_dbg : std_logic;
+  signal tcu_instr_dbg : std_logic_vector(31 downto 0);
+  signal tcu_pc_dbg    : std_logic_vector(31 downto 0);
+  signal tcu_harc_dbg  : integer range THREAD_POOL_SIZE-1 downto 0;
+  signal tcu_rs1_dbg   : std_logic_vector(31 downto 0);
+  signal tcu_rs2_dbg   : std_logic_vector(31 downto 0);
+  signal tcu_rd_dbg    : std_logic_vector(31 downto 0);
+----------------------------------------------------
   signal core_busy_LS           : std_logic;
   signal busy_LS                : std_logic;
   signal busy_DSP               : std_logic_vector(accl_range);
@@ -593,6 +602,39 @@ architecture Pipe of Pipeline is
 	);
   end component;  ------------------------------------------
 
+  --new component used for tcu instantiation for tcu integration to core (gio)
+  component TCU_Branch is
+    generic (
+      THREAD_POOL_SIZE : integer
+    );
+    port (
+      clk_i : in std_logic;
+      rst_ni : in std_logic;
+
+      -- Request from ID_STAGE / Pipeline
+      tcu_instr_req : in std_logic;
+
+      -- Instruction context
+      instr_word_IE : in std_logic_vector(31 downto 0);
+      pc_IE         : in std_logic_vector(31 downto 0);
+      harc_EXEC     : in integer range THREAD_POOL_SIZE-1 downto 0;
+
+      -- Register operands from REGISTERFILE
+      RS1_Data_IE : in std_logic_vector(31 downto 0);
+      RS2_Data_IE : in std_logic_vector(31 downto 0);
+      RD_Data_IE  : in std_logic_vector(31 downto 0);
+
+      -- Debug outputs for waveform visibility
+      tcu_valid_dbg : out std_logic;
+      tcu_instr_dbg : out std_logic_vector(31 downto 0);
+      tcu_pc_dbg    : out std_logic_vector(31 downto 0);
+      tcu_harc_dbg  : out integer range THREAD_POOL_SIZE-1 downto 0;
+      tcu_rs1_dbg   : out std_logic_vector(31 downto 0);
+      tcu_rs2_dbg   : out std_logic_vector(31 downto 0);
+      tcu_rd_dbg    : out std_logic_vector(31 downto 0)
+    );
+  end component ;
+
   component Scratchpad_memory_interface is
   generic(
     accl_en                    : natural;
@@ -1000,6 +1042,33 @@ begin
     dsp_sci_we                 => dsp_sci_we,
     dsp_sci_req                => dsp_sci_req
 	);
+
+  TCU_BRANCH_i : TCU_Branch
+  generic map (
+    THREAD_POOL_SIZE => THREAD_POOL_SIZE
+  )
+  port map (
+    clk_i => clk_i,
+    rst_ni => rst_ni,
+
+    tcu_instr_req => tcu_instr_req,
+
+    instr_word_IE => instr_word_IE,
+    pc_IE         => pc_IE,
+    harc_EXEC     => harc_EXEC, 
+
+    RS1_Data_IE => RS1_Data_IE,
+    RS2_Data_IE => RS2_Data_IE,
+    RD_Data_IE  => RD_Data_IE,
+
+    tcu_valid_dbg => tcu_valid_dbg,
+    tcu_instr_dbg => tcu_instr_dbg,
+    tcu_pc_dbg    => tcu_pc_dbg,
+    tcu_harc_dbg  => tcu_harc_dbg,
+    tcu_rs1_dbg   => tcu_rs1_dbg,
+    tcu_rs2_dbg   => tcu_rs2_dbg,
+    tcu_rd_dbg    => tcu_rd_dbg
+  );
 
   SCI : Scratchpad_memory_interface
   generic map(
