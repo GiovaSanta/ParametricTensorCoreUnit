@@ -25,6 +25,10 @@ entity TCU_Branch is
     RS2_Data_IE : in std_logic_vector(31 downto 0);
     RD_Data_IE  : in std_logic_vector(31 downto 0);
 
+    -- Full architectural register file, read-only view for TCU operand collection
+    -- Prototype assumption: 32 registers x 32 bits per hart.
+    regfile_i : in array_3d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0)(31 downto 0);
+
     -- Debug outputs for waveform visibility
     tcu_valid_dbg : out std_logic;
     tcu_instr_dbg : out std_logic_vector(31 downto 0);
@@ -77,6 +81,24 @@ architecture rtl of TCU_Branch is
   signal tcu_funct7_lat           : std_logic_vector(6 downto 0);
   signal tcu_regs_per_operand_lat : integer range 1 to 4;
 
+  ---------------------------------------------------------------------------
+  -- FP16 operand-pair collection debug registers
+  --
+  -- For current FP16 HMMA convention:
+  --   A pair comes from rs1 and rs1+1
+  --   B pair comes from rs2 and rs2+1
+  --   C pair comes from rd  and rd+1
+  ---------------------------------------------------------------------------
+
+  signal tcu_a0_lat : std_logic_vector(31 downto 0);
+  signal tcu_a1_lat : std_logic_vector(31 downto 0);
+
+  signal tcu_b0_lat : std_logic_vector(31 downto 0);
+  signal tcu_b1_lat : std_logic_vector(31 downto 0);
+
+  signal tcu_c0_lat : std_logic_vector(31 downto 0);
+  signal tcu_c1_lat : std_logic_vector(31 downto 0);
+
 begin
 
   ---------------------------------------------------------------------------
@@ -97,7 +119,7 @@ begin
     tcu_rs2_idx_wire          <= 0;
     tcu_funct7_wire           <= (others => '0');
     tcu_regs_per_operand_wire <= 1;
-
+    
     if tcu_instr_req = '1' then
 
       -- R-type field extraction
@@ -107,6 +129,8 @@ begin
       tcu_rs1_idx_wire <= to_integer(unsigned(instr_word_IE(19 downto 15)));
       tcu_rs2_idx_wire <= to_integer(unsigned(instr_word_IE(24 downto 20)));
       tcu_funct7_wire  <= instr_word_IE(31 downto 25);
+
+      
 
       -- Format decode from funct7.
       -- Current convention:
@@ -182,6 +206,15 @@ begin
       tcu_rs2_lat   <= (others => '0');
       tcu_rd_lat    <= (others => '0');
 
+      tcu_a0_lat <= (others => '0');
+      tcu_a1_lat <= (others => '0');
+
+      tcu_b0_lat <= (others => '0');
+      tcu_b1_lat <= (others => '0');
+
+      tcu_c0_lat <= (others => '0');
+      tcu_c1_lat <= (others => '0');
+
       tcu_opcode_lat           <= (others => '0');
       tcu_rd_idx_lat           <= 0;
       tcu_funct3_lat           <= (others => '0');
@@ -211,6 +244,47 @@ begin
         tcu_rs2_idx_lat          <= tcu_rs2_idx_wire;
         tcu_funct7_lat           <= tcu_funct7_wire;
         tcu_regs_per_operand_lat <= tcu_regs_per_operand_wire;
+
+
+        if tcu_regs_per_operand_wire = 2 then
+          -- First registers of each pair
+          tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+          tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+          tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+
+          -- Second registers of each pair.
+          -- Guard against index overflow.
+          if tcu_rs1_idx_wire < 31 then
+            tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+          else
+            tcu_a1_lat <= (others => '0');
+          end if;
+
+          if tcu_rs2_idx_wire < 31 then
+            tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+          else
+            tcu_b1_lat <= (others => '0');
+          end if;
+
+          if tcu_rd_idx_wire < 31 then
+            tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+          else
+            tcu_c1_lat <= (others => '0');
+        end if;
+
+        else
+
+          -- For now, non-FP16 formats only capture the first encoded registers. i will modify this section later when testing other programs involving operands with bitwidths != 16
+          -- FP8/FP32/posit/int handling can be extended later.
+          tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+          tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+          tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+
+          tcu_a1_lat <= (others => '0');
+          tcu_b1_lat <= (others => '0');
+          tcu_c1_lat <= (others => '0');
+
+        end if;
 
       else
 

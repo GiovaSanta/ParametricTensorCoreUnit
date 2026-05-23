@@ -624,6 +624,8 @@ architecture Pipe of Pipeline is
       RS2_Data_IE : in std_logic_vector(31 downto 0);
       RD_Data_IE  : in std_logic_vector(31 downto 0);
 
+      regfile_i : in array_3d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0)(31 downto 0);
+
       -- Debug outputs for waveform visibility
       tcu_valid_dbg : out std_logic;
       tcu_instr_dbg : out std_logic_vector(31 downto 0);
@@ -1060,6 +1062,8 @@ begin
     RS1_Data_IE => RS1_Data_IE,
     RS2_Data_IE => RS2_Data_IE,
     RD_Data_IE  => RD_Data_IE,
+
+    regfile_i => regfile,
 
     tcu_valid_dbg => tcu_valid_dbg,
     tcu_instr_dbg => tcu_instr_dbg,

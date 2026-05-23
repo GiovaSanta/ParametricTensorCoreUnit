@@ -216,8 +216,8 @@ int main() {
         "lw x12,  4(%[baseB])\n"  // x12 equivalent to R11 in flexgripplus corrisponding program
         "lw x13,  8(%[baseB])\n"  // x13 equivalent to R8 in flexgripplus corrisponding program
         "lw x14, 12(%[baseB])\n"  // x14 equivalent to R9 in flexgripplus corrisponding program
-        "lw x15, 16(%[baseB])\n"  // x15 equivalent to R14 in flexgripplus corrisponding program
-        "lw x24, 20(%[baseB])\n"  // x24 equivalent to R15 in flexgripplus corrisponding program
+        "lw x30, 16(%[baseB])\n"  // x30 equivalent to R14 in flexgripplus corrisponding program
+        "lw x31, 20(%[baseB])\n"  // x31 equivalent to R15 in flexgripplus corrisponding program
         "lw x25, 24(%[baseB])\n"  // x25 equivalent to R12 in flexgripplus corrisponding program
         "lw x26, 28(%[baseB])\n"  // x26 equivallent to R13 in flexgripplus corrisponding program
 
@@ -227,8 +227,8 @@ int main() {
         
         "lw x5,   0(%[baseC])\n" // x5 equivalent to R4 in flexgripplus corrisponding program
         "lw x6,   4(%[baseC])\n" // x6 equivalent to R5 in flexgripplus corrisponding program
-        "lw x7,   8(%[baseC])\n" // x7 equivalent to R6 in flexgripplus corrisponding program
-        "lw x10, 12(%[baseC])\n" // x10 equivalent to R7 in flexgripplus corrisponding program
+        "lw x20,   8(%[baseC])\n" // x20 equivalent to R6 in flexgripplus corrisponding program
+        "lw x21, 12(%[baseC])\n" // x21 equivalent to R7 in flexgripplus corrisponding program
 
         HMMA_0_FP16_ASM(x5, x22, x25)
 
