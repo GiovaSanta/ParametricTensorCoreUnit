@@ -124,9 +124,15 @@ add wave -group RAW_Check -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_C
 add wave -group RAW_Check -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/Instr_word_buf
 add wave -group RAW_Check -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/pc_buf
 
-
-
 WaveRestoreCursors {0 ns}
+
+#leaf name sin modelsim waveform view better then full signal names. (but it doesnt work... relook at later, for now leaf names in waveforms will be selected by toggling the option from gui)
+configure wave -signalnamewidth 0
+
+# placing locked cursor around where region where first hmma instruction is dealt with.
+WaveRestoreCursors { {HMMA_FP16_event} {96755 ns} 1} 
+quietly wave cursor active 1
+
 WaveRestoreZoom    {0 ns} {200 ns}
 configure wave -namecolwidth  200
 configure wave -valuecolwidth 200
@@ -134,3 +140,4 @@ configure wave -justifyvalue left
 configure wave -signalnamewidth 10
 configure wave -gridperiod {10 ns}
 configure wave -timelineunits ns
+
