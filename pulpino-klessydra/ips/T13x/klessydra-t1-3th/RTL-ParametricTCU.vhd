@@ -99,9 +99,45 @@ architecture rtl of TCU_Branch is
   signal tcu_c0_lat : std_logic_vector(31 downto 0);
   signal tcu_c1_lat : std_logic_vector(31 downto 0);
 
+  ---------------------------------------------------------------------------
+  -- Tensor-core input staging arrays, one slot per hart/lane
+  --
+  -- These are not the final tensor core wrapper yet.
+  -- They simply collect and preserve one FP16 HMMA fragment per hart.
+  --
+  -- src1 = A
+  -- src2 = B
+  -- src3 = C / accumulator
+  --
+  -- pair00 is enough for FP16 for now.
+  ---------------------------------------------------------------------------
+
+    signal tc0_src1_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+    signal tc0_src1_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
+    signal tc0_src2_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+    signal tc0_src2_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
+    signal tc0_src3_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+    signal tc0_src3_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
+    signal tcu_lane_valid_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
+    signal tcu_all_lanes_valid_s : std_logic;
+
+    constant TCU_ALL_LANES_VALID_C : std_logic_vector(THREAD_POOL_SIZE-1 downto 0) := (others => '1');
+
 begin
 
-  ---------------------------------------------------------------------------
+    ---------------------------------------------------------------------------
+    -- All-lanes-valid detection
+    --
+    -- This becomes '1' when all harts have delivered their HMMA fragment.
+    -- Later this can be used to start the tensor core wrapper.
+    ---------------------------------------------------------------------------
+
+    tcu_all_lanes_valid_s <= '1' when tcu_lane_valid_s = TCU_ALL_LANES_VALID_C else '0';
+
+     ---------------------------------------------------------------------------
   -- TCU combinational decode
   --
   -- This decodes the live instruction while it is present in IE.
@@ -129,8 +165,6 @@ begin
       tcu_rs1_idx_wire <= to_integer(unsigned(instr_word_IE(19 downto 15)));
       tcu_rs2_idx_wire <= to_integer(unsigned(instr_word_IE(24 downto 20)));
       tcu_funct7_wire  <= instr_word_IE(31 downto 25);
-
-      
 
       -- Format decode from funct7.
       -- Current convention:
@@ -223,6 +257,19 @@ begin
       tcu_funct7_lat           <= (others => '0');
       tcu_regs_per_operand_lat <= 1;
 
+      for i in 0 to THREAD_POOL_SIZE-1 loop
+        tc0_src1_rf_port_a_pair00_s(i) <= (others => '0');
+        tc0_src1_rf_port_b_pair00_s(i) <= (others => '0');
+
+        tc0_src2_rf_port_a_pair00_s(i) <= (others => '0');
+        tc0_src2_rf_port_b_pair00_s(i) <= (others => '0');
+
+        tc0_src3_rf_port_a_pair00_s(i) <= (others => '0');
+        tc0_src3_rf_port_b_pair00_s(i) <= (others => '0');
+      end loop;
+
+      tcu_lane_valid_s <= (others => '0');
+
     elsif rising_edge(clk_i) then
 
       if tcu_instr_req = '1' then
@@ -247,6 +294,43 @@ begin
 
 
         if tcu_regs_per_operand_wire = 2 then
+
+                    -----------------------------------------------------------------
+          -- Store this hart's FP16 HMMA fragment into the 16-lane staging
+          -- arrays. This prevents one hart's values from being overwritten
+          -- when the next hart reaches the TCU branch.
+          --
+          -- FlexGrip-style convention:
+          --   A = src1 = rs1, rs1+1
+          --   B = src2 = rs2, rs2+1
+          --   C = src3 = rd,  rd+1
+          -----------------------------------------------------------------
+
+          tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+          tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+          tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+
+          if tcu_rs1_idx_wire < 31 then
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+          else
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
+          end if;
+
+          if tcu_rs2_idx_wire < 31 then
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+          else
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
+          end if;
+
+          if tcu_rd_idx_wire < 31 then
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+          else
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
+          end if;
+
+          tcu_lane_valid_s(harc_EXEC) <= '1';
+
+
           -- First registers of each pair
           tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
           tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
@@ -270,6 +354,7 @@ begin
             tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
           else
             tcu_c1_lat <= (others => '0');
+
         end if;
 
         else
