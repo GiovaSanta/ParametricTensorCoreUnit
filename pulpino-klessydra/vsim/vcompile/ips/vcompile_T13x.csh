@@ -1,9 +1,13 @@
 #!/bin/tcsh
 source ${PULP_PATH}/./vsim/vcompile/setup.csh
 
+#general comment: this compile script will revert to the instructions not including compilation of TCU vhdl files...
+#...if the update-ips.py script is reran !! Beware.
+
 ##############################################################################
 # Settings
 ##############################################################################
+
 
 set IP=T13x
 
