@@ -44,6 +44,26 @@ package riscv_klessydra is
   type array_3d     is array (integer range<>) of array_2d;
   type array_2d_int is array (integer range<>) of integer;
 
+    ---------------------------------------------------------------------------  --new additions gio for tcu integration
+  -- Tensor Core local array types
+  --
+  -- These replace the old FlexGrip/GPGPU package array types.
+  -- Only the tensor-core datapath shapes needed by the Klessydra integration
+  -- are kept here.
+  ---------------------------------------------------------------------------
+
+  type arraySize16_32 is array (15 downto 0) of std_logic_vector(31 downto 0);
+  type arraySize16_16 is array (15 downto 0) of std_logic_vector(15 downto 0);
+  type arraySize16_8  is array (15 downto 0) of std_logic_vector(7 downto 0);
+
+  type arraySize8_32  is array (7 downto 0) of std_logic_vector(31 downto 0);
+
+  type arraySize4_32  is array (3 downto 0) of std_logic_vector(31 downto 0);
+  type arraySize4_16  is array (3 downto 0) of std_logic_vector(15 downto 0);
+  type arraySize4_8   is array (3 downto 0) of std_logic_vector(7 downto 0);
+
+  ---------------------------------------------------------------------------
+
   type fsm_IE_states is (sleep, reset, normal, csr_instr_wait_state, debug);
   type mulh_states   is (init, mult, accum);
   type mul_states    is (mult, accum);
