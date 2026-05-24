@@ -126,6 +126,48 @@ architecture rtl of TCU_Branch is
 
     constant TCU_ALL_LANES_VALID_C : std_logic_vector(THREAD_POOL_SIZE-1 downto 0) := (others => '1');
 
+    ---------------------------------------------------------------------------
+    -- Single tensor-core wrapper interface
+    ---------------------------------------------------------------------------
+
+    signal tcu_wrapper_start_s       : std_logic;
+    signal tcu_wrapper_start_seen_s  : std_logic;
+
+    signal tcu_wrapper_busy_s        : std_logic;
+    signal tcu_wrapper_done_s        : std_logic;
+    signal tcu_wrapper_step_done_s   : std_logic;
+    signal tcu_wrapper_load_pair_s   : std_logic_vector(1 downto 0);
+
+    signal tc0_src1_rf_port_a_pair00_wrap_s : arraySize16_32;
+    signal tc0_src1_rf_port_b_pair00_wrap_s : arraySize16_32;
+    signal tc0_src2_rf_port_a_pair00_wrap_s : arraySize16_32;
+    signal tc0_src2_rf_port_b_pair00_wrap_s : arraySize16_32;
+    signal tc0_src3_rf_port_a_pair00_wrap_s : arraySize16_32;
+    signal tc0_src3_rf_port_b_pair00_wrap_s : arraySize16_32;
+
+    signal tc0_src1_rf_port_a_pair01_wrap_s : arraySize16_32;
+    signal tc0_src1_rf_port_b_pair01_wrap_s : arraySize16_32;
+    signal tc0_src2_rf_port_a_pair01_wrap_s : arraySize16_32;
+    signal tc0_src2_rf_port_b_pair01_wrap_s : arraySize16_32;
+    signal tc0_src3_rf_port_a_pair01_wrap_s : arraySize16_32;
+    signal tc0_src3_rf_port_b_pair01_wrap_s : arraySize16_32;
+
+    signal W0_tc0_oct0_8_X3_s  : arraySize16_8;
+    signal W1_tc0_oct0_8_X3_s  : arraySize16_8;
+    signal W0_tc0_oct0_16_X3_s : arraySize16_16;
+    signal W1_tc0_oct0_16_X3_s : arraySize16_16;
+    signal W0_tc0_oct0_32_X3_s : arraySize16_32;
+    signal W1_tc0_oct0_32_X3_s : arraySize16_32;
+
+    signal W0_tc0_oct1_8_X3_s  : arraySize16_8;
+    signal W1_tc0_oct1_8_X3_s  : arraySize16_8;
+    signal W0_tc0_oct1_16_X3_s : arraySize16_16;
+    signal W1_tc0_oct1_16_X3_s : arraySize16_16;
+    signal W0_tc0_oct1_32_X3_s : arraySize16_32;
+    signal W1_tc0_oct1_32_X3_s : arraySize16_32;
+
+    signal tcu_wrapper_rst_s : std_logic;
+
 begin
 
     ---------------------------------------------------------------------------
@@ -270,6 +312,9 @@ begin
 
       tcu_lane_valid_s <= (others => '0');
 
+      tcu_wrapper_start_s      <= '0';
+      tcu_wrapper_start_seen_s <= '0';
+
     elsif rising_edge(clk_i) then
 
       if tcu_instr_req = '1' then
@@ -354,11 +399,9 @@ begin
             tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
           else
             tcu_c1_lat <= (others => '0');
-
-        end if;
+          end if;
 
         else
-
           -- For now, non-FP16 formats only capture the first encoded registers. i will modify this section later when testing other programs involving operands with bitwidths != 16
           -- FP8/FP32/posit/int handling can be extended later.
           tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
@@ -368,20 +411,112 @@ begin
           tcu_a1_lat <= (others => '0');
           tcu_b1_lat <= (others => '0');
           tcu_c1_lat <= (others => '0');
-
         end if;
 
       else
-
         -- Valid is a pulse.
         -- The packet fields remain stored from the last TCU instruction.
         tcu_valid_lat <= '0';
 
       end if;
 
+      -- Default: start is a one-cycle pulse
+        tcu_wrapper_start_s <= '0';
+      if tcu_all_lanes_valid_s = '1' and tcu_wrapper_start_seen_s = '0' then  -- after the final missing hart fills tcu_lane_valid_s, the wrapper starts on the following clock
+        tcu_wrapper_start_s      <= '1';
+        tcu_wrapper_start_seen_s <= '1';
+      end if;
+
     end if;
   end process;
 
+  ---------------------------------------------------------------------------
+  -- Convert Klessydra per-hart staging arrays to wrapper input arrays.
+  -- The wrapper is fixed to 16 lanes, so this assumes THREAD_POOL_SIZE = 16.  -- right now implemented assuming the study of fp16 operands.
+  ---------------------------------------------------------------------------
+
+  gen_tcu_wrapper_inputs : for i in 0 to 15 generate
+  begin
+
+    tc0_src1_rf_port_a_pair00_wrap_s(i) <= tc0_src1_rf_port_a_pair00_s(i);
+    tc0_src1_rf_port_b_pair00_wrap_s(i) <= tc0_src1_rf_port_b_pair00_s(i);
+
+    tc0_src2_rf_port_a_pair00_wrap_s(i) <= tc0_src2_rf_port_a_pair00_s(i);
+    tc0_src2_rf_port_b_pair00_wrap_s(i) <= tc0_src2_rf_port_b_pair00_s(i);
+
+    tc0_src3_rf_port_a_pair00_wrap_s(i) <= tc0_src3_rf_port_a_pair00_s(i);
+    tc0_src3_rf_port_b_pair00_wrap_s(i) <= tc0_src3_rf_port_b_pair00_s(i);
+
+    -- pair01 is unused for the FP16 first test
+    tc0_src1_rf_port_a_pair01_wrap_s(i) <= (others => '0');
+    tc0_src1_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+
+    tc0_src2_rf_port_a_pair01_wrap_s(i) <= (others => '0');
+    tc0_src2_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+
+    tc0_src3_rf_port_a_pair01_wrap_s(i) <= (others => '0');
+    tc0_src3_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+
+  end generate;
+
+  tcu_wrapper_rst_s <= not rst_ni;
+
+  assert THREAD_POOL_SIZE = 16
+    report "singleTensorCoreWrapper assumes THREAD_POOL_SIZE = 16"
+  severity failure;
+
+  ---------------------------------------------------------------------------
+  -- Single tensor-core wrapper instance
+  ---------------------------------------------------------------------------
+
+  TCU_WRAPPER_i : entity work.singleTensorCoreWrapper
+    generic map (
+      REG_W  => 32,
+      ELEM_W => 32 
+    )
+    port map (
+      clk   => clk_i,
+      rst => tcu_wrapper_rst_s,
+      start => tcu_wrapper_start_s,
+
+      hmma_step => '0',
+
+      widthSel => "01",
+      typeSel  => "000",
+
+      tc0_src1_rf_port_a_pair00 => tc0_src1_rf_port_a_pair00_wrap_s,
+      tc0_src1_rf_port_b_pair00 => tc0_src1_rf_port_b_pair00_wrap_s,
+      tc0_src2_rf_port_a_pair00 => tc0_src2_rf_port_a_pair00_wrap_s,
+      tc0_src2_rf_port_b_pair00 => tc0_src2_rf_port_b_pair00_wrap_s,
+      tc0_src3_rf_port_a_pair00 => tc0_src3_rf_port_a_pair00_wrap_s,
+      tc0_src3_rf_port_b_pair00 => tc0_src3_rf_port_b_pair00_wrap_s,
+
+      tc0_src1_rf_port_a_pair01 => tc0_src1_rf_port_a_pair01_wrap_s,
+      tc0_src1_rf_port_b_pair01 => tc0_src1_rf_port_b_pair01_wrap_s,
+      tc0_src2_rf_port_a_pair01 => tc0_src2_rf_port_a_pair01_wrap_s,
+      tc0_src2_rf_port_b_pair01 => tc0_src2_rf_port_b_pair01_wrap_s,
+      tc0_src3_rf_port_a_pair01 => tc0_src3_rf_port_a_pair01_wrap_s,
+      tc0_src3_rf_port_b_pair01 => tc0_src3_rf_port_b_pair01_wrap_s,
+
+      W0_tc0_oct0_8_X3  => W0_tc0_oct0_8_X3_s,
+      W1_tc0_oct0_8_X3  => W1_tc0_oct0_8_X3_s,
+      W0_tc0_oct0_16_X3 => W0_tc0_oct0_16_X3_s,
+      W1_tc0_oct0_16_X3 => W1_tc0_oct0_16_X3_s,
+      W0_tc0_oct0_32_X3 => W0_tc0_oct0_32_X3_s,
+      W1_tc0_oct0_32_X3 => W1_tc0_oct0_32_X3_s,
+
+      W0_tc0_oct1_8_X3  => W0_tc0_oct1_8_X3_s,
+      W1_tc0_oct1_8_X3  => W1_tc0_oct1_8_X3_s,
+      W0_tc0_oct1_16_X3 => W0_tc0_oct1_16_X3_s,
+      W1_tc0_oct1_16_X3 => W1_tc0_oct1_16_X3_s,
+      W0_tc0_oct1_32_X3 => W0_tc0_oct1_32_X3_s,
+      W1_tc0_oct1_32_X3 => W1_tc0_oct1_32_X3_s,
+
+      busy      => tcu_wrapper_busy_s,
+      done      => tcu_wrapper_done_s,
+      step_done => tcu_wrapper_step_done_s,
+      load_pair => tcu_wrapper_load_pair_s
+    );
 
   ---------------------------------------------------------------------------
   -- Debug outputs

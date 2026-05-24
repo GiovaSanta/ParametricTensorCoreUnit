@@ -273,7 +273,7 @@ begin
 --dpu_fp8 : DotProductUnitFP8e4m3 
   --  port map ( aX0 => A0_8, aX1 => A1_8, aX2 => A2_8, aX3 => A3_8, bY0 => B0_8, bY1 => B1_8, bY2 => B2_8 , bY3 => B3_8 , cX0 => C0_8 , R => out_DPU_FP8  ) ;
 
-dpu_fp16: entity FP16_DPU.DotProductUnitFP16
+dpu_fp16: entity FP16_DPU.DotProductUnitFP16 
    port map ( aX0 => A0_16, aX1 => A1_16, aX2 => A2_16, aX3 => A3_16, bY0 => B0_16, bY1 => B1_16, bY2 => B2_16 , bY3 => B3_16 , cX0 => C0_16 , R => out_DPU_FP16  ) ;
 
 --dpu_fp32: DotProductUnitFP32
