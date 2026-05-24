@@ -14,6 +14,11 @@ add wave -group "CoreRF" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RI
 
 add wave -group "TCUrelated" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/*
 
+add wave -group "TCUoctect0_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect0/u_buffers/*
+add wave -group "TCUoctect1_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect1/u_buffers/*
+add wave -group "TCUinternalExecFSM" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_fsm/*
+
+
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/clk_i
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/LSU/nextstate_LS
 add wave -group MEM -radix hexadecimal tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/LSU/state_LS
@@ -129,8 +134,8 @@ WaveRestoreCursors {0 ns}
 #leaf name sin modelsim waveform view better then full signal names. (but it doesnt work... relook at later, for now leaf names in waveforms will be selected by toggling the option from gui)
 configure wave -signalnamewidth 0
 
-# placing locked cursor around where region where first hmma instruction is dealt with.
-WaveRestoreCursors { {HMMA_FP16_event} {96755 ns} 1} 
+# placing locked cursors around where region where first hmma instruction is dealt with, and where loading of tensor buffer A is happening respectively.
+WaveRestoreCursors {{HMMA_FP16_event} {96755 ns} 1} {{TCU_A_buf_load_start} {96935 ns} 1}
 quietly wave cursor active 1
 
 WaveRestoreZoom    {0 ns} {200 ns}

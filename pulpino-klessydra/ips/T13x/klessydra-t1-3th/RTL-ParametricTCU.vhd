@@ -351,26 +351,46 @@ begin
           --   C = src3 = rd,  rd+1
           -----------------------------------------------------------------
 
-          tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
-          tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
-          tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+          if(harc_EXEC < 4) then --wires dedicated to feeding octect0 related buffers in tcu
+            tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);  --wire connecting buffer storing A related elements
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
 
-          if tcu_rs1_idx_wire < 31 then
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
-          else
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
-          end if;
+            tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);  --wire connecting buffer storing A related elements
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
 
-          if tcu_rs2_idx_wire < 31 then
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
-          else
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
-          end if;
+            tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);  --wire connecting buffer storing C related elements
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
 
-          if tcu_rd_idx_wire < 31 then
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
-          else
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= (others => '0');
+          elsif(harc_EXEC < 8) then --wires dedicated to feeding octect1 related buffers in tcu
+            tc0_src1_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
+
+            tc0_src2_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
+
+            tc0_src3_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
+
+          elsif(harc_EXEC <12) then --wires dedicated to feeding octect0 related buffers in tcu
+            tc0_src1_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
+
+            tc0_src2_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
+
+            tc0_src3_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
+            
+          else --wires dedicated to feeding octect1 related buffers in tcu
+            tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1); -- wire connecting buffer storing A related elements
+
+            tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
+            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1); -- wire connecting buffer storing A related elements
+
+            tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
+            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
+            
           end if;
 
           tcu_lane_valid_s(harc_EXEC) <= '1';
@@ -461,6 +481,7 @@ begin
 
   tcu_wrapper_rst_s <= not rst_ni;
 
+
   assert THREAD_POOL_SIZE = 16
     report "singleTensorCoreWrapper assumes THREAD_POOL_SIZE = 16"
   severity failure;
@@ -472,7 +493,7 @@ begin
   TCU_WRAPPER_i : entity work.singleTensorCoreWrapper
     generic map (
       REG_W  => 32,
-      ELEM_W => 32 
+      ELEM_W => 32
     )
     port map (
       clk   => clk_i,
