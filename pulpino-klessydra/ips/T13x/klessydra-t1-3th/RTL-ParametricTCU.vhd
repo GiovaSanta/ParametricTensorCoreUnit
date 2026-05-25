@@ -40,7 +40,13 @@ entity TCU_Branch is
 
     -- TCU status toward pipeline control
     busy_TCU      : out std_logic;
-    core_busy_TCU : out std_logic
+    core_busy_TCU : out std_logic;
+
+    -- TCU writeback path, inactive for now
+    TCU_WB_EN         : out std_logic;
+    TCU_WB            : out std_logic_vector(31 downto 0);
+    instr_word_TCU_WB : out std_logic_vector(31 downto 0);
+    harc_TCU_WB       : out integer range THREAD_POOL_SIZE-1 downto 0
   );
 end entity;
 
@@ -744,6 +750,7 @@ begin
 
       result_valid => tcu_wrapper_result_valid_s,
       result_step  => tcu_wrapper_result_step_s
+      
     );
 
   ---------------------------------------------------------------------------
@@ -760,5 +767,10 @@ begin
 
   busy_TCU      <= busy_TCU_s;
   core_busy_TCU <= core_busy_TCU_s;
+
+  TCU_WB_EN         <= '0';
+  TCU_WB            <= (others => '0');
+  instr_word_TCU_WB <= (others => '0');
+  harc_TCU_WB       <= THREAD_POOL_SIZE-1;
 
 end architecture;

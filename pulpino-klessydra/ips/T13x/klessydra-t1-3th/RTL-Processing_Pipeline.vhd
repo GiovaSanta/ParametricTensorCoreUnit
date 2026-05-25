@@ -169,7 +169,13 @@ architecture Pipe of Pipeline is
 
   signal busy_TCU      : std_logic;
   signal core_busy_TCU : std_logic;
+
+  signal TCU_WB_EN         : std_logic;
+  signal TCU_WB            : std_logic_vector(31 downto 0);
+  signal instr_word_TCU_WB : std_logic_vector(31 downto 0);
+  signal harc_TCU_WB       : harc_range;
 ----------------------------------------------------
+
   signal core_busy_LS           : std_logic;
   signal busy_LS                : std_logic;
   signal busy_DSP               : std_logic_vector(accl_range);
@@ -641,7 +647,12 @@ architecture Pipe of Pipeline is
       tcu_rd_dbg    : out std_logic_vector(31 downto 0);
 
       busy_TCU      : out std_logic;
-      core_busy_TCU : out std_logic
+      core_busy_TCU : out std_logic;
+
+      TCU_WB_EN         : out std_logic;
+      TCU_WB            : out std_logic_vector(31 downto 0);
+      instr_word_TCU_WB : out std_logic_vector(31 downto 0);
+      harc_TCU_WB       : out integer range THREAD_POOL_SIZE-1 downto 0
       
     );
   end component ;
@@ -725,6 +736,10 @@ architecture Pipe of Pipeline is
     instr_word_IE_WB           : in std_logic_vector(31 downto 0);
     harc_LS_WB                 : in integer range THREAD_POOL_SIZE-1 downto 0;
     harc_IE_WB                 : in integer range THREAD_POOL_SIZE-1 downto 0;
+    TCU_WB_EN         : in std_logic;  --related for the TCU integration , added by gio
+    TCU_WB            : in std_logic_vector(31 downto 0);
+    instr_word_TCU_WB : in std_logic_vector(31 downto 0);
+    harc_TCU_WB       : in integer range THREAD_POOL_SIZE-1 downto 0;
     RS1_Data_IE                : out std_logic_vector(31 downto 0);
     RS2_Data_IE                : out std_logic_vector(31 downto 0);
     RD_Data_IE                 : out std_logic_vector(31 downto 0);
@@ -1085,7 +1100,12 @@ begin
     tcu_rd_dbg    => tcu_rd_dbg,
 
     busy_TCU      => busy_TCU,
-    core_busy_TCU => core_busy_TCU
+    core_busy_TCU => core_busy_TCU,
+
+    TCU_WB_EN         => TCU_WB_EN,
+    TCU_WB            => TCU_WB,
+    instr_word_TCU_WB => instr_word_TCU_WB,
+    harc_TCU_WB       => harc_TCU_WB
   );
 
   SCI : Scratchpad_memory_interface
@@ -1165,6 +1185,10 @@ begin
     IE_WB                      => IE_WB,
     MUL_WB                     => MUL_WB,
     LS_WB                      => LS_WB,
+    TCU_WB_EN                  => TCU_WB_EN,
+    TCU_WB                     => TCU_WB,
+    instr_word_TCU_WB          => instr_word_TCU_WB,
+    harc_TCU_WB                => harc_TCU_WB,
     instr_word_LS_WB           => instr_word_LS_WB,
     instr_word_IE_WB           => instr_word_IE_WB,
     harc_LS_WB                 => harc_LS_WB,

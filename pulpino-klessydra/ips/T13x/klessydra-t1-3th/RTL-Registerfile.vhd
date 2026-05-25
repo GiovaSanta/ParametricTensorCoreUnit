@@ -61,6 +61,10 @@ entity REGISTERFILE is
 	instr_word_IE_WB           : in  std_logic_vector(31 downto 0);
 	harc_LS_WB                 : in  integer range THREAD_POOL_SIZE-1 downto 0;
 	harc_IE_WB                 : in  integer range THREAD_POOL_SIZE-1 downto 0;
+  TCU_WB_EN         : in std_logic;  --related for the TCU integration , added by gio
+  TCU_WB            : in std_logic_vector(31 downto 0);
+  instr_word_TCU_WB : in std_logic_vector(31 downto 0);
+  harc_TCU_WB       : in integer range THREAD_POOL_SIZE-1 downto 0;
     RS1_Data_IE                : out std_logic_vector(31 downto 0);
     RS2_Data_IE                : out std_logic_vector(31 downto 0);
     RD_Data_IE                 : out std_logic_vector(31 downto 0);
@@ -244,10 +248,26 @@ begin
 -- Stage WB - (WRITEBACK)
 -----------------------------------------------------------------------------------------------------
 
-  harc_WB <= harc_LS_WB when LS_WB_EN = '1' else harc_IE_WB;
-  instr_word_WB <= instr_word_LS_WB when LS_WB_EN = '1' else instr_word_IE_WB when (IE_WB_EN = '1' or MUL_WB_EN = '1') else (others => '0');
-  WB_EN <= '1' when (LS_WB_EN = '1' or IE_WB_EN = '1' or MUL_WB_EN = '1') else '0';
-  WB_RD <= IE_WB when IE_WB_EN = '1' else LS_WB when LS_WB_EN = '1' else MUL_WB when MUL_WB_EN = '1' else (others => '0');  
+  harc_WB <= harc_TCU_WB when TCU_WB_EN = '1' else 
+             harc_LS_WB  when LS_WB_EN = '1' else
+             harc_IE_WB;
+
+  instr_word_WB <= instr_word_TCU_WB when TCU_WB_EN = '1' else 
+                   instr_word_LS_WB when LS_WB_EN = '1' else 
+                   instr_word_IE_WB when (IE_WB_EN = '1' or MUL_WB_EN = '1') else
+                   (others => '0');
+
+  WB_EN <= '1' when (TCU_WB_EN = '1' or 
+                     LS_WB_EN = '1' or 
+                     IE_WB_EN = '1' or 
+                     MUL_WB_EN = '1'
+                     ) else '0';
+
+  WB_RD <= TCU_WB when TCU_WB_EN = '1' else 
+           IE_WB when IE_WB_EN = '1' else 
+           LS_WB when LS_WB_EN = '1' else 
+           MUL_WB when MUL_WB_EN = '1' else
+           (others => '0');  
 
 --------------------------------------------------------------------- end of WB Stage ----------------
 ------------------------------------------------------------------------------------------------------
