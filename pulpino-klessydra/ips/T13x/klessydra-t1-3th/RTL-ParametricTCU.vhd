@@ -182,6 +182,9 @@ architecture rtl of TCU_Branch is
     signal busy_TCU_s       : std_logic;
     signal core_busy_TCU_s  : std_logic;
 
+    signal tcu_lane_valid_next_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
+    signal tcu_all_lanes_valid_next_s : std_logic;
+
 begin
 
   ---------------------------------------------------------------------------
@@ -277,6 +280,29 @@ begin
   end process;
 
   ---------------------------------------------------------------------------
+  -- Predict whether the current HMMA request completes all TCU lanes
+  ---------------------------------------------------------------------------
+
+  TCU_valid_next_comb : process(all)
+    variable lane_valid_next_v : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
+  begin
+    lane_valid_next_v := tcu_lane_valid_s;
+
+    if tcu_instr_req = '1' and
+      (tcu_state_s = TCU_IDLE or tcu_state_s = TCU_COLLECT) then
+      lane_valid_next_v(harc_EXEC) := '1';
+    end if;
+
+    tcu_lane_valid_next_s <= lane_valid_next_v;
+
+    if lane_valid_next_v = TCU_ALL_LANES_VALID_C then
+      tcu_all_lanes_valid_next_s <= '1';
+    else
+      tcu_all_lanes_valid_next_s <= '0';
+    end if;
+  end process;
+
+  ---------------------------------------------------------------------------
   -- TCU controller combinational part of FSM
   ---------------------------------------------------------------------------
 
@@ -292,7 +318,7 @@ begin
         end if;
 
       when TCU_COLLECT =>
-        if tcu_all_lanes_valid_s = '1' then
+        if tcu_all_lanes_valid_next_s = '1' then
           tcu_next_state_s <= TCU_START;
         end if;
 
@@ -331,6 +357,10 @@ begin
 
       when TCU_COLLECT =>
         busy_TCU_s <= '1';
+
+        if tcu_all_lanes_valid_next_s = '1' then
+          core_busy_TCU_s <= '1';
+        end if;
 
       when TCU_START =>
         busy_TCU_s          <= '1';

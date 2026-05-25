@@ -45,6 +45,7 @@ entity REGISTERFILE is
     pc_ID                      : in  std_logic_vector(31 downto 0);  -- pc_ID is PC entering ID stage
 	core_busy_IE               : in  std_logic;
 	core_busy_LS               : in  std_logic;
+  core_busy_TCU              : in  std_logic; -- addition due to TCU integration by gio.
     ls_parallel_exec           : in  std_logic;
     dsp_parallel_exec          : in  std_logic;
     dsp_to_jump                : in  std_logic;
@@ -129,7 +130,7 @@ begin
         regfile(h)(0) <= (others => '0');
       end loop;
     elsif rising_edge(clk_i) then
-      if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
+      if core_busy_IE = '1' or core_busy_LS = '1' or core_busy_TCU = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
       elsif instr_rvalid_ID = '0' then -- wait for a valid instruction
       else  -- process the incoming instruction 
 
@@ -176,7 +177,7 @@ begin
   RF_RD_EN : process(all)  -- synch single state process
   begin
     RD_EN <= '0';
-    if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
+    if core_busy_IE = '1' or core_busy_LS = '1' or core_busy_TCU = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
     elsif instr_rvalid_ID = '0' then -- wait for a valid instruction
     else  -- process the incoming instruction 
       RD_EN <= '1';

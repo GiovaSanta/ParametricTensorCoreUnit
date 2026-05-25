@@ -14,6 +14,33 @@ add wave -group "CoreRF" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RI
 
 add wave -group "TCUrelated" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/*
 
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_state_s
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_next_state_s
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/busy_TCU_s
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/busy_TCU
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/busy_TCU
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/core_busy_TCU_s
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/core_busy_TCU
+add wave -group "TCU_status_check" vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/core_busy_TCU
+
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/core_busy_TCU
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/busy_TCU
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/busy_ID
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/DECODE/halt_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/DECODE/halt_LSU
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/DECODE/instr_rvalid_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/DECODE/tcu_instr_req
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/instr_word_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/pc_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/harc_EXEC
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/core_busy_TCU
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/RS1_Data_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/RS2_Data_IE
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/RD_Data_IE
+
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_lane_valid_next_s
+add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_all_lanes_valid_next_s
+
 add wave -group "TCUoctect0_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect0/u_buffers/*
 add wave -group "TCUoctect1_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect1/u_buffers/*
 add wave -group "TCUinternalExecFSM" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_fsm/*

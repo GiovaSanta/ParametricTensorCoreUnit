@@ -367,6 +367,7 @@ architecture Pipe of Pipeline is
     pc_ID                      : in  std_logic_vector(31 downto 0);  -- pc_ID is PC entering ID stage
     core_busy_IE               : in  std_logic;
     core_busy_LS               : in  std_logic;
+    core_busy_TCU              : in  std_logic;
     busy_LS                    : in  std_logic;
     busy_DSP                   : in  std_logic_vector(ACCL_NUM-1 downto 0);
     busy_ID                    : out std_logic;
@@ -708,6 +709,7 @@ architecture Pipe of Pipeline is
     pc_ID                      : in  std_logic_vector(31 downto 0);  -- pc_ID is PC entering ID stage
     core_busy_IE               : in  std_logic;
     core_busy_LS               : in  std_logic;
+    core_busy_TCU              : in  std_logic;
     ls_parallel_exec           : in  std_logic;
     dsp_parallel_exec          : in  std_logic;
     dsp_to_jump                : in  std_logic;
@@ -832,6 +834,7 @@ begin
     pc_ID                      => pc_ID,
     core_busy_IE               => core_busy_IE,
     core_busy_LS               => core_busy_LS,
+    core_busy_TCU              => core_busy_TCU,
     busy_LS                    => busy_LS,
     busy_DSP                   => busy_DSP,
     busy_ID                    => busy_ID,
@@ -1150,6 +1153,7 @@ begin
     pc_ID                      => pc_ID,
     core_busy_IE               => core_busy_IE,
     core_busy_LS               => core_busy_LS,
+    core_busy_TCU              => core_busy_TCU,
     ls_parallel_exec           => ls_parallel_exec,
     dsp_parallel_exec          => dsp_parallel_exec,
     dsp_to_jump                => dsp_to_jump,

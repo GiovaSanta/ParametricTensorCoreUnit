@@ -61,6 +61,7 @@ entity ID_STAGE is
     pc_ID                      : in  std_logic_vector(31 downto 0);  -- pc_ID is PC entering ID stage
     core_busy_IE               : in  std_logic;
     core_busy_LS               : in  std_logic;
+    core_busy_TCU              : in  std_logic; -- new addition for stalls when TCU executes... making hmma instructions as blocking.
     busy_LS                    : in  std_logic;
     busy_DSP                   : in  std_logic_vector(ACCL_NUM-1 downto 0);
     busy_ID                    : out std_logic;
@@ -141,7 +142,7 @@ begin
       ls_instr_req <= '0';
       ie_instr_req <= '0';
       tcu_instr_req <= '0';
-      if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
+      if core_busy_IE = '1' or core_busy_LS = '1' or core_busy_TCU = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then -- the instruction pipeline is halted
         halt_IE  <= '1';
         halt_LSU <= '1';
         instr_rvalid_IE <= '0';
@@ -706,9 +707,9 @@ begin
     ls_parallel_exec  <= '0' when (OPCODE_wires = LOAD or OPCODE_wires = STORE or OPCODE_wires = AMO or OPCODE_wires = KMEM) and busy_LS = '1' else '1';
     dsp_parallel_exec <= '0' when (OPCODE_wires = KMEM or OPCODE_wires = AMO) and busy_DSP(harc_ID_to_DSP) = '1' else '1';
     dsp_to_jump       <= '1' when OPCODE_wires = KDSP and busy_DSP(harc_ID_to_DSP) = '1' else '0';
-    if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then
+    if core_busy_IE = '1' or core_busy_LS = '1' or core_busy_TCU = '1' or ls_parallel_exec = '0' or dsp_parallel_exec = '0' then
       busy_ID <= '1';  -- wait for the stall to finish, block new instructions 
-    elsif core_busy_IE = '0' and core_busy_LS = '0' and ls_parallel_exec = '1'  and dsp_parallel_exec = '1' then
+    elsif core_busy_IE = '0' and core_busy_LS = '0' and core_busy_TCU = '0' and ls_parallel_exec = '1'  and dsp_parallel_exec = '1' then
       busy_ID <= '0';  -- wait for a valid instruction or process the instruction       
     end if; 
   end process;
@@ -722,9 +723,9 @@ begin
     ls_parallel_exec  <= '0' when busy_LS = '1' else '1';
     dsp_parallel_exec <= '0' when unsigned(busy_DSP) /= 0 else '1';
     dsp_to_jump       <= '1' when OPCODE_wires = KDSP and busy_DSP(harc_ID_to_DSP) = '1' else '0';
-    if core_busy_IE = '1' or core_busy_LS = '1' or ls_parallel_exec = '0'  or dsp_parallel_exec = '0' then
+    if core_busy_IE = '1' or core_busy_LS = '1' or core_busy_TCU = '1' or ls_parallel_exec = '0' or dsp_parallel_exec = '0' then
       busy_ID <= '1';  -- wait for the stall to finish, block new instructions 
-    elsif core_busy_IE = '0' and core_busy_LS = '0' and ls_parallel_exec = '1'  and dsp_parallel_exec = '1' then
+    elsif core_busy_IE = '0' and core_busy_LS = '0' and core_busy_TCU = '0' and ls_parallel_exec = '1'  and dsp_parallel_exec = '1' then
       busy_ID <= '0';  -- wait for a valid instruction or process the instruction       
     end if; 
   end process;
@@ -733,7 +734,7 @@ begin
   process(all)
   begin
     dsp_instr_req_wire <= (others => '0');
-    if core_busy_IE = '0' and core_busy_LS = '0' and ls_parallel_exec = '1' and dsp_parallel_exec = '1' and  instr_rvalid_ID = '1' then
+    if core_busy_IE = '0' and core_busy_LS = '0' and core_busy_TCU = '0' and ls_parallel_exec = '1' and dsp_parallel_exec = '1' and  instr_rvalid_ID = '1' then
       if OPCODE(instr_word_ID_lat) = KDSP then
         dsp_instr_req_wire(harc_ID_to_DSP) <=  '1';
       end if;
