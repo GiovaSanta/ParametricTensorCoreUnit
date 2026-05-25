@@ -211,6 +211,8 @@ architecture rtl of TCU_Branch is
     signal tcu_wb_word0_s      : std_logic_vector(31 downto 0);
     signal tcu_wb_word1_s      : std_logic_vector(31 downto 0);
 
+    signal tcu_wrapper_hmma_step_s : std_logic;
+
 begin
 
   ---------------------------------------------------------------------------
@@ -873,7 +875,7 @@ begin
       rst => tcu_wrapper_rst_s,
       start => tcu_wrapper_start_s,
 
-      hmma_step => '0',
+      hmma_step => tcu_wrapper_hmma_step_s,
 
       widthSel => "01",
       typeSel  => "000",
@@ -915,6 +917,8 @@ begin
       result_step  => tcu_wrapper_result_step_s
       
     );
+    
+    tcu_wrapper_hmma_step_s <= tcu_funct3_lat(0);
 
   ---------------------------------------------------------------------------
   -- Debug outputs
@@ -935,5 +939,7 @@ begin
   TCU_WB            <= TCU_WB_s;
   instr_word_TCU_WB <= instr_word_TCU_WB_s;
   harc_TCU_WB       <= harc_TCU_WB_s;
+
+  
 
 end architecture;

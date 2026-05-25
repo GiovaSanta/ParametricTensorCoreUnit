@@ -63,11 +63,14 @@ add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CO
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WB
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/instr_word_TCU_WB
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/harc_TCU_WB
-
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/WB_EN
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/WB_RD
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/harc_WB
 add wave -group "TCU_REAL_WB" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/RF/instr_word_WB
+
+add wave -group "TCU_HMMA_STEP" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_funct3_lat
+add wave -group "TCU_HMMA_STEP" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_wrapper_hmma_step_s
+add wave -group "TCU_HMMA_STEP" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_fsm/hmma_step
 
 add wave -group "TCUoctect0_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect0/u_buffers/*
 add wave -group "TCUoctect1_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect1/u_buffers/*
