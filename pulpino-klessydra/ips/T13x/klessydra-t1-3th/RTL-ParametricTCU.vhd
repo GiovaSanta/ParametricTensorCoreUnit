@@ -181,7 +181,7 @@ architecture rtl of TCU_Branch is
     ---------------------------------------------------------------------------
     -- TCU controller FSM, needed for better organization and for instance for stalling the upcoming instructions while tcu operates
     ---------------------------------------------------------------------------
-    type tcu_state_t is ( TCU_IDLE, TCU_COLLECT, TCU_START, TCU_WAIT_DONE, TCU_RELEASE );
+    type tcu_state_t is ( TCU_IDLE, TCU_COLLECT, TCU_START, TCU_WAIT_DONE, TCU_WRITEBACK, TCU_RELEASE );
 
     signal tcu_state_s      : tcu_state_t;
     signal tcu_next_state_s : tcu_state_t;
@@ -198,6 +198,18 @@ architecture rtl of TCU_Branch is
     signal tcu_res_W1_tc0_oct0_16_s : arraySize16_16;
     signal tcu_res_W0_tc0_oct1_16_s : arraySize16_16;
     signal tcu_res_W1_tc0_oct1_16_s : arraySize16_16;
+
+    signal tcu_wb_hart_s       : integer range 0 to THREAD_POOL_SIZE-1;
+    signal tcu_wb_word_s       : integer range 0 to 1;
+    signal tcu_wb_result_idx_s : integer range 0 to 15;
+
+    signal TCU_WB_EN_s         : std_logic;
+    signal TCU_WB_s            : std_logic_vector(31 downto 0);
+    signal instr_word_TCU_WB_s : std_logic_vector(31 downto 0);
+    signal harc_TCU_WB_s       : integer range THREAD_POOL_SIZE-1 downto 0;
+
+    signal tcu_wb_word0_s      : std_logic_vector(31 downto 0);
+    signal tcu_wb_word1_s      : std_logic_vector(31 downto 0);
 
 begin
 
@@ -299,21 +311,21 @@ begin
 
   TCU_valid_next_comb : process(all)
     variable lane_valid_next_v : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
-  begin
-    lane_valid_next_v := tcu_lane_valid_s;
+    begin
+      lane_valid_next_v := tcu_lane_valid_s;
 
-    if tcu_instr_req = '1' and
-      (tcu_state_s = TCU_IDLE or tcu_state_s = TCU_COLLECT) then
-      lane_valid_next_v(harc_EXEC) := '1';
-    end if;
+      if tcu_instr_req = '1' and
+        (tcu_state_s = TCU_IDLE or tcu_state_s = TCU_COLLECT) then
+        lane_valid_next_v(harc_EXEC) := '1';
+      end if;
 
-    tcu_lane_valid_next_s <= lane_valid_next_v;
+      tcu_lane_valid_next_s <= lane_valid_next_v;
 
-    if lane_valid_next_v = TCU_ALL_LANES_VALID_C then
-      tcu_all_lanes_valid_next_s <= '1';
-    else
-      tcu_all_lanes_valid_next_s <= '0';
-    end if;
+      if lane_valid_next_v = TCU_ALL_LANES_VALID_C then
+        tcu_all_lanes_valid_next_s <= '1';
+      else
+        tcu_all_lanes_valid_next_s <= '0';
+      end if;
   end process;
 
   ---------------------------------------------------------------------------
@@ -341,6 +353,11 @@ begin
 
       when TCU_WAIT_DONE =>
         if tcu_wrapper_done_s = '1' then
+          tcu_next_state_s <= TCU_WRITEBACK;
+        end if;
+      
+      when TCU_WRITEBACK =>
+        if tcu_wb_hart_s = 0 and tcu_wb_word_s = 1 then
           tcu_next_state_s <= TCU_RELEASE;
         end if;
 
@@ -385,6 +402,10 @@ begin
         busy_TCU_s      <= '1';
         core_busy_TCU_s <= '1';
 
+      when TCU_WRITEBACK =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
       when TCU_RELEASE =>
         busy_TCU_s      <= '1';
         core_busy_TCU_s <= '1';
@@ -395,6 +416,112 @@ begin
     end case;
   end process;
 
+  TCU_wb_mapping_comb : process(all)
+  begin
+    tcu_wb_result_idx_s <= 0;
+
+    if tcu_wb_hart_s < 4 then
+      -- harts 0..3 use W0 octect0
+      -- hart 0 -> base 0, hart 1 -> base 4, etc.
+      tcu_wb_result_idx_s <= tcu_wb_hart_s * 4;
+
+    elsif tcu_wb_hart_s < 8 then
+      -- harts 4..7 use W0 octect1
+      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 4) * 4;
+
+    elsif tcu_wb_hart_s < 12 then
+      -- harts 8..11 use W1 octect0
+      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 8) * 4;
+
+    else
+      -- harts 12..15 use W1 octect1
+      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 12) * 4;
+
+    end if;
+  end process;
+
+  TCU_wb_pack_comb : process(all)
+  begin
+    tcu_wb_word0_s <= (others => '0');
+    tcu_wb_word1_s <= (others => '0');
+
+    if tcu_wb_hart_s < 4 then
+
+      -- harts 0..3: W0 octect0
+      tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 1) &
+                        tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 0);
+
+      tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 3) &
+                        tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 2);
+
+    elsif tcu_wb_hart_s < 8 then
+
+      -- harts 4..7: W0 octect1
+      tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 1) &
+                        tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 0);
+
+      tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 3) &
+                        tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 2);
+
+    elsif tcu_wb_hart_s < 12 then
+
+      -- harts 8..11: W1 octect0
+      tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 1) &
+                        tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 0);
+
+      tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 3) &
+                        tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 2);
+
+    else
+
+      -- harts 12..15: W1 octect1
+      tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 1) &
+                        tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 0);
+
+      tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 3) &
+                        tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 2);
+
+    end if;
+  end process;
+
+  TCU_wb_counter_sync : process(clk_i, rst_ni)
+  begin
+    if rst_ni = '0' then
+
+      tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+      tcu_wb_word_s <= 0;
+
+    elsif rising_edge(clk_i) then
+
+      if tcu_state_s = TCU_WAIT_DONE and tcu_next_state_s = TCU_WRITEBACK then
+
+        -- First writeback cycle starts from hart F, word 0.
+        tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+        tcu_wb_word_s <= 0;
+
+      elsif tcu_state_s = TCU_WRITEBACK then
+
+        if tcu_wb_word_s = 0 then
+
+          -- Same hart, move from rd to rd+1.
+          tcu_wb_word_s <= 1;
+
+        else
+
+          -- Finished word 1 for this hart.
+          -- Move to next hart and restart from word 0.
+          tcu_wb_word_s <= 0;
+
+          if tcu_wb_hart_s > 0 then
+            tcu_wb_hart_s <= tcu_wb_hart_s - 1;
+          end if;
+
+        end if;
+
+      end if;
+
+    end if;
+  end process;
   ---------------------------------------------------------------------------
   -- TCU controller state register
   ---------------------------------------------------------------------------
@@ -660,6 +787,42 @@ begin
     end if;
   end process;
 
+  TCU_wb_outputs_comb : process(all)
+  variable instr_v : std_logic_vector(31 downto 0);
+  variable rd_v    : integer range 0 to 31;
+  begin
+    TCU_WB_EN_s         <= '0';
+    TCU_WB_s            <= (others => '0');
+    instr_word_TCU_WB_s <= (others => '0');
+    harc_TCU_WB_s       <= THREAD_POOL_SIZE-1;
+
+    instr_v := tcu_instr_lat;
+
+    if tcu_wb_word_s = 0 then
+      rd_v := tcu_rd_idx_lat;
+    else
+      if tcu_rd_idx_lat < 31 then
+        rd_v := tcu_rd_idx_lat + 1;
+      else
+        rd_v := 31;
+      end if;
+    end if;
+
+    instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
+
+    if tcu_state_s = TCU_WRITEBACK then
+      TCU_WB_EN_s         <= '1';
+      instr_word_TCU_WB_s <= instr_v;
+      harc_TCU_WB_s       <= tcu_wb_hart_s;
+
+      if tcu_wb_word_s = 0 then
+        TCU_WB_s <= tcu_wb_word0_s;
+      else
+        TCU_WB_s <= tcu_wb_word1_s;
+      end if;
+    end if;
+  end process;
+
   ---------------------------------------------------------------------------
   -- Convert Klessydra per-hart staging arrays to wrapper input arrays.
   -- The wrapper is fixed to 16 lanes, so this assumes THREAD_POOL_SIZE = 16.  -- right now implemented assuming the study of fp16 operands.
@@ -768,9 +931,9 @@ begin
   busy_TCU      <= busy_TCU_s;
   core_busy_TCU <= core_busy_TCU_s;
 
-  TCU_WB_EN         <= '0';
-  TCU_WB            <= (others => '0');
-  instr_word_TCU_WB <= (others => '0');
-  harc_TCU_WB       <= THREAD_POOL_SIZE-1;
+  TCU_WB_EN         <= TCU_WB_EN_s;
+  TCU_WB            <= TCU_WB_s;
+  instr_word_TCU_WB <= instr_word_TCU_WB_s;
+  harc_TCU_WB       <= harc_TCU_WB_s;
 
 end architecture;
