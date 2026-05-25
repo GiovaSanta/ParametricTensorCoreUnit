@@ -60,12 +60,12 @@ architecture rtl of TCU_Branch is
   -- These are decoded from the live instr_word_IE during the IE cycle.
   ---------------------------------------------------------------------------
 
-  signal tcu_opcode_wire           : std_logic_vector(6 downto 0);
-  signal tcu_rd_idx_wire           : integer range 0 to 31;
-  signal tcu_funct3_wire           : std_logic_vector(2 downto 0);
-  signal tcu_rs1_idx_wire          : integer range 0 to 31;
-  signal tcu_rs2_idx_wire          : integer range 0 to 31;
-  signal tcu_funct7_wire           : std_logic_vector(6 downto 0);
+  signal tcu_opcode_wire           : std_logic_vector(6 downto 0); --distinguishes operation of the TCU to the other RISCV operations
+  signal tcu_rd_idx_wire           : integer range 0 to 31;  -- which register of RFs will contain the result. this index is also used for the third operand of the accumulation (matrix C related value)
+  signal tcu_funct3_wire           : std_logic_vector(2 downto 0); -- is it an hmma step 0 or step 1 instruction
+  signal tcu_rs1_idx_wire          : integer range 0 to 31; -- which register of the RFs contain first operand (related to matrix A)
+  signal tcu_rs2_idx_wire          : integer range 0 to 31; -- which register of the RFs contain second operand (related to matrix B)
+  signal tcu_funct7_wire           : std_logic_vector(6 downto 0); --selection of which type of operand and bit width 
   signal tcu_regs_per_operand_wire : integer range 1 to 4;
 
   ---------------------------------------------------------------------------
@@ -168,20 +168,30 @@ architecture rtl of TCU_Branch is
 
     signal tcu_wrapper_rst_s : std_logic;
 
+    ---------------------------------------------------------------------------
+    -- TCU controller FSM, needed for better organization and for instance for stalling the upcoming instructions while tcu operates
+    ---------------------------------------------------------------------------
+    type tcu_state_t is ( TCU_IDLE, TCU_COLLECT, TCU_START, TCU_WAIT_DONE, TCU_RELEASE );
+
+    signal tcu_state_s      : tcu_state_t;
+    signal tcu_next_state_s : tcu_state_t;
+    signal busy_TCU_s       : std_logic;
+    signal core_busy_TCU_s  : std_logic;
+
 begin
 
-    ---------------------------------------------------------------------------
-    -- All-lanes-valid detection
-    --
-    -- This becomes '1' when all harts have delivered their HMMA fragment.
-    -- Later this can be used to start the tensor core wrapper.
-    ---------------------------------------------------------------------------
-
-    tcu_all_lanes_valid_s <= '1' when tcu_lane_valid_s = TCU_ALL_LANES_VALID_C else '0';
-
-     ---------------------------------------------------------------------------
-  -- TCU combinational decode
+  ---------------------------------------------------------------------------
+  -- All-lanes-valid detection
   --
+  -- This becomes '1' when all harts have delivered their HMMA fragment from the register files.
+  -- Later this can be used to start the tensor core wrapper.
+  ---------------------------------------------------------------------------
+
+  tcu_all_lanes_valid_s <= '1' when tcu_lane_valid_s = TCU_ALL_LANES_VALID_C else '0';
+
+  ---------------------------------------------------------------------------
+  -- TCU combinational decode
+  --  
   -- This decodes the live instruction while it is present in IE.
   -- The decoded wires are then latched by TCU_packet_sync when tcu_instr_req = 1.
   ---------------------------------------------------------------------------
@@ -262,6 +272,93 @@ begin
 
   end process;
 
+  ---------------------------------------------------------------------------
+  -- TCU controller combinational part of FSM
+  ---------------------------------------------------------------------------
+
+  TCU_fsm_comb : process(all)
+  begin
+    tcu_next_state_s <= tcu_state_s;
+    
+    case tcu_state_s is
+
+      when TCU_IDLE =>
+        if tcu_instr_req = '1' then
+          tcu_next_state_s <= TCU_COLLECT;
+        end if;
+
+      when TCU_COLLECT =>
+        if tcu_all_lanes_valid_s = '1' then
+          tcu_next_state_s <= TCU_START;
+        end if;
+
+      when TCU_START =>
+        tcu_next_state_s <= TCU_WAIT_DONE;
+
+      when TCU_WAIT_DONE =>
+        if tcu_wrapper_done_s = '1' then
+          tcu_next_state_s <= TCU_RELEASE;
+        end if;
+
+      when TCU_RELEASE =>
+        tcu_next_state_s <= TCU_IDLE;
+
+      when others =>
+        tcu_next_state_s <= TCU_IDLE;
+
+    end case;
+  end process;
+
+    ---------------------------------------------------------------------------
+  -- TCU controller output logic
+  ---------------------------------------------------------------------------
+
+  TCU_fsm_outputs_comb : process(all)
+  begin
+    -- defaults
+    busy_TCU_s          <= '0';
+    core_busy_TCU_s     <= '0';
+    tcu_wrapper_start_s <= '0';
+
+    case tcu_state_s is
+
+      when TCU_IDLE =>
+        null;
+
+      when TCU_COLLECT =>
+        busy_TCU_s <= '1';
+
+      when TCU_START =>
+        busy_TCU_s          <= '1';
+        core_busy_TCU_s     <= '1';
+        tcu_wrapper_start_s <= '1';
+
+      when TCU_WAIT_DONE =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
+      when TCU_RELEASE =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
+      when others =>
+        null;
+
+    end case;
+  end process;
+
+  ---------------------------------------------------------------------------
+  -- TCU controller state register
+  ---------------------------------------------------------------------------
+
+  TCU_state_reg_sync : process(clk_i, rst_ni)
+  begin
+    if rst_ni = '0' then
+      tcu_state_s <= TCU_IDLE;
+    elsif rising_edge(clk_i) then
+      tcu_state_s <= tcu_next_state_s;
+    end if;
+  end process;
 
   ---------------------------------------------------------------------------
   -- TCU synchronous packet capture
@@ -312,12 +409,11 @@ begin
 
       tcu_lane_valid_s <= (others => '0');
 
-      tcu_wrapper_start_s      <= '0';
       tcu_wrapper_start_seen_s <= '0';
-
+      
     elsif rising_edge(clk_i) then
 
-      if tcu_instr_req = '1' then
+    if tcu_instr_req = '1' and (tcu_state_s = TCU_IDLE or tcu_state_s = TCU_COLLECT) then
 
         -- Raw instruction packet
         tcu_valid_lat <= '1';
@@ -440,11 +536,13 @@ begin
 
       end if;
 
-      -- Default: start is a one-cycle pulse
-        tcu_wrapper_start_s <= '0';
-      if tcu_all_lanes_valid_s = '1' and tcu_wrapper_start_seen_s = '0' then  -- after the final missing hart fills tcu_lane_valid_s, the wrapper starts on the following clock
-        tcu_wrapper_start_s      <= '1';
-        tcu_wrapper_start_seen_s <= '1';
+      -------------------------------------------------------------------------
+      -- FSM-controlled release / re-arm
+      -------------------------------------------------------------------------
+
+      if tcu_state_s = TCU_RELEASE then
+        tcu_lane_valid_s         <= (others => '0');
+        tcu_wrapper_start_seen_s <= '0';
       end if;
 
     end if;
