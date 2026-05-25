@@ -199,14 +199,14 @@ int main() {
     // Load matrix A related
     // -------------------------
 
-        "lw x22,  0(%[baseA])\n"
-        "lw x23,  4(%[baseA])\n"
-        "lw x16,  8(%[baseA])\n"
-        "lw x17, 12(%[baseA])\n"
-        "lw x18, 16(%[baseA])\n"
-        "lw x19, 20(%[baseA])\n"
-        "lw x28, 24(%[baseA])\n"
-        "lw x29, 28(%[baseA])\n"
+        "lw x22,  0(%[baseA])\n" // x22 equivalent to R12 in flexgripplus corrisponding program
+        "lw x23,  4(%[baseA])\n" // x23 equivalent to R13 in flexgripplus corrisponding program
+        "lw x16,  8(%[baseA])\n" // x16 equivalent to R16 in flexgripplus corrisponding program
+        "lw x17, 12(%[baseA])\n" // x17 equivalent to R17 in flexgripplus corrisponding program
+        "lw x18, 16(%[baseA])\n" // x18 equivalent to R18 in flexgripplus corrisponding program
+        "lw x19, 20(%[baseA])\n" // x19 equivalent to R19 in flexgripplus corrisponding program
+        "lw x28, 24(%[baseA])\n" // x28 equivalent to R2 in flexgripplus corrisponding program
+        "lw x29, 28(%[baseA])\n" // x29 equivalent to R3 in flexgripplus corrisponding program
 
     // -------------------------
     // Load matrix B_T related
@@ -233,21 +233,27 @@ int main() {
         HMMA_0_FP16_ASM(x5, x22, x11)
         HMMA_1_FP16_ASM(x20, x22, x11)
 
+        HMMA_0_FP16_ASM(x5, x16, x13)
+        HMMA_1_FP16_ASM(x20, x16, x13)
+
+        HMMA_0_FP16_ASM(x5, x18, x30)
+        HMMA_1_FP16_ASM(x20, x18, x30)
+
+        HMMA_0_FP16_ASM(x5, x28, x25)
+        HMMA_1_FP16_ASM(x20, x28, x25)
+
         :
         : [baseA] "r" (A_ptr),
           [baseB] "r" (B_ptr),
           [baseC] "r" (C_ptr)
-        : "x20", "x30", "x31",
+        : "x5", "x6",
+          "x11", "x12", "x13", "x14",
+          "x16", "x17", "x18", "x19",
+          "x20", "x21",
           "x22", "x23",
-          "x16", "x17",
-          "x18", "x19",
-          "x28", "x29",
-          "x11", "x12", 
-          "x13", "x14", 
-          "x15", "x24", 
           "x25", "x26",
-          "x5", "x6", 
-          "x7", "x10",
+          "x28", "x29",
+          "x30", "x31",
           "memory"
     );
 
