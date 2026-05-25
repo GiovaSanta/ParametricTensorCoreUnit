@@ -185,6 +185,14 @@ architecture rtl of TCU_Branch is
     signal tcu_lane_valid_next_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
     signal tcu_all_lanes_valid_next_s : std_logic;
 
+    signal tcu_wrapper_result_valid_s : std_logic;
+    signal tcu_wrapper_result_step_s  : std_logic_vector(1 downto 0);
+
+    signal tcu_res_W0_tc0_oct0_16_s : arraySize16_16;
+    signal tcu_res_W1_tc0_oct0_16_s : arraySize16_16;
+    signal tcu_res_W0_tc0_oct1_16_s : arraySize16_16;
+    signal tcu_res_W1_tc0_oct1_16_s : arraySize16_16;
+
 begin
 
   ---------------------------------------------------------------------------
@@ -582,6 +590,70 @@ begin
     end if;
   end process;
 
+    ---------------------------------------------------------------------------
+  -- Stable TCU FP16 result latch
+  --
+  -- Raw W0/W1 wrapper outputs are exec_step-dependent and may not remain
+  -- stable after the wrapper finishes. These buffers preserve the complete
+  -- FP16 result for later writeback.
+  ---------------------------------------------------------------------------
+
+  TCU_result_latch_sync : process(clk_i, rst_ni)
+  begin
+    if rst_ni = '0' then
+
+      for i in 0 to 15 loop
+        tcu_res_W0_tc0_oct0_16_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct0_16_s(i) <= (others => '0');
+        tcu_res_W0_tc0_oct1_16_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct1_16_s(i) <= (others => '0');
+      end loop;
+
+    elsif rising_edge(clk_i) then
+
+      if tcu_state_s = TCU_WAIT_DONE and tcu_wrapper_result_valid_s = '1' then
+
+        case tcu_wrapper_result_step_s is
+
+          when "00" =>
+            for i in 0 to 3 loop
+              tcu_res_W0_tc0_oct0_16_s(i) <= W0_tc0_oct0_16_X3_s(i);
+              tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
+              tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
+              tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+            end loop;
+
+          when "01" =>
+            for i in 4 to 7 loop
+              tcu_res_W0_tc0_oct0_16_s(i) <= W0_tc0_oct0_16_X3_s(i);
+              tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
+              tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
+              tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+            end loop;
+
+          when "10" =>
+            for i in 8 to 11 loop
+              tcu_res_W0_tc0_oct0_16_s(i) <= W0_tc0_oct0_16_X3_s(i);
+              tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
+              tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
+              tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+            end loop;
+
+          when others =>
+            for i in 12 to 15 loop
+              tcu_res_W0_tc0_oct0_16_s(i) <= W0_tc0_oct0_16_X3_s(i);
+              tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
+              tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
+              tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+            end loop;
+
+        end case;
+
+      end if;
+
+    end if;
+  end process;
+
   ---------------------------------------------------------------------------
   -- Convert Klessydra per-hart staging arrays to wrapper input arrays.
   -- The wrapper is fixed to 16 lanes, so this assumes THREAD_POOL_SIZE = 16.  -- right now implemented assuming the study of fp16 operands.
@@ -668,7 +740,10 @@ begin
       busy      => tcu_wrapper_busy_s,
       done      => tcu_wrapper_done_s,
       step_done => tcu_wrapper_step_done_s,
-      load_pair => tcu_wrapper_load_pair_s
+      load_pair => tcu_wrapper_load_pair_s,
+
+      result_valid => tcu_wrapper_result_valid_s,
+      result_step  => tcu_wrapper_result_step_s
     );
 
   ---------------------------------------------------------------------------

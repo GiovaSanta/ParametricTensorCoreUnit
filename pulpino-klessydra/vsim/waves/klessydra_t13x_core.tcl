@@ -41,6 +41,18 @@ add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region
 add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_lane_valid_next_s
 add wave -group "TCU_stall_effect" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_all_lanes_valid_next_s
 
+
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_wrapper_result_valid_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_wrapper_result_step_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/W0_tc0_oct0_16_X3_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/W1_tc0_oct0_16_X3_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/W0_tc0_oct1_16_X3_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/W1_tc0_oct1_16_X3_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_res_W0_tc0_oct0_16_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_res_W1_tc0_oct0_16_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_res_W0_tc0_oct1_16_s
+add wave -group "TCU_result_latch" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_res_W1_tc0_oct1_16_s
+
 add wave -group "TCUoctect0_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect0/u_buffers/*
 add wave -group "TCUoctect1_Buffers" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_tc0/u_octect1/u_buffers/*
 add wave -group "TCUinternalExecFSM" -radix hexadecimal vsim:/tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WRAPPER_i/u_fsm/*
