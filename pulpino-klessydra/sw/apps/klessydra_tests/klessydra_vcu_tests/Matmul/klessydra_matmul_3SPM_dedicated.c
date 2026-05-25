@@ -231,6 +231,7 @@ int main() {
         "lw x21, 12(%[baseC])\n" // x21 equivalent to R7 in flexgripplus corrisponding program
 
         HMMA_0_FP16_ASM(x5, x22, x11)
+        HMMA_1_FP16_ASM(x20, x22, x11)
 
         :
         : [baseA] "r" (A_ptr),
