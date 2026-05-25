@@ -54,7 +54,10 @@ entity singleTensorCoreWrapper is
         busy : out std_logic;
         done : out std_logic;
         step_done : out std_logic;
-        load_pair: out std_logic_vector(1 downto 0)
+        load_pair: out std_logic_vector(1 downto 0);
+
+        result_valid : out std_logic;
+        result_step  : out std_logic_vector(1 downto 0)
     );
 end singleTensorCoreWrapper;
 
@@ -135,6 +138,9 @@ architecture rtl of singleTensorCoreWrapper is
 
     signal tc0_rf_mux_a_s : arraySize16_32;
     signal tc0_rf_mux_b_s : arraySize16_32;
+
+    signal busy_s : std_logic;
+    signal done_s : std_logic;
     
 begin
     --FSM controlling single tensor core :
@@ -153,8 +159,8 @@ begin
         load_pair => load_pair_s,
         exec_step => exec_step_s,
 
-        busy      => busy,
-        done      => done,
+        busy      => busy_s,
+        done      => done_s,
 
         typeSel   => typeSel
     );
@@ -202,6 +208,12 @@ begin
     step_done <= step_done_tc0_s ;
 
     load_pair <= load_pair_s ;
+
+    busy <= busy_s;
+    done <= done_s;
+
+    result_step  <= exec_step_s;
+    result_valid <= '1' when (busy_s = '1' and load_en_s = '0') else '0';
     
     process(load_ph_s, load_pair_s,
         tc0_src1_rf_port_a_pair00, tc0_src1_rf_port_b_pair00, tc0_src1_rf_port_a_pair01, tc0_src1_rf_port_b_pair01, 
