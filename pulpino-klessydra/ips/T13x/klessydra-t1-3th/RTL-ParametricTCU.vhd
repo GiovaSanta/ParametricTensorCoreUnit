@@ -36,7 +36,11 @@ entity TCU_Branch is
     tcu_harc_dbg  : out integer range THREAD_POOL_SIZE-1 downto 0;
     tcu_rs1_dbg   : out std_logic_vector(31 downto 0);
     tcu_rs2_dbg   : out std_logic_vector(31 downto 0);
-    tcu_rd_dbg    : out std_logic_vector(31 downto 0)
+    tcu_rd_dbg    : out std_logic_vector(31 downto 0);
+
+    -- TCU status toward pipeline control
+    busy_TCU      : out std_logic;
+    core_busy_TCU : out std_logic
   );
 end entity;
 
@@ -648,5 +652,8 @@ begin
   tcu_rs1_dbg   <= tcu_rs1_lat;
   tcu_rs2_dbg   <= tcu_rs2_lat;
   tcu_rd_dbg    <= tcu_rd_lat;
+
+  busy_TCU      <= busy_TCU_s;
+  core_busy_TCU <= core_busy_TCU_s;
 
 end architecture;

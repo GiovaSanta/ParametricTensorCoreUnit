@@ -156,7 +156,8 @@ architecture Pipe of Pipeline is
   signal ie_csr_wdata_i         : std_logic_vector(31 downto 0);
   signal ie_instr_req           : std_logic;
   signal ls_instr_req           : std_logic;
-  --new signals for tcu integration to core.
+
+  --new signals for tcu integration to core. (gio)
   signal tcu_instr_req          : std_logic;
   signal tcu_valid_dbg : std_logic;
   signal tcu_instr_dbg : std_logic_vector(31 downto 0);
@@ -165,6 +166,9 @@ architecture Pipe of Pipeline is
   signal tcu_rs1_dbg   : std_logic_vector(31 downto 0);
   signal tcu_rs2_dbg   : std_logic_vector(31 downto 0);
   signal tcu_rd_dbg    : std_logic_vector(31 downto 0);
+
+  signal busy_TCU      : std_logic;
+  signal core_busy_TCU : std_logic;
 ----------------------------------------------------
   signal core_busy_LS           : std_logic;
   signal busy_LS                : std_logic;
@@ -633,7 +637,11 @@ architecture Pipe of Pipeline is
       tcu_harc_dbg  : out integer range THREAD_POOL_SIZE-1 downto 0;
       tcu_rs1_dbg   : out std_logic_vector(31 downto 0);
       tcu_rs2_dbg   : out std_logic_vector(31 downto 0);
-      tcu_rd_dbg    : out std_logic_vector(31 downto 0)
+      tcu_rd_dbg    : out std_logic_vector(31 downto 0);
+
+      busy_TCU      : out std_logic;
+      core_busy_TCU : out std_logic
+      
     );
   end component ;
 
@@ -1071,7 +1079,10 @@ begin
     tcu_harc_dbg  => tcu_harc_dbg,
     tcu_rs1_dbg   => tcu_rs1_dbg,
     tcu_rs2_dbg   => tcu_rs2_dbg,
-    tcu_rd_dbg    => tcu_rd_dbg
+    tcu_rd_dbg    => tcu_rd_dbg,
+
+    busy_TCU      => busy_TCU,
+    core_busy_TCU => core_busy_TCU
   );
 
   SCI : Scratchpad_memory_interface
