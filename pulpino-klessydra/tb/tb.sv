@@ -280,6 +280,90 @@ module tb;
 
   logic use_qspi;
 
+  //integer store_log_fd;
+
+  int unsigned dmem_base_byte_addr = 32'h0010_0000;
+  int unsigned touched_word_addr;
+  bit          touched_any;
+  bit          touched_words[int unsigned];
+
+  initial begin
+    //store_log_fd = $fopen("slm_files/store_log.txt", "w");
+    //if (store_log_fd == 0)
+    //  $display("ERROR: could not open slm_files/store_log.txt");
+
+    touched_any = 1'b0;
+  end
+
+  always @(posedge s_clk) begin
+  if (s_rst_n &&
+    top_i.core_region_i.core_lsu_we  == 1'b1 &&
+    top_i.core_region_i.core_lsu_req == 1'b1 &&
+    top_i.core_region_i.core_lsu_gnt == 1'b1) begin
+
+    //$fdisplay(store_log_fd, "%0t addr=%08x data=%08x be=%b",
+    //          $time,
+    //          top_i.core_region_i.core_lsu_addr,
+    //          top_i.core_region_i.core_lsu_wdata,
+    //          top_i.core_region_i.core_lsu_be);
+
+    if (top_i.core_region_i.core_lsu_addr >= dmem_base_byte_addr &&
+        top_i.core_region_i.core_lsu_be == 4'b1111) begin
+
+      touched_word_addr =
+        (top_i.core_region_i.core_lsu_addr - dmem_base_byte_addr) >> 2;
+
+      touched_any = 1'b1;
+      touched_words[touched_word_addr] = 1'b1;
+    end
+  end
+end
+
+task dump_touched_words_slm;
+  integer      fd;
+  int unsigned word_addr;
+  int unsigned mem_addr;
+  int unsigned word_idx;
+  int unsigned byte_idx;
+  int unsigned data_width;
+  int unsigned words_per_mem_row;
+  logic [31:0] data_word;
+
+  begin
+    if (!touched_any) begin
+      $display("No accepted stores detected. Skipping touched-words SLM dump.");
+    end else begin
+      $display("Dumping touched memory words in sparse SLM format");
+
+      data_width = tb.top_i.core_region_i.mem_gen.data_mem.DATA_WIDTH;
+      words_per_mem_row = data_width / 32;
+
+      fd = $fopen("slm_files/final_touched_words.slm", "w");
+
+      if (fd == 0) begin
+        $display("ERROR: could not open slm_files/final_touched_words.slm");
+      end else begin
+
+        foreach (touched_words[word_addr]) begin
+          mem_addr = word_addr / words_per_mem_row;
+          word_idx = word_addr % words_per_mem_row;
+          byte_idx = word_idx * 4;
+
+          data_word[ 7: 0] = tb.top_i.core_region_i.mem_gen.data_mem.sp_ram_i.mem[mem_addr][byte_idx + 0];
+          data_word[15: 8] = tb.top_i.core_region_i.mem_gen.data_mem.sp_ram_i.mem[mem_addr][byte_idx + 1];
+          data_word[23:16] = tb.top_i.core_region_i.mem_gen.data_mem.sp_ram_i.mem[mem_addr][byte_idx + 2];
+          data_word[31:24] = tb.top_i.core_region_i.mem_gen.data_mem.sp_ram_i.mem[mem_addr][byte_idx + 3];
+
+          $fdisplay(fd, "@%08X %08X", word_addr, data_word);
+        end
+
+        $fclose(fd);
+        $display("Touched memory words dumped to slm_files/final_touched_words.slm");
+      end
+    end
+  end
+endtask
+
   initial
   begin
     int i;
@@ -443,6 +527,12 @@ module tb;
       wait(gpio_out[8]);
 
     spi_check_return_codes(exit_status);
+
+    dump_touched_words_slm();
+
+    //$fclose(store_log_fd);
+
+    //mem_dump();
 
     $fflush();
     $stop();
