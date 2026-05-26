@@ -703,7 +703,7 @@ pad<= input_shifter(input_shifter'high);
    right_signed_shifter: RightShifterSticky18_by_max_15_F0_uid16
       port map ( S => shift_offset,
                  X => input_shifter,
-                 padBit => pad,
+                 padBit => pad, 
                  R => shifted_ans,
                  Sticky => S_bit_tmp);
 tmp_ans <= shifted_ans(17 downto 3);

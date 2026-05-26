@@ -12,6 +12,7 @@ source ${PULP_PATH}/./vsim/vcompile/setup.csh
 set IP=T13x
 
 set FP16_LIB_NAME=FP16_DPU
+set POSIT16_LIB_NAME=POSIT16_DPU
 
 ##############################################################################
 # Check settings
@@ -29,6 +30,7 @@ if (! $?IPS_PATH ) then
 endif
 
 set FP16_LIB_PATH="${MSIM_LIBS_PATH}/${FP16_LIB_NAME}_lib"
+set POSIT16_LIB_PATH="${MSIM_LIBS_PATH}/${POSIT16_LIB_NAME}_lib"
 
 
 set LIB_NAME="${IP}_lib"
@@ -53,6 +55,11 @@ rm -rf $FP16_LIB_PATH
 vlib $FP16_LIB_PATH
 vmap $FP16_LIB_NAME $FP16_LIB_PATH
 
+rm -rf $POSIT16_LIB_PATH
+
+vlib $POSIT16_LIB_PATH
+vmap $POSIT16_LIB_NAME $POSIT16_LIB_PATH
+
 ##############################################################################
 # Compiling RTL
 ##############################################################################
@@ -62,6 +69,13 @@ echo "${Green}Compiling component: ${Brown} FP16_DPU ${NC}"
 echo "${Red}"
 vcom -2008 -quiet -suppress 2583 -work ${FP16_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FP16DPU/FP16_FMA.vhd || goto error
 vcom -2008 -quiet -suppress 2583 -work ${FP16_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FP16DPU/FP16_DPU.vhd || goto error
+
+echo "${Green}Compiling component: ${Brown} POSIT16_DPU ${NC}"
+echo "${Red}"
+vcom -2008 -quiet -suppress 2583 -work ${POSIT16_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit16DPU/posit16_0_Add.vhd || goto error
+vcom -2008 -quiet -suppress 2583 -work ${POSIT16_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit16DPU/posit16_0_Mul.vhd || goto error
+vcom -2008 -quiet -suppress 2583 -work ${POSIT16_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit16DPU/posit16_0_DPU.vhd || goto error
+
 
 echo "${Green}Compiling component: ${Brown} Klessydra-T13x ${NC}"
 echo "${Red}"

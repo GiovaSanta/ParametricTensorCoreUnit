@@ -26,7 +26,7 @@ library FP16_DPU;
 --library POSIT8_DPU;
 --use POSIT8_DPU.all;
 
---library POSIT16_DPU;
+library POSIT16_DPU;
 --use POSIT16_DPU.all;
 
 --library POSIT32_DPU;
@@ -173,20 +173,20 @@ end component;
 --end component;
 
 --posit16 DPU:
---component DotProductUnitPosit16 is
---    Port (
---        aX0 : in  std_logic_vector(15 downto 0);
---        aX1 : in  std_logic_vector(15 downto 0);
---        aX2 : in  std_logic_vector(15 downto 0);
---        aX3 : in  std_logic_vector(15 downto 0);
---        bY0 : in  std_logic_vector(15 downto 0);
---        bY1 : in  std_logic_vector(15 downto 0);
---        bY2 : in  std_logic_vector(15 downto 0);
---        bY3 : in  std_logic_vector(15 downto 0);
---        cX0 : in  std_logic_vector(15 downto 0);
---        R  : out std_logic_vector(15 downto 0)
---    );
---end component;
+component DotProductUnitPosit16 is
+    Port (
+        aX0 : in  std_logic_vector(15 downto 0);
+        aX1 : in  std_logic_vector(15 downto 0);
+        aX2 : in  std_logic_vector(15 downto 0);
+        aX3 : in  std_logic_vector(15 downto 0);
+        bY0 : in  std_logic_vector(15 downto 0);
+        bY1 : in  std_logic_vector(15 downto 0);
+        bY2 : in  std_logic_vector(15 downto 0);
+        bY3 : in  std_logic_vector(15 downto 0);
+        cX0 : in  std_logic_vector(15 downto 0);
+        R  : out std_logic_vector(15 downto 0)
+    );
+end component;
 
 --posit32 DPU:
 --component DotProductUnitPosit32 is
@@ -282,8 +282,8 @@ dpu_fp16: entity FP16_DPU.DotProductUnitFP16
 --dpu_posit8: DotProductUnitPosit
   --  port map ( aX0 => A0_8 , aX1 => A1_8 , aX2 => A2_8 , aX3 => A3_8 , bY0 => B0_8 , bY1 => B1_8 , bY2 => B2_8, bY3 => B3_8 , cX0 => C0_8 , R => out_DPU_posit8  ) ;
 
---dpu_posit16: DotProductUnitPosit16
-  --  port map ( aX0 => A0_16 , aX1 => A1_16 , aX2 => A2_16 , aX3 => A3_16 , bY0 => B0_16 , bY1 => B1_16 , bY2 => B2_16, bY3 => B3_16 , cX0 => C0_16 , R => out_DPU_posit16 ) ;
+dpu_posit16: entity POSIT16_DPU.DotProductUnitPosit16
+    port map ( aX0 => A0_16 , aX1 => A1_16 , aX2 => A2_16 , aX3 => A3_16 , bY0 => B0_16 , bY1 => B1_16 , bY2 => B2_16, bY3 => B3_16 , cX0 => C0_16 , R => out_DPU_posit16 ) ;
 
 --dpu_posit32: DotProductUnitPosit32
    -- port map ( aX0 => A0_32 , aX1 => A1_32 , aX2 => A2_32 , aX3 => A3_32 , bY0 => B0_32 , bY1 => B1_32 , bY2 => B2_32, bY3 => B3_32 , cX0 => C0_32 , R => out_DPU_posit32 ) ;
