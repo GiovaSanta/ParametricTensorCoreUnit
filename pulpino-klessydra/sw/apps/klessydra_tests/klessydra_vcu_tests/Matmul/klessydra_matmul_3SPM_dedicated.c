@@ -215,21 +215,13 @@ int main() {
     uint8_t *D_base_byte = (uint8_t *)D;
     uint32_t *D_ptr = (uint32_t *)(D_base_byte + C_offset);
 
+    uint32_t *B_ptr_hi = (uint32_t *)(B_base_byte + B_offset + 256);
+
+    uint32_t *C_ptr_hi = (uint32_t *)(C_base_byte + C_offset + 16);
+    
+    uint32_t *D_ptr_hi = (uint32_t *)(D_base_byte + C_offset + 16);
+
     __asm__ volatile (
-
-    // -------------------------
-    // DEBUG: fixed-register ADD test
-    // Goal: observe how 16 harts occupy IE_STAGE for a simple ADD
-    // x30 = 0x11
-    // x31 = 0x22
-    // x20 = x30 + x31 = 0x33
-    // -------------------------
-
-        "addi x30, x0, 100\n"
-        "addi x31, x0, 3\n"
-        "div  x20, x30, x31\n"
-        "nop\n"
-        "nop\n"
 
     // -------------------------
     // Load matrix A related
@@ -281,13 +273,58 @@ int main() {
         "sw x5,   0(%[baseD])\n"  // storing the registers now because will need to use the registers for the 16 threads to repeat the process in order to calculate the ssecond part of the final 16 by 16 matrix.
         "sw x6,   4(%[baseD])\n"  // at this point the first part of the resulting matrix is computed (D[0-15][0:7])
         "sw x20,  8(%[baseD])\n"
-        "sw x21, 12(%[baseD])\n"
+        "sw x21, 12(%[baseD])\n"  // A registers are intentionally not reloaded here.
+                                  // The second half of D uses the same A rows and only changes B/C columns.
+
+        // -------------------------
+        // Reload matrix B_T related, second half: original B columns 8..15
+        // -------------------------
+
+        "lw x11,  0(%[baseB_hi])\n"
+        "lw x12,  4(%[baseB_hi])\n"
+        "lw x13,  8(%[baseB_hi])\n"
+        "lw x14, 12(%[baseB_hi])\n"
+        "lw x30, 16(%[baseB_hi])\n"
+        "lw x31, 20(%[baseB_hi])\n"
+        "lw x25, 24(%[baseB_hi])\n"
+        "lw x26, 28(%[baseB_hi])\n"
+
+        // -------------------------
+        // reLoad matrix C related, second half: columns 8..15
+        // -------------------------
+
+        "lw x5,   0(%[baseC_hi])\n"
+        "lw x6,   4(%[baseC_hi])\n"
+        "lw x20,  8(%[baseC_hi])\n"
+        "lw x21, 12(%[baseC_hi])\n"
+
+        HMMA_0_FP16_ASM(x5, x22, x11)
+        HMMA_1_FP16_ASM(x20, x22, x11)
+
+        HMMA_0_FP16_ASM(x5, x16, x13)
+        HMMA_1_FP16_ASM(x20, x16, x13)
+
+        HMMA_0_FP16_ASM(x5, x18, x30)
+        HMMA_1_FP16_ASM(x20, x18, x30)
+
+        HMMA_0_FP16_ASM(x5, x28, x25)
+        HMMA_1_FP16_ASM(x20, x28, x25)
+
+        // Store matrix D related, second half: D columns 8..15
+        
+        "sw x5,   0(%[baseD_hi])\n"
+        "sw x6,   4(%[baseD_hi])\n"
+        "sw x20,  8(%[baseD_hi])\n"
+        "sw x21, 12(%[baseD_hi])\n"
 
         :
         : [baseA] "r" (A_ptr),
           [baseB] "r" (B_ptr),
           [baseC] "r" (C_ptr),
-          [baseD] "r" (D_ptr)
+          [baseD] "r" (D_ptr),
+          [baseB_hi] "r" (B_ptr_hi),
+          [baseC_hi] "r" (C_ptr_hi),
+          [baseD_hi] "r" (D_ptr_hi)
         : "x5", "x6",
           "x11", "x12", "x13", "x14",
           "x16", "x17", "x18", "x19",
