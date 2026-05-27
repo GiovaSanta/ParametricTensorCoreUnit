@@ -193,7 +193,7 @@ WaveRestoreCursors {0 ns}
 configure wave -signalnamewidth 0
 
 # placing locked cursors around where region where first hmma instruction is dealt with, and where loading of tensor buffer A is happening respectively.
-WaveRestoreCursors {{HMMA_FP16_event} {96755 ns} 1} {{TCU_A_buf_load_start} {96935 ns} 1}
+WaveRestoreCursors {{first_HMMA_event} {172885 ns} 1} {{TCU_A_buf_load_start} {173085 ns} 1}
 quietly wave cursor active 1
 
 WaveRestoreZoom    {0 ns} {200 ns}
