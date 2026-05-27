@@ -78,16 +78,16 @@ end parametricDPUrel0;
 
 architecture Behavioral of parametricDPUrel0 is
 
-signal out_DPU_FP8 : std_logic_vector( 7 downto 0 ) ;
-signal out_DPU_FP16: std_logic_vector(15 downto 0 ) ;
-signal out_DPU_FP32: std_logic_vector(31 downto 0 ) ;
-signal out_DPU_posit8: std_logic_vector(7 downto 0) ;
-signal out_DPU_posit16: std_logic_vector(15 downto 0) ;
-signal out_DPU_posit32: std_logic_vector(31 downto 0) ;
-signal out_DPU_FixP8_16: std_logic_vector(15 downto 0);
-signal out_DPU_FixP16_32: std_logic_vector(31 downto 0);
-signal out_DPU_int8_16: std_logic_vector(15 downto 0);
-signal out_DPU_int16_32: std_logic_vector(31 downto 0);
+signal out_DPU_FP8       : std_logic_vector(7 downto 0)  := (others => '0');
+signal out_DPU_FP16      : std_logic_vector(15 downto 0);
+signal out_DPU_FP32      : std_logic_vector(31 downto 0) := (others => '0');
+signal out_DPU_posit8    : std_logic_vector(7 downto 0)  := (others => '0');
+signal out_DPU_posit16   : std_logic_vector(15 downto 0);
+signal out_DPU_posit32   : std_logic_vector(31 downto 0) := (others => '0');
+signal out_DPU_FixP8_16  : std_logic_vector(15 downto 0) := (others => '0');
+signal out_DPU_FixP16_32 : std_logic_vector(31 downto 0) := (others => '0');
+signal out_DPU_int8_16   : std_logic_vector(15 downto 0) := (others => '0');
+signal out_DPU_int16_32  : std_logic_vector(31 downto 0) := (others => '0');
 
 --the multiplexer
 component mux_rel0 is
@@ -268,14 +268,60 @@ end component;
 --	);
 --end component;
 
+constant ZERO16 : std_logic_vector(15 downto 0) := (others => '0');
+
+signal is_fp16    : std_logic;
+signal is_posit16 : std_logic;
+
+signal A0_16_fp16_g, A1_16_fp16_g, A2_16_fp16_g, A3_16_fp16_g : std_logic_vector(15 downto 0);
+signal B0_16_fp16_g, B1_16_fp16_g, B2_16_fp16_g, B3_16_fp16_g : std_logic_vector(15 downto 0);
+signal C0_16_fp16_g : std_logic_vector(15 downto 0);
+
+signal A0_16_posit16_g, A1_16_posit16_g, A2_16_posit16_g, A3_16_posit16_g : std_logic_vector(15 downto 0);
+signal B0_16_posit16_g, B1_16_posit16_g, B2_16_posit16_g, B3_16_posit16_g : std_logic_vector(15 downto 0);
+signal C0_16_posit16_g : std_logic_vector(15 downto 0);
+
 begin
+
+is_fp16    <= '1' when widthSel = "01" and typeSel = "000" else '0';
+is_posit16 <= '1' when widthSel = "01" and typeSel = "001" else '0';
+
+A0_16_fp16_g <= A0_16 when is_fp16 = '1' else ZERO16;
+A1_16_fp16_g <= A1_16 when is_fp16 = '1' else ZERO16;
+A2_16_fp16_g <= A2_16 when is_fp16 = '1' else ZERO16;
+A3_16_fp16_g <= A3_16 when is_fp16 = '1' else ZERO16;
+B0_16_fp16_g <= B0_16 when is_fp16 = '1' else ZERO16;
+B1_16_fp16_g <= B1_16 when is_fp16 = '1' else ZERO16;
+B2_16_fp16_g <= B2_16 when is_fp16 = '1' else ZERO16;
+B3_16_fp16_g <= B3_16 when is_fp16 = '1' else ZERO16;
+C0_16_fp16_g <= C0_16 when is_fp16 = '1' else ZERO16;
+
+A0_16_posit16_g <= A0_16 when is_posit16 = '1' else ZERO16;
+A1_16_posit16_g <= A1_16 when is_posit16 = '1' else ZERO16;
+A2_16_posit16_g <= A2_16 when is_posit16 = '1' else ZERO16;
+A3_16_posit16_g <= A3_16 when is_posit16 = '1' else ZERO16;
+B0_16_posit16_g <= B0_16 when is_posit16 = '1' else ZERO16;
+B1_16_posit16_g <= B1_16 when is_posit16 = '1' else ZERO16;
+B2_16_posit16_g <= B2_16 when is_posit16 = '1' else ZERO16;
+B3_16_posit16_g <= B3_16 when is_posit16 = '1' else ZERO16;
+C0_16_posit16_g <= C0_16 when is_posit16 = '1' else ZERO16;
 
 --dpu_fp8 : DotProductUnitFP8e4m3 
   --  port map ( aX0 => A0_8, aX1 => A1_8, aX2 => A2_8, aX3 => A3_8, bY0 => B0_8, bY1 => B1_8, bY2 => B2_8 , bY3 => B3_8 , cX0 => C0_8 , R => out_DPU_FP8  ) ;
 
 dpu_fp16: entity FP16_DPU.DotProductUnitFP16 
-   port map ( aX0 => A0_16, aX1 => A1_16, aX2 => A2_16, aX3 => A3_16, bY0 => B0_16, bY1 => B1_16, bY2 => B2_16 , bY3 => B3_16 , cX0 => C0_16 , R => out_DPU_FP16  ) ;
-
+   port map (
+      aX0 => A0_16_fp16_g,
+      aX1 => A1_16_fp16_g,
+      aX2 => A2_16_fp16_g,
+      aX3 => A3_16_fp16_g,
+      bY0 => B0_16_fp16_g,
+      bY1 => B1_16_fp16_g,
+      bY2 => B2_16_fp16_g,
+      bY3 => B3_16_fp16_g,
+      cX0 => C0_16_fp16_g,
+      R   => out_DPU_FP16
+   );
 --dpu_fp32: DotProductUnitFP32
   --  port map ( aX0 => A0_32, aX1 => A1_32, aX2 => A2_32, aX3 => A3_32, bY0 => B0_32, bY1 => B1_32, bY2 => B2_32 , bY3 => B3_32 , cX0 => C0_32 , R => out_DPU_FP32  ) ;
 
@@ -283,8 +329,18 @@ dpu_fp16: entity FP16_DPU.DotProductUnitFP16
   --  port map ( aX0 => A0_8 , aX1 => A1_8 , aX2 => A2_8 , aX3 => A3_8 , bY0 => B0_8 , bY1 => B1_8 , bY2 => B2_8, bY3 => B3_8 , cX0 => C0_8 , R => out_DPU_posit8  ) ;
 
 dpu_posit16: entity POSIT16_DPU.DotProductUnitPosit16
-    port map ( aX0 => A0_16 , aX1 => A1_16 , aX2 => A2_16 , aX3 => A3_16 , bY0 => B0_16 , bY1 => B1_16 , bY2 => B2_16, bY3 => B3_16 , cX0 => C0_16 , R => out_DPU_posit16 ) ;
-
+   port map (
+      aX0 => A0_16_posit16_g,
+      aX1 => A1_16_posit16_g,
+      aX2 => A2_16_posit16_g,
+      aX3 => A3_16_posit16_g,
+      bY0 => B0_16_posit16_g,
+      bY1 => B1_16_posit16_g,
+      bY2 => B2_16_posit16_g,
+      bY3 => B3_16_posit16_g,
+      cX0 => C0_16_posit16_g,
+      R   => out_DPU_posit16
+   );
 --dpu_posit32: DotProductUnitPosit32
    -- port map ( aX0 => A0_32 , aX1 => A1_32 , aX2 => A2_32 , aX3 => A3_32 , bY0 => B0_32 , bY1 => B1_32 , bY2 => B2_32, bY3 => B3_32 , cX0 => C0_32 , R => out_DPU_posit32 ) ;
 
