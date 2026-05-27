@@ -199,9 +199,15 @@ architecture rtl of TCU_Branch is
     signal tcu_res_W0_tc0_oct1_16_s : arraySize16_16;
     signal tcu_res_W1_tc0_oct1_16_s : arraySize16_16;
 
+    signal tcu_res_W0_tc0_oct0_8_s : arraySize16_8;
+    signal tcu_res_W1_tc0_oct0_8_s : arraySize16_8;
+    signal tcu_res_W0_tc0_oct1_8_s : arraySize16_8;
+    signal tcu_res_W1_tc0_oct1_8_s : arraySize16_8;
+
+    signal tcu_result_is_fp8_s : std_logic;
+
     signal tcu_wb_hart_s       : integer range 0 to THREAD_POOL_SIZE-1;
     signal tcu_wb_word_s       : integer range 0 to 1;
-    signal tcu_wb_result_idx_s : integer range 0 to 15;
 
     signal TCU_WB_EN_s         : std_logic;
     signal TCU_WB_s            : std_logic_vector(31 downto 0);
@@ -213,7 +219,67 @@ architecture rtl of TCU_Branch is
 
     signal tcu_wrapper_hmma_step_s : std_logic;
 
+    signal tcu_wrapper_widthSel_s : std_logic_vector(1 downto 0);
+    signal tcu_wrapper_typeSel_s  : std_logic_vector(2 downto 0);
+
 begin
+
+  tcu_result_is_fp8_s <= '1' when tcu_funct7_lat = "0000000" else '0';
+
+  TCU_wrapper_format_decode_comb : process(all)
+begin
+  -- Safe default: FP16
+  tcu_wrapper_widthSel_s <= "01";
+  tcu_wrapper_typeSel_s  <= "000";
+
+  case tcu_funct7_lat is
+
+    when "0000000" =>  -- FP8
+      tcu_wrapper_widthSel_s <= "00";
+      tcu_wrapper_typeSel_s  <= "000";
+
+    when "0000001" =>  -- FP16
+      tcu_wrapper_widthSel_s <= "01";
+      tcu_wrapper_typeSel_s  <= "000";
+
+    when "0000010" =>  -- FP32
+      tcu_wrapper_widthSel_s <= "10";
+      tcu_wrapper_typeSel_s  <= "000";
+
+    when "0000100" =>  -- POSIT8
+      tcu_wrapper_widthSel_s <= "00";
+      tcu_wrapper_typeSel_s  <= "001";
+
+    when "0000101" =>  -- POSIT16
+      tcu_wrapper_widthSel_s <= "01";
+      tcu_wrapper_typeSel_s  <= "001";
+
+    when "0000110" =>  -- POSIT32
+      tcu_wrapper_widthSel_s <= "10";
+      tcu_wrapper_typeSel_s  <= "001";
+
+    when "0001000" =>  -- INT8
+      tcu_wrapper_widthSel_s <= "00";
+      tcu_wrapper_typeSel_s  <= "011";
+
+    when "0001001" =>  -- INT16
+      tcu_wrapper_widthSel_s <= "01";
+      tcu_wrapper_typeSel_s  <= "011";
+
+    when "0001100" =>  -- FIXED8
+      tcu_wrapper_widthSel_s <= "00";
+      tcu_wrapper_typeSel_s  <= "010";
+
+    when "0001101" =>  -- FIXED16
+      tcu_wrapper_widthSel_s <= "01";
+      tcu_wrapper_typeSel_s  <= "010";
+
+    when others =>
+      tcu_wrapper_widthSel_s <= "01";
+      tcu_wrapper_typeSel_s  <= "000";
+
+  end case;
+end process;
 
   ---------------------------------------------------------------------------
   -- All-lanes-valid detection
@@ -418,70 +484,92 @@ begin
     end case;
   end process;
 
-  TCU_wb_mapping_comb : process(all)
-  begin
-    tcu_wb_result_idx_s <= 0;
-
-    if tcu_wb_hart_s < 4 then
-      -- harts 0..3 use W0 octect0
-      -- hart 0 -> base 0, hart 1 -> base 4, etc.
-      tcu_wb_result_idx_s <= tcu_wb_hart_s * 4;
-
-    elsif tcu_wb_hart_s < 8 then
-      -- harts 4..7 use W0 octect1
-      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 4) * 4;
-
-    elsif tcu_wb_hart_s < 12 then
-      -- harts 8..11 use W1 octect0
-      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 8) * 4;
-
-    else
-      -- harts 12..15 use W1 octect1
-      tcu_wb_result_idx_s <= (tcu_wb_hart_s - 12) * 4;
-
-    end if;
-  end process;
-
   TCU_wb_pack_comb : process(all)
+  variable idx_v : integer range 0 to 15;
   begin
     tcu_wb_word0_s <= (others => '0');
     tcu_wb_word1_s <= (others => '0');
 
+    -- Compute local base index for this hart.
     if tcu_wb_hart_s < 4 then
-
-      -- harts 0..3: W0 octect0
-      tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 1) &
-                        tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 0);
-
-      tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 3) &
-                        tcu_res_W0_tc0_oct0_16_s(tcu_wb_result_idx_s + 2);
-
+      idx_v := tcu_wb_hart_s * 4;
     elsif tcu_wb_hart_s < 8 then
-
-      -- harts 4..7: W0 octect1
-      tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 1) &
-                        tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 0);
-
-      tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 3) &
-                        tcu_res_W0_tc0_oct1_16_s(tcu_wb_result_idx_s + 2);
-
+      idx_v := (tcu_wb_hart_s - 4) * 4;
     elsif tcu_wb_hart_s < 12 then
+      idx_v := (tcu_wb_hart_s - 8) * 4;
+    else
+      idx_v := (tcu_wb_hart_s - 12) * 4;
+    end if;
 
-      -- harts 8..11: W1 octect0
-      tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 1) &
-                        tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 0);
+    if tcu_result_is_fp8_s = '1' then
 
-      tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 3) &
-                        tcu_res_W1_tc0_oct0_16_s(tcu_wb_result_idx_s + 2);
+      if tcu_wb_hart_s < 4 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_8_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 2) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 0);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_8_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 2) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 0);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_8_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 2) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 0);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_8_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 2) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 0);
+
+      end if;
+
+      tcu_wb_word1_s <= (others => '0');
 
     else
 
-      -- harts 12..15: W1 octect1
-      tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 1) &
-                        tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 0);
+      if tcu_wb_hart_s < 4 then
 
-      tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 3) &
-                        tcu_res_W1_tc0_oct1_16_s(tcu_wb_result_idx_s + 2);
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct0_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct0_16_s(idx_v + 2);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct1_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct1_16_s(idx_v + 2);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct0_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct0_16_s(idx_v + 2);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct1_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct1_16_s(idx_v + 2);
+
+      end if;
 
     end if;
   end process;
@@ -545,6 +633,7 @@ begin
   ---------------------------------------------------------------------------
 
   TCU_packet_sync : process(clk_i, rst_ni)
+  variable tcu_lane_idx_v : integer range 0 to THREAD_POOL_SIZE-1;
   begin
     if rst_ni = '0' then
 
@@ -611,92 +700,135 @@ begin
         tcu_regs_per_operand_lat <= tcu_regs_per_operand_wire;
 
 
-        if tcu_regs_per_operand_wire = 2 then
+      if (tcu_regs_per_operand_wire = 1) or (tcu_regs_per_operand_wire = 2) then
 
-                    -----------------------------------------------------------------
-          -- Store this hart's FP16 HMMA fragment into the 16-lane staging
-          -- arrays. This prevents one hart's values from being overwritten
-          -- when the next hart reaches the TCU branch.
+          -----------------------------------------------------------------
+          -- Store this hart's HMMA fragment into the 16-lane staging arrays.
           --
-          -- FlexGrip-style convention:
+          -- For 8-bit formats:
+          --   A = src1 = rs1 only
+          --   B = src2 = rs2 only
+          --   C = src3 = rd  only
+          --   one 32-bit register contains 4 x 8-bit values
+          --
+          -- For 16-bit formats:
           --   A = src1 = rs1, rs1+1
           --   B = src2 = rs2, rs2+1
           --   C = src3 = rd,  rd+1
+          --   two 32-bit registers contain 4 x 16-bit values
           -----------------------------------------------------------------
 
-          if(harc_EXEC < 4) then --wires dedicated to feeding octect0 related buffers in tcu
-            tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);  --wire connecting buffer storing A related elements
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
+          -----------------------------------------------------------------
+          -- Preserve the same hart-to-wrapper-lane mapping already used
+          -- by the working FP16/POSIT16 implementation.
+          -----------------------------------------------------------------
 
-            tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);  --wire connecting buffer storing A related elements
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
+          if harc_EXEC < 4 then
+            tcu_lane_idx_v := harc_EXEC;
 
-            tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);  --wire connecting buffer storing C related elements
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
+          elsif harc_EXEC < 8 then
+            tcu_lane_idx_v := harc_EXEC + 4;
 
-          elsif(harc_EXEC < 8) then --wires dedicated to feeding octect1 related buffers in tcu
-            tc0_src1_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
+          elsif harc_EXEC < 12 then
+            tcu_lane_idx_v := harc_EXEC - 4;
 
-            tc0_src2_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
+          else
+            tcu_lane_idx_v := harc_EXEC;
 
-            tc0_src3_rf_port_a_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC+4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
-
-          elsif(harc_EXEC <12) then --wires dedicated to feeding octect0 related buffers in tcu
-            tc0_src1_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire +1); -- wire connecting buffer storing A related elements
-
-            tc0_src2_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire +1); -- wire connecting buffer storing A related elements
-
-            tc0_src3_rf_port_a_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC-4) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
-            
-          else --wires dedicated to feeding octect1 related buffers in tcu
-            tc0_src1_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src1_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1); -- wire connecting buffer storing A related elements
-
-            tc0_src2_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire); -- wire connecting buffer storing A related elements
-            tc0_src2_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1); -- wire connecting buffer storing A related elements
-
-            tc0_src3_rf_port_a_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire); -- wire connecting buffer storing C related elements
-            tc0_src3_rf_port_b_pair00_s(harc_EXEC) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire +1); -- wire connecting buffer storing C related elements
-            
           end if;
+
+          -----------------------------------------------------------------
+          -- First packed 32-bit register is always used.
+          -- For FP8 this register contains 4 FP8 operands.
+          -- For FP16/POSIT16 this register contains 2 16-bit operands.
+          -----------------------------------------------------------------
+
+          tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+          tc0_src2_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+          tc0_src3_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+
+          -----------------------------------------------------------------
+          -- Second packed register is used only for 16-bit formats.
+          -- For 8-bit formats, force it to zero.
+          -----------------------------------------------------------------
+
+          if tcu_regs_per_operand_wire = 2 then
+
+            if tcu_rs1_idx_wire < 31 then
+              tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+            else
+              tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            end if;
+
+            if tcu_rs2_idx_wire < 31 then
+              tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+            else
+              tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            end if;
+
+            if tcu_rd_idx_wire < 31 then
+              tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+            else
+              tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            end if;
+
+          else
+
+            tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+
+          end if;
+
+          -----------------------------------------------------------------
+          -- Mark this hart as having delivered its HMMA fragment.
+          -----------------------------------------------------------------
 
           tcu_lane_valid_s(harc_EXEC) <= '1';
 
+          -----------------------------------------------------------------
+          -- Debug latches.
+          -----------------------------------------------------------------
 
-          -- First registers of each pair
           tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
           tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
           tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
 
-          -- Second registers of each pair.
-          -- Guard against index overflow.
-          if tcu_rs1_idx_wire < 31 then
-            tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+          if tcu_regs_per_operand_wire = 2 then
+
+            if tcu_rs1_idx_wire < 31 then
+              tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+            else
+              tcu_a1_lat <= (others => '0');
+            end if;
+
+            if tcu_rs2_idx_wire < 31 then
+              tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+            else
+              tcu_b1_lat <= (others => '0');
+            end if;
+
+            if tcu_rd_idx_wire < 31 then
+              tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+            else
+              tcu_c1_lat <= (others => '0');
+            end if;
+
           else
+
             tcu_a1_lat <= (others => '0');
-          end if;
-
-          if tcu_rs2_idx_wire < 31 then
-            tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
-          else
             tcu_b1_lat <= (others => '0');
-          end if;
-
-          if tcu_rd_idx_wire < 31 then
-            tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
-          else
             tcu_c1_lat <= (others => '0');
+
           end if;
 
         else
-          -- For now, non-FP16 formats only capture the first encoded registers. i will modify this section later when testing other programs involving operands with bitwidths != 16
-          -- FP8/FP32/posit/int handling can be extended later.
+
+          -----------------------------------------------------------------
+          -- Future path for 32-bit formats.
+          -- FP32/POSIT32 require 4 registers per operand and are not handled yet.
+          -----------------------------------------------------------------
+
           tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
           tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
           tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
@@ -704,6 +836,7 @@ begin
           tcu_a1_lat <= (others => '0');
           tcu_b1_lat <= (others => '0');
           tcu_c1_lat <= (others => '0');
+
         end if;
 
       else
@@ -742,6 +875,11 @@ begin
         tcu_res_W1_tc0_oct0_16_s(i) <= (others => '0');
         tcu_res_W0_tc0_oct1_16_s(i) <= (others => '0');
         tcu_res_W1_tc0_oct1_16_s(i) <= (others => '0');
+
+        tcu_res_W0_tc0_oct0_8_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct0_8_s(i) <= (others => '0');
+        tcu_res_W0_tc0_oct1_8_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct1_8_s(i) <= (others => '0');
       end loop;
 
     elsif rising_edge(clk_i) then
@@ -756,6 +894,11 @@ begin
               tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
               tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
               tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_8_s(i) <= W0_tc0_oct0_8_X3_s(i);
+              tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
+              tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
+              tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
             end loop;
 
           when "01" =>
@@ -764,6 +907,11 @@ begin
               tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
               tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
               tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_8_s(i) <= W0_tc0_oct0_8_X3_s(i);
+              tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
+              tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
+              tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
             end loop;
 
           when "10" =>
@@ -772,6 +920,11 @@ begin
               tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
               tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
               tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_8_s(i) <= W0_tc0_oct0_8_X3_s(i);
+              tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
+              tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
+              tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
             end loop;
 
           when others =>
@@ -780,6 +933,11 @@ begin
               tcu_res_W1_tc0_oct0_16_s(i) <= W1_tc0_oct0_16_X3_s(i);
               tcu_res_W0_tc0_oct1_16_s(i) <= W0_tc0_oct1_16_X3_s(i);
               tcu_res_W1_tc0_oct1_16_s(i) <= W1_tc0_oct1_16_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_8_s(i) <= W0_tc0_oct0_8_X3_s(i);
+              tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
+              tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
+              tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
             end loop;
 
         end case;
@@ -813,9 +971,14 @@ begin
     instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
 
     if tcu_state_s = TCU_WRITEBACK then
-      TCU_WB_EN_s         <= '1';
       instr_word_TCU_WB_s <= instr_v;
       harc_TCU_WB_s       <= tcu_wb_hart_s;
+
+      -- FP8 writes only word0 / rd.
+      -- FP16 and POSIT16 still write word0 and word1 / rd and rd+1.
+      if not (tcu_result_is_fp8_s = '1' and tcu_wb_word_s = 1) then
+        TCU_WB_EN_s <= '1';
+      end if;
 
       if tcu_wb_word_s = 0 then
         TCU_WB_s <= tcu_wb_word0_s;
@@ -877,8 +1040,8 @@ begin
 
       hmma_step => tcu_wrapper_hmma_step_s,
 
-      widthSel => "01",
-      typeSel  => "000",
+      widthSel => tcu_wrapper_widthSel_s,
+      typeSel  => tcu_wrapper_typeSel_s,
 
       tc0_src1_rf_port_a_pair00 => tc0_src1_rf_port_a_pair00_wrap_s,
       tc0_src1_rf_port_b_pair00 => tc0_src1_rf_port_b_pair00_wrap_s,

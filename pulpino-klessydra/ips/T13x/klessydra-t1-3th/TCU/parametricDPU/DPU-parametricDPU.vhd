@@ -14,7 +14,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library INT16_32_DPU;
 --use INT16_32_DPU.all;
 
---library FP8_DPU;
+library FP8_DPU;
 --use FP8_DPU.all;
 
 library FP16_DPU;
@@ -109,20 +109,20 @@ component mux_rel0 is
 end component;
 
 --float8e4m3 DPU:
---component DotProductUnitFP8e4m3 is
---    Port (
---        aX0 : in  std_logic_vector(7 downto 0);
---        aX1 : in  std_logic_vector(7 downto 0);
---        aX2 : in  std_logic_vector(7 downto 0);
---        aX3 : in  std_logic_vector(7 downto 0);
---        bY0 : in  std_logic_vector(7 downto 0);
---        bY1 : in  std_logic_vector(7 downto 0);
---        bY2 : in  std_logic_vector(7 downto 0);
---        bY3 : in  std_logic_vector(7 downto 0);
---        cX0 : in std_logic_vector(7 downto 0);
---        R  : out std_logic_vector(7 downto 0)
---    );
---end component;
+component DotProductUnitFP8e4m3 is
+    Port (
+        aX0 : in  std_logic_vector(7 downto 0);
+        aX1 : in  std_logic_vector(7 downto 0);
+        aX2 : in  std_logic_vector(7 downto 0);
+        aX3 : in  std_logic_vector(7 downto 0);
+        bY0 : in  std_logic_vector(7 downto 0);
+        bY1 : in  std_logic_vector(7 downto 0);
+        bY2 : in  std_logic_vector(7 downto 0);
+        bY3 : in  std_logic_vector(7 downto 0);
+        cX0 : in std_logic_vector(7 downto 0);
+        R  : out std_logic_vector(7 downto 0)
+    );
+end component;
 
 --float16 DPU:
 component DotProductUnitFP16 is
@@ -269,9 +269,11 @@ end component;
 --end component;
 
 constant ZERO16 : std_logic_vector(15 downto 0) := (others => '0');
+constant ZERO8  : std_logic_vector(7 downto 0) := (others => '0');
 
 signal is_fp16    : std_logic;
 signal is_posit16 : std_logic;
+signal is_fp8     : std_logic;
 
 signal A0_16_fp16_g, A1_16_fp16_g, A2_16_fp16_g, A3_16_fp16_g : std_logic_vector(15 downto 0);
 signal B0_16_fp16_g, B1_16_fp16_g, B2_16_fp16_g, B3_16_fp16_g : std_logic_vector(15 downto 0);
@@ -281,10 +283,15 @@ signal A0_16_posit16_g, A1_16_posit16_g, A2_16_posit16_g, A3_16_posit16_g : std_
 signal B0_16_posit16_g, B1_16_posit16_g, B2_16_posit16_g, B3_16_posit16_g : std_logic_vector(15 downto 0);
 signal C0_16_posit16_g : std_logic_vector(15 downto 0);
 
+signal A0_8_fp8_g, A1_8_fp8_g, A2_8_fp8_g, A3_8_fp8_g : std_logic_vector(7 downto 0);
+signal B0_8_fp8_g, B1_8_fp8_g, B2_8_fp8_g, B3_8_fp8_g : std_logic_vector(7 downto 0);
+signal C0_8_fp8_g : std_logic_vector(7 downto 0);
+
 begin
 
 is_fp16    <= '1' when widthSel = "01" and typeSel = "000" else '0';
 is_posit16 <= '1' when widthSel = "01" and typeSel = "001" else '0';
+is_fp8     <= '1' when widthSel = "00" and typeSel = "000" else '0';
 
 A0_16_fp16_g <= A0_16 when is_fp16 = '1' else ZERO16;
 A1_16_fp16_g <= A1_16 when is_fp16 = '1' else ZERO16;
@@ -306,8 +313,30 @@ B2_16_posit16_g <= B2_16 when is_posit16 = '1' else ZERO16;
 B3_16_posit16_g <= B3_16 when is_posit16 = '1' else ZERO16;
 C0_16_posit16_g <= C0_16 when is_posit16 = '1' else ZERO16;
 
---dpu_fp8 : DotProductUnitFP8e4m3 
-  --  port map ( aX0 => A0_8, aX1 => A1_8, aX2 => A2_8, aX3 => A3_8, bY0 => B0_8, bY1 => B1_8, bY2 => B2_8 , bY3 => B3_8 , cX0 => C0_8 , R => out_DPU_FP8  ) ;
+A0_8_fp8_g <= A0_8 when is_fp8 = '1' else ZERO8;
+A1_8_fp8_g <= A1_8 when is_fp8 = '1' else ZERO8;
+A2_8_fp8_g <= A2_8 when is_fp8 = '1' else ZERO8;
+A3_8_fp8_g <= A3_8 when is_fp8 = '1' else ZERO8;
+B0_8_fp8_g <= B0_8 when is_fp8 = '1' else ZERO8;
+B1_8_fp8_g <= B1_8 when is_fp8 = '1' else ZERO8;
+B2_8_fp8_g <= B2_8 when is_fp8 = '1' else ZERO8;
+B3_8_fp8_g <= B3_8 when is_fp8 = '1' else ZERO8;
+
+C0_8_fp8_g <= C0_8 when is_fp8 = '1' else ZERO8;
+
+dpu_fp8 : entity FP8_DPU.DotProductUnitFP8e4m3 
+    port map ( 
+    aX0 => A0_8_fp8_g,
+    aX1 => A1_8_fp8_g,
+    aX2 => A2_8_fp8_g,
+    aX3 => A3_8_fp8_g,
+    bY0 => B0_8_fp8_g,
+    bY1 => B1_8_fp8_g,
+    bY2 => B2_8_fp8_g,
+    bY3 => B3_8_fp8_g,
+    cX0 => C0_8_fp8_g,
+    R   => out_DPU_FP8  
+  ) ;
 
 dpu_fp16: entity FP16_DPU.DotProductUnitFP16 
    port map (

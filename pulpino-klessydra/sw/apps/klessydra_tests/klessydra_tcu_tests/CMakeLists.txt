@@ -8,3 +8,4 @@ include_directories(
 
 add_subdirectory(TCUopFP16)
 add_subdirectory(TCUopPOSIT16)
+add_subdirectory(TCUopFP8)
