@@ -1,0 +1,1 @@
+add_application(TCUopPOSIT8 TCUopPOSIT8.c LABELS "klessydra_tests")

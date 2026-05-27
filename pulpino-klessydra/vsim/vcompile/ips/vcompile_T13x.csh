@@ -14,6 +14,7 @@ set IP=T13x
 set FP16_LIB_NAME=FP16_DPU
 set POSIT16_LIB_NAME=POSIT16_DPU
 set FP8_LIB_NAME=FP8_DPU
+set POSIT8_LIB_NAME=POSIT8_DPU
 
 
 ##############################################################################
@@ -34,6 +35,7 @@ endif
 set FP16_LIB_PATH="${MSIM_LIBS_PATH}/${FP16_LIB_NAME}_lib"
 set POSIT16_LIB_PATH="${MSIM_LIBS_PATH}/${POSIT16_LIB_NAME}_lib"
 set FP8_LIB_PATH="${MSIM_LIBS_PATH}/${FP8_LIB_NAME}_lib"
+set POSIT8_LIB_PATH="${MSIM_LIBS_PATH}/${POSIT8_LIB_NAME}_lib"
 
 
 set LIB_NAME="${IP}_lib"
@@ -68,6 +70,11 @@ rm -rf $FP8_LIB_PATH
 vlib $FP8_LIB_PATH
 vmap $FP8_LIB_NAME $FP8_LIB_PATH
 
+rm -rf $POSIT8_LIB_PATH
+
+vlib $POSIT8_LIB_PATH
+vmap $POSIT8_LIB_NAME $POSIT8_LIB_PATH
+
 ##############################################################################
 # Compiling RTL
 ##############################################################################
@@ -88,6 +95,12 @@ echo "${Green}Compiling component: ${Brown} FP8_DPU ${NC}"
 echo "${Red}"
 vcom -2008 -quiet -suppress 2583 -work ${FP8_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd || goto error
 vcom -2008 -quiet -suppress 2583 -work ${FP8_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FP8e4m3DPU/DPU_FP8e4m3flopoco.vhd || goto error
+
+echo "${Green}Compiling component: ${Brown} POSIT8_DPU ${NC}"
+echo "${Red}"
+vcom -2008 -quiet -suppress 2583 -work ${POSIT8_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit8DPU/Posit_Adder.vhd || goto error
+vcom -2008 -quiet -suppress 2583 -work ${POSIT8_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit8DPU/Posit_Mult.vhd || goto error
+vcom -2008 -quiet -suppress 2583 -work ${POSIT8_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/posit8DPU/Posit_DPU.vhd || goto error
 
 
 echo "${Green}Compiling component: ${Brown} Klessydra-T13x ${NC}"

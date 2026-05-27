@@ -204,7 +204,7 @@ architecture rtl of TCU_Branch is
     signal tcu_res_W0_tc0_oct1_8_s : arraySize16_8;
     signal tcu_res_W1_tc0_oct1_8_s : arraySize16_8;
 
-    signal tcu_result_is_fp8_s : std_logic;
+    signal tcu_result_is_8bit_s : std_logic;
 
     signal tcu_wb_hart_s       : integer range 0 to THREAD_POOL_SIZE-1;
     signal tcu_wb_word_s       : integer range 0 to 1;
@@ -224,7 +224,11 @@ architecture rtl of TCU_Branch is
 
 begin
 
-  tcu_result_is_fp8_s <= '1' when tcu_funct7_lat = "0000000" else '0';
+  tcu_result_is_8bit_s <= '1' when tcu_funct7_lat = "0000000" or  -- FP8
+                                   tcu_funct7_lat = "0000100" or  -- POSIT8
+                                   tcu_funct7_lat = "0001000" or  -- INT8
+                                   tcu_funct7_lat = "0001100"     -- FIXED8
+                              else '0';
 
   TCU_wrapper_format_decode_comb : process(all)
 begin
@@ -501,7 +505,7 @@ end process;
       idx_v := (tcu_wb_hart_s - 12) * 4;
     end if;
 
-    if tcu_result_is_fp8_s = '1' then
+    if tcu_result_is_8bit_s = '1' then
 
       if tcu_wb_hart_s < 4 then
 
@@ -974,9 +978,9 @@ end process;
       instr_word_TCU_WB_s <= instr_v;
       harc_TCU_WB_s       <= tcu_wb_hart_s;
 
-      -- FP8 writes only word0 / rd.
+      -- 8 bit operand format writes only word0 / rd.
       -- FP16 and POSIT16 still write word0 and word1 / rd and rd+1.
-      if not (tcu_result_is_fp8_s = '1' and tcu_wb_word_s = 1) then
+      if not (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 1) then
         TCU_WB_EN_s <= '1';
       end if;
 
