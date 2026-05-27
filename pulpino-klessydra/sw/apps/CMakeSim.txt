@@ -193,15 +193,25 @@ macro(add_sim_targets NAME)
     COMMENT "Running ${NAME} in ModelSim"
     ${USES_TERMINAL})
 
-  # run in modelsim in batch mode, output is only generated after simulation terminates
+  # run in modelsim in batch mode, fast mode, no waveform debug logging
   add_custom_target(${NAME}.vsimc
     COMMAND ${CMAKE_COMMAND} -E remove stdout/*
     COMMAND ${CMAKE_COMMAND} -E remove FS/*
-    COMMAND tcsh -c "${SETENV} ${VSIM} -c -64 -wlf ${NAME}_debug.wlf -do 'source tcl_files/$<TARGET_PROPERTY:${NAME}.elf,TB>\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/*\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/CSR/*\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/regfile\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/Prg_Ctr/*\\; log /tb/top_i/core_region_i/CORE/RISCV_CORE/served_except_condition\\; log /tb/top_i/core_region_i/CORE/RISCV_CORE/served_mret_condition\\; run -a\\; exit\\;' >vsim.log"
+    COMMAND tcsh -c "${SETENV} ${VSIM}  -c -64 -do 'source tcl_files/$<TARGET_PROPERTY:${NAME}.elf,TB>\\; set NumericStdNoWarnings 1\\; set StdArithNoWarnings 1\\; set IgnoreWarning 1\\; run -a\\; exit\\;' >vsim.log"
     COMMAND tail -n +1 -- ./stdout/*
     WORKING_DIRECTORY ./${SUBDIR}
     DEPENDS ${NAME}.slm.cmd ${NAME}.stim.txt ${NAME}.links
     COMMENT "Running ${NAME} in ModelSim")
+
+  # run in modelsim in batch mode, debug mode, with internal waveform logging
+  add_custom_target(${NAME}.vsimc_debug
+    COMMAND ${CMAKE_COMMAND} -E remove stdout/*
+    COMMAND ${CMAKE_COMMAND} -E remove FS/*
+    COMMAND tcsh -c "${SETENV} ${VSIM} -c -64 -wlf ${NAME}_debug.wlf -do 'source tcl_files/$<TARGET_PROPERTY:${NAME}.elf,TB>\\; set NumericStdNoWarnings 1\\; set StdArithNoWarnings 1\\; set IgnoreWarning 1\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/Pipe/\\*\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/CSR/\\*\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/regfile\\; log -r /tb/top_i/core_region_i/CORE/RISCV_CORE/Prg_Ctr/\\*\\; log /tb/top_i/core_region_i/CORE/RISCV_CORE/served_except_condition\\; log /tb/top_i/core_region_i/CORE/RISCV_CORE/served_mret_condition\\; run -a\\; exit\\;' >${NAME}_debug.log"
+    COMMAND tail -n +1 -- ./stdout/*
+    WORKING_DIRECTORY ./${SUBDIR}
+    DEPENDS ${NAME}.slm.cmd ${NAME}.stim.txt ${NAME}.links
+    COMMENT "Running ${NAME} in ModelSim with debug waveform logging")
 
   # run in modelsim in batch mode, output is only generated after simulation terminates
   add_custom_target(${NAME}.vsimf
