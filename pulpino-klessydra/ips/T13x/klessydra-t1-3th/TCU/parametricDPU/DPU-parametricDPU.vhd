@@ -29,7 +29,7 @@ library POSIT8_DPU;
 library POSIT16_DPU;
 --use POSIT16_DPU.all;
 
---library POSIT32_DPU;
+library POSIT32_DPU;
 --use POSIT32_DPU.all;
 
 -- rel 0 parametric DPU supported formats:
@@ -189,20 +189,20 @@ component DotProductUnitPosit16 is
 end component;
 
 --posit32 DPU:
---component DotProductUnitPosit32 is
---    Port (
---        aX0 : in  std_logic_vector(31 downto 0);
---       aX1 : in  std_logic_vector(31 downto 0);
---        aX2 : in  std_logic_vector(31 downto 0);
---        aX3 : in  std_logic_vector(31 downto 0);
---        bY0 : in  std_logic_vector(31 downto 0);
---        bY1 : in  std_logic_vector(31 downto 0);
---        bY2 : in  std_logic_vector(31 downto 0);
---        bY3 : in  std_logic_vector(31 downto 0);
---        cX0 : in  std_logic_vector(31 downto 0);
---        R  : out std_logic_vector(31 downto 0)
---    );
---end component; 
+component DotProductUnitPosit32 is
+    Port (
+        aX0 : in  std_logic_vector(31 downto 0);
+        aX1 : in  std_logic_vector(31 downto 0);
+        aX2 : in  std_logic_vector(31 downto 0);
+        aX3 : in  std_logic_vector(31 downto 0);
+        bY0 : in  std_logic_vector(31 downto 0);
+        bY1 : in  std_logic_vector(31 downto 0);
+        bY2 : in  std_logic_vector(31 downto 0);
+        bY3 : in  std_logic_vector(31 downto 0);
+        cX0 : in  std_logic_vector(31 downto 0);
+        R  : out std_logic_vector(31 downto 0)
+    );
+end component; 
 
 --fixPoint8_16 DPU:
 component DotProductUnit_FixedPoint8_16 is
@@ -279,6 +279,7 @@ signal is_posit8        : std_logic;
 signal is_int8_16       : std_logic;
 signal is_fixed8_16    : std_logic;
 signal is_fp32          : std_logic;
+signal is_posit32       : std_logic;
 
 
 signal A0_16_fp16_g, A1_16_fp16_g, A2_16_fp16_g, A3_16_fp16_g : std_logic_vector(15 downto 0);
@@ -309,6 +310,10 @@ signal A0_32_fp32_g, A1_32_fp32_g, A2_32_fp32_g, A3_32_fp32_g : std_logic_vector
 signal B0_32_fp32_g, B1_32_fp32_g, B2_32_fp32_g, B3_32_fp32_g : std_logic_vector(31 downto 0);
 signal C0_32_fp32_g : std_logic_vector(31 downto 0);
 
+signal A0_32_posit32_g, A1_32_posit32_g, A2_32_posit32_g, A3_32_posit32_g : std_logic_vector(31 downto 0);
+signal B0_32_posit32_g, B1_32_posit32_g, B2_32_posit32_g, B3_32_posit32_g : std_logic_vector(31 downto 0);
+signal C0_32_posit32_g : std_logic_vector(31 downto 0);
+
 begin
 
 is_fp16      <= '1' when widthSel = "01" and typeSel = "000" else '0';
@@ -318,7 +323,7 @@ is_posit8    <= '1' when widthSel = "00" and typeSel = "001" else '0';
 is_int8_16   <= '1' when widthSel = "00" and typeSel = "011" else '0';
 is_fixed8_16 <= '1' when widthSel = "00" and typeSel = "010" else '0';
 is_fp32      <= '1' when widthSel = "10" and typeSel = "000" else '0';
-
+is_posit32   <= '1' when widthSel = "10" and typeSel = "001" else '0';
 
 
 A0_16_fp16_g <= A0_16 when is_fp16 = '1' else ZERO16;
@@ -391,6 +396,16 @@ B2_32_fp32_g <= B2_32 when is_fp32 = '1' else ZERO32;
 B3_32_fp32_g <= B3_32 when is_fp32 = '1' else ZERO32;
 C0_32_fp32_g <= C0_32 when is_fp32 = '1' else ZERO32;
 
+A0_32_posit32_g <= A0_32 when is_posit32 = '1' else ZERO32;
+A1_32_posit32_g <= A1_32 when is_posit32 = '1' else ZERO32;
+A2_32_posit32_g <= A2_32 when is_posit32 = '1' else ZERO32;
+A3_32_posit32_g <= A3_32 when is_posit32 = '1' else ZERO32;
+B0_32_posit32_g <= B0_32 when is_posit32 = '1' else ZERO32;
+B1_32_posit32_g <= B1_32 when is_posit32 = '1' else ZERO32;
+B2_32_posit32_g <= B2_32 when is_posit32 = '1' else ZERO32;
+B3_32_posit32_g <= B3_32 when is_posit32 = '1' else ZERO32;
+C0_32_posit32_g <= C0_32 when is_posit32 = '1' else ZERO32;
+
 dpu_fp8 : entity FP8_DPU.DotProductUnitFP8e4m3 
     port map ( 
     aX0 => A0_8_fp8_g,
@@ -458,8 +473,18 @@ dpu_posit16: entity POSIT16_DPU.DotProductUnitPosit16
       cX0 => C0_16_posit16_g,
       R   => out_DPU_posit16
    );
---dpu_posit32: DotProductUnitPosit32
-   -- port map ( aX0 => A0_32 , aX1 => A1_32 , aX2 => A2_32 , aX3 => A3_32 , bY0 => B0_32 , bY1 => B1_32 , bY2 => B2_32, bY3 => B3_32 , cX0 => C0_32 , R => out_DPU_posit32 ) ;
+dpu_posit32: entity POSIT32_DPU.DotProductUnitPosit32
+    port map ( 
+      aX0 => A0_32_posit32_g,
+      aX1 => A1_32_posit32_g,
+      aX2 => A2_32_posit32_g,
+      aX3 => A3_32_posit32_g,
+      bY0 => B0_32_posit32_g,
+      bY1 => B1_32_posit32_g,
+      bY2 => B2_32_posit32_g,
+      bY3 => B3_32_posit32_g,
+      cX0 => C0_32_posit32_g,
+      R => out_DPU_posit32 ) ;
 
 dpu_FixP8_16: entity FixedP8_16_dpu.DotProductUnit_FixedPoint8_16 
     port map (

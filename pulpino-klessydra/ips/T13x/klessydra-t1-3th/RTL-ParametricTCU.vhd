@@ -246,7 +246,9 @@ begin
                                    
                               else '0';
 
-  tcu_result_is_32bit_s <= '1' when tcu_funct7_lat = "0000010" else '0'; -- FP32
+  tcu_result_is_32bit_s <= '1' when tcu_funct7_lat = "0000010" or  -- FP32
+                                    tcu_funct7_lat = "0000110"     -- POSIT32
+                               else '0';
 
   TCU_wrapper_format_decode_comb : process(all)
 begin
