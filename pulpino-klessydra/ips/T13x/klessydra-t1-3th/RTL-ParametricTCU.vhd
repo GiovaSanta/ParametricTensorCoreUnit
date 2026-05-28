@@ -131,6 +131,15 @@ architecture rtl of TCU_Branch is
     signal tc0_src3_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
     signal tc0_src3_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
 
+    signal tc0_src1_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0); --for the case of fp32 or posit32 for instance
+    signal tc0_src1_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
+    signal tc0_src2_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+    signal tc0_src2_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
+    signal tc0_src3_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+    signal tc0_src3_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
+
     signal tcu_lane_valid_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
     signal tcu_all_lanes_valid_s : std_logic;
 
@@ -204,10 +213,16 @@ architecture rtl of TCU_Branch is
     signal tcu_res_W0_tc0_oct1_8_s : arraySize16_8;
     signal tcu_res_W1_tc0_oct1_8_s : arraySize16_8;
 
+    signal tcu_res_W0_tc0_oct0_32_s : arraySize16_32;
+    signal tcu_res_W1_tc0_oct0_32_s : arraySize16_32;
+    signal tcu_res_W0_tc0_oct1_32_s : arraySize16_32;
+    signal tcu_res_W1_tc0_oct1_32_s : arraySize16_32;
+
     signal tcu_result_is_8bit_s : std_logic;
+    signal tcu_result_is_32bit_s : std_logic;
 
     signal tcu_wb_hart_s       : integer range 0 to THREAD_POOL_SIZE-1;
-    signal tcu_wb_word_s       : integer range 0 to 1;
+    signal tcu_wb_word_s       : integer range 0 to 3;
 
     signal TCU_WB_EN_s         : std_logic;
     signal TCU_WB_s            : std_logic_vector(31 downto 0);
@@ -216,6 +231,8 @@ architecture rtl of TCU_Branch is
 
     signal tcu_wb_word0_s      : std_logic_vector(31 downto 0);
     signal tcu_wb_word1_s      : std_logic_vector(31 downto 0);
+    signal tcu_wb_word2_s : std_logic_vector(31 downto 0);
+    signal tcu_wb_word3_s : std_logic_vector(31 downto 0);
 
     signal tcu_wrapper_hmma_step_s : std_logic;
 
@@ -228,6 +245,8 @@ begin
                                    tcu_funct7_lat = "0000100"   -- POSIT8
                                    
                               else '0';
+
+  tcu_result_is_32bit_s <= '1' when tcu_funct7_lat = "0000010" else '0'; -- FP32
 
   TCU_wrapper_format_decode_comb : process(all)
 begin
@@ -428,8 +447,12 @@ end process;
         end if;
       
       when TCU_WRITEBACK =>
-        if tcu_wb_hart_s = 0 and tcu_wb_word_s = 1 then
-          tcu_next_state_s <= TCU_RELEASE;
+        if tcu_wb_hart_s = 0 then
+          if (tcu_result_is_8bit_s = '1'  and tcu_wb_word_s = 0) or
+             (tcu_result_is_32bit_s = '1' and tcu_wb_word_s = 3) or
+             ((tcu_result_is_8bit_s = '0') and (tcu_result_is_32bit_s = '0') and tcu_wb_word_s = 1) then
+            tcu_next_state_s <= TCU_RELEASE;
+          end if;
         end if;
 
       when TCU_RELEASE =>
@@ -492,6 +515,8 @@ end process;
   begin
     tcu_wb_word0_s <= (others => '0');
     tcu_wb_word1_s <= (others => '0');
+    tcu_wb_word2_s <= (others => '0');
+    tcu_wb_word3_s <= (others => '0');
 
     -- Compute local base index for this hart.
     if tcu_wb_hart_s < 4 then
@@ -504,7 +529,40 @@ end process;
       idx_v := (tcu_wb_hart_s - 12) * 4;
     end if;
 
-    if tcu_result_is_8bit_s = '1' then
+    if tcu_result_is_32bit_s = '1' then
+      -- FP32 packing: word0, word1, word2, word3
+      if tcu_wb_hart_s < 4 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 3);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 3);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 3);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 3);
+
+      end if;
+
+    elsif tcu_result_is_8bit_s = '1' then
+      --FP8 packing utilizing only word0
 
       if tcu_wb_hart_s < 4 then
 
@@ -578,43 +636,59 @@ end process;
   end process;
 
   TCU_wb_counter_sync : process(clk_i, rst_ni)
-  begin
-    if rst_ni = '0' then
+begin
+  if rst_ni = '0' then
 
+    tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+    tcu_wb_word_s <= 0;
+
+  elsif rising_edge(clk_i) then
+
+    if tcu_state_s = TCU_WAIT_DONE and tcu_next_state_s = TCU_WRITEBACK then
+
+      -- First writeback cycle starts from last hart, word 0.
       tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
       tcu_wb_word_s <= 0;
 
-    elsif rising_edge(clk_i) then
+    elsif tcu_state_s = TCU_WRITEBACK then
 
-      if tcu_state_s = TCU_WAIT_DONE and tcu_next_state_s = TCU_WRITEBACK then
+      -----------------------------------------------------------------------
+      -- Decide whether the current word is the final word for this hart.
+      --
+      -- 8-bit formats:
+      --   one writeback word: rd
+      --
+      -- 16-bit / mixed 8_16 formats:
+      --   two writeback words: rd, rd+1
+      --
+      -- FP32:
+      --   four writeback words: rd, rd+1, rd+2, rd+3
+      -----------------------------------------------------------------------
 
-        -- First writeback cycle starts from hart F, word 0.
-        tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+      if (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 0) or
+         (tcu_result_is_32bit_s = '1' and tcu_wb_word_s = 3) or
+         ((tcu_result_is_8bit_s = '0') and
+          (tcu_result_is_32bit_s = '0') and
+          (tcu_wb_word_s = 1)) then
+
+        -- Finished this hart. Move to next hart and restart from word 0.
         tcu_wb_word_s <= 0;
 
-      elsif tcu_state_s = TCU_WRITEBACK then
-
-        if tcu_wb_word_s = 0 then
-
-          -- Same hart, move from rd to rd+1.
-          tcu_wb_word_s <= 1;
-
-        else
-
-          -- Finished word 1 for this hart.
-          -- Move to next hart and restart from word 0.
-          tcu_wb_word_s <= 0;
-
-          if tcu_wb_hart_s > 0 then
-            tcu_wb_hart_s <= tcu_wb_hart_s - 1;
-          end if;
-
+        if tcu_wb_hart_s > 0 then
+          tcu_wb_hart_s <= tcu_wb_hart_s - 1;
         end if;
+
+      else
+
+        -- Same hart, next result word.
+        tcu_wb_word_s <= tcu_wb_word_s + 1;
 
       end if;
 
     end if;
-  end process;
+
+  end if;
+end process;
   ---------------------------------------------------------------------------
   -- TCU controller state register
   ---------------------------------------------------------------------------
@@ -674,6 +748,15 @@ end process;
 
         tc0_src3_rf_port_a_pair00_s(i) <= (others => '0');
         tc0_src3_rf_port_b_pair00_s(i) <= (others => '0');
+
+        tc0_src1_rf_port_a_pair01_s(i) <= (others => '0');
+        tc0_src1_rf_port_b_pair01_s(i) <= (others => '0');
+
+        tc0_src2_rf_port_a_pair01_s(i) <= (others => '0');
+        tc0_src2_rf_port_b_pair01_s(i) <= (others => '0');
+
+        tc0_src3_rf_port_a_pair01_s(i) <= (others => '0');
+        tc0_src3_rf_port_b_pair01_s(i) <= (others => '0');
       end loop;
 
       tcu_lane_valid_s <= (others => '0');
@@ -752,6 +835,17 @@ end process;
           tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
           tc0_src2_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
           tc0_src3_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+
+          -- Clear pair01 for 8-bit and 16-bit formats.
+          -- pair01 is only meaningful for 32-bit formats such as FP32.
+          tc0_src1_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+          tc0_src1_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+
+          tc0_src2_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+          tc0_src2_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+
+          tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+          tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
 
           -----------------------------------------------------------------
           -- Second packed register is used only for 16-bit formats.
@@ -857,17 +951,87 @@ end process;
         else
 
           -----------------------------------------------------------------
-          -- Future path for 32-bit formats.
-          -- FP32/POSIT32 require 4 registers per operand and are not handled yet.
+          -- 32-bit operand formats.
+          --
+          -- For FP32:
+          --   A = rs1, rs1+1, rs1+2, rs1+3
+          --   B = rs2, rs2+1, rs2+2, rs2+3
+          --   C = rd,  rd+1,  rd+2,  rd+3
           -----------------------------------------------------------------
 
-          tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
-          tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
-          tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+          if harc_EXEC < 4 then
+            tcu_lane_idx_v := harc_EXEC;
 
-          tcu_a1_lat <= (others => '0');
-          tcu_b1_lat <= (others => '0');
-          tcu_c1_lat <= (others => '0');
+          elsif harc_EXEC < 8 then
+            tcu_lane_idx_v := harc_EXEC + 4;
+
+          elsif harc_EXEC < 12 then
+            tcu_lane_idx_v := harc_EXEC - 4;
+
+          else
+            tcu_lane_idx_v := harc_EXEC;
+
+          end if;
+
+          if (tcu_rs1_idx_wire <= 28) and
+            (tcu_rs2_idx_wire <= 28) and
+            (tcu_rd_idx_wire  <= 28) then
+
+            -- A operand: rs1..rs1+3
+            tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+            tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+            tc0_src1_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 2);
+            tc0_src1_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 3);
+
+            -- B operand: rs2..rs2+3
+            tc0_src2_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+            tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+            tc0_src2_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 2);
+            tc0_src2_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 3);
+
+            -- C operand: rd..rd+3
+            tc0_src3_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+            tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+            tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 2);
+            tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 3);
+
+            -- Debug latches
+            tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
+            tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
+
+            tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
+            tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
+
+            tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
+            tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
+
+          else
+
+            tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src1_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src1_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+
+            tc0_src2_rf_port_a_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src2_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src2_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+
+            tc0_src3_rf_port_a_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+            tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+
+            tcu_a0_lat <= (others => '0');
+            tcu_a1_lat <= (others => '0');
+            tcu_b0_lat <= (others => '0');
+            tcu_b1_lat <= (others => '0');
+            tcu_c0_lat <= (others => '0');
+            tcu_c1_lat <= (others => '0');
+
+          end if;
+
+          tcu_lane_valid_s(harc_EXEC) <= '1';
 
         end if;
 
@@ -912,6 +1076,11 @@ end process;
         tcu_res_W1_tc0_oct0_8_s(i) <= (others => '0');
         tcu_res_W0_tc0_oct1_8_s(i) <= (others => '0');
         tcu_res_W1_tc0_oct1_8_s(i) <= (others => '0');
+
+        tcu_res_W0_tc0_oct0_32_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct0_32_s(i) <= (others => '0');
+        tcu_res_W0_tc0_oct1_32_s(i) <= (others => '0');
+        tcu_res_W1_tc0_oct1_32_s(i) <= (others => '0');
       end loop;
 
     elsif rising_edge(clk_i) then
@@ -931,6 +1100,11 @@ end process;
               tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
               tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
               tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_32_s(i) <= W0_tc0_oct0_32_X3_s(i);
+              tcu_res_W1_tc0_oct0_32_s(i) <= W1_tc0_oct0_32_X3_s(i);
+              tcu_res_W0_tc0_oct1_32_s(i) <= W0_tc0_oct1_32_X3_s(i);
+              tcu_res_W1_tc0_oct1_32_s(i) <= W1_tc0_oct1_32_X3_s(i);
             end loop;
 
           when "01" =>
@@ -944,6 +1118,11 @@ end process;
               tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
               tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
               tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_32_s(i) <= W0_tc0_oct0_32_X3_s(i);
+              tcu_res_W1_tc0_oct0_32_s(i) <= W1_tc0_oct0_32_X3_s(i);
+              tcu_res_W0_tc0_oct1_32_s(i) <= W0_tc0_oct1_32_X3_s(i);
+              tcu_res_W1_tc0_oct1_32_s(i) <= W1_tc0_oct1_32_X3_s(i);
             end loop;
 
           when "10" =>
@@ -957,6 +1136,12 @@ end process;
               tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
               tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
               tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_32_s(i) <= W0_tc0_oct0_32_X3_s(i);
+              tcu_res_W1_tc0_oct0_32_s(i) <= W1_tc0_oct0_32_X3_s(i);
+              tcu_res_W0_tc0_oct1_32_s(i) <= W0_tc0_oct1_32_X3_s(i);
+              tcu_res_W1_tc0_oct1_32_s(i) <= W1_tc0_oct1_32_X3_s(i);
+              
             end loop;
 
           when others =>
@@ -970,6 +1155,11 @@ end process;
               tcu_res_W1_tc0_oct0_8_s(i) <= W1_tc0_oct0_8_X3_s(i);
               tcu_res_W0_tc0_oct1_8_s(i) <= W0_tc0_oct1_8_X3_s(i);
               tcu_res_W1_tc0_oct1_8_s(i) <= W1_tc0_oct1_8_X3_s(i);
+
+              tcu_res_W0_tc0_oct0_32_s(i) <= W0_tc0_oct0_32_X3_s(i);
+              tcu_res_W1_tc0_oct0_32_s(i) <= W1_tc0_oct0_32_X3_s(i);
+              tcu_res_W0_tc0_oct1_32_s(i) <= W0_tc0_oct1_32_X3_s(i);
+              tcu_res_W1_tc0_oct1_32_s(i) <= W1_tc0_oct1_32_X3_s(i);
             end loop;
 
         end case;
@@ -980,45 +1170,86 @@ end process;
   end process;
 
   TCU_wb_outputs_comb : process(all)
-  variable instr_v : std_logic_vector(31 downto 0);
-  variable rd_v    : integer range 0 to 31;
-  begin
-    TCU_WB_EN_s         <= '0';
-    TCU_WB_s            <= (others => '0');
-    instr_word_TCU_WB_s <= (others => '0');
-    harc_TCU_WB_s       <= THREAD_POOL_SIZE-1;
+  variable instr_v  : std_logic_vector(31 downto 0);
+  variable rd_v     : integer range 0 to 31;
+  variable rd_sum_v : integer;
+begin
+  TCU_WB_EN_s         <= '0';
+  TCU_WB_s            <= (others => '0');
+  instr_word_TCU_WB_s <= (others => '0');
+  harc_TCU_WB_s       <= THREAD_POOL_SIZE-1;
 
-    instr_v := tcu_instr_lat;
+  instr_v := tcu_instr_lat;
 
-    if tcu_wb_word_s = 0 then
-      rd_v := tcu_rd_idx_lat;
-    else
-      if tcu_rd_idx_lat < 31 then
-        rd_v := tcu_rd_idx_lat + 1;
-      else
-        rd_v := 31;
-      end if;
+  ---------------------------------------------------------------------------
+  -- Select architectural destination register.
+  --
+  -- word 0 -> rd
+  -- word 1 -> rd+1
+  -- word 2 -> rd+2
+  -- word 3 -> rd+3
+  ---------------------------------------------------------------------------
+
+  rd_sum_v := tcu_rd_idx_lat + tcu_wb_word_s;
+
+  if rd_sum_v <= 31 then
+    rd_v := rd_sum_v;
+  else
+    rd_v := 31;
+  end if;
+
+  instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
+
+  if tcu_state_s = TCU_WRITEBACK then
+
+    instr_word_TCU_WB_s <= instr_v;
+    harc_TCU_WB_s       <= tcu_wb_hart_s;
+
+    -------------------------------------------------------------------------
+    -- Write-enable policy.
+    --
+    -- 8-bit:
+    --   only word0
+    --
+    -- 16-bit / mixed 8_16:
+    --   word0 and word1
+    --
+    -- FP32:
+    --   word0, word1, word2, word3
+    -------------------------------------------------------------------------
+
+    if (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 0) or
+       (tcu_result_is_32bit_s = '1') or
+       ((tcu_result_is_8bit_s = '0') and
+        (tcu_result_is_32bit_s = '0') and
+        (tcu_wb_word_s <= 1)) then
+
+      TCU_WB_EN_s <= '1';
+
     end if;
 
-    instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
+    -------------------------------------------------------------------------
+    -- Select result word.
+    -------------------------------------------------------------------------
 
-    if tcu_state_s = TCU_WRITEBACK then
-      instr_word_TCU_WB_s <= instr_v;
-      harc_TCU_WB_s       <= tcu_wb_hart_s;
+    case tcu_wb_word_s is
 
-      -- 8-bit result formats FP8/POSIT8 write only word0 / rd.
-      -- 16-bit result formats FP16/POSIT16/INT8_16/FIXED8_16 write word0 and word1 / rd and rd+1.
-      if not (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 1) then
-        TCU_WB_EN_s <= '1';
-      end if;
-
-      if tcu_wb_word_s = 0 then
+      when 0 =>
         TCU_WB_s <= tcu_wb_word0_s;
-      else
+
+      when 1 =>
         TCU_WB_s <= tcu_wb_word1_s;
-      end if;
-    end if;
-  end process;
+
+      when 2 =>
+        TCU_WB_s <= tcu_wb_word2_s;
+
+      when others =>
+        TCU_WB_s <= tcu_wb_word3_s;
+
+    end case;
+
+  end if;
+end process;
 
   ---------------------------------------------------------------------------
   -- Convert Klessydra per-hart staging arrays to wrapper input arrays.
@@ -1037,15 +1268,14 @@ end process;
     tc0_src3_rf_port_a_pair00_wrap_s(i) <= tc0_src3_rf_port_a_pair00_s(i);
     tc0_src3_rf_port_b_pair00_wrap_s(i) <= tc0_src3_rf_port_b_pair00_s(i);
 
-    -- pair01 is unused for the FP16 first test
-    tc0_src1_rf_port_a_pair01_wrap_s(i) <= (others => '0');
-    tc0_src1_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+    tc0_src1_rf_port_a_pair01_wrap_s(i) <= tc0_src1_rf_port_a_pair01_s(i);
+    tc0_src1_rf_port_b_pair01_wrap_s(i) <= tc0_src1_rf_port_b_pair01_s(i);
 
-    tc0_src2_rf_port_a_pair01_wrap_s(i) <= (others => '0');
-    tc0_src2_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+    tc0_src2_rf_port_a_pair01_wrap_s(i) <= tc0_src2_rf_port_a_pair01_s(i);
+    tc0_src2_rf_port_b_pair01_wrap_s(i) <= tc0_src2_rf_port_b_pair01_s(i);
 
-    tc0_src3_rf_port_a_pair01_wrap_s(i) <= (others => '0');
-    tc0_src3_rf_port_b_pair01_wrap_s(i) <= (others => '0');
+    tc0_src3_rf_port_a_pair01_wrap_s(i) <= tc0_src3_rf_port_a_pair01_s(i);
+    tc0_src3_rf_port_b_pair01_wrap_s(i) <= tc0_src3_rf_port_b_pair01_s(i);
 
   end generate;
 
