@@ -225,9 +225,8 @@ architecture rtl of TCU_Branch is
 begin
 
   tcu_result_is_8bit_s <= '1' when tcu_funct7_lat = "0000000" or  -- FP8
-                                   tcu_funct7_lat = "0000100" or  -- POSIT8
-                                   tcu_funct7_lat = "0001000" or  -- INT8
-                                   tcu_funct7_lat = "0001100"     -- FIXED8
+                                   tcu_funct7_lat = "0000100"   -- POSIT8
+                                   
                               else '0';
 
   TCU_wrapper_format_decode_comb : process(all)
@@ -709,17 +708,20 @@ end process;
           -----------------------------------------------------------------
           -- Store this hart's HMMA fragment into the 16-lane staging arrays.
           --
-          -- For 8-bit formats:
+          -- For 8-bit result formats:
           --   A = src1 = rs1 only
           --   B = src2 = rs2 only
           --   C = src3 = rd  only
           --   one 32-bit register contains 4 x 8-bit values
           --
-          -- For 16-bit formats:
+          -- For native 16-bit operand formats FP16/POSIT16:
           --   A = src1 = rs1, rs1+1
           --   B = src2 = rs2, rs2+1
           --   C = src3 = rd,  rd+1
-          --   two 32-bit registers contain 4 x 16-bit values
+          --
+          -- For mixed INT8_16:
+          --   A/B are 8-bit and use rs1/rs2 only
+          --   C/result are 16-bit and use rd, rd+1
           -----------------------------------------------------------------
 
           -----------------------------------------------------------------
@@ -756,32 +758,49 @@ end process;
           -- For 8-bit formats, force it to zero.
           -----------------------------------------------------------------
 
-          if tcu_regs_per_operand_wire = 2 then
+          -----------------------------------------------------------------
+          -- Second packed register handling.
+          --
+          -- A/B:
+          --   used only for native 16-bit formats, where each fragment
+          --   needs two 32-bit registers.
+          --
+          -- C:
+          --   used for native 16-bit formats AND for INT8_16, because
+          --   INT8_16 has 8-bit A/B but 16-bit C/result.
+          -----------------------------------------------------------------
 
+          -- src1 / A second register
+          if tcu_regs_per_operand_wire = 2 then
             if tcu_rs1_idx_wire < 31 then
               tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
             else
               tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
             end if;
+          else
+            tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+          end if;
 
+          -- src2 / B second register
+          if tcu_regs_per_operand_wire = 2 then
             if tcu_rs2_idx_wire < 31 then
               tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
             else
               tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
             end if;
+          else
+            tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+          end if;
 
+          -- src3 / C second register
+          if (tcu_regs_per_operand_wire = 2) or (tcu_funct7_wire = "0001000") then
             if tcu_rd_idx_wire < 31 then
               tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
             else
               tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
             end if;
-
           else
-
-            tc0_src1_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
-            tc0_src2_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
             tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
-
           end if;
 
           -----------------------------------------------------------------
@@ -798,32 +817,37 @@ end process;
           tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
           tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
 
+          -- A debug second register
           if tcu_regs_per_operand_wire = 2 then
-
             if tcu_rs1_idx_wire < 31 then
               tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
             else
               tcu_a1_lat <= (others => '0');
             end if;
+          else
+            tcu_a1_lat <= (others => '0');
+          end if;
 
+          -- B debug second register
+          if tcu_regs_per_operand_wire = 2 then
             if tcu_rs2_idx_wire < 31 then
               tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
             else
               tcu_b1_lat <= (others => '0');
             end if;
+          else
+            tcu_b1_lat <= (others => '0');
+          end if;
 
+          -- C debug second register
+          if (tcu_regs_per_operand_wire = 2) or (tcu_funct7_wire = "0001000") then
             if tcu_rd_idx_wire < 31 then
               tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
             else
               tcu_c1_lat <= (others => '0');
             end if;
-
           else
-
-            tcu_a1_lat <= (others => '0');
-            tcu_b1_lat <= (others => '0');
             tcu_c1_lat <= (others => '0');
-
           end if;
 
         else
@@ -978,8 +1002,8 @@ end process;
       instr_word_TCU_WB_s <= instr_v;
       harc_TCU_WB_s       <= tcu_wb_hart_s;
 
-      -- 8 bit operand format writes only word0 / rd.
-      -- FP16 and POSIT16 still write word0 and word1 / rd and rd+1.
+      -- 8-bit result formats FP8/POSIT8 write only word0 / rd.
+      -- 16-bit result formats FP16/POSIT16/INT8_16 write word0 and word1 / rd and rd+1.
       if not (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 1) then
         TCU_WB_EN_s <= '1';
       end if;

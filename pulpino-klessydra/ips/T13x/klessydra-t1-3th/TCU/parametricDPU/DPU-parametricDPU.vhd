@@ -8,7 +8,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library FixedP16_32_DPU;
 --use FixedP16_32_DPU.all;
 
---library INT8_16_DPU;
+library INT8_16_DPU;
 --use INT8_16_DPU.all;
 
 --library INT16_32_DPU;
@@ -237,19 +237,19 @@ end component;
 --end component;
 
 -- int8_16 DPU
---component dot_unit_coreINT8 is
---	port(		a_X0 : in std_logic_vector(7 downto 0);
---				a_X1 : in std_logic_vector(7 downto 0);
---				a_X2 : in std_logic_vector(7 downto 0);
---				a_X3 : in std_logic_vector(7 downto 0);
---				b_X0 : in std_logic_vector(7 downto 0);
---				b_X1 : in std_logic_vector(7 downto 0);
---				b_X2 : in std_logic_vector(7 downto 0);
---				b_X3 : in std_logic_vector(7 downto 0);		
---				c_X0: in std_logic_vector(15 downto 0);
---				w_XX3: out std_logic_vector(15 downto 0)
---	);
---end component;
+component dot_unit_coreINT8 is
+	port(		a_X0 : in std_logic_vector(7 downto 0);
+				a_X1 : in std_logic_vector(7 downto 0);
+				a_X2 : in std_logic_vector(7 downto 0);
+				a_X3 : in std_logic_vector(7 downto 0);
+				b_X0 : in std_logic_vector(7 downto 0);
+				b_X1 : in std_logic_vector(7 downto 0);
+				b_X2 : in std_logic_vector(7 downto 0);
+				b_X3 : in std_logic_vector(7 downto 0);		
+				c_X0: in std_logic_vector(15 downto 0);
+				w_XX3: out std_logic_vector(15 downto 0)
+	);
+end component;
 
 --int16_32 DPU
 --component dot_unit_coreINT is
@@ -275,6 +275,7 @@ signal is_fp16    : std_logic;
 signal is_posit16 : std_logic;
 signal is_fp8     : std_logic;
 signal is_posit8  : std_logic;
+signal is_int8_16 : std_logic;
 
 signal A0_16_fp16_g, A1_16_fp16_g, A2_16_fp16_g, A3_16_fp16_g : std_logic_vector(15 downto 0);
 signal B0_16_fp16_g, B1_16_fp16_g, B2_16_fp16_g, B3_16_fp16_g : std_logic_vector(15 downto 0);
@@ -292,12 +293,17 @@ signal A0_8_posit8_g, A1_8_posit8_g, A2_8_posit8_g, A3_8_posit8_g : std_logic_ve
 signal B0_8_posit8_g, B1_8_posit8_g, B2_8_posit8_g, B3_8_posit8_g : std_logic_vector(7 downto 0);
 signal C0_8_posit8_g : std_logic_vector(7 downto 0);
 
+signal A0_8_int8_16_g, A1_8_int8_16_g, A2_8_int8_16_g, A3_8_int8_16_g : std_logic_vector(7 downto 0);
+signal B0_8_int8_16_g, B1_8_int8_16_g, B2_8_int8_16_g, B3_8_int8_16_g : std_logic_vector(7 downto 0);
+signal C0_16_int8_16_g : std_logic_vector(15 downto 0);
+
 begin
 
 is_fp16    <= '1' when widthSel = "01" and typeSel = "000" else '0';
 is_posit16 <= '1' when widthSel = "01" and typeSel = "001" else '0';
 is_fp8     <= '1' when widthSel = "00" and typeSel = "000" else '0';
 is_posit8  <= '1' when widthSel = "00" and typeSel = "001" else '0';
+is_int8_16 <= '1' when widthSel = "00" and typeSel = "011" else '0';
 
 A0_16_fp16_g <= A0_16 when is_fp16 = '1' else ZERO16;
 A1_16_fp16_g <= A1_16 when is_fp16 = '1' else ZERO16;
@@ -338,6 +344,16 @@ B1_8_posit8_g <= B1_8 when is_posit8 = '1' else ZERO8;
 B2_8_posit8_g <= B2_8 when is_posit8 = '1' else ZERO8;
 B3_8_posit8_g <= B3_8 when is_posit8 = '1' else ZERO8;
 C0_8_posit8_g <= C0_8 when is_posit8 = '1' else ZERO8;
+
+A0_8_int8_16_g <= A0_8 when is_int8_16 = '1' else ZERO8;
+A1_8_int8_16_g <= A1_8 when is_int8_16 = '1' else ZERO8;
+A2_8_int8_16_g <= A2_8 when is_int8_16 = '1' else ZERO8;
+A3_8_int8_16_g <= A3_8 when is_int8_16 = '1' else ZERO8;
+B0_8_int8_16_g <= B0_8 when is_int8_16 = '1' else ZERO8;
+B1_8_int8_16_g <= B1_8 when is_int8_16 = '1' else ZERO8;
+B2_8_int8_16_g <= B2_8 when is_int8_16 = '1' else ZERO8;
+B3_8_int8_16_g <= B3_8 when is_int8_16 = '1' else ZERO8;
+C0_16_int8_16_g <= C0_16 when is_int8_16 = '1' else ZERO16;
 
 dpu_fp8 : entity FP8_DPU.DotProductUnitFP8e4m3 
     port map ( 
@@ -404,8 +420,19 @@ dpu_posit16: entity POSIT16_DPU.DotProductUnitPosit16
 --dpu_FixP16_32: DotProductUnit
   --  port map (  aX0 => A0_16 , aX1 => A1_16 , aX2 => A2_16 , aX3 => A3_16 , bY0 => B0_16 , bY1 => B1_16 , bY2 => B2_16, bY3 => B3_16 , cX0 => C0_32 , R => out_DPU_FixP16_32 ) ;
 
---dpu_int8_16: dot_unit_coreINT8
-  --  port map ( a_X0 => A0_8, a_X1 => A1_8, a_X2 => A2_8, a_X3 => A3_8, b_X0 => B0_8, b_X1 => B1_8, b_X2 => B2_8, b_X3 => B3_8, c_X0 => C0_16, w_XX3 => out_DPU_int8_16 ) ;
+dpu_int8_16: entity INT8_16_DPU.dot_unit_coreINT8
+    port map ( 
+      a_X0 => A0_8_int8_16_g,
+      a_X1 => A1_8_int8_16_g,
+      a_X2 => A2_8_int8_16_g,
+      a_X3 => A3_8_int8_16_g,
+      b_X0 => B0_8_int8_16_g,
+      b_X1 => B1_8_int8_16_g,
+      b_X2 => B2_8_int8_16_g,
+      b_X3 => B3_8_int8_16_g,
+      c_X0 => C0_16_int8_16_g, 
+      w_XX3 => out_DPU_int8_16 
+    ) ;
     
 --dpu_int16_32: dot_unit_coreINT
   --  port map ( a_X0 => A0_16, a_X1 => A1_16, a_X2 => A2_16, a_X3 => A3_16, b_X0 => B0_16, b_X1 => B1_16, b_X2 => B2_16, b_X3 =>	B3_16, c_X0 => C0_32, w_XX3 => out_DPU_int16_32 ) ;

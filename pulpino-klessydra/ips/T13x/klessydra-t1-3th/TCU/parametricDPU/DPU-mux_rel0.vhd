@@ -44,7 +44,8 @@ process( widthSel,
          posit32out,
          fixP8_16out,
          fixP16_32out,
-         int8_16out
+         int8_16out,
+         int16_32out
          )
 
     begin
