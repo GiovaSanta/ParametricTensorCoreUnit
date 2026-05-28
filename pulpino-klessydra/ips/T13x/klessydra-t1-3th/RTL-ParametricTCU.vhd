@@ -248,7 +248,8 @@ begin
 
   tcu_result_is_32bit_s <= '1' when tcu_funct7_lat = "0000010" or  -- FP32
                                     tcu_funct7_lat = "0000110" or    -- POSIT32
-                                    tcu_funct7_lat = "0001001"     -- INT16_32
+                                    tcu_funct7_lat = "0001001" or    -- INT16_32
+                                    tcu_funct7_lat = "0001101"     -- FIXED16_32
                                else '0';
 
   TCU_wrapper_format_decode_comb : process(all)
@@ -903,9 +904,9 @@ end process;
           end if;
 
           -----------------------------------------------------------------
-          -- Extra C accumulator registers for INT16_32.
+          -- Extra C accumulator registers for INT16_32 and FIXED16_32 scenarios.
           --
-          -- INT16_32 has:
+          -- INT16_32 and FIXED16_32 has:
           --   A/B = 16-bit operands -> rs1, rs1+1 and rs2, rs2+1
           --   C   = 32-bit accumulators -> rd, rd+1, rd+2, rd+3
           --
@@ -918,7 +919,8 @@ end process;
           --   C word3 = rd+3
           -----------------------------------------------------------------
 
-          if tcu_funct7_wire = "0001001" then  -- INT16_32
+          if  (tcu_funct7_wire = "0001001") or   -- INT16_32
+              (tcu_funct7_wire = "0001101") then -- FIXED16_32
             if tcu_rd_idx_wire <= 28 then
               tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 2);
               tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 3);

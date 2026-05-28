@@ -20,6 +20,8 @@ set FIXED8_16_LIB_NAME=FixedP8_16_dpu
 set FP32_LIB_NAME=FP32_DPU
 set POSIT32_LIB_NAME=POSIT32_DPU
 set INT16_32_LIB_NAME=INT16_32_DPU
+set FIXED16_32_LIB_NAME=FixedP16_32_DPU
+
 
 
 ##############################################################################
@@ -46,6 +48,7 @@ set FIXED8_16_LIB_PATH="${MSIM_LIBS_PATH}/${FIXED8_16_LIB_NAME}_lib"
 set FP32_LIB_PATH="${MSIM_LIBS_PATH}/${FP32_LIB_NAME}_lib"
 set POSIT32_LIB_PATH="${MSIM_LIBS_PATH}/${POSIT32_LIB_NAME}_lib"
 set INT16_32_LIB_PATH="${MSIM_LIBS_PATH}/${INT16_32_LIB_NAME}_lib"
+set FIXED16_32_LIB_PATH="${MSIM_LIBS_PATH}/${FIXED16_32_LIB_NAME}_lib"
 
 set LIB_NAME="${IP}_lib"
 set LIB_PATH="${MSIM_LIBS_PATH}/${LIB_NAME}"
@@ -109,6 +112,11 @@ rm -rf $INT16_32_LIB_PATH
 vlib $INT16_32_LIB_PATH
 vmap $INT16_32_LIB_NAME $INT16_32_LIB_PATH
 
+rm -rf $FIXED16_32_LIB_PATH
+
+vlib $FIXED16_32_LIB_PATH
+vmap $FIXED16_32_LIB_NAME $FIXED16_32_LIB_PATH
+
 ##############################################################################
 # Compiling RTL
 ##############################################################################
@@ -165,6 +173,11 @@ vcom -2008 -quiet -suppress 2583 -work ${INT16_32_LIB_NAME} ${IP_PATH}/klessydra
 vcom -2008 -quiet -suppress 2583 -work ${INT16_32_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/int16_32/Adder_INT.vhd || goto error
 vcom -2008 -quiet -suppress 2583 -work ${INT16_32_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/int16_32/Multiplier_INT.vhd || goto error
 vcom -2008 -quiet -suppress 2583 -work ${INT16_32_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/int16_32/DPU_TOP_INT.vhd || goto error
+
+echo "${Green}Compiling component: ${Brown} FixedP16_32_DPU ${NC}"
+echo "${Red}"
+vcom -2008 -quiet -suppress 2583 -work ${FIXED16_32_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FixPoint16_32DPU/FixedPointMAC.vhd || goto error
+vcom -2008 -quiet -suppress 2583 -work ${FIXED16_32_LIB_NAME} ${IP_PATH}/klessydra-t1-3th/TCU/parametricDPU/FixPoint16_32DPU/FixedPointDPU.vhd || goto error
 
 echo "${Green}Compiling component: ${Brown} Klessydra-T13x ${NC}"
 echo "${Red}"
