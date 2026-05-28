@@ -2,7 +2,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
---library FixedP8_16_dpu;
+library FixedP8_16_dpu;
 --use FixedP8_16_dpu.all;
 
 --library FixedP16_32_DPU;
@@ -205,20 +205,20 @@ end component;
 --end component; 
 
 --fixPoint8_16 DPU:
---component DotProductUnit_FixedPoint8_16 is
---    Port (
---        aX0 : in  std_logic_vector(7 downto 0);
---        aX1 : in  std_logic_vector(7 downto 0);
---        aX2 : in  std_logic_vector(7 downto 0);
---        aX3 : in  std_logic_vector(7 downto 0);
---       bY0 : in  std_logic_vector(7 downto 0);
---        bY1 : in  std_logic_vector(7 downto 0);
---       bY2 : in  std_logic_vector(7 downto 0);
---        bY3 : in  std_logic_vector(7 downto 0);
---        cX0 : in std_logic_vector(15 downto 0);
---        R  : out std_logic_vector(15 downto 0)
---    );
---end component; 
+component DotProductUnit_FixedPoint8_16 is
+    Port (
+        aX0 : in  std_logic_vector(7 downto 0);
+        aX1 : in  std_logic_vector(7 downto 0);
+        aX2 : in  std_logic_vector(7 downto 0);
+        aX3 : in  std_logic_vector(7 downto 0);
+        bY0 : in  std_logic_vector(7 downto 0);
+        bY1 : in  std_logic_vector(7 downto 0);
+        bY2 : in  std_logic_vector(7 downto 0);
+        bY3 : in  std_logic_vector(7 downto 0);
+        cX0 : in std_logic_vector(15 downto 0);
+        R  : out std_logic_vector(15 downto 0)
+    );
+end component; 
 
 --fixPoint16_32 DPU:
 --component DotProductUnit is
@@ -271,11 +271,12 @@ end component;
 constant ZERO16 : std_logic_vector(15 downto 0) := (others => '0');
 constant ZERO8  : std_logic_vector(7 downto 0) := (others => '0');
 
-signal is_fp16    : std_logic;
-signal is_posit16 : std_logic;
-signal is_fp8     : std_logic;
-signal is_posit8  : std_logic;
-signal is_int8_16 : std_logic;
+signal is_fp16          : std_logic;
+signal is_posit16       : std_logic;
+signal is_fp8           : std_logic;
+signal is_posit8        : std_logic;
+signal is_int8_16       : std_logic;
+signal is_fixed8_16    : std_logic;
 
 signal A0_16_fp16_g, A1_16_fp16_g, A2_16_fp16_g, A3_16_fp16_g : std_logic_vector(15 downto 0);
 signal B0_16_fp16_g, B1_16_fp16_g, B2_16_fp16_g, B3_16_fp16_g : std_logic_vector(15 downto 0);
@@ -297,13 +298,19 @@ signal A0_8_int8_16_g, A1_8_int8_16_g, A2_8_int8_16_g, A3_8_int8_16_g : std_logi
 signal B0_8_int8_16_g, B1_8_int8_16_g, B2_8_int8_16_g, B3_8_int8_16_g : std_logic_vector(7 downto 0);
 signal C0_16_int8_16_g : std_logic_vector(15 downto 0);
 
+signal A0_8_fixed8_16_g, A1_8_fixed8_16_g, A2_8_fixed8_16_g, A3_8_fixed8_16_g : std_logic_vector(7 downto 0);
+signal B0_8_fixed8_16_g, B1_8_fixed8_16_g, B2_8_fixed8_16_g, B3_8_fixed8_16_g : std_logic_vector(7 downto 0);
+signal C0_16_fixed8_16_g : std_logic_vector(15 downto 0);
+
 begin
 
-is_fp16    <= '1' when widthSel = "01" and typeSel = "000" else '0';
-is_posit16 <= '1' when widthSel = "01" and typeSel = "001" else '0';
-is_fp8     <= '1' when widthSel = "00" and typeSel = "000" else '0';
-is_posit8  <= '1' when widthSel = "00" and typeSel = "001" else '0';
-is_int8_16 <= '1' when widthSel = "00" and typeSel = "011" else '0';
+is_fp16      <= '1' when widthSel = "01" and typeSel = "000" else '0';
+is_posit16   <= '1' when widthSel = "01" and typeSel = "001" else '0';
+is_fp8       <= '1' when widthSel = "00" and typeSel = "000" else '0';
+is_posit8    <= '1' when widthSel = "00" and typeSel = "001" else '0';
+is_int8_16   <= '1' when widthSel = "00" and typeSel = "011" else '0';
+is_fixed8_16 <= '1' when widthSel = "00" and typeSel = "010" else '0';
+
 
 A0_16_fp16_g <= A0_16 when is_fp16 = '1' else ZERO16;
 A1_16_fp16_g <= A1_16 when is_fp16 = '1' else ZERO16;
@@ -354,6 +361,16 @@ B1_8_int8_16_g <= B1_8 when is_int8_16 = '1' else ZERO8;
 B2_8_int8_16_g <= B2_8 when is_int8_16 = '1' else ZERO8;
 B3_8_int8_16_g <= B3_8 when is_int8_16 = '1' else ZERO8;
 C0_16_int8_16_g <= C0_16 when is_int8_16 = '1' else ZERO16;
+
+A0_8_fixed8_16_g <= A0_8 when is_fixed8_16 = '1' else ZERO8;
+A1_8_fixed8_16_g <= A1_8 when is_fixed8_16 = '1' else ZERO8;
+A2_8_fixed8_16_g <= A2_8 when is_fixed8_16 = '1' else ZERO8;
+A3_8_fixed8_16_g <= A3_8 when is_fixed8_16 = '1' else ZERO8;
+B0_8_fixed8_16_g <= B0_8 when is_fixed8_16 = '1' else ZERO8;
+B1_8_fixed8_16_g <= B1_8 when is_fixed8_16 = '1' else ZERO8;
+B2_8_fixed8_16_g <= B2_8 when is_fixed8_16 = '1' else ZERO8;
+B3_8_fixed8_16_g <= B3_8 when is_fixed8_16 = '1' else ZERO8;
+C0_16_fixed8_16_g <= C0_16 when is_fixed8_16 = '1' else ZERO16;
 
 dpu_fp8 : entity FP8_DPU.DotProductUnitFP8e4m3 
     port map ( 
@@ -414,8 +431,21 @@ dpu_posit16: entity POSIT16_DPU.DotProductUnitPosit16
 --dpu_posit32: DotProductUnitPosit32
    -- port map ( aX0 => A0_32 , aX1 => A1_32 , aX2 => A2_32 , aX3 => A3_32 , bY0 => B0_32 , bY1 => B1_32 , bY2 => B2_32, bY3 => B3_32 , cX0 => C0_32 , R => out_DPU_posit32 ) ;
 
---dpu_FixP8_16: DotProductUnit_FixedPoint8_16 
-  --  port map ( aX0 => A0_8 , aX1 => A1_8 , aX2 => A2_8 , aX3 => A3_8 , bY0 => B0_8 , bY1 => B1_8 , bY2 => B2_8, bY3 => B3_8 , cX0 => C0_16 , R => out_DPU_FixP8_16 ) ;
+dpu_FixP8_16: entity FixedP8_16_dpu.DotProductUnit_FixedPoint8_16 
+    port map (
+      aX0 => A0_8_fixed8_16_g,
+      aX1 => A1_8_fixed8_16_g,
+      aX2 => A2_8_fixed8_16_g,
+      aX3 => A3_8_fixed8_16_g,
+
+      bY0 => B0_8_fixed8_16_g,
+      bY1 => B1_8_fixed8_16_g,
+      bY2 => B2_8_fixed8_16_g,
+      bY3 => B3_8_fixed8_16_g,
+
+      cX0 => C0_16_fixed8_16_g,
+      R   => out_DPU_FixP8_16
+    );
 
 --dpu_FixP16_32: DotProductUnit
   --  port map (  aX0 => A0_16 , aX1 => A1_16 , aX2 => A2_16 , aX3 => A3_16 , bY0 => B0_16 , bY1 => B1_16 , bY2 => B2_16, bY3 => B3_16 , cX0 => C0_32 , R => out_DPU_FixP16_32 ) ;

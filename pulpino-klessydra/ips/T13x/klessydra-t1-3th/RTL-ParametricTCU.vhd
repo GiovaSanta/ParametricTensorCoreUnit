@@ -719,7 +719,7 @@ end process;
           --   B = src2 = rs2, rs2+1
           --   C = src3 = rd,  rd+1
           --
-          -- For mixed INT8_16:
+          -- For mixed INT8_16 and FIXED8_16:
           --   A/B are 8-bit and use rs1/rs2 only
           --   C/result are 16-bit and use rd, rd+1
           -----------------------------------------------------------------
@@ -793,7 +793,9 @@ end process;
           end if;
 
           -- src3 / C second register
-          if (tcu_regs_per_operand_wire = 2) or (tcu_funct7_wire = "0001000") then
+          if (tcu_regs_per_operand_wire = 2) or 
+              (tcu_funct7_wire = "0001000") or -- INT8_16
+              (tcu_funct7_wire = "0001100") then -- FIXED8_16
             if tcu_rd_idx_wire < 31 then
               tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
             else
@@ -840,7 +842,9 @@ end process;
           end if;
 
           -- C debug second register
-          if (tcu_regs_per_operand_wire = 2) or (tcu_funct7_wire = "0001000") then
+          if (tcu_regs_per_operand_wire = 2) or 
+              (tcu_funct7_wire = "0001000") or -- INT8_16
+              (tcu_funct7_wire = "0001100") then -- FIXED8_16
             if tcu_rd_idx_wire < 31 then
               tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
             else
@@ -1003,7 +1007,7 @@ end process;
       harc_TCU_WB_s       <= tcu_wb_hart_s;
 
       -- 8-bit result formats FP8/POSIT8 write only word0 / rd.
-      -- 16-bit result formats FP16/POSIT16/INT8_16 write word0 and word1 / rd and rd+1.
+      -- 16-bit result formats FP16/POSIT16/INT8_16/FIXED8_16 write word0 and word1 / rd and rd+1.
       if not (tcu_result_is_8bit_s = '1' and tcu_wb_word_s = 1) then
         TCU_WB_EN_s <= '1';
       end if;

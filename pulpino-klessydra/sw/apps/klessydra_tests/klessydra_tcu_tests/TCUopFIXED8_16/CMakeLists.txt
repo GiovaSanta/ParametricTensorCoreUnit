@@ -1,0 +1,1 @@
+add_application(TCUopFIXED8_16 TCUopFIXED8_16.c LABELS "klessydra_tests")
