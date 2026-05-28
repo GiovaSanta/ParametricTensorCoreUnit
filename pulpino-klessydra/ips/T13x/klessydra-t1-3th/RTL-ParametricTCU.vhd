@@ -247,7 +247,8 @@ begin
                               else '0';
 
   tcu_result_is_32bit_s <= '1' when tcu_funct7_lat = "0000010" or  -- FP32
-                                    tcu_funct7_lat = "0000110"     -- POSIT32
+                                    tcu_funct7_lat = "0000110" or    -- POSIT32
+                                    tcu_funct7_lat = "0001001"     -- INT16_32
                                else '0';
 
   TCU_wrapper_format_decode_comb : process(all)
@@ -379,7 +380,7 @@ end process;
         when "0001000" =>  -- INT8
           tcu_regs_per_operand_wire <= 1;
 
-        when "0001001" =>  -- INT16
+        when "0001001" =>  -- INT16_32
           tcu_regs_per_operand_wire <= 2;
 
         when "0001100" =>  -- FIXED8
@@ -899,6 +900,32 @@ end process;
             end if;
           else
             tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
+          end if;
+
+          -----------------------------------------------------------------
+          -- Extra C accumulator registers for INT16_32.
+          --
+          -- INT16_32 has:
+          --   A/B = 16-bit operands -> rs1, rs1+1 and rs2, rs2+1
+          --   C   = 32-bit accumulators -> rd, rd+1, rd+2, rd+3
+          --
+          -- pair00 already contains:
+          --   C word0 = rd
+          --   C word1 = rd+1
+          --
+          -- pair01 must contain:
+          --   C word2 = rd+2
+          --   C word3 = rd+3
+          -----------------------------------------------------------------
+
+          if tcu_funct7_wire = "0001001" then  -- INT16_32
+            if tcu_rd_idx_wire <= 28 then
+              tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 2);
+              tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 3);
+            else
+              tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
+              tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
+            end if;
           end if;
 
           -----------------------------------------------------------------
