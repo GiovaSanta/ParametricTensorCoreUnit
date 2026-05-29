@@ -42,7 +42,7 @@ entity TCU_Branch is
     busy_TCU      : out std_logic;
     core_busy_TCU : out std_logic;
 
-    -- TCU writeback path, inactive for now
+    --writeback related
     TCU_WB_EN         : out std_logic;
     TCU_WB            : out std_logic_vector(31 downto 0);
     instr_word_TCU_WB : out std_logic_vector(31 downto 0);
@@ -57,7 +57,7 @@ architecture rtl of TCU_Branch is
   -- Latched raw TCU packet
   ---------------------------------------------------------------------------
   signal tcu_valid_lat : std_logic;
-  signal tcu_instr_lat : std_logic_vector(31 downto 0); --this one is used to reconstruct writeback instruction
+  signal tcu_instr_lat : std_logic_vector(31 downto 0); -- stored instruction used to reconstruct writeback transactions
   signal tcu_pc_lat    : std_logic_vector(31 downto 0);
   signal tcu_harc_lat  : integer range THREAD_POOL_SIZE-1 downto 0;
   signal tcu_rs1_lat   : std_logic_vector(31 downto 0);
@@ -120,7 +120,8 @@ architecture rtl of TCU_Branch is
   signal tcu_wrapper_step_done_s   : std_logic;
   signal tcu_wrapper_load_pair_s   : std_logic_vector(1 downto 0);
 
-  -- Raw combinational/sequential outputs from the tensor-core wrapper. not buffers, they are wires.
+-- Raw output interface signals from the tensor-core wrapper.
+-- These are captured later into the stable tcu_res_* result buffers.  
   signal W0_tc0_oct0_8_X3_s  : arraySize16_8;
   signal W1_tc0_oct0_8_X3_s  : arraySize16_8;
   signal W0_tc0_oct0_16_X3_s : arraySize16_16;
@@ -146,8 +147,11 @@ architecture rtl of TCU_Branch is
   signal busy_TCU_s       : std_logic;
   signal core_busy_TCU_s  : std_logic;
 
-  signal tcu_all_lanes_valid_next_s : std_logic; --predictive usefull version to understand. = checks the lanes already stored PLUS the current incoming TCU instruction
-                                                  --predicted next stored state
+
+  -- Predicts whether the already-collected lanes plus the current request
+  -- complete the full TCU input packet.
+  signal tcu_all_lanes_valid_next_s : std_logic; 
+
   signal tcu_wrapper_result_valid_s : std_logic;
   signal tcu_wrapper_result_step_s  : std_logic_vector(1 downto 0);
 
@@ -241,7 +245,7 @@ begin
   -- A.3) TCU synchronous packet capture
   --
   -- When tcu_instr_req is high, the current live pipeline information is
-  -- captured into a stable packet for the future TCU controller controlling TCU wrapper execution.
+  -- captured into stable packet/registers used during wrapper execution.
   ---------------------------------------------------------------------------
   TCU_packet_sync : process(clk_i, rst_ni)
   variable tcu_lane_idx_v : integer range 0 to THREAD_POOL_SIZE-1;
@@ -427,8 +431,8 @@ begin
           tc0_src2_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
           tc0_src3_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
 
-          -- Clear pair01 for 8-bit and 16-bit formats.
-          -- pair01 is only meaningful for 32-bit formats such as FP32.
+          -- Clear pair01 by default.
+          -- It is later filled only when extra 32-bit operand/accumulator words are required.
           tc0_src1_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
           tc0_src1_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
 
@@ -451,8 +455,8 @@ begin
           --   needs two 32-bit registers.
           --
           -- C:
-          --   used for native 16-bit formats AND for INT8_16, because
-          --   INT8_16 has 8-bit A/B but 16-bit C/result.
+          --   used for native 16-bit formats and for mixed 8_16 formats,
+          --   where A/B are 8-bit but C/result are 16-bit.
           -----------------------------------------------------------------
 
           -- src1 / A second register
@@ -528,7 +532,7 @@ begin
           -----------------------------------------------------------------
           -- 32-bit operand formats.
           --
-          -- For FP32:
+          -- For FP32 / POSIT32:
           --   A = rs1, rs1+1, rs1+2, rs1+3
           --   B = rs2, rs2+1, rs2+2, rs2+3
           --   C = rd,  rd+1,  rd+2,  rd+3
@@ -716,12 +720,11 @@ begin
 
 --*********************C.) TCU RESULT CAPTURE FROM TCU WRAPPER INSTANTIATION PROCESSES****************************
 ---------------------------------------------------------------------------
-  -- C.1) Stable TCU FP16 result latch
+  -- C.1) Stable TCU result latch for 8/16/32-bit wrapper outputs
   --
-  -- Raw W0/W1 wrapper outputs are exec_step-dependent and may not remain
+  -- Raw W0/W1 wrapper outputs are result-step-dependent and may not remain
   -- stable after the wrapper finishes. These buffers preserve the complete
-  -- FP16 result for later writeback.
-  ---------------------------------------------------------------------------
+  -- TCU result for later writeback.
   TCU_result_latch_sync : process(clk_i, rst_ni)
   begin
     if rst_ni = '0' then
@@ -830,7 +833,7 @@ begin
   end process;
   --*************************************************************************************************************
 
---******************************************D.) TCU WRITBACK PROCESSES*******************************************
+--******************************************D.) TCU WRITEBACK PROCESSES*******************************************
   TCU_wb_pack_comb : process(all)
   variable idx_v : integer range 0 to 15;
   begin
@@ -851,7 +854,7 @@ begin
     end if;
 
     if tcu_result_is_32bit_lat = '1' then
-      -- FP32 packing: word0, word1, word2, word3
+      -- 32-bit result packing: word0, word1, word2, word3
       if tcu_wb_hart_s < 4 then
 
         tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 0);
@@ -883,7 +886,7 @@ begin
       end if;
 
     elsif tcu_result_is_8bit_lat = '1' then
-      --FP8 packing utilizing only word0
+      -- 8-bit result packing: only word0 is written back
 
       if tcu_wb_hart_s < 4 then
 
@@ -1001,7 +1004,7 @@ begin
       -- 16-bit / mixed 8_16:
       --   word0 and word1
       --
-      -- FP32:
+      --  32bit result formats:
       --   word0, word1, word2, word3
       -------------------------------------------------------------------------
 
@@ -1064,7 +1067,7 @@ begin
         -- 16-bit / mixed 8_16 formats:
         --   two writeback words: rd, rd+1
         --
-        -- FP32:
+        -- 32bit formats:
         --   four writeback words: rd, rd+1, rd+2, rd+3
         -----------------------------------------------------------------------
 
