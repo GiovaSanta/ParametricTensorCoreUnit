@@ -56,7 +56,6 @@ architecture rtl of TCU_Branch is
   ---------------------------------------------------------------------------
   -- Latched raw TCU packet
   ---------------------------------------------------------------------------
-
   signal tcu_valid_lat : std_logic;
   signal tcu_instr_lat : std_logic_vector(31 downto 0);
   signal tcu_pc_lat    : std_logic_vector(31 downto 0);
@@ -69,20 +68,18 @@ architecture rtl of TCU_Branch is
   -- Combinational decoded wires
   -- These are decoded from the live instr_word_IE during the IE cycle.
   ---------------------------------------------------------------------------
-
   signal tcu_opcode_wire           : std_logic_vector(6 downto 0); --distinguishes operation of the TCU to the other RISCV operations
   signal tcu_rd_idx_wire           : integer range 0 to 31;  -- which register of RFs will contain the result. this index is also used for the third operand of the accumulation (matrix C related value)
   signal tcu_funct3_wire           : std_logic_vector(2 downto 0); -- is it an hmma step 0 or step 1 instruction
   signal tcu_rs1_idx_wire          : integer range 0 to 31; -- which register of the RFs contain first operand (related to matrix A)
   signal tcu_rs2_idx_wire          : integer range 0 to 31; -- which register of the RFs contain second operand (related to matrix B)
   signal tcu_funct7_wire           : std_logic_vector(6 downto 0); --selection of which type of operand and bit width 
-  signal tcu_regs_per_operand_wire : integer range 1 to 4;
+  signal tcu_regs_per_operand_wire : integer range 1 to 4; 
 
   ---------------------------------------------------------------------------
   -- Latched decoded TCU packet
-  -- These are the stable decoded fields for the future TCU controller.
+  -- These are the stable decoded fields for the TCU controller.
   ---------------------------------------------------------------------------
-
   signal tcu_opcode_lat           : std_logic_vector(6 downto 0);
   signal tcu_rd_idx_lat           : integer range 0 to 31;
   signal tcu_funct3_lat           : std_logic_vector(2 downto 0);
@@ -99,13 +96,10 @@ architecture rtl of TCU_Branch is
   --   B pair comes from rs2 and rs2+1
   --   C pair comes from rd  and rd+1
   ---------------------------------------------------------------------------
-
   signal tcu_a0_lat : std_logic_vector(31 downto 0);
   signal tcu_a1_lat : std_logic_vector(31 downto 0);
-
   signal tcu_b0_lat : std_logic_vector(31 downto 0);
   signal tcu_b1_lat : std_logic_vector(31 downto 0);
-
   signal tcu_c0_lat : std_logic_vector(31 downto 0);
   signal tcu_c1_lat : std_logic_vector(31 downto 0);
 
@@ -113,33 +107,28 @@ architecture rtl of TCU_Branch is
   -- Tensor-core input staging arrays, one slot per hart/lane
   --
   -- These are not the final tensor core wrapper yet.
-  -- They simply collect and preserve one FP16 HMMA fragment per hart.
+  -- They simply collect and preserve one format's HMMA fragment per hart.
   --
   -- src1 = A
   -- src2 = B
   -- src3 = C / accumulator
   --
-  -- pair00 is enough for FP16 for now.
+  -- "pair00" type is enough for FP8,FP16,POSIT8,POSIT16, INT8, FIXED8
+  -- "pair01" type is needed for FP32, POSIT32
   ---------------------------------------------------------------------------
-
-    signal tc0_src1_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-    signal tc0_src1_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
-    signal tc0_src2_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-    signal tc0_src2_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
-    signal tc0_src3_rf_port_a_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-    signal tc0_src3_rf_port_b_pair00_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
-    signal tc0_src1_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0); --for the case of fp32 or posit32 for instance
-    signal tc0_src1_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
-    signal tc0_src2_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-    signal tc0_src2_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
-    signal tc0_src3_rf_port_a_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-    signal tc0_src3_rf_port_b_pair01_s : array_2d(THREAD_POOL_SIZE-1 downto 0)(31 downto 0);
-
+    signal tc0_src1_rf_port_a_pair00_s : arraySize16_32 ;
+    signal tc0_src1_rf_port_b_pair00_s : arraySize16_32 ;
+    signal tc0_src2_rf_port_a_pair00_s : arraySize16_32 ;
+    signal tc0_src2_rf_port_b_pair00_s : arraySize16_32 ;
+    signal tc0_src3_rf_port_a_pair00_s : arraySize16_32 ;
+    signal tc0_src3_rf_port_b_pair00_s : arraySize16_32 ;
+    
+    signal tc0_src1_rf_port_a_pair01_s : arraySize16_32 ; --for the case of fp32 or posit32 for instance
+    signal tc0_src1_rf_port_b_pair01_s : arraySize16_32 ;
+    signal tc0_src2_rf_port_a_pair01_s : arraySize16_32 ;
+    signal tc0_src2_rf_port_b_pair01_s : arraySize16_32 ;
+    signal tc0_src3_rf_port_a_pair01_s : arraySize16_32 ;
+    signal tc0_src3_rf_port_b_pair01_s : arraySize16_32 ;
     signal tcu_lane_valid_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
     signal tcu_all_lanes_valid_s : std_logic;
 
@@ -148,7 +137,6 @@ architecture rtl of TCU_Branch is
     ---------------------------------------------------------------------------
     -- Single tensor-core wrapper interface
     ---------------------------------------------------------------------------
-
     signal tcu_wrapper_start_s       : std_logic;
     signal tcu_wrapper_start_seen_s  : std_logic;
 
@@ -156,20 +144,6 @@ architecture rtl of TCU_Branch is
     signal tcu_wrapper_done_s        : std_logic;
     signal tcu_wrapper_step_done_s   : std_logic;
     signal tcu_wrapper_load_pair_s   : std_logic_vector(1 downto 0);
-
-    signal tc0_src1_rf_port_a_pair00_wrap_s : arraySize16_32;
-    signal tc0_src1_rf_port_b_pair00_wrap_s : arraySize16_32;
-    signal tc0_src2_rf_port_a_pair00_wrap_s : arraySize16_32;
-    signal tc0_src2_rf_port_b_pair00_wrap_s : arraySize16_32;
-    signal tc0_src3_rf_port_a_pair00_wrap_s : arraySize16_32;
-    signal tc0_src3_rf_port_b_pair00_wrap_s : arraySize16_32;
-
-    signal tc0_src1_rf_port_a_pair01_wrap_s : arraySize16_32;
-    signal tc0_src1_rf_port_b_pair01_wrap_s : arraySize16_32;
-    signal tc0_src2_rf_port_a_pair01_wrap_s : arraySize16_32;
-    signal tc0_src2_rf_port_b_pair01_wrap_s : arraySize16_32;
-    signal tc0_src3_rf_port_a_pair01_wrap_s : arraySize16_32;
-    signal tc0_src3_rf_port_b_pair01_wrap_s : arraySize16_32;
 
     signal W0_tc0_oct0_8_X3_s  : arraySize16_8;
     signal W1_tc0_oct0_8_X3_s  : arraySize16_8;
@@ -1282,34 +1256,6 @@ begin
   end if;
 end process;
 
-  ---------------------------------------------------------------------------
-  -- Convert Klessydra per-hart staging arrays to wrapper input arrays.
-  -- The wrapper is fixed to 16 lanes, so this assumes THREAD_POOL_SIZE = 16.  -- right now implemented assuming the study of fp16 operands.
-  ---------------------------------------------------------------------------
-
-  gen_tcu_wrapper_inputs : for i in 0 to 15 generate
-  begin
-
-    tc0_src1_rf_port_a_pair00_wrap_s(i) <= tc0_src1_rf_port_a_pair00_s(i);
-    tc0_src1_rf_port_b_pair00_wrap_s(i) <= tc0_src1_rf_port_b_pair00_s(i);
-
-    tc0_src2_rf_port_a_pair00_wrap_s(i) <= tc0_src2_rf_port_a_pair00_s(i);
-    tc0_src2_rf_port_b_pair00_wrap_s(i) <= tc0_src2_rf_port_b_pair00_s(i);
-
-    tc0_src3_rf_port_a_pair00_wrap_s(i) <= tc0_src3_rf_port_a_pair00_s(i);
-    tc0_src3_rf_port_b_pair00_wrap_s(i) <= tc0_src3_rf_port_b_pair00_s(i);
-
-    tc0_src1_rf_port_a_pair01_wrap_s(i) <= tc0_src1_rf_port_a_pair01_s(i);
-    tc0_src1_rf_port_b_pair01_wrap_s(i) <= tc0_src1_rf_port_b_pair01_s(i);
-
-    tc0_src2_rf_port_a_pair01_wrap_s(i) <= tc0_src2_rf_port_a_pair01_s(i);
-    tc0_src2_rf_port_b_pair01_wrap_s(i) <= tc0_src2_rf_port_b_pair01_s(i);
-
-    tc0_src3_rf_port_a_pair01_wrap_s(i) <= tc0_src3_rf_port_a_pair01_s(i);
-    tc0_src3_rf_port_b_pair01_wrap_s(i) <= tc0_src3_rf_port_b_pair01_s(i);
-
-  end generate;
-
   tcu_wrapper_rst_s <= not rst_ni;
 
 
@@ -1336,19 +1282,19 @@ end process;
       widthSel => tcu_wrapper_widthSel_s,
       typeSel  => tcu_wrapper_typeSel_s,
 
-      tc0_src1_rf_port_a_pair00 => tc0_src1_rf_port_a_pair00_wrap_s,
-      tc0_src1_rf_port_b_pair00 => tc0_src1_rf_port_b_pair00_wrap_s,
-      tc0_src2_rf_port_a_pair00 => tc0_src2_rf_port_a_pair00_wrap_s,
-      tc0_src2_rf_port_b_pair00 => tc0_src2_rf_port_b_pair00_wrap_s,
-      tc0_src3_rf_port_a_pair00 => tc0_src3_rf_port_a_pair00_wrap_s,
-      tc0_src3_rf_port_b_pair00 => tc0_src3_rf_port_b_pair00_wrap_s,
+      tc0_src1_rf_port_a_pair00 => tc0_src1_rf_port_a_pair00_s,
+      tc0_src1_rf_port_b_pair00 => tc0_src1_rf_port_b_pair00_s,
+      tc0_src2_rf_port_a_pair00 => tc0_src2_rf_port_a_pair00_s,
+      tc0_src2_rf_port_b_pair00 => tc0_src2_rf_port_b_pair00_s,
+      tc0_src3_rf_port_a_pair00 => tc0_src3_rf_port_a_pair00_s,
+      tc0_src3_rf_port_b_pair00 => tc0_src3_rf_port_b_pair00_s,
 
-      tc0_src1_rf_port_a_pair01 => tc0_src1_rf_port_a_pair01_wrap_s,
-      tc0_src1_rf_port_b_pair01 => tc0_src1_rf_port_b_pair01_wrap_s,
-      tc0_src2_rf_port_a_pair01 => tc0_src2_rf_port_a_pair01_wrap_s,
-      tc0_src2_rf_port_b_pair01 => tc0_src2_rf_port_b_pair01_wrap_s,
-      tc0_src3_rf_port_a_pair01 => tc0_src3_rf_port_a_pair01_wrap_s,
-      tc0_src3_rf_port_b_pair01 => tc0_src3_rf_port_b_pair01_wrap_s,
+      tc0_src1_rf_port_a_pair01 => tc0_src1_rf_port_a_pair01_s,
+      tc0_src1_rf_port_b_pair01 => tc0_src1_rf_port_b_pair01_s,
+      tc0_src2_rf_port_a_pair01 => tc0_src2_rf_port_a_pair01_s,
+      tc0_src2_rf_port_b_pair01 => tc0_src2_rf_port_b_pair01_s,
+      tc0_src3_rf_port_a_pair01 => tc0_src3_rf_port_a_pair01_s,
+      tc0_src3_rf_port_b_pair01 => tc0_src3_rf_port_b_pair01_s,
 
       W0_tc0_oct0_8_X3  => W0_tc0_oct0_8_X3_s,
       W1_tc0_oct0_8_X3  => W1_tc0_oct0_8_X3_s,
