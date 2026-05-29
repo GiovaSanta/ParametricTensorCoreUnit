@@ -57,7 +57,7 @@ architecture rtl of TCU_Branch is
   -- Latched raw TCU packet
   ---------------------------------------------------------------------------
   signal tcu_valid_lat : std_logic;
-  signal tcu_instr_lat : std_logic_vector(31 downto 0);
+  signal tcu_instr_lat : std_logic_vector(31 downto 0); --this one is used to reconstruct writeback instruction
   signal tcu_pc_lat    : std_logic_vector(31 downto 0);
   signal tcu_harc_lat  : integer range THREAD_POOL_SIZE-1 downto 0;
   signal tcu_rs1_lat   : std_logic_vector(31 downto 0);
@@ -68,7 +68,6 @@ architecture rtl of TCU_Branch is
   -- Combinational decoded wires
   -- These are decoded from the live instr_word_IE during the IE cycle.
   ---------------------------------------------------------------------------
-  signal tcu_opcode_wire           : std_logic_vector(6 downto 0); --distinguishes operation of the TCU to the other RISCV operations
   signal tcu_rd_idx_wire           : integer range 0 to 31;  -- which register of RFs will contain the result. this index is also used for the third operand of the accumulation (matrix C related value)
   signal tcu_funct3_wire           : std_logic_vector(2 downto 0); -- is it an hmma step 0 or step 1 instruction
   signal tcu_rs1_idx_wire          : integer range 0 to 31; -- which register of the RFs contain first operand (related to matrix A)
@@ -80,28 +79,9 @@ architecture rtl of TCU_Branch is
   -- Latched decoded TCU packet
   -- These are the stable decoded fields for the TCU controller.
   ---------------------------------------------------------------------------
-  signal tcu_opcode_lat           : std_logic_vector(6 downto 0);
-  signal tcu_rd_idx_lat           : integer range 0 to 31;
-  signal tcu_funct3_lat           : std_logic_vector(2 downto 0);
-  signal tcu_rs1_idx_lat          : integer range 0 to 31;
-  signal tcu_rs2_idx_lat          : integer range 0 to 31;
-  signal tcu_funct7_lat           : std_logic_vector(6 downto 0);
-  signal tcu_regs_per_operand_lat : integer range 1 to 4;
-
-  ---------------------------------------------------------------------------
-  -- FP16 operand-pair collection debug registers
-  --
-  -- For current FP16 HMMA convention:
-  --   A pair comes from rs1 and rs1+1
-  --   B pair comes from rs2 and rs2+1
-  --   C pair comes from rd  and rd+1
-  ---------------------------------------------------------------------------
-  signal tcu_a0_lat : std_logic_vector(31 downto 0);
-  signal tcu_a1_lat : std_logic_vector(31 downto 0);
-  signal tcu_b0_lat : std_logic_vector(31 downto 0);
-  signal tcu_b1_lat : std_logic_vector(31 downto 0);
-  signal tcu_c0_lat : std_logic_vector(31 downto 0);
-  signal tcu_c1_lat : std_logic_vector(31 downto 0);
+  signal tcu_rd_idx_lat           : integer range 0 to 31; -- used for rd, rd+1, rd+2, rd+3 writeback
+  signal tcu_funct3_lat           : std_logic_vector(2 downto 0); --used for hmma_step understanding.
+  signal tcu_funct7_lat           : std_logic_vector(6 downto 0); --used for format/result-width decisions
 
   ---------------------------------------------------------------------------
   -- Tensor-core input staging arrays, one slot per hart/lane
@@ -130,7 +110,6 @@ architecture rtl of TCU_Branch is
     signal tc0_src3_rf_port_a_pair01_s : arraySize16_32 ;
     signal tc0_src3_rf_port_b_pair01_s : arraySize16_32 ;
     signal tcu_lane_valid_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
-    signal tcu_all_lanes_valid_s : std_logic;
 
     constant TCU_ALL_LANES_VALID_C : std_logic_vector(THREAD_POOL_SIZE-1 downto 0) := (others => '1');
 
@@ -138,7 +117,6 @@ architecture rtl of TCU_Branch is
     -- Single tensor-core wrapper interface
     ---------------------------------------------------------------------------
     signal tcu_wrapper_start_s       : std_logic;
-    signal tcu_wrapper_start_seen_s  : std_logic;
 
     signal tcu_wrapper_busy_s        : std_logic;
     signal tcu_wrapper_done_s        : std_logic;
@@ -171,9 +149,8 @@ architecture rtl of TCU_Branch is
     signal busy_TCU_s       : std_logic;
     signal core_busy_TCU_s  : std_logic;
 
-    signal tcu_lane_valid_next_s      : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
-    signal tcu_all_lanes_valid_next_s : std_logic;
-
+    signal tcu_all_lanes_valid_next_s : std_logic; --predictive usefull version to understand. = checks the lanes already stored PLUS the current incoming TCU instruction
+                                                    --predicted next stored state
     signal tcu_wrapper_result_valid_s : std_logic;
     signal tcu_wrapper_result_step_s  : std_logic_vector(1 downto 0);
 
@@ -282,15 +259,6 @@ begin
 end process;
 
   ---------------------------------------------------------------------------
-  -- All-lanes-valid detection
-  --
-  -- This becomes '1' when all harts have delivered their HMMA fragment from the register files.
-  -- Later this can be used to start the tensor core wrapper.
-  ---------------------------------------------------------------------------
-
-  tcu_all_lanes_valid_s <= '1' when tcu_lane_valid_s = TCU_ALL_LANES_VALID_C else '0';
-
-  ---------------------------------------------------------------------------
   -- TCU combinational decode
   --  
   -- This decodes the live instruction while it is present in IE.
@@ -301,7 +269,6 @@ end process;
   begin
 
     -- Safe defaults
-    tcu_opcode_wire           <= (others => '0');
     tcu_rd_idx_wire           <= 0;
     tcu_funct3_wire           <= (others => '0');
     tcu_rs1_idx_wire          <= 0;
@@ -312,7 +279,6 @@ end process;
     if tcu_instr_req = '1' then
 
       -- R-type field extraction
-      tcu_opcode_wire  <= instr_word_IE(6 downto 0);
       tcu_rd_idx_wire  <= to_integer(unsigned(instr_word_IE(11 downto 7)));
       tcu_funct3_wire  <= instr_word_IE(14 downto 12);
       tcu_rs1_idx_wire <= to_integer(unsigned(instr_word_IE(19 downto 15)));
@@ -386,8 +352,6 @@ end process;
         (tcu_state_s = TCU_IDLE or tcu_state_s = TCU_COLLECT) then
         lane_valid_next_v(harc_EXEC) := '1';
       end if;
-
-      tcu_lane_valid_next_s <= lane_valid_next_v;
 
       if lane_valid_next_v = TCU_ALL_LANES_VALID_C then
         tcu_all_lanes_valid_next_s <= '1';
@@ -700,22 +664,9 @@ end process;
       tcu_rs2_lat   <= (others => '0');
       tcu_rd_lat    <= (others => '0');
 
-      tcu_a0_lat <= (others => '0');
-      tcu_a1_lat <= (others => '0');
-
-      tcu_b0_lat <= (others => '0');
-      tcu_b1_lat <= (others => '0');
-
-      tcu_c0_lat <= (others => '0');
-      tcu_c1_lat <= (others => '0');
-
-      tcu_opcode_lat           <= (others => '0');
       tcu_rd_idx_lat           <= 0;
       tcu_funct3_lat           <= (others => '0');
-      tcu_rs1_idx_lat          <= 0;
-      tcu_rs2_idx_lat          <= 0;
       tcu_funct7_lat           <= (others => '0');
-      tcu_regs_per_operand_lat <= 1;
 
       for i in 0 to THREAD_POOL_SIZE-1 loop
         tc0_src1_rf_port_a_pair00_s(i) <= (others => '0');
@@ -738,8 +689,6 @@ end process;
       end loop;
 
       tcu_lane_valid_s <= (others => '0');
-
-      tcu_wrapper_start_seen_s <= '0';
       
     elsif rising_edge(clk_i) then
 
@@ -755,14 +704,9 @@ end process;
         tcu_rd_lat    <= RD_Data_IE;
 
         -- Decoded instruction packet
-        tcu_opcode_lat           <= tcu_opcode_wire;
         tcu_rd_idx_lat           <= tcu_rd_idx_wire;
         tcu_funct3_lat           <= tcu_funct3_wire;
-        tcu_rs1_idx_lat          <= tcu_rs1_idx_wire;
-        tcu_rs2_idx_lat          <= tcu_rs2_idx_wire;
         tcu_funct7_lat           <= tcu_funct7_wire;
-        tcu_regs_per_operand_lat <= tcu_regs_per_operand_wire;
-
 
       if (tcu_regs_per_operand_wire = 1) or (tcu_regs_per_operand_wire = 2) then
 
@@ -910,49 +854,6 @@ end process;
 
           tcu_lane_valid_s(harc_EXEC) <= '1';
 
-          -----------------------------------------------------------------
-          -- Debug latches.
-          -----------------------------------------------------------------
-
-          tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
-          tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
-          tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
-
-          -- A debug second register
-          if tcu_regs_per_operand_wire = 2 then
-            if tcu_rs1_idx_wire < 31 then
-              tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
-            else
-              tcu_a1_lat <= (others => '0');
-            end if;
-          else
-            tcu_a1_lat <= (others => '0');
-          end if;
-
-          -- B debug second register
-          if tcu_regs_per_operand_wire = 2 then
-            if tcu_rs2_idx_wire < 31 then
-              tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
-            else
-              tcu_b1_lat <= (others => '0');
-            end if;
-          else
-            tcu_b1_lat <= (others => '0');
-          end if;
-
-          -- C debug second register
-          if (tcu_regs_per_operand_wire = 2) or 
-              (tcu_funct7_wire = "0001000") or -- INT8_16
-              (tcu_funct7_wire = "0001100") then -- FIXED8_16
-            if tcu_rd_idx_wire < 31 then
-              tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
-            else
-              tcu_c1_lat <= (others => '0');
-            end if;
-          else
-            tcu_c1_lat <= (others => '0');
-          end if;
-
         else
 
           -----------------------------------------------------------------
@@ -1000,16 +901,6 @@ end process;
             tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 2);
             tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 3);
 
-            -- Debug latches
-            tcu_a0_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
-            tcu_a1_lat <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire + 1);
-
-            tcu_b0_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire);
-            tcu_b1_lat <= regfile_i(harc_EXEC)(tcu_rs2_idx_wire + 1);
-
-            tcu_c0_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire);
-            tcu_c1_lat <= regfile_i(harc_EXEC)(tcu_rd_idx_wire + 1);
-
           else
 
             tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= (others => '0');
@@ -1026,13 +917,6 @@ end process;
             tc0_src3_rf_port_b_pair00_s(tcu_lane_idx_v) <= (others => '0');
             tc0_src3_rf_port_a_pair01_s(tcu_lane_idx_v) <= (others => '0');
             tc0_src3_rf_port_b_pair01_s(tcu_lane_idx_v) <= (others => '0');
-
-            tcu_a0_lat <= (others => '0');
-            tcu_a1_lat <= (others => '0');
-            tcu_b0_lat <= (others => '0');
-            tcu_b1_lat <= (others => '0');
-            tcu_c0_lat <= (others => '0');
-            tcu_c1_lat <= (others => '0');
 
           end if;
 
@@ -1053,7 +937,6 @@ end process;
 
       if tcu_state_s = TCU_RELEASE then
         tcu_lane_valid_s         <= (others => '0');
-        tcu_wrapper_start_seen_s <= '0';
       end if;
 
     end if;
