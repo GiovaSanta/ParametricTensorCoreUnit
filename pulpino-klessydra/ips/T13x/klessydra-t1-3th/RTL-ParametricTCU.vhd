@@ -190,13 +190,13 @@ architecture rtl of TCU_Branch is
 
 begin
 
+  --****************************A.) FRONT END / INSTRUCTION CAPTURE PROCESSES*********************************
   ---------------------------------------------------------------------------
-  -- TCU combinational decode
+  -- A.1) TCU combinational decode
   --  
   -- This decodes the live instruction while it is present in IE.
   -- The decoded wires are then latched by TCU_packet_sync when tcu_instr_req = 1.
   ---------------------------------------------------------------------------
-
   TCU_decode_comb : process(all)
   begin
 
@@ -218,11 +218,9 @@ begin
     end if;
 
   end process;
-
   ---------------------------------------------------------------------------
-  -- Predict whether the current HMMA request completes all TCU lanes
+  -- A.2) Predict whether the current HMMA request completes all TCU lanes
   ---------------------------------------------------------------------------
-
   TCU_valid_next_comb : process(all)
     variable lane_valid_next_v : std_logic_vector(THREAD_POOL_SIZE-1 downto 0);
     begin
@@ -239,302 +237,15 @@ begin
         tcu_all_lanes_valid_next_s <= '0';
       end if;
   end process;
-
   ---------------------------------------------------------------------------
-  -- TCU controller combinational part of FSM
-  ---------------------------------------------------------------------------
-
-  TCU_fsm_comb : process(all)
-  begin
-    tcu_next_state_s <= tcu_state_s;
-    
-    case tcu_state_s is
-
-      when TCU_IDLE =>
-        if tcu_instr_req = '1' then
-          tcu_next_state_s <= TCU_COLLECT;
-        end if;
-
-      when TCU_COLLECT =>
-        if tcu_all_lanes_valid_next_s = '1' then
-          tcu_next_state_s <= TCU_START;
-        end if;
-
-      when TCU_START =>
-        tcu_next_state_s <= TCU_WAIT_DONE;
-
-      when TCU_WAIT_DONE =>
-        if tcu_wrapper_done_s = '1' then
-          tcu_next_state_s <= TCU_WRITEBACK;
-        end if;
-      
-      when TCU_WRITEBACK =>
-        if tcu_wb_hart_s = 0 then
-          if (tcu_result_is_8bit_lat = '1'  and tcu_wb_word_s = 0) or
-             (tcu_result_is_32bit_lat = '1' and tcu_wb_word_s = 3) or
-             ((tcu_result_is_8bit_lat = '0') and (tcu_result_is_32bit_lat = '0') and tcu_wb_word_s = 1) then
-            tcu_next_state_s <= TCU_RELEASE;
-          end if;
-        end if;
-
-      when TCU_RELEASE =>
-        tcu_next_state_s <= TCU_IDLE;
-
-      when others =>
-        tcu_next_state_s <= TCU_IDLE;
-
-    end case;
-  end process;
-
-    ---------------------------------------------------------------------------
-  -- TCU controller output logic
-  ---------------------------------------------------------------------------
-
-  TCU_fsm_outputs_comb : process(all)
-  begin
-    -- defaults
-    busy_TCU_s          <= '0';
-    core_busy_TCU_s     <= '0';
-    tcu_wrapper_start_s <= '0';
-
-    case tcu_state_s is
-
-      when TCU_IDLE =>
-        null;
-
-      when TCU_COLLECT =>
-        busy_TCU_s <= '1';
-
-        if tcu_all_lanes_valid_next_s = '1' then
-          core_busy_TCU_s <= '1';
-        end if;
-
-      when TCU_START =>
-        busy_TCU_s          <= '1';
-        core_busy_TCU_s     <= '1';
-        tcu_wrapper_start_s <= '1';
-
-      when TCU_WAIT_DONE =>
-        busy_TCU_s      <= '1';
-        core_busy_TCU_s <= '1';
-
-      when TCU_WRITEBACK =>
-        busy_TCU_s      <= '1';
-        core_busy_TCU_s <= '1';
-
-      when TCU_RELEASE =>
-        busy_TCU_s      <= '1';
-        core_busy_TCU_s <= '1';
-
-      when others =>
-        null;
-
-    end case;
-  end process;
-
-  TCU_wb_pack_comb : process(all)
-  variable idx_v : integer range 0 to 15;
-  begin
-    tcu_wb_word0_s <= (others => '0');
-    tcu_wb_word1_s <= (others => '0');
-    tcu_wb_word2_s <= (others => '0');
-    tcu_wb_word3_s <= (others => '0');
-
-    -- Compute local base index for this hart.
-    if tcu_wb_hart_s < 4 then
-      idx_v := tcu_wb_hart_s * 4;
-    elsif tcu_wb_hart_s < 8 then
-      idx_v := (tcu_wb_hart_s - 4) * 4;
-    elsif tcu_wb_hart_s < 12 then
-      idx_v := (tcu_wb_hart_s - 8) * 4;
-    else
-      idx_v := (tcu_wb_hart_s - 12) * 4;
-    end if;
-
-    if tcu_result_is_32bit_lat = '1' then
-      -- FP32 packing: word0, word1, word2, word3
-      if tcu_wb_hart_s < 4 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 0);
-        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 1);
-        tcu_wb_word2_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 2);
-        tcu_wb_word3_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 3);
-
-      elsif tcu_wb_hart_s < 8 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 0);
-        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 1);
-        tcu_wb_word2_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 2);
-        tcu_wb_word3_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 3);
-
-      elsif tcu_wb_hart_s < 12 then
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 0);
-        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 1);
-        tcu_wb_word2_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 2);
-        tcu_wb_word3_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 3);
-
-      else
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 0);
-        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 1);
-        tcu_wb_word2_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 2);
-        tcu_wb_word3_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 3);
-
-      end if;
-
-    elsif tcu_result_is_8bit_lat = '1' then
-      --FP8 packing utilizing only word0
-
-      if tcu_wb_hart_s < 4 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_8_s(idx_v + 3) &
-                          tcu_res_W0_tc0_oct0_8_s(idx_v + 2) &
-                          tcu_res_W0_tc0_oct0_8_s(idx_v + 1) &
-                          tcu_res_W0_tc0_oct0_8_s(idx_v + 0);
-
-      elsif tcu_wb_hart_s < 8 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_8_s(idx_v + 3) &
-                          tcu_res_W0_tc0_oct1_8_s(idx_v + 2) &
-                          tcu_res_W0_tc0_oct1_8_s(idx_v + 1) &
-                          tcu_res_W0_tc0_oct1_8_s(idx_v + 0);
-
-      elsif tcu_wb_hart_s < 12 then
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_8_s(idx_v + 3) &
-                          tcu_res_W1_tc0_oct0_8_s(idx_v + 2) &
-                          tcu_res_W1_tc0_oct0_8_s(idx_v + 1) &
-                          tcu_res_W1_tc0_oct0_8_s(idx_v + 0);
-
-      else
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_8_s(idx_v + 3) &
-                          tcu_res_W1_tc0_oct1_8_s(idx_v + 2) &
-                          tcu_res_W1_tc0_oct1_8_s(idx_v + 1) &
-                          tcu_res_W1_tc0_oct1_8_s(idx_v + 0);
-
-      end if;
-
-      tcu_wb_word1_s <= (others => '0');
-
-    else
-
-      if tcu_wb_hart_s < 4 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 1) &
-                          tcu_res_W0_tc0_oct0_16_s(idx_v + 0);
-
-        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 3) &
-                          tcu_res_W0_tc0_oct0_16_s(idx_v + 2);
-
-      elsif tcu_wb_hart_s < 8 then
-
-        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 1) &
-                          tcu_res_W0_tc0_oct1_16_s(idx_v + 0);
-
-        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 3) &
-                          tcu_res_W0_tc0_oct1_16_s(idx_v + 2);
-
-      elsif tcu_wb_hart_s < 12 then
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 1) &
-                          tcu_res_W1_tc0_oct0_16_s(idx_v + 0);
-
-        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 3) &
-                          tcu_res_W1_tc0_oct0_16_s(idx_v + 2);
-
-      else
-
-        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 1) &
-                          tcu_res_W1_tc0_oct1_16_s(idx_v + 0);
-
-        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 3) &
-                          tcu_res_W1_tc0_oct1_16_s(idx_v + 2);
-
-      end if;
-
-    end if;
-  end process;
-
-  TCU_wb_counter_sync : process(clk_i, rst_ni)
-begin
-  if rst_ni = '0' then
-
-    tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
-    tcu_wb_word_s <= 0;
-
-  elsif rising_edge(clk_i) then
-
-    if tcu_state_s = TCU_WAIT_DONE and tcu_next_state_s = TCU_WRITEBACK then
-
-      -- First writeback cycle starts from last hart, word 0.
-      tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
-      tcu_wb_word_s <= 0;
-
-    elsif tcu_state_s = TCU_WRITEBACK then
-
-      -----------------------------------------------------------------------
-      -- Decide whether the current word is the final word for this hart.
-      --
-      -- 8-bit formats:
-      --   one writeback word: rd
-      --
-      -- 16-bit / mixed 8_16 formats:
-      --   two writeback words: rd, rd+1
-      --
-      -- FP32:
-      --   four writeback words: rd, rd+1, rd+2, rd+3
-      -----------------------------------------------------------------------
-
-      if (tcu_result_is_8bit_lat = '1' and tcu_wb_word_s = 0) or
-         (tcu_result_is_32bit_lat = '1' and tcu_wb_word_s = 3) or
-         ((tcu_result_is_8bit_lat = '0') and
-          (tcu_result_is_32bit_lat = '0') and
-          (tcu_wb_word_s = 1)) then
-
-        -- Finished this hart. Move to next hart and restart from word 0.
-        tcu_wb_word_s <= 0;
-
-        if tcu_wb_hart_s > 0 then
-          tcu_wb_hart_s <= tcu_wb_hart_s - 1;
-        end if;
-
-      else
-
-        -- Same hart, next result word.
-        tcu_wb_word_s <= tcu_wb_word_s + 1;
-
-      end if;
-
-    end if;
-
-  end if;
-end process;
-  ---------------------------------------------------------------------------
-  -- TCU controller state register
-  ---------------------------------------------------------------------------
-
-  TCU_state_reg_sync : process(clk_i, rst_ni)
-  begin
-    if rst_ni = '0' then
-      tcu_state_s <= TCU_IDLE;
-    elsif rising_edge(clk_i) then
-      tcu_state_s <= tcu_next_state_s;
-    end if;
-  end process;
-
-  ---------------------------------------------------------------------------
-  -- TCU synchronous packet capture
+  -- A.3) TCU synchronous packet capture
   --
   -- When tcu_instr_req is high, the current live pipeline information is
-  -- captured into a stable packet for the future TCU controller.
+  -- captured into a stable packet for the future TCU controller controlling TCU wrapper execution.
   ---------------------------------------------------------------------------
-
   TCU_packet_sync : process(clk_i, rst_ni)
   variable tcu_lane_idx_v : integer range 0 to THREAD_POOL_SIZE-1;
   variable regs_per_operand_v : integer range 1 to 4;
-
   begin
     if rst_ni = '0' then
 
@@ -899,15 +610,118 @@ end process;
 
     end if;
   end process;
+--**************************************************************************************************
 
-    ---------------------------------------------------------------------------
-  -- Stable TCU FP16 result latch
+--*********************************B. TCU CONTROLLER FSM PROCESSES*********************************************
+  ---------------------------------------------------------------------------
+  -- B.1) TCU controller combinational part of FSM
+  ---------------------------------------------------------------------------
+  TCU_fsm_comb : process(all)
+  begin
+    tcu_next_state_s <= tcu_state_s;
+    
+    case tcu_state_s is
+
+      when TCU_IDLE =>
+        if tcu_instr_req = '1' then
+          tcu_next_state_s <= TCU_COLLECT;
+        end if;
+
+      when TCU_COLLECT =>
+        if tcu_all_lanes_valid_next_s = '1' then
+          tcu_next_state_s <= TCU_START;
+        end if;
+
+      when TCU_START =>
+        tcu_next_state_s <= TCU_WAIT_DONE;
+
+      when TCU_WAIT_DONE =>
+        if tcu_wrapper_done_s = '1' then
+          tcu_next_state_s <= TCU_WRITEBACK;
+        end if;
+      
+      when TCU_WRITEBACK =>
+        if tcu_wb_hart_s = 0 then
+          if (tcu_result_is_8bit_lat = '1'  and tcu_wb_word_s = 0) or
+             (tcu_result_is_32bit_lat = '1' and tcu_wb_word_s = 3) or
+             ((tcu_result_is_8bit_lat = '0') and (tcu_result_is_32bit_lat = '0') and tcu_wb_word_s = 1) then
+            tcu_next_state_s <= TCU_RELEASE;
+          end if;
+        end if;
+
+      when TCU_RELEASE =>
+        tcu_next_state_s <= TCU_IDLE;
+
+      when others =>
+        tcu_next_state_s <= TCU_IDLE;
+
+    end case;
+  end process;
+  ---------------------------------------------------------------------------
+  -- B.2) TCU controller output logic
+  ---------------------------------------------------------------------------
+  TCU_fsm_outputs_comb : process(all)
+  begin
+    -- defaults
+    busy_TCU_s          <= '0';
+    core_busy_TCU_s     <= '0';
+    tcu_wrapper_start_s <= '0';
+
+    case tcu_state_s is
+
+      when TCU_IDLE =>
+        null;
+
+      when TCU_COLLECT =>
+        busy_TCU_s <= '1';
+
+        if tcu_all_lanes_valid_next_s = '1' then
+          core_busy_TCU_s <= '1';
+        end if;
+
+      when TCU_START =>
+        busy_TCU_s          <= '1';
+        core_busy_TCU_s     <= '1';
+        tcu_wrapper_start_s <= '1';
+
+      when TCU_WAIT_DONE =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
+      when TCU_WRITEBACK =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
+      when TCU_RELEASE =>
+        busy_TCU_s      <= '1';
+        core_busy_TCU_s <= '1';
+
+      when others =>
+        null;
+
+    end case;
+  end process;
+  ---------------------------------------------------------------------------
+  -- B.3) TCU controller state register
+  ---------------------------------------------------------------------------
+  TCU_state_reg_sync : process(clk_i, rst_ni)
+  begin
+    if rst_ni = '0' then
+      tcu_state_s <= TCU_IDLE;
+    elsif rising_edge(clk_i) then
+      tcu_state_s <= tcu_next_state_s;
+    end if;
+  end process;
+--**************************************************************************************************************
+
+--*********************C.) TCU RESULT CAPTURE FROM TCU WRAPPER INSTANTIATION PROCESSES****************************
+---------------------------------------------------------------------------
+  -- C.1) Stable TCU FP16 result latch
   --
   -- Raw W0/W1 wrapper outputs are exec_step-dependent and may not remain
   -- stable after the wrapper finishes. These buffers preserve the complete
   -- FP16 result for later writeback.
   ---------------------------------------------------------------------------
-
   TCU_result_latch_sync : process(clk_i, rst_ni)
   begin
     if rst_ni = '0' then
@@ -1014,91 +828,273 @@ end process;
 
     end if;
   end process;
+  --*************************************************************************************************************
+
+--******************************************D.) TCU WRITBACK PROCESSES*******************************************
+  TCU_wb_pack_comb : process(all)
+  variable idx_v : integer range 0 to 15;
+  begin
+    tcu_wb_word0_s <= (others => '0');
+    tcu_wb_word1_s <= (others => '0');
+    tcu_wb_word2_s <= (others => '0');
+    tcu_wb_word3_s <= (others => '0');
+
+    -- Compute local base index for this hart.
+    if tcu_wb_hart_s < 4 then
+      idx_v := tcu_wb_hart_s * 4;
+    elsif tcu_wb_hart_s < 8 then
+      idx_v := (tcu_wb_hart_s - 4) * 4;
+    elsif tcu_wb_hart_s < 12 then
+      idx_v := (tcu_wb_hart_s - 8) * 4;
+    else
+      idx_v := (tcu_wb_hart_s - 12) * 4;
+    end if;
+
+    if tcu_result_is_32bit_lat = '1' then
+      -- FP32 packing: word0, word1, word2, word3
+      if tcu_wb_hart_s < 4 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W0_tc0_oct0_32_s(idx_v + 3);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W0_tc0_oct1_32_s(idx_v + 3);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W1_tc0_oct0_32_s(idx_v + 3);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 0);
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 1);
+        tcu_wb_word2_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 2);
+        tcu_wb_word3_s <= tcu_res_W1_tc0_oct1_32_s(idx_v + 3);
+
+      end if;
+
+    elsif tcu_result_is_8bit_lat = '1' then
+      --FP8 packing utilizing only word0
+
+      if tcu_wb_hart_s < 4 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_8_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 2) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct0_8_s(idx_v + 0);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_8_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 2) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct1_8_s(idx_v + 0);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_8_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 2) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct0_8_s(idx_v + 0);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_8_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 2) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct1_8_s(idx_v + 0);
+
+      end if;
+
+      tcu_wb_word1_s <= (others => '0');
+
+    else
+
+      if tcu_wb_hart_s < 4 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct0_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct0_16_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct0_16_s(idx_v + 2);
+
+      elsif tcu_wb_hart_s < 8 then
+
+        tcu_wb_word0_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 1) &
+                          tcu_res_W0_tc0_oct1_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W0_tc0_oct1_16_s(idx_v + 3) &
+                          tcu_res_W0_tc0_oct1_16_s(idx_v + 2);
+
+      elsif tcu_wb_hart_s < 12 then
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct0_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct0_16_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct0_16_s(idx_v + 2);
+
+      else
+
+        tcu_wb_word0_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 1) &
+                          tcu_res_W1_tc0_oct1_16_s(idx_v + 0);
+
+        tcu_wb_word1_s <= tcu_res_W1_tc0_oct1_16_s(idx_v + 3) &
+                          tcu_res_W1_tc0_oct1_16_s(idx_v + 2);
+
+      end if;
+
+    end if;
+  end process;
 
   TCU_wb_outputs_comb : process(all)
   variable instr_v  : std_logic_vector(31 downto 0);
   variable rd_v     : integer range 0 to 31;
   variable rd_sum_v : integer;
-begin
-  TCU_WB_EN_s         <= '0';
-  TCU_WB_s            <= (others => '0');
-  instr_word_TCU_WB_s <= (others => '0');
-  harc_TCU_WB_s       <= THREAD_POOL_SIZE-1;
+  begin
+    TCU_WB_EN_s         <= '0';
+    TCU_WB_s            <= (others => '0');
+    instr_word_TCU_WB_s <= (others => '0');
+    harc_TCU_WB_s       <= THREAD_POOL_SIZE-1;
 
-  instr_v := tcu_instr_lat;
+    instr_v := tcu_instr_lat;
 
-  ---------------------------------------------------------------------------
-  -- Select architectural destination register.
-  --
-  -- word 0 -> rd
-  -- word 1 -> rd+1
-  -- word 2 -> rd+2
-  -- word 3 -> rd+3
-  ---------------------------------------------------------------------------
-
-  rd_sum_v := tcu_rd_idx_lat + tcu_wb_word_s;
-
-  if rd_sum_v <= 31 then
-    rd_v := rd_sum_v;
-  else
-    rd_v := 31;
-  end if;
-
-  instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
-
-  if tcu_state_s = TCU_WRITEBACK then
-
-    instr_word_TCU_WB_s <= instr_v;
-    harc_TCU_WB_s       <= tcu_wb_hart_s;
-
-    -------------------------------------------------------------------------
-    -- Write-enable policy.
+    ---------------------------------------------------------------------------
+    -- Select architectural destination register.
     --
-    -- 8-bit:
-    --   only word0
-    --
-    -- 16-bit / mixed 8_16:
-    --   word0 and word1
-    --
-    -- FP32:
-    --   word0, word1, word2, word3
-    -------------------------------------------------------------------------
+    -- word 0 -> rd
+    -- word 1 -> rd+1
+    -- word 2 -> rd+2
+    -- word 3 -> rd+3
+    ---------------------------------------------------------------------------
 
-    if (tcu_result_is_8bit_lat = '1' and tcu_wb_word_s = 0) or
-       (tcu_result_is_32bit_lat = '1') or
-       ((tcu_result_is_8bit_lat = '0') and
-        (tcu_result_is_32bit_lat = '0') and
-        (tcu_wb_word_s <= 1)) then
+    rd_sum_v := tcu_rd_idx_lat + tcu_wb_word_s;
 
-      TCU_WB_EN_s <= '1';
-
+    if rd_sum_v <= 31 then
+      rd_v := rd_sum_v;
+    else
+      rd_v := 31;
     end if;
 
-    -------------------------------------------------------------------------
-    -- Select result word.
-    -------------------------------------------------------------------------
+    instr_v(11 downto 7) := std_logic_vector(to_unsigned(rd_v, 5));
 
-    case tcu_wb_word_s is
+    if tcu_state_s = TCU_WRITEBACK then
 
-      when 0 =>
-        TCU_WB_s <= tcu_wb_word0_s;
+      instr_word_TCU_WB_s <= instr_v;
+      harc_TCU_WB_s       <= tcu_wb_hart_s;
 
-      when 1 =>
-        TCU_WB_s <= tcu_wb_word1_s;
+      -------------------------------------------------------------------------
+      -- Write-enable policy.
+      --
+      -- 8-bit:
+      --   only word0
+      --
+      -- 16-bit / mixed 8_16:
+      --   word0 and word1
+      --
+      -- FP32:
+      --   word0, word1, word2, word3
+      -------------------------------------------------------------------------
 
-      when 2 =>
-        TCU_WB_s <= tcu_wb_word2_s;
+      if (tcu_result_is_8bit_lat = '1' and tcu_wb_word_s = 0) or
+        (tcu_result_is_32bit_lat = '1') or
+        ((tcu_result_is_8bit_lat = '0') and
+          (tcu_result_is_32bit_lat = '0') and
+          (tcu_wb_word_s <= 1)) then
 
-      when others =>
-        TCU_WB_s <= tcu_wb_word3_s;
+        TCU_WB_EN_s <= '1';
 
-    end case;
+      end if;
 
-  end if;
-end process;
+      -------------------------------------------------------------------------
+      -- Select result word.
+      -------------------------------------------------------------------------
 
+      case tcu_wb_word_s is
+
+        when 0 =>
+          TCU_WB_s <= tcu_wb_word0_s;
+
+        when 1 =>
+          TCU_WB_s <= tcu_wb_word1_s;
+
+        when 2 =>
+          TCU_WB_s <= tcu_wb_word2_s;
+
+        when others =>
+          TCU_WB_s <= tcu_wb_word3_s;
+
+      end case;
+
+    end if;
+  end process;
+  
+  TCU_wb_counter_sync : process(clk_i, rst_ni)
+  begin
+    if rst_ni = '0' then
+
+      tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+      tcu_wb_word_s <= 0;
+
+    elsif rising_edge(clk_i) then
+
+      if tcu_state_s = TCU_WAIT_DONE and tcu_next_state_s = TCU_WRITEBACK then
+
+        -- First writeback cycle starts from last hart, word 0.
+        tcu_wb_hart_s <= THREAD_POOL_SIZE-1;
+        tcu_wb_word_s <= 0;
+
+      elsif tcu_state_s = TCU_WRITEBACK then
+
+        -----------------------------------------------------------------------
+        -- Decide whether the current word is the final word for this hart.
+        --
+        -- 8-bit formats:
+        --   one writeback word: rd
+        --
+        -- 16-bit / mixed 8_16 formats:
+        --   two writeback words: rd, rd+1
+        --
+        -- FP32:
+        --   four writeback words: rd, rd+1, rd+2, rd+3
+        -----------------------------------------------------------------------
+
+        if (tcu_result_is_8bit_lat = '1' and tcu_wb_word_s = 0) or
+          (tcu_result_is_32bit_lat = '1' and tcu_wb_word_s = 3) or
+          ((tcu_result_is_8bit_lat = '0') and
+            (tcu_result_is_32bit_lat = '0') and
+            (tcu_wb_word_s = 1)) then
+
+          -- Finished this hart. Move to next hart and restart from word 0.
+          tcu_wb_word_s <= 0;
+
+          if tcu_wb_hart_s > 0 then
+            tcu_wb_hart_s <= tcu_wb_hart_s - 1;
+          end if;
+
+        else
+
+          -- Same hart, next result word.
+          tcu_wb_word_s <= tcu_wb_word_s + 1;
+
+        end if;
+
+      end if;
+
+    end if;
+  end process;
+--****************************************************************************************************************
+  
   tcu_wrapper_rst_s <= not rst_ni;
-
 
   assert THREAD_POOL_SIZE = 16
     report "singleTensorCoreWrapper assumes THREAD_POOL_SIZE = 16"
@@ -1107,7 +1103,6 @@ end process;
   ---------------------------------------------------------------------------
   -- Single tensor-core wrapper instance
   ---------------------------------------------------------------------------
-
   TCU_WRAPPER_i : entity work.singleTensorCoreWrapper
     generic map (
       REG_W  => 32,
