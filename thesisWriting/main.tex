@@ -1,0 +1,285 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8
+
+\documentclass[a4paper,11pt,twoside,english]{toptesi}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a-1b]{pdfx}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{verbatim}
+
+% Definition of a new language for listings
+%\lstdefinelanguage{P4}
+%{
+%	% list of keywords
+%	alsoletter=\#,
+%	morekeywords={
+%		header\_type,
+%		fields,
+%		header,
+%		parser,f
+%		extract,
+%		return,
+%		default,
+%		next,
+%		\#define,
+%		latest,
+%		select,
+%		apply,
+%		control,
+%		table,
+%		reads,
+%		actions,
+%		modify\_field,
+%		action,
+%		valid,
+%		nop,
+%		exact,
+%		lpm,
+%		if,
+%		hit,
+%		and,
+%		extern,
+%		void,
+%		bit
+%	},
+%	sensitive=true, % keywords are not case-sensitive
+%	morecomment=[l]{//}, % l is for line comment
+%	morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+%	morestring=[b]" % defines that strings are enclosed in double quotes
+%}
+%
+%\definecolor{eclipseBlue}{RGB}{42,0.0,255}
+%\definecolor{eclipseGreen}{RGB}{63,127,95}
+%\definecolor{eclipsePurple}{RGB}{127,0,85}
+%
+%\lstset{
+%	language={P4},
+%	basicstyle=\fontsize{8}{9}\ttfamily, % Global Code Style
+%	captionpos=b, % Position of the Caption (t for top, b for bottom)
+%	extendedchars=true, % Allows 256 instead of 128 ASCII characters
+%	tabsize=2, % number of spaces indented when discovering a tab 
+%	columns=fixed, % make all characters equal width
+%	keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+%	showstringspaces=false, % lets spaces in strings appear as real spaces
+%	breaklines=true, % wrap lines if they don't fit
+%	frame=trbl, % draw a frame at the top, right, left and bottom of the listing
+%	%frameround=tttt, % make the frame round at all four corners
+%	framesep=4pt, % quarter circle size of the round corners
+%	numbers=left, % show line numbers at the left
+%	numberstyle=\tiny\ttfamily, % style of the line numbers
+%	commentstyle=\color{eclipseGreen}, % style of comments
+%	keywordstyle=\color{eclipsePurple}, % style of keywords
+%	stringstyle=\color{eclipseBlue}, % style of strings
+%}
+
+\hypersetup{%
+    pdfpagemode={UseOutlines},
+    bookmarksopen,
+    pdfstartview={FitH},
+    colorlinks,
+    linkcolor={blue},
+    citecolor={blue},
+    urlcolor={blue}
+  }
+
+\newtheorem{osservazione}{Osservazione}% Standard LaTeX
+\newtheorem{definition}{Definition}
+
+
+\begin{document}
+\english
+
+\ateneo{Politecnico di Torino}
+\corsodilaurea{Communications and Computer Networks Engineering}
+
+\titolo{Exploring the effectiveness of number formats in GPU-accelerated programs}
+
+\candidato{Giovanni \textsc{Santangelo}}
+\relatore{Prof.\ Esteban \textsc{Rodriguez Condia}}
+\secondorelatore{Prof.\ Matteo \textsc{Sonza Reorda}}
+\terzorelatore{Prof. \ Juan David \textsc{Guerrero Balaguera}}
+\sedutadilaurea{\textsc{Academic~Year} 2025-2026}
+\logosede{Cover/Logoblu}
+
+\CorsoDiLaureaIn{Master Degree course in\space}
+\TesiDiLaurea{Master Degree Thesis}
+\InName{in}
+\CandidateName{Candidate}
+\AdvisorName{Supervisors}
+
+
+\frontespizio % make cover page
+
+\ringraziamenti
+
+Write here you acknowledgments. 
+
+\abstract
+In recent years, Graphic Processing Units (GPUs) and their embedded hardware accelerators have become central to high-performance computing, particularly for deep learning and matrix-intensive workloads. A significant part of their efficiency comes from dedicated compute units that support different numerical formats directly in hardware. While traditional floating-point and integer representations remain dominant, emerging formats such as Floating Point 8 (FP8), logarithmic numbers, and posit representations are increasingly considered as alternatives. However, the architectural implications and practical benefits of integrating these formats into accelerator pipelines are not yet fully understood.
+
+This thesis investigates the effectiveness of alternative number formats through the design and integration of multi-precision tensor compute units (TCUs) along their surrounding elements. The work begins with a study of tensor core architectures and data processing units, followed by the RTL-level development of arithmetic structures supporting multiply and accumulate (MAC) operations in different numerical representations. A generic multi-precision compute core is implemented and validated against golden reference models to ensure functional correctness.
+
+The developed accelerator is then integrated into both a GPU core and a RISC-V processor model, requiring the definition of new instruction extensions and control logic for matrix operations. Finally, the system is evaluated under various numerical formats to examine performance behavior and resilience characteristics in deep neural network workloads.
+
+The results aim to clarify the trade-offs between precision, architectural complexity, and computational robustness, contributing to the design of future hardware accelerators supporting emerging number formats.
+
+\indici
+
+\mainmatter
+
+\chapter{Introduction}
+
+In the current time period, the world has been populated with the presence of artificial intelligence (AI). Used for the most basic of tasks such like a simple conversation regarding the weather, down to more complex tasks such as that of predicting the probability of daily presence of humanoids in society by the year of two thousand forty. To perform such tasks, Artificial Intelligence  needs to perform many mathematical calculations involving additions and multiplications of matrices. Since matrix operations is very frequent for Artificial Intelligence to happen, it is important to focus on the architectural hardware components which run such calculations. In fact, the more efficient is the hardware performing the mathematical computations which Artificial Intelligence requires, the faster the artificial intelligence's calculation will happen leading to faster responses in general. 
+
+In this chapter, you must provide an overview of your thesis, written such that a non-engineer person (one of your parents) should be able to read and understand at high level.
+\begin{itemize}
+\item what is the addressed scenario and the addressed problem?
+\item why the problem you addressed is interesting and/or practical relevant?
+\item what is you main contribution? 
+\item which methodology you used? (theory, simulation, experiments, literature overview)?
+\item how the thesis is organized? which topic is covered in each chapter?
+ \end{itemize}
+
+\section{Motivation and Context}
+\section{Problem Statement}
+
+Why Number Formats Matter in Hardware Accelerators
+
+\section{Thesis Objectives}
+\section{Main Contributions}
+\section{Thesis Organization}
+
+\chapter{Background and Related Work}
+
+\section{Matrix Multiplication and Dot Product Acceleration}
+
+\section{NVIDIA Tensor Cores and HMMA-Style Execution}
+
+\section{Numerical Formats in Hardware}
+
+\section{GPU Architecture and the FlexGrip Plus}
+Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
+
+\section{RISC-V Cores and the Klessydra T13}
+
+\section{Related Work}
+
+talk about previous related work on tensor core units, How vendors exploit tiling + mixed precision,talking about low precision formats for AI : FP16/BF16 in training, FP8 trend (training/inference), INT8/INT4 quantization for inference,
+Papers/approaches that implement FP8, posit, LNS, etc. in hardware. 
+introduce the concepts of Fault resilience / approximate computing which is what connects directly to the research question : 1.fault injection studies on DNN accelerators, 2.resilience of reduced precision / quantized networks, numerical noise vs hardware fault tolerance.
+
+then, one paragraph that talks about that many works either study formats at algorithm level or build units without full system integration, and introduce how my work is fundamental:
+
+\chapter{Parametric Dot Product Unit Architecture}
+
+\section{Design Goals}
+
+\section{Supported Numerical Formats}
+
+\section{DPU Input and Output Interface}
+
+\section{Internal Arithmetic Datapath}
+
+\section{Format Selection Logic}
+
+\section{DPU Verification}
+
+\section{DPU Design Trade-Offs}
+
+
+\chapter{Parametric Tensor Core Unit Architecture}
+
+\section{Design Goals}
+
+\section{DPU to TCU Composition}
+
+\section{Tensor Core Organization}
+
+\section{Operand Packing and Matrix Fragment Layout}
+
+\section{Input Staging Buffers and Result Handling}
+
+\section{Output Buffers and Result Handling}
+
+\section{Control Signals and Format Selection}
+
+\section{TCU Design Trade-Offs}
+
+\chapter{Integration in FlexGrip Plus}
+
+\section{FlexGrip Plus Execution Pipeline}
+
+\section{Custom HMMA Instruction Integration}
+
+\section{Operand Fetching and Register Packing}
+
+\section{TCU Datapath Integration}
+
+\section{Result Writeback}
+
+\section{FlexGrip Plus Testbenches and Functional Validation}
+
+\chapter{Integration in Pulpino-Klessydra T13 core}
+
+\section{Klessydra T13 Overview}
+
+\section{Custom TCU Instruction Detection}
+
+\section{TCU Branch Architecture}
+
+\section{Live Instruction Decode}
+
+\section{Packet Capture and Operand Staging}
+
+\section{Tensor Core Wrapper Interface}
+
+\section{Result Latching and Writeback}
+
+\section{Klessydra Functional Validation}
+
+\chapter{Experimental Results}
+
+\section{Experimental Setup}
+
+\section{Functional Validation}
+
+\section{Performance Cost}
+
+\section{Area and Resource Cost}
+
+\section{Numerical Error Computation}
+
+\section{Resiliency Evaluation}
+
+\chapter{Discussion}
+
+\section{Precision, Accuracy, and Hardware Complexity}
+
+\section{GPU versus RISC-V Integration Consideration}
+
+\section{Limitation of the Current Release}
+
+\section{Lessons Learned}
+
+\chapter{Conclusion and Future Work}
+
+\section{Summary of Contributions}
+
+\section{Main Findings}
+
+\section{Future Work}
+
+
+ 
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+\end{document}
