@@ -40,9 +40,38 @@ associated accelerator circuit, including performance, circuit area, energy
 efficiency, numerical accuracy, and resilience to faults. These aspects motivate
 the study of hardware architectures capable of supporting and comparing multiple
 numerical formats within the same computational framework.
-```
+
 
 \section{Problem Statement}
+
+As mentioned previously, the problem addressed in this thesis concerns the
+efficient design of dedicated accelerators for the numerous matrix
+multiply-accumulate (MMA) operations involved in AI and DNN workloads.
+Moreover, such calculations are performed by accelerators through the encoding
+of the matrix elements into a specific numerical format. Depending on the
+selected format, the hardware architecture of the accelerator determines how
+data is computed, stored, moved, and approximated. Therefore, the choice of
+the numerical format used during the execution of a given workload affects
+both the hardware design of the accelerator and its related metrics.
+
+At present, conventional standard formats such as half-precision and
+single-precision floating-point, as well as integer representations, are
+widely used in today's accelerators embedded in Graphics Processing Units
+(GPUs), Central Processing Units (CPUs), and other hardware platforms. At the
+same time, emerging number formats such as posit, fixed-point, logarithmic,
+and reduced-size floating-point and integer formats also exist. However, their
+usefulness is not always obvious until appropriate accelerators involving
+their use are implemented, integrated, and tested.
+
+Consequently, the problem grows in scope when the availability of multiple
+possible numerical formats is taken into account. This thesis addresses this
+problem through the design, integration, and testing, using hardware
+description tools, of a configurable acceleration architecture based on a
+Tensor Core Unit (TCU) composed of multiple Dot Product Units (DPUs). The goal
+is to support matrix-oriented computations through different numerical formats
+and to enable their comparison in terms of correctness, performance, hardware
+cost, numerical behavior, and resilience to faults.
+
 
 \begin{itemize}
 \item what is the addressed scenario and the addressed problem?
