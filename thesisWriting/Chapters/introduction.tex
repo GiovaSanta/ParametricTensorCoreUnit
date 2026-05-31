@@ -12,7 +12,7 @@ In this chapter, you must provide an overview of your thesis, written such that 
 
  \end{itemize}
 
-```latex
+
 \section{Motivation and Context}
 
 Artificial Intelligence (AI) has become increasingly important in modern
@@ -74,21 +74,46 @@ cost, numerical behavior, and resilience to faults.
 
 \section{Thesis Objectives}
 
-The main focus of this thesis is the study of different numerical formats used in MMA operations. In addition to the theoretical analysis of these formats, the study is mainly performed through the hardware design and integration of a parametric TCU accelerator and its related circuitry.
+The main objective of this thesis is to investigate the role of different
+numerical formats in hardware accelerators for matrix-oriented computations.
+The work aims to study how conventional and emerging number formats can be
+supported at hardware level and how their use affects the design of
+accelerator architectures.
+
+More specifically, the thesis aims to define a configurable acceleration
+architecture for multiply-accumulate operations, integrate it into
+representative GPU-like and processor-based environments, and validate its
+behavior through simulation and comparison with reference results.
+
+
+\section{Main Contributions}
+
+Following the mentioned objectives, the main contributions of this thesis can be summarized as follows:
 
 \begin{itemize}
 
-\item Objective 1:  Study both conventional industry-standard numerical formats and emerging alternative formats.
+\item A configurable RTL-level Dot Product Unit architecture for
+matrix-oriented multiply-accumulate operations under different numerical
+formats.
 
-\item Objective 2: Design a configurable DPU supporting the numerical formats considered in this thesis, for the execution of dot product operations between groups of matrix elements.
+\item A parametric Tensor Core Unit architecture composed of multiple Dot
+Product Units and the required control, operand handling, and result
+management logic.
 
-\item Objective 3: Design a configurable TCU, composed of multiple configurable Dot Product Units and the surrounding control and data handling logic required for its operation.
+\item The integration of the proposed Tensor Core Unit into two different
+hardware contexts: the FlexGrip Plus GPU-like architecture and the
+PULPino-Klessydra RISC-V core.
 
-\item Objective 4: Integrate the configurable Tensor Core Unit into register-transfer-level (RTL) hardware descriptions of two different processing architectures: the FlexGrip Plus GPU-like architecture and the Pulpino-Klessydra RISC-V core. 
+\item A functional validation flow based on simulation and comparison with
+golden/reference results for verifying the correct behavior of the integrated
+accelerator.
 
-\item Objective 5: Verify the correctness of the implemented architectures through simulation and comparison with golden/reference results, and evaluate relevant metrics such as area, performance, numerical behavior, and resilience to faults depending on the selected numerical format.
+\item A hardware-oriented framework that provides a basis for the study of different
+numerical formats in terms of correctness, performance, hardware cost,
+numerical behavior, and resilience to faults.
 
 \end{itemize}
+
 
 
 \begin{itemize}
