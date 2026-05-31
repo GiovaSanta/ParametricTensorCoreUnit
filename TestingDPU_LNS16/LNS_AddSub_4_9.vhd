@@ -1922,7 +1922,9 @@ use std.textio.all;
 library work;
 
 entity LNSAdd_4_9 is
-   port ( x : in  std_logic_vector(12 downto 0);
+   port ( clk : in std_logic;
+          rst : in std_logic;
+          x : in  std_logic_vector(12 downto 0);
           r : out  std_logic_vector(8 downto 0)   );
 end entity;
 
@@ -1950,8 +1952,7 @@ signal out_t0 :  std_logic_vector(3 downto 0);
 signal xi1 :  std_logic_vector(10 downto 0);
 signal out_t1 :  std_logic_vector(7 downto 0);
 signal out_t2 :  std_logic_vector(10 downto 0);
-signal clk: std_logic;
-signal rst: std_logic;
+
 begin
    xi0 <= x(11 downto 0);
    inst_t0: FunctionEvaluator_9  -- pipelineDepth=4 maxInDelay=0
@@ -1988,7 +1989,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity Cotran_4_9_6_4 is
-   port ( Z : in  std_logic_vector(13 downto 0);
+   port ( 
+          clk   : in std_logic;
+          rst   : in std_logic;
+          Z : in  std_logic_vector(13 downto 0);
           IsSub : in std_logic;
           SBDB : out  std_logic_vector(13 downto 0)   );
 end entity;
@@ -2029,7 +2033,9 @@ architecture arch of Cotran_4_9_6_4 is
              Y : out  std_logic_vector(9 downto 0)   );
    end component;
    component LNSAdd_4_9 is
-      port ( x : in  std_logic_vector(12 downto 0);
+      port ( clk : in std_logic;
+             rst : in std_logic;
+             x : in  std_logic_vector(12 downto 0);
              r : out  std_logic_vector(8 downto 0)   );
    end component;
 begin
@@ -2078,6 +2084,8 @@ begin
      (F+K downto 0 => '0') when others;  -- addition, or subtraction and EZ
    sb : LNSAdd_4_9
      port map (
+        clk => clk,
+        rst => rst,
        x => SBArg(12 downto 0),
        r => SB0);
    SBEssZero <=         '1' when SBArg(K+F downto wEssZero) /= (K+F downto wEssZero => '1') else
@@ -2103,14 +2111,18 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity Cotran_Hybrid_4_9_6_4_1 is
-   port ( Z : in  std_logic_vector(13 downto 0);
+   port ( clk : in std_logic;
+          rst : in std_logic;
+          Z : in  std_logic_vector(13 downto 0);
           IsSub : in std_logic;
           SBDB : out  std_logic_vector(13 downto 0)   );
 end entity;
 
 architecture arch of Cotran_Hybrid_4_9_6_4_1 is
    component Cotran_4_9_6_4 is
-      port ( Z : in  std_logic_vector(13 downto 0);
+      port ( clk   : in std_logic;
+             rst   : in std_logic;
+             Z : in  std_logic_vector(13 downto 0);
              IsSub : in std_logic;
              SBDB : out  std_logic_vector(13 downto 0)   );
    end component;
@@ -2118,6 +2130,8 @@ architecture arch of Cotran_Hybrid_4_9_6_4_1 is
 begin
    cotran : Cotran_4_9_6_4
      port map (
+            clk => clk,
+            rst => rst,
        Z => Z,
        IsSub => IsSub,
        SBDB => Out_Cotran);
@@ -2137,14 +2151,18 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity LNSAddSub_4_9 is 
-   port ( nA : in  std_logic_vector(15 downto 0);
+   port ( clk : in std_logic;
+          rst : in std_logic;
+          nA : in  std_logic_vector(15 downto 0);
           nB : in  std_logic_vector(15 downto 0);
           nR : out  std_logic_vector(15 downto 0)   );
 end entity;
 
 architecture arch of LNSAddSub_4_9 is
    component Cotran_Hybrid_4_9_6_4_1 is
-      port ( Z : in  std_logic_vector(13 downto 0);
+      port ( clk : in std_logic;
+             rst : in std_logic;
+             Z : in  std_logic_vector(13 downto 0);
              IsSub : in std_logic;
              SBDB : out  std_logic_vector(13 downto 0)   );
    end component;
@@ -2161,6 +2179,9 @@ architecture arch of LNSAddSub_4_9 is
    signal xAB : std_logic_vector(3 downto 0);
    signal xA, xB : std_logic_vector(1 downto 0);
    signal sAB : std_logic;
+   
+   signal sR : std_logic;
+   signal SBDB_eff : std_logic_vector(wE+wF downto 0);
 
    signal nA_r, nB_r : std_logic_vector(wE + wF + 2 downto 0);
 
@@ -2173,6 +2194,8 @@ architecture arch of LNSAddSub_4_9 is
 begin
    nA_r <= nA;
    nB_r <= nB;
+   Zero <= '0';
+   Ov <= '0';
 
    X(wE+wF-1 downto 0) <= nA(wE+wF-1 downto 0);
    X(wE+wF) <= nA(wE+wF-1);
@@ -2201,9 +2224,14 @@ begin
 
    addsub : Cotran_Hybrid_4_9_6_4_1
         port map (
+                clk => clk,
+                rst => rst,
                 Z => Z,
                 IsSub => sAB,
                 SBDB => SBDB);
+   SBDB_eff <= std_logic_vector(to_signed(512, SBDB_eff'length))
+            when (sAB = '0' and Z = std_logic_vector(to_signed(0, Z'length)))
+            else SBDB;         
 
    IsEssZero <= '1' when signed(Z(wE+wF downto j)) < to_signed(DB_Max_Input, wE + wF - j + 1) else '0';
 
@@ -2214,13 +2242,18 @@ begin
    SelMuxA <= (Za(wE+wF) and ((not sAB) or IsEssZero or Special) ) or
                (Zb(wE+wF) and (sAB and (not IsEssZero) and (not Special)) );
 
+    -- Result numerical sign.
+    -- If SelMuxA = '1', operand B is selected as the dominant operand.
+    -- Otherwise operand A is selected.
+    sR <= nB_r(wE+wF) when SelMuxA = '1' else nA_r(wE+wF);
+
    with SelMuxA select
         R0_1 <=
                 Yv when '1',
                 Xv when others;
 
-   R <= std_logic_vector(resize(signed(SBDB), wE+wF+2) + resize(signed(R0_1), wE+wF+2));
-
+   --R <= std_logic_vector(resize(signed(SBDB), wE+wF+2) + resize(signed(R0_1), wE+wF+2));
+    R <= std_logic_vector(resize(signed(SBDB_eff), wE+wF+2) + resize(signed(R0_1), wE+wF+2));
 
    xA <= nA_r(wE+wF+2 downto wE+wF+1);
    xB <= nB_r(wE+wF+2 downto wE+wF+1);
@@ -2234,7 +2267,7 @@ begin
 
 
    with xAB select
-        nR(wE+wF) <=    R(wE+wF+1)                      when "0101",
+        nR(wE+wF) <=    sR                      when "0101",
                         nA_r(wE+wF) and nB_r(wE+wF)     when "0000",
                         nB_r(wE+wF)                     when "0001",
                         nA_r(wE+wF)                     when others;
