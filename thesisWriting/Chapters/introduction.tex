@@ -72,6 +72,24 @@ is to support matrix-oriented computations through different numerical formats
 and to enable their comparison in terms of correctness, performance, hardware
 cost, numerical behavior, and resilience to faults.
 
+\section{Thesis Objectives}
+
+The main focus of this thesis is the study of different numerical formats used in MMA operations. In addition to the theoretical analysis of these formats, the study is mainly performed through the hardware design and integration of a parametric TCU accelerator and its related circuitry.
+
+\begin{itemize}
+
+\item Objective 1:  Study both conventional industry-standard numerical formats and emerging alternative formats.
+
+\item Objective 2: Design a configurable DPU supporting the numerical formats considered in this thesis, for the execution of dot product operations between groups of matrix elements.
+
+\item Objective 3: Design a configurable TCU, composed of multiple configurable Dot Product Units and the surrounding control and data handling logic required for its operation.
+
+\item Objective 4: Integrate the configurable Tensor Core Unit into register-transfer-level (RTL) hardware descriptions of two different processing architectures: the FlexGrip Plus GPU-like architecture and the Pulpino-Klessydra RISC-V core. 
+
+\item Objective 5: Verify the correctness of the implemented architectures through simulation and comparison with golden/reference results, and evaluate relevant metrics such as area, performance, numerical behavior, and resilience to faults depending on the selected numerical format.
+
+\end{itemize}
+
 
 \begin{itemize}
 \item what is the addressed scenario and the addressed problem?
@@ -80,6 +98,6 @@ cost, numerical behavior, and resilience to faults.
 \end{itemize}
 Why Number Formats Matter in Hardware Accelerators 
 
-\section{Thesis Objectives}
+
 \section{Main Contributions}
 \section{Thesis Organization}
