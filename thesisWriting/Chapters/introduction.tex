@@ -1,0 +1,56 @@
+% !TEX root = ../main.tex
+
+\chapter{Introduction}
+
+
+In this chapter, you must provide an overview of your thesis, written such that a non-engineer person (one of your parents) should be able to read and understand at high level.
+\begin{itemize}
+
+\item what is you main contribution? 
+\item which methodology you used? (theory, simulation, experiments, literature overview)?
+\item how the thesis is organized? which topic is covered in each chapter?
+
+ \end{itemize}
+
+```latex
+\section{Motivation and Context}
+
+Artificial Intelligence (AI) has become increasingly important in modern
+computing systems worldwide, ranging from everyday applications such as
+conversational assistants and recommendation systems to more complex tasks
+involving prediction, classification, perception, autonomous decision-making,
+and many others. Many of these applications rely on machine learning models
+whose execution requires a large number of numerical operations. In particular,
+Deep Neural Networks (DNNs) and other AI models are largely based on repeated
+dot products and matrix multiply-accumulate operations, which represent
+fundamental computational kernels in several AI workloads.
+
+For this reason, the design of hardware architectures capable of accelerating
+these mathematical operations has become a relevant topic in both academic and
+industrial research. Specialized hardware accelerators can improve the execution
+of matrix-based computations by exploiting parallelism and by using internal
+arithmetic units optimized for specific numerical formats. This is especially
+important because the efficiency of AI execution does not depend solely on the
+algorithm itself, but also on how the underlying hardware represents, moves, and
+processes the numerical data.
+
+Therefore, the choice of the numerical format used during the execution of a
+given AI model directly affects several important design aspects of the
+associated accelerator circuit, including performance, circuit area, energy
+efficiency, numerical accuracy, and resilience to faults. These aspects motivate
+the study of hardware architectures capable of supporting and comparing multiple
+numerical formats within the same computational framework.
+```
+
+\section{Problem Statement}
+
+\begin{itemize}
+\item what is the addressed scenario and the addressed problem?
+\item why the problem you addressed is interesting and/or practical relevant?
+
+\end{itemize}
+Why Number Formats Matter in Hardware Accelerators 
+
+\section{Thesis Objectives}
+\section{Main Contributions}
+\section{Thesis Organization}
