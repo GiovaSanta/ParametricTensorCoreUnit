@@ -2,15 +2,13 @@
 
 \chapter{Introduction}
 
-
-In this chapter, you must provide an overview of your thesis, written such that a non-engineer person (one of your parents) should be able to read and understand at high level.
-\begin{itemize}
-
-\item what is you main contribution? 
-\item which methodology you used? (theory, simulation, experiments, literature overview)?
-\item how the thesis is organized? which topic is covered in each chapter?
-
- \end{itemize}
+% TODO / guidance for later revision: 
+% - Provide an overview of the thesis at a high level. 
+% - Make the introduction understandable also to a non-specialist reader. 
+% - Clearly state the main contribution. 
+% - Explain the adopted methodology: 
+% theoretical study, RTL design, simulation, validation, and evaluation. 
+% - Explain how the thesis is organized and what is covered in each chapter.
 
 
 \section{Motivation and Context}
@@ -116,7 +114,7 @@ numerical behavior, and resilience to faults.
 
 \section{Thesis Organization}
 
-The remainder of this thesis's work is subdivided in the following chapters:
+The remainder of this thesis  is organized into the following chapters:
 
 \begin{itemize}
 
@@ -124,20 +122,16 @@ The remainder of this thesis's work is subdivided in the following chapters:
     \item Chapter 3 describes in greater detail the configurable Dot Product Unit developed in this thesis. It defines its design goals, supported numerical formats, input and output interface, internal datapath, and verification process.
     \item Chapter 4 presents the configurable Tensor Core Unit architecture. It explains how multiple Dot Product Units are combined, how operands are handled, how results are produced, and how the selected numerical format controls the behavior of the accelerator.
     \item Chapter 5 describes the integration steps made for inserting the configurable accelerator inside the FlexGrip Plus GPU, after giving an overview of the architecture of the GPU. It also explains the custom instruction which targets the accelerator, the operand fetching, register packing, datapath integration, result writeback and functional validation for each format.
-    \item Chapter 6 describes the integration of the configurable Tensor Core Unit inside the PULPpino-Klessydra RISC-V core. It presents the custom instruction detection logic, the TCU execution path, operand staging, result latching and writeback, and the validation process for the supported formats.
+    \item Chapter 6 describes the integration of the configurable Tensor Core Unit inside the PULPino-Klessydra RISC-V core. It presents the custom instruction detection logic, the TCU execution path, operand staging, result latching and writeback, and the validation process for the supported formats.
     \item Chapter 7 presents the experimental results of the thesis. It includes the experimental setup, functional validation, performance observations, area/resource analysis, numerical error evaluation, and resilience-related considerations.
     \item Chapter 8 discusses the main design trade-offs and limitations of the proposed approach. It compares the implications of the different numerical formats and discusses the differences between the GPU-like and RISC-V-based integrations.
     \item Chapter 9 concludes the thesis by summarizing the main work carried out and by presenting possible directions for future work.
 
 \end{itemize}
 
-
-
-\begin{itemize}
-\item what is the addressed scenario and the addressed problem?
-\item why the problem you addressed is interesting and/or practical relevant?
-
-\end{itemize}
-Why Number Formats Matter in Hardware Accelerators 
-
-
+% TODO / reminder:
+% - Check that the introduction clearly explains the addressed scenario.
+% - Check that the introduction clearly explains the addressed problem.
+% - Check that the introduction explains why the problem is practically relevant.
+% - Possible theme to emphasize:
+%   Why number formats matter in hardware accelerators.
