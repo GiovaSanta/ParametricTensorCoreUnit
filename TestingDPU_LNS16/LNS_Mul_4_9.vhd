@@ -102,7 +102,7 @@ begin
    xAB <= xA & xB when xA >= xB else
          xB & xA;
    with xAB select
-      nR(wE+wF+2 downto wE+wF+1) <= xRn  when "0101",
+      nR(wE+wF+2 downto wE+wF+1) <= "10"  when "0101",
                                     "00" when "0000" | "0100",
                                     "10" when "1001" | "1010",
                                     "11" when others;
