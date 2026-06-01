@@ -2150,6 +2150,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.LNSSubCorrectionPkg.all;
+
 entity LNSAddSub_4_9 is 
    port ( clk : in std_logic;
           rst : in std_logic;
@@ -2235,24 +2238,8 @@ begin
      
      SBDB_eff <= std_logic_vector(to_signed(512, SBDB_eff'length))
             when (sAB = '0' and Z = std_logic_vector(to_signed(0, Z'length)))
-
-            -- TEMPORARY DEBUG OVERRIDES FOR OPPOSITE-SIGN SUBTRACTION
-            -- Z = -512: log2(1 - 2^-1) = -512
-            else std_logic_vector(to_signed(-512, SBDB_eff'length))
-            when (sAB = '1' and Z = std_logic_vector(to_signed(-512, Z'length)))
-
-            -- Z = -1024: log2(1 - 2^-2)*512 ~= -212
-            else std_logic_vector(to_signed(-212, SBDB_eff'length))
-            when (sAB = '1' and Z = std_logic_vector(to_signed(-1024, Z'length)))
-
-            -- Z = -1536: log2(1 - 2^-3)*512 ~= -99
-            else std_logic_vector(to_signed(-99, SBDB_eff'length))
-            when (sAB = '1' and Z = std_logic_vector(to_signed(-1536, Z'length)))
-
-            -- Z = -2048: log2(1 - 2^-4)*512 ~= -48
-            else std_logic_vector(to_signed(-48, SBDB_eff'length))
-            when (sAB = '1' and Z = std_logic_vector(to_signed(-2048, Z'length)))
-
+            else lns_sub_corr_4_9(Z)
+            when (sAB = '1')
             else SBDB;      
 
    IsEssZero <= '1' when signed(Z(wE+wF downto j)) < to_signed(DB_Max_Input, wE + wF - j + 1) else '0';
