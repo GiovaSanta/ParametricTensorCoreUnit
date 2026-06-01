@@ -27,7 +27,7 @@ architecture behavioral of LNSAddSub_4_9_comb_sanity_tb is
     signal test_id_s  : integer := 0;
 
     constant BASE_PATH : string :=
-        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/TestingDPU_LNS16/vectors/";
+        "C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/TestingDPU_LNS16NEW/vectors/";
 
     constant SETTLE_TIME : time := 20 ns;
     
@@ -149,7 +149,10 @@ begin
 
         report "Running opposite-sign basic LNSAddSub combinational vectors";
         run_vector_file(BASE_PATH & "LNSAddSub_opposite_basic_vectors.txt");
-
+        
+        report "Running exact-cancellation LNSAddSub combinational vectors";
+        run_vector_file(BASE_PATH & "LNSAddSub_exact_cancellation_vectors.txt");
+        
         -- Keep random stress disabled for the moment.
         -- Enable this after the structured files pass.
         -- report "Running random stress LNSAddSub combinational vectors";

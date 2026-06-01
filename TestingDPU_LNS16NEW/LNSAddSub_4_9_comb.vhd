@@ -1986,6 +1986,9 @@ architecture arch of LNSAddSub_4_9_comb is
    
    signal sR : std_logic;
    signal SBDB_eff : std_logic_vector(wE+wF downto 0);
+   
+   signal exact_cancel : std_logic;
+   signal nR_core      : std_logic_vector(15 downto 0);
 
 begin
    nA_r <= nA;
@@ -2056,7 +2059,12 @@ begin
    xB <= nB_r(wE+wF+2 downto wE+wF+1);
    xAB <= nA_r(wE+wF+2 downto wE+wF+1) & nB_r(wE+wF+2 downto wE+wF+1);
 
-   nR(wE+wF+2 downto wE+wF+1) <=                "11"    when xA = "11" or xB = "11" else
+    exact_cancel <= '1'
+    when (xAB = "0101" and sAB = '1' and
+          nA_r(wE+wF-1 downto 0) = nB_r(wE+wF-1 downto 0))
+    else '0';
+    
+   nR_core(wE+wF+2 downto wE+wF+1) <=                "11"    when xA = "11" or xB = "11" else
                                                                         xR              when xAB = "0101" else
                                                                         "1" & sAB when xAB = "1010" else
                                                                         xB              when xA = "00" else
@@ -2064,14 +2072,16 @@ begin
 
 
    with xAB select
-        nR(wE+wF) <=    sR                                              when "0101",
+        nR_core(wE+wF) <=    sR                                              when "0101",
                                         nA_r(wE+wF) and nB_r(wE+wF)     when "0000",
                                         nB_r(wE+wF)                                     when "0001",
                                         nA_r(wE+wF)                                     when others;
 
    with xAB select
-        nR(wE+wF-1 downto 0) <= R(wE+wF-1 downto 0)     when "0101",
-                                                                nA_r(wE+wF-1 downto 0)  when "0100",
-                                                                nB_r(wE+wF-1 downto 0)  when others;
+        nR_core(wE+wF-1 downto 0) <= R(wE+wF-1 downto 0)     when "0101",
+                                nA_r(wE+wF-1 downto 0)  when "0100",
+                                nB_r(wE+wF-1 downto 0)  when others;
+
+    nR <= (others => '0') when exact_cancel = '1' else nR_core;
 
 end architecture;
