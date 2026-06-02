@@ -1,0 +1,293 @@
+HMMA 4-SET STEP0/STEP1 LNS16 VALIDATION REPORT (DUAL TC, 4 OCTECTS)
+Simulator output file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\doubleParametricTCUsRel0\doubleParametricTCUsRelatedScripts\4SetsOfHMMAstep0step1\LNS16related\hmma_8instr_dualTC_4octects_tb_output_ctrl_lns16.txt
+Golden reference file: C:\Users\giovi\OneDrive\Desktop\Magistrale\Tesi\doubleParametricTCUsRel0\doubleParametricTCUsRelatedScripts\4SetsOfHMMAstep0step1\LNS16related\hmma_8instr_dualTC_4octects_lns16_single_experiment.txt
+LNS log tolerance: 128 LSB
+Absolute tolerance: 0.5
+Near-zero tolerance: 0.25
+Automatic mismatch tracing: True
+Max mismatch traces: 8
+
+
+========== SET 0 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+========== SET 1 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+========== SET 2 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+========== SET 3 ==========
+
+STEP0_D00:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D10:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D01:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D11:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D20:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D30:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D21:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D31:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D02:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D12:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D03:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D13:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D22:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP0_D32:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D23:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+STEP1_D33:
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+
+========== FINAL 16x16 RESULT vs FINAL_CHAINED_16x16_FROM_DUAL_TC_LNS16 ==========
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+Match within tolerance.
+
+========== FINAL 16x16 RESULT vs FINAL_IDEAL_16x16_ONE_SHOT_REFERENCE ==========
+row col | obtained(hex) obtained(val) log sign | golden(hex) golden(val) log sign | abs diff rel diff log diff | reason
+All entries match within tolerance.
+Match within tolerance.
+
+====================================
+Total differing entries: 0
+Total sign mismatches: 0
+Total zero/near-zero mismatches: 0
+Total non-normal decoded entries: 0
+Total missing items: 0
+Global max abs diff: 0.142787
+Global max rel diff: 1.000000
+Global max log LSB diff: 3450

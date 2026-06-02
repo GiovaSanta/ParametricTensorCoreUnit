@@ -32,6 +32,10 @@ use POSIT16_DPU.all;
 library POSIT32_DPU;
 use POSIT32_DPU.all;
 
+library LNS16_DPU;
+use LNS16_DPU.all;
+
+
 -- rel 0 parametric DPU supported formats:
 -- posit8, posit16, posit32
 -- float8e4m3, float16, float32
@@ -84,10 +88,11 @@ signal out_DPU_FP32: std_logic_vector(31 downto 0 ) ;
 signal out_DPU_posit8: std_logic_vector(7 downto 0) ;
 signal out_DPU_posit16: std_logic_vector(15 downto 0) ;
 signal out_DPU_posit32: std_logic_vector(31 downto 0) ;
-signal out_DPU_FixP8_16: std_logic_vector(15 downto 0);
-signal out_DPU_FixP16_32: std_logic_vector(31 downto 0);
-signal out_DPU_int8_16: std_logic_vector(15 downto 0);
-signal out_DPU_int16_32: std_logic_vector(31 downto 0);
+signal out_DPU_FixP8_16: std_logic_vector(15 downto 0) ;
+signal out_DPU_FixP16_32: std_logic_vector(31 downto 0) ;
+signal out_DPU_int8_16: std_logic_vector(15 downto 0) ;
+signal out_DPU_int16_32: std_logic_vector(31 downto 0) ;  
+signal out_DPU_LNS16: std_logic_vector(15 downto 0) ;
 
 --the multiplexer
 component mux_rel0 is
@@ -103,6 +108,7 @@ component mux_rel0 is
            fixP16_32out: in std_logic_vector ( 31 downto 0 );
            int8_16out: in std_logic_vector( 15 downto 0 );
            int16_32out: in std_logic_vector(31 downto 0 );
+           lns16out: in std_logic_vector(15 downto 0 );
            out8bit : out std_logic_vector( 7 downto 0 );
            out16bit: out std_logic_vector( 15 downto 0);
            out32bit: out std_logic_vector( 31 downto 0) );
@@ -268,6 +274,22 @@ component dot_unit_coreINT is
 	);
 end component;
 
+--lns16 DPU
+component LNS16_4_9_DPU is
+	port(
+			A0 : in std_logic_vector(15 downto 0);
+			A1 : in std_logic_vector(15 downto 0);
+			A2 : in std_logic_vector(15 downto 0);
+			A3 : in std_logic_vector(15 downto 0);
+			B0 : in std_logic_vector(15 downto 0);
+			B1 : in std_logic_vector(15 downto 0);
+			B2 : in std_logic_vector(15 downto 0);
+			B3 : in std_logic_vector(15 downto 0);		
+			C0: in std_logic_vector(15 downto 0);
+			R: out std_logic_vector(15 downto 0)
+	);
+end component;
+
 begin
 
 dpu_fp8 : DotProductUnitFP8e4m3 
@@ -300,6 +322,9 @@ dpu_int8_16: dot_unit_coreINT8
 dpu_int16_32: dot_unit_coreINT
     port map ( a_X0 => A0_16, a_X1 => A1_16, a_X2 => A2_16, a_X3 => A3_16, b_X0 => B0_16, b_X1 => B1_16, b_X2 => B2_16, b_X3 =>	B3_16, c_X0 => C0_32, w_XX3 => out_DPU_int16_32 ) ;
 
+dpu_lns16: LNS16_4_9_DPU 
+    port map ( A0 => A0_16, A1 => A1_16 ,A2 => A2_16 , A3 => A3_16 , B0 => B0_16 , B1 => B1_16 , B2 => B2_16 , B3 => B3_16 , C0 => C0_16 , R => out_DPU_LNS16 ) ;
+
 mux : mux_rel0 
     port map ( widthSel => widthSel,
                typeSel => typeSel ,
@@ -313,6 +338,7 @@ mux : mux_rel0
                fixP16_32out => out_DPU_FixP16_32 ,
                int8_16out => out_DPU_int8_16,
                int16_32out => out_DPU_int16_32,
+               lns16out => out_DPU_LNS16,
                out8bit => res_8, 
                out16bit => res_16, 
                out32bit => res_32 ) ;
