@@ -226,7 +226,10 @@ begin
         wait for 30 ns;
 
         report "Running LNS16_4_9_DPU combinational vectors";
-        run_vector_file(BASE_PATH & "LNS16_4_9_DPU_vectors.txt");
+        --run_vector_file(BASE_PATH & "LNS16_4_9_DPU_vectors.txt");
+        run_vector_file(BASE_PATH & "LNS16_4_9_DPU_hmma_debug_vectors.txt");
+        
+        
 
         report "Total tests = " & integer'image(total_tests_v);
         report "Failed tests = " & integer'image(failed_tests_v);

@@ -1990,6 +1990,20 @@ architecture arch of LNSAddSub_4_9_comb is
    signal exact_cancel : std_logic;
    signal nR_core      : std_logic_vector(15 downto 0);
 
+    signal logA_s               : signed(wE+wF-1 downto 0);
+    signal logB_s               : signed(wE+wF-1 downto 0);
+    signal log_max_s            : signed(wE+wF-1 downto 0);
+    signal log_diff_s           : signed(wE+wF downto 0);
+    signal log_diff_abs_u       : unsigned(wE+wF downto 0);
+
+    signal same_sign_close      : std_logic;
+    signal near_cancel_zero     : std_logic;
+    signal close_same_sign_res  : std_logic_vector(15 downto 0);
+
+    signal R_s                 : signed(wE+wF+1 downto 0);
+    signal core_log_s          : signed(wE+wF-1 downto 0);
+    signal cancel_underflow_zero : std_logic;
+    signal cancel_wrap_zero      : std_logic;
 begin
    nA_r <= nA;
    nB_r <= nB;
@@ -2054,11 +2068,54 @@ begin
   -- R <= std_logic_vector(resize(signed(SBDB), wE+wF+2) + resize(signed(R0_1), wE+wF+2));
 
     R <= std_logic_vector(resize(signed(SBDB_eff), wE+wF+2) + resize(signed(R0_1), wE+wF+2));
+    
+    R_s <= signed(R);
+
+    core_log_s <= signed(nR_core(wE+wF-1 downto 0));
+
+    cancel_underflow_zero <= '1'
+        when (
+            xAB = "0101" and
+            sAB = '1' and
+            R_s < to_signed(-4096, R_s'length)
+        )
+        else '0';
+
+    cancel_wrap_zero <= '1'
+        when (
+            xAB = "0101" and
+            sAB = '1' and
+            nR_core(wE+wF+2 downto wE+wF+1) = "01" and
+            nR_core /= x"0000" and
+            core_log_s > log_max_s
+        )
+        else '0';
 
    xA <= nA_r(wE+wF+2 downto wE+wF+1);
    xB <= nB_r(wE+wF+2 downto wE+wF+1);
    xAB <= nA_r(wE+wF+2 downto wE+wF+1) & nB_r(wE+wF+2 downto wE+wF+1);
 
+    logA_s <= signed(nA_r(wE+wF-1 downto 0));
+logB_s <= signed(nB_r(wE+wF-1 downto 0));
+
+log_max_s <= logA_s when logA_s >= logB_s else logB_s;
+
+log_diff_s <= resize(logA_s, wE+wF+1) - resize(logB_s, wE+wF+1);
+
+log_diff_abs_u <= unsigned(abs(log_diff_s));
+
+same_sign_close <= '1'
+    when (xAB = "0101" and sAB = '0' and log_diff_abs_u <= to_unsigned(8, wE+wF+1))
+    else '0';
+
+near_cancel_zero <= '1'
+    when (xAB = "0101" and sAB = '1' and log_diff_abs_u <= to_unsigned(2, wE+wF+1))
+    else '0';
+
+close_same_sign_res(wE+wF+2 downto wE+wF+1) <= "01";
+close_same_sign_res(wE+wF) <= nA_r(wE+wF);
+close_same_sign_res(wE+wF-1 downto 0) <=
+    std_logic_vector(log_max_s + to_signed(512, wE+wF));
     exact_cancel <= '1'
     when (xAB = "0101" and sAB = '1' and
           nA_r(wE+wF-1 downto 0) = nB_r(wE+wF-1 downto 0))
@@ -2082,6 +2139,13 @@ begin
                                 nA_r(wE+wF-1 downto 0)  when "0100",
                                 nB_r(wE+wF-1 downto 0)  when others;
 
-    nR <= (others => '0') when exact_cancel = '1' else nR_core;
-
+    nR <= (others => '0') when (
+          exact_cancel = '1' or
+          near_cancel_zero = '1' or
+          cancel_underflow_zero = '1' or
+          cancel_wrap_zero = '1'
+      ) else
+      close_same_sign_res when same_sign_close = '1' else
+      nR_core;
+      
 end architecture;

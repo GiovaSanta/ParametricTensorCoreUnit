@@ -153,6 +153,12 @@ begin
         report "Running exact-cancellation LNSAddSub combinational vectors";
         run_vector_file(BASE_PATH & "LNSAddSub_exact_cancellation_vectors.txt");
         
+        report "Running deep-debug LNSAddSub vectors";
+        run_vector_file(BASE_PATH & "LNSAddSub_deep_debug_vectors.txt");
+        
+        report "Running large-stress LNSAddSub vectors";
+        run_vector_file(BASE_PATH & "LNSAddSub_large_stress_vectors.txt");
+        
         -- Keep random stress disabled for the moment.
         -- Enable this after the structured files pass.
         -- report "Running random stress LNSAddSub combinational vectors";
