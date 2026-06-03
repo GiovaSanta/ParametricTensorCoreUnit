@@ -1,0 +1,2 @@
+format,num_tests,exact_matches_to_reference_rounded,exact_match_percent,mean_abs_error,max_abs_error,mean_rel_error,max_rel_error,rmse
+posit16,10000,5460,54.6,6.301129242165189e-05,0.0005827099084854126,0.0004819588207869392,1.0,8.478368358523303e-05

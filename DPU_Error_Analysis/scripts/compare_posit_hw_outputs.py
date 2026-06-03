@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""
+Compare Posit DPU hardware outputs against high-precision Python reference results.
+
+Implemented:
+  - posit8
+  - posit16
+  - posit32
+
+This script should be run from WSL because it uses sfpy.
+"""
+
+import argparse
+import csv
+import math
+from pathlib import Path
+
+from sfpy import Posit8, Posit16, Posit32
+
+
+BASE_DIR = Path("DPU_Error_Analysis")
+EXP_DIR = BASE_DIR / "data" / "dnn_random_10k"
+REPORT_DIR = BASE_DIR / "reports" / "dnn_random_10k" / "per_format"
+
+
+FORMAT_CONFIG = {
+    "posit8": {
+        "class": Posit8,
+        "hex_digits": 2,
+        "rounded_label": "reference_rounded_posit8",
+    },
+    "posit16": {
+        "class": Posit16,
+        "hex_digits": 4,
+        "rounded_label": "reference_rounded_posit16",
+    },
+    "posit32": {
+        "class": Posit32,
+        "hex_digits": 8,
+        "rounded_label": "reference_rounded_posit32",
+    },
+}
+
+
+def posit_hex_to_float(hex_string: str, posit_class) -> float:
+    bits = int(hex_string.strip(), 16)
+    return float(posit_class.from_bits(bits))
+
+
+def float_to_posit_hex(value: float, posit_class, hex_digits: int) -> str:
+    p = posit_class(value)
+    return format(p.bits, f"0{hex_digits}X")
+
+
+def safe_relative_error(abs_error: float, reference: float, epsilon: float = 1e-12) -> float:
+    return abs_error / max(abs(reference), epsilon)
+
+
+def compare_posit_format(fmt: str) -> None:
+    cfg = FORMAT_CONFIG[fmt]
+    posit_class = cfg["class"]
+    hex_digits = cfg["hex_digits"]
+
+    reference_path = EXP_DIR / "references" / f"{fmt}_reference.csv"
+    hw_path = EXP_DIR / "hw_outputs" / f"{fmt}_hw_outputs.txt"
+    compared_path = EXP_DIR / "compared" / f"{fmt}_compared.csv"
+    summary_path = REPORT_DIR / f"{fmt}_error_summary.csv"
+
+    compared_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with reference_path.open("r", encoding="utf-8") as rf:
+        reference_rows = list(csv.DictReader(rf))
+
+    with hw_path.open("r", encoding="utf-8") as hf:
+        hw_hex_values = [line.strip().upper() for line in hf if line.strip()]
+
+    if len(reference_rows) != len(hw_hex_values):
+        raise ValueError(
+            f"Line count mismatch for {fmt}: references={len(reference_rows)}, hardware={len(hw_hex_values)}"
+        )
+
+    rounded_hex_col = f"{cfg['rounded_label']}_hex"
+    rounded_real_col = f"{cfg['rounded_label']}_real"
+    exact_col = f"exact_match_to_{cfg['rounded_label']}"
+
+    fieldnames = [
+        "test_id",
+        "reference_real",
+        rounded_hex_col,
+        rounded_real_col,
+        "hw_hex",
+        "hw_real",
+        "abs_error",
+        "rel_error",
+        "squared_error",
+        exact_col,
+    ]
+
+    abs_errors = []
+    rel_errors = []
+    sq_errors = []
+    exact_matches = 0
+
+    with compared_path.open("w", newline="", encoding="utf-8") as cf:
+        writer = csv.DictWriter(cf, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for row, hw_hex in zip(reference_rows, hw_hex_values):
+            test_id = int(row["test_id"])
+            reference_real = float(row["reference_real"])
+
+            hw_real = posit_hex_to_float(hw_hex, posit_class)
+
+            try:
+                reference_rounded_hex = float_to_posit_hex(reference_real, posit_class, hex_digits)
+                reference_rounded_real = posit_hex_to_float(reference_rounded_hex, posit_class)
+            except Exception:
+                reference_rounded_hex = "ERROR"
+                reference_rounded_real = math.nan
+
+            abs_error = abs(hw_real - reference_real)
+            rel_error = safe_relative_error(abs_error, reference_real)
+            squared_error = abs_error * abs_error
+
+            exact_match = int(hw_hex == reference_rounded_hex)
+            exact_matches += exact_match
+
+            abs_errors.append(abs_error)
+            rel_errors.append(rel_error)
+            sq_errors.append(squared_error)
+
+            writer.writerow({
+                "test_id": test_id,
+                "reference_real": reference_real,
+                rounded_hex_col: reference_rounded_hex,
+                rounded_real_col: reference_rounded_real,
+                "hw_hex": hw_hex,
+                "hw_real": hw_real,
+                "abs_error": abs_error,
+                "rel_error": rel_error,
+                "squared_error": squared_error,
+                exact_col: exact_match,
+            })
+
+    n = len(abs_errors)
+    mean_abs_error = sum(abs_errors) / n
+    max_abs_error = max(abs_errors)
+    mean_rel_error = sum(rel_errors) / n
+    max_rel_error = max(rel_errors)
+    rmse = math.sqrt(sum(sq_errors) / n)
+    exact_percent = 100.0 * exact_matches / n
+
+    with summary_path.open("w", newline="", encoding="utf-8") as sf:
+        fieldnames_summary = [
+            "format",
+            "num_tests",
+            "exact_matches_to_reference_rounded",
+            "exact_match_percent",
+            "mean_abs_error",
+            "max_abs_error",
+            "mean_rel_error",
+            "max_rel_error",
+            "rmse",
+        ]
+        writer = csv.DictWriter(sf, fieldnames=fieldnames_summary)
+        writer.writeheader()
+        writer.writerow({
+            "format": fmt,
+            "num_tests": n,
+            "exact_matches_to_reference_rounded": exact_matches,
+            "exact_match_percent": exact_percent,
+            "mean_abs_error": mean_abs_error,
+            "max_abs_error": max_abs_error,
+            "mean_rel_error": mean_rel_error,
+            "max_rel_error": max_rel_error,
+            "rmse": rmse,
+        })
+
+    print(f"{fmt.upper()} comparison completed.")
+    print(f"Compared file: {compared_path}")
+    print(f"Summary file:  {summary_path}")
+    print()
+    print(f"num_tests           = {n}")
+    print(f"exact_match_percent = {exact_percent:.4f}%")
+    print(f"mean_abs_error      = {mean_abs_error}")
+    print(f"max_abs_error       = {max_abs_error}")
+    print(f"mean_rel_error      = {mean_rel_error}")
+    print(f"max_rel_error       = {max_rel_error}")
+    print(f"rmse                = {rmse}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--format", required=True, choices=sorted(FORMAT_CONFIG.keys()))
+    args = parser.parse_args()
+
+    compare_posit_format(args.format)
+
+
+if __name__ == "__main__":
+    main()
