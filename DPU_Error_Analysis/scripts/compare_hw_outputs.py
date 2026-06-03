@@ -3,8 +3,9 @@
 Compare DPU hardware outputs against high-precision Python reference results.
 
 Currently implemented:
-  - fp16
-  - fp32
+  - fp8  : float8_e4m3 using ml_dtypes
+  - fp16 : IEEE-754 binary16
+  - fp32 : IEEE-754 binary32
 """
 
 import argparse
@@ -13,21 +14,56 @@ import math
 import struct
 from pathlib import Path
 
+import numpy as np
+from ml_dtypes import float8_e4m3
+
 
 BASE_DIR = Path("DPU_Error_Analysis")
 EXP_DIR = BASE_DIR / "data" / "dnn_random_10k"
 REPORT_DIR = BASE_DIR / "reports" / "dnn_random_10k" / "per_format"
 
 
+def fp8_e4m3_hex_to_float(hex_string: str) -> float:
+    raw = np.array([int(hex_string.strip(), 16)], dtype=np.uint8)
+    decoded = raw.view(float8_e4m3)[0]
+    return float(decoded)
+
+
+def float_to_fp8_e4m3_hex(value: float) -> str:
+    encoded = np.array([value], dtype=float8_e4m3)
+    return format(encoded.view(np.uint8)[0], "02X")
+
+
+def fp16_hex_to_float(hex_string: str) -> float:
+    return struct.unpack(">e", bytes.fromhex(hex_string.strip()))[0]
+
+
+def float_to_fp16_hex(value: float) -> str:
+    return struct.pack(">e", value).hex().upper()
+
+
+def fp32_hex_to_float(hex_string: str) -> float:
+    return struct.unpack(">f", bytes.fromhex(hex_string.strip()))[0]
+
+
+def float_to_fp32_hex(value: float) -> str:
+    return struct.pack(">f", value).hex().upper()
+
+
 FORMAT_CONFIG = {
+    "fp8": {
+        "decode": fp8_e4m3_hex_to_float,
+        "encode": float_to_fp8_e4m3_hex,
+        "rounded_label": "reference_rounded_fp8",
+    },
     "fp16": {
-        "decode": lambda h: struct.unpack(">e", bytes.fromhex(h.strip()))[0],
-        "encode": lambda x: struct.pack(">e", x).hex().upper(),
+        "decode": fp16_hex_to_float,
+        "encode": float_to_fp16_hex,
         "rounded_label": "reference_rounded_fp16",
     },
     "fp32": {
-        "decode": lambda h: struct.unpack(">f", bytes.fromhex(h.strip()))[0],
-        "encode": lambda x: struct.pack(">f", x).hex().upper(),
+        "decode": fp32_hex_to_float,
+        "encode": float_to_fp32_hex,
         "rounded_label": "reference_rounded_fp32",
     },
 }
