@@ -1,0 +1,1003 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Wed Jun  3 09:32:40 2026
+| Host         : BOOK-CI84SRJIDA running 64-bit major release  (build 9200)
+| Command      : report_timing_summary -file C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Performance_Comparison/reports/fp32/timing_fp32.txt
+| Design       : FP32_DPU_perf_top
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Synthesized
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (288)
+6. checking no_output_delay (32)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (288)
+--------------------------------
+ There are 288 input ports with no input delay specified. (HIGH)
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (32)
+--------------------------------
+ There are 32 ports with no output delay specified. (HIGH)
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+   -125.650    -7802.432                     63                   63        0.615        0.000                      0                   63        4.500        0.000                       0                   321  
+
+
+Timing constraints are not met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock  Waveform(ns)       Period(ns)      Frequency(MHz)
+-----  ------------       ----------      --------------
+clk    {0.000 5.000}      10.000          100.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+clk              -125.650    -7802.432                     63                   63        0.615        0.000                      0                   63        4.500        0.000                       0                   321  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk
+  To Clock:  clk
+
+Setup :           63  Failing Endpoints,  Worst Slack     -125.650ns,  Total Violation    -7802.432ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.615ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack        4.500ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (VIOLATED) :        -125.650ns  (required time - arrival time)
+  Source:                 C0_r_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            R_r_reg[0]/R
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        134.913ns  (logic 50.297ns (37.281%)  route 84.616ns (62.719%))
+  Logic Levels:           272  (CARRY4=129 LUT1=1 LUT2=7 LUT3=8 LUT4=24 LUT5=32 LUT6=70 MUXF7=1)
+  Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.130ns = ( 12.130 - 10.000 ) 
+    Source Clock Delay      (SCD):    2.454ns
+    Clock Pessimism Removal (CPR):    0.179ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.971     0.971 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.803     1.774    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.096     1.870 r  clk_IBUF_BUFG_inst/O
+                         net (fo=324, unplaced)       0.584     2.454    clk_IBUF_BUFG
+                         FDRE                                         r  C0_r_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 f  C0_r_reg[24]/Q
+                         net (fo=22, unplaced)        0.825     3.757    dpu_inst/mac0/cX0[24]
+                         LUT4 (Prop_lut4_I1_O)        0.295     4.052 f  dpu_inst/mac0/R_r[31]_i_1301/O
+                         net (fo=1, unplaced)         0.449     4.501    dpu_inst/mac0/R_r[31]_i_1301_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124     4.625 r  dpu_inst/mac0/R_r[31]_i_805/O
+                         net (fo=18, unplaced)        0.506     5.131    dpu_inst/mac0/R_r[31]_i_805_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.116     5.247 f  dpu_inst/mac0/R_r[31]_i_3370/O
+                         net (fo=14, unplaced)        0.500     5.747    dpu_inst/mac0/R_r[31]_i_3370_n_0
+                         LUT1 (Prop_lut1_I0_O)        0.124     5.871 r  dpu_inst/mac0/R_r[31]_i_4510/O
+                         net (fo=1, unplaced)         0.000     5.871    dpu_inst/mac0/R_r[31]_i_4510_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513     6.384 r  dpu_inst/mac0/R_r_reg[31]_i_4447/CO[3]
+                         net (fo=1, unplaced)         0.000     6.384    dpu_inst/mac0/R_r_reg[31]_i_4447_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337     6.721 r  dpu_inst/mac0/R_r_reg[31]_i_4230/O[1]
+                         net (fo=3, unplaced)         0.629     7.350    dpu_inst/mac0/R_r_reg[31]_i_4230_n_6
+                         LUT4 (Prop_lut4_I0_O)        0.306     7.656 r  dpu_inst/mac0/R_r[31]_i_4228/O
+                         net (fo=1, unplaced)         0.000     7.656    dpu_inst/mac0/R_r[31]_i_4228_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533     8.189 r  dpu_inst/mac0/R_r_reg[31]_i_3857/CO[3]
+                         net (fo=1, unplaced)         0.000     8.189    dpu_inst/mac0/R_r_reg[31]_i_3857_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337     8.526 r  dpu_inst/mac0/R_r_reg[31]_i_3291/O[1]
+                         net (fo=86, unplaced)        0.707     9.233    dpu_inst/mac0/expDiffNotLarge
+                         LUT3 (Prop_lut3_I1_O)        0.306     9.539 r  dpu_inst/mac0/R_r[31]_i_3294/O
+                         net (fo=35, unplaced)        0.522    10.061    dpu_inst/mac0/R_r[31]_i_3294_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    10.185 f  dpu_inst/mac0/R_r[31]_i_4399/O
+                         net (fo=2, unplaced)         0.460    10.645    dpu_inst/mac0/R_r[31]_i_4399_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    10.769 r  dpu_inst/mac0/R_r[31]_i_4186/O
+                         net (fo=2, unplaced)         0.460    11.229    dpu_inst/mac0/R_r[31]_i_4186_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.353 r  dpu_inst/mac0/R_r[31]_i_3810/O
+                         net (fo=5, unplaced)         0.477    11.830    dpu_inst/mac0/R_r[31]_i_3810_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    11.954 f  dpu_inst/mac0/R_r[31]_i_3832/O
+                         net (fo=6, unplaced)         0.451    12.405    dpu_inst/mac0/R_r[31]_i_3832_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.150    12.555 f  dpu_inst/mac0/R_r[31]_i_3285/O
+                         net (fo=4, unplaced)         0.473    13.028    dpu_inst/mac0/R_r[31]_i_3285_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.117    13.145 r  dpu_inst/mac0/R_r[31]_i_3328/O
+                         net (fo=1, unplaced)         0.000    13.145    dpu_inst/mac0/R_r[31]_i_3328_n_0
+                         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.547    13.692 r  dpu_inst/mac0/R_r_reg[31]_i_2621/CO[3]
+                         net (fo=1, unplaced)         0.000    13.692    dpu_inst/mac0/R_r_reg[31]_i_2621_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    13.809 r  dpu_inst/mac0/R_r_reg[31]_i_1941/CO[3]
+                         net (fo=1, unplaced)         0.000    13.809    dpu_inst/mac0/R_r_reg[31]_i_1941_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    13.926 r  dpu_inst/mac0/R_r_reg[31]_i_2555/CO[3]
+                         net (fo=1, unplaced)         0.000    13.926    dpu_inst/mac0/R_r_reg[31]_i_2555_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.043 r  dpu_inst/mac0/R_r_reg[31]_i_1927/CO[3]
+                         net (fo=1, unplaced)         0.000    14.043    dpu_inst/mac0/R_r_reg[31]_i_1927_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.160 r  dpu_inst/mac0/R_r_reg[31]_i_2607/CO[3]
+                         net (fo=1, unplaced)         0.000    14.160    dpu_inst/mac0/R_r_reg[31]_i_2607_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.277 r  dpu_inst/mac0/R_r_reg[31]_i_1939/CO[3]
+                         net (fo=1, unplaced)         0.000    14.277    dpu_inst/mac0/R_r_reg[31]_i_1939_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.394 r  dpu_inst/mac0/R_r_reg[31]_i_1982/CO[3]
+                         net (fo=1, unplaced)         0.000    14.394    dpu_inst/mac0/R_r_reg[31]_i_1982_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.511 r  dpu_inst/mac0/R_r_reg[31]_i_1931/CO[3]
+                         net (fo=1, unplaced)         0.000    14.511    dpu_inst/mac0/R_r_reg[31]_i_1931_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.628 r  dpu_inst/mac0/R_r_reg[31]_i_2634/CO[3]
+                         net (fo=1, unplaced)         0.000    14.628    dpu_inst/mac0/R_r_reg[31]_i_2634_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.745 r  dpu_inst/mac0/R_r_reg[31]_i_1943/CO[3]
+                         net (fo=1, unplaced)         0.000    14.745    dpu_inst/mac0/R_r_reg[31]_i_1943_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.862 r  dpu_inst/mac0/R_r_reg[31]_i_1985/CO[3]
+                         net (fo=1, unplaced)         0.000    14.862    dpu_inst/mac0/R_r_reg[31]_i_1985_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    14.979 r  dpu_inst/mac0/R_r_reg[31]_i_1929/CO[3]
+                         net (fo=1, unplaced)         0.000    14.979    dpu_inst/mac0/R_r_reg[31]_i_1929_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.096 r  dpu_inst/mac0/R_r_reg[31]_i_2643/CO[3]
+                         net (fo=1, unplaced)         0.000    15.096    dpu_inst/mac0/R_r_reg[31]_i_2643_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.213 r  dpu_inst/mac0/R_r_reg[31]_i_4402/CO[3]
+                         net (fo=1, unplaced)         0.000    15.213    dpu_inst/mac0/R_r_reg[31]_i_4402_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.330 r  dpu_inst/mac0/R_r_reg[31]_i_4188/CO[3]
+                         net (fo=1, unplaced)         0.000    15.330    dpu_inst/mac0/R_r_reg[31]_i_4188_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.447 r  dpu_inst/mac0/R_r_reg[31]_i_3815/CO[3]
+                         net (fo=1, unplaced)         0.000    15.447    dpu_inst/mac0/R_r_reg[31]_i_3815_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.564 r  dpu_inst/mac0/R_r_reg[31]_i_3256/CO[3]
+                         net (fo=1, unplaced)         0.000    15.564    dpu_inst/mac0/R_r_reg[31]_i_3256_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    15.681 r  dpu_inst/mac0/R_r_reg[31]_i_2549/CO[3]
+                         net (fo=1, unplaced)         0.000    15.681    dpu_inst/mac0/R_r_reg[31]_i_2549_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256    15.937 r  dpu_inst/mac0/R_r_reg[31]_i_1926/O[2]
+                         net (fo=66, unplaced)        0.541    16.478    dpu_inst/mac0/p_0_in47_in
+                         LUT4 (Prop_lut4_I0_O)        0.301    16.779 r  dpu_inst/mac0/R_r[31]_i_1933/O
+                         net (fo=54, unplaced)        0.816    17.595    dpu_inst/mac0/R_r[31]_i_1933_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    17.719 f  dpu_inst/mac0/R_r[31]_i_1319/O
+                         net (fo=1, unplaced)         0.964    18.683    dpu_inst/mac0/R_r[31]_i_1319_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    18.807 r  dpu_inst/mac0/R_r[31]_i_812/O
+                         net (fo=52, unplaced)        0.748    19.555    dpu_inst/mac0/R_r[31]_i_812_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    19.679 r  dpu_inst/mac0/R_r[31]_i_1329/O
+                         net (fo=4, unplaced)         0.988    20.667    dpu_inst/mac0/R_r[31]_i_1329_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    20.791 f  dpu_inst/mac0/R_r[31]_i_814/O
+                         net (fo=36, unplaced)        0.523    21.314    dpu_inst/mac0/R_r[31]_i_814_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    21.438 f  dpu_inst/mac0/R_r[31]_i_1309/O
+                         net (fo=8, unplaced)         1.002    22.440    dpu_inst/mac0/R_r[31]_i_1309_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    22.564 r  dpu_inst/mac0/R_r[31]_i_808/O
+                         net (fo=18, unplaced)        0.506    23.070    dpu_inst/mac0/R_r[31]_i_808_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    23.194 f  dpu_inst/mac0/R_r[31]_i_4462/O
+                         net (fo=1, unplaced)         0.449    23.643    dpu_inst/mac0/R_r[31]_i_4462_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    23.767 f  dpu_inst/mac0/R_r[31]_i_4283/O
+                         net (fo=1, unplaced)         0.449    24.216    dpu_inst/mac0/R_r[31]_i_4283_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    24.340 r  dpu_inst/mac0/R_r[31]_i_4021/O
+                         net (fo=7, unplaced)         0.484    24.824    dpu_inst/mac0/R_r[31]_i_4021_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    24.948 r  dpu_inst/mac0/R_r[31]_i_4019/O
+                         net (fo=6, unplaced)         0.481    25.429    dpu_inst/mac0/p_0_out[1]
+                         LUT2 (Prop_lut2_I1_O)        0.124    25.553 r  dpu_inst/mac0/R_r[31]_i_4027/O
+                         net (fo=1, unplaced)         0.000    25.553    dpu_inst/mac0/R_r[31]_i_4027_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    26.086 r  dpu_inst/mac0/R_r_reg[31]_i_3475/CO[3]
+                         net (fo=1, unplaced)         0.000    26.086    dpu_inst/mac0/R_r_reg[31]_i_3475_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    26.203 r  dpu_inst/mac0/R_r_reg[31]_i_3477/CO[3]
+                         net (fo=1, unplaced)         0.000    26.203    dpu_inst/mac0/R_r_reg[31]_i_3477_n_0
+                         CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.281    26.484 r  dpu_inst/mac0/R_r_reg[31]_i_2747/CO[0]
+                         net (fo=15, unplaced)        0.364    26.848    dpu_inst/mac0/R_r_reg[31]_i_2747_n_3
+                         LUT6 (Prop_lut6_I1_O)        0.367    27.215 r  dpu_inst/mac0/R_r[31]_i_3983/O
+                         net (fo=97, unplaced)        0.548    27.763    dpu_inst/mac0/R_r[31]_i_3983_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    27.887 r  dpu_inst/mac0/R_r[31]_i_3976/O
+                         net (fo=5, unplaced)         0.760    28.647    dpu_inst/mac0/R_r[31]_i_3976_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    28.771 r  dpu_inst/mac0/R_r[31]_i_3972/O
+                         net (fo=2, unplaced)         0.460    29.231    dpu_inst/mac0/R_r[31]_i_3972_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    29.355 r  dpu_inst/mac0/R_r[31]_i_3419/O
+                         net (fo=3, unplaced)         0.467    29.822    dpu_inst/mac0/R_r[31]_i_3419_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    29.946 r  dpu_inst/mac0/R_r[31]_i_3405/O
+                         net (fo=2, unplaced)         0.743    30.689    dpu_inst/mac0/R_r[31]_i_3405_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    30.813 r  dpu_inst/mac0/R_r[31]_i_4270/O
+                         net (fo=1, unplaced)         0.449    31.262    dpu_inst/mac0/R_r[31]_i_4270_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    31.386 r  dpu_inst/mac0/R_r[31]_i_3964/O
+                         net (fo=1, unplaced)         0.449    31.835    dpu_inst/mac0/R_r[31]_i_3964_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    31.959 r  dpu_inst/mac0/R_r[31]_i_3416/O
+                         net (fo=1, unplaced)         0.449    32.408    dpu_inst/mac0/R_r[31]_i_3416_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    32.532 f  dpu_inst/mac0/R_r[31]_i_2718/O
+                         net (fo=1, unplaced)         0.449    32.981    dpu_inst/mac0/R_r[31]_i_2718_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    33.105 r  dpu_inst/mac0/R_r[31]_i_2032/O
+                         net (fo=1, unplaced)         0.000    33.105    dpu_inst/mac0/R_r[31]_i_2032_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    33.618 r  dpu_inst/mac0/R_r_reg[31]_i_1343/CO[3]
+                         net (fo=1, unplaced)         0.000    33.618    dpu_inst/mac0/R_r_reg[31]_i_1343_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    33.735 r  dpu_inst/mac0/R_r_reg[31]_i_1347/CO[3]
+                         net (fo=1, unplaced)         0.000    33.735    dpu_inst/mac0/R_r_reg[31]_i_1347_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    33.852 r  dpu_inst/mac0/R_r_reg[31]_i_1345/CO[3]
+                         net (fo=1, unplaced)         0.000    33.852    dpu_inst/mac0/R_r_reg[31]_i_1345_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    33.969 r  dpu_inst/mac0/R_r_reg[31]_i_1346/CO[3]
+                         net (fo=1, unplaced)         0.000    33.969    dpu_inst/mac0/R_r_reg[31]_i_1346_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    34.086 r  dpu_inst/mac0/R_r_reg[31]_i_1344/CO[3]
+                         net (fo=1, unplaced)         0.000    34.086    dpu_inst/mac0/R_r_reg[31]_i_1344_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    34.203 r  dpu_inst/mac0/R_r_reg[31]_i_832/CO[3]
+                         net (fo=1, unplaced)         0.000    34.203    dpu_inst/mac0/R_r_reg[31]_i_832_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    34.534 r  dpu_inst/mac0/R_r_reg[31]_i_825/O[3]
+                         net (fo=17, unplaced)        0.656    35.190    dpu_inst/mac0/plusOp[27]
+                         LUT4 (Prop_lut4_I2_O)        0.307    35.497 f  dpu_inst/mac0/R_r[31]_i_2064/O
+                         net (fo=1, unplaced)         0.449    35.946    dpu_inst/mac0/R_r[31]_i_2064_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    36.070 r  dpu_inst/mac0/R_r[31]_i_1352/O
+                         net (fo=8, unplaced)         0.487    36.557    dpu_inst/mac0/R_r[31]_i_1352_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    36.681 f  dpu_inst/mac0/R_r[31]_i_1342/O
+                         net (fo=78, unplaced)        0.542    37.223    dpu_inst/mac0/R_r[31]_i_1342_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    37.347 r  dpu_inst/mac0/R_r[31]_i_828/O
+                         net (fo=1, unplaced)         0.449    37.796    dpu_inst/mac0/R_r[31]_i_828_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    37.920 f  dpu_inst/mac0/R_r[31]_i_411/O
+                         net (fo=16, unplaced)        0.503    38.423    dpu_inst/mac0/R_r[31]_i_411_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124    38.547 r  dpu_inst/mac0/R_r[31]_i_1481/O
+                         net (fo=16, unplaced)        0.503    39.050    dpu_inst/mac0/R_r[31]_i_1481_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    39.174 r  dpu_inst/mac0/R_r[31]_i_4489/O
+                         net (fo=1, unplaced)         0.000    39.174    dpu_inst/mac0/R_r[31]_i_4489_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    39.707 r  dpu_inst/mac0/R_r_reg[31]_i_4365/CO[3]
+                         net (fo=1, unplaced)         0.000    39.707    dpu_inst/mac0/R_r_reg[31]_i_4365_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    40.044 r  dpu_inst/mac0/R_r_reg[31]_i_4159/O[1]
+                         net (fo=3, unplaced)         0.629    40.673    dpu_inst/mac0/R_r_reg[31]_i_4159_n_6
+                         LUT4 (Prop_lut4_I0_O)        0.306    40.979 r  dpu_inst/mac0/R_r[31]_i_4157/O
+                         net (fo=1, unplaced)         0.000    40.979    dpu_inst/mac0/R_r[31]_i_4157_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    41.512 r  dpu_inst/mac0/R_r_reg[31]_i_3613/CO[3]
+                         net (fo=1, unplaced)         0.000    41.512    dpu_inst/mac0/R_r_reg[31]_i_3613_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    41.849 r  dpu_inst/mac0/R_r_reg[31]_i_2958/O[1]
+                         net (fo=125, unplaced)       0.716    42.565    dpu_inst/mac0/mac1/expDiffNotLarge
+                         LUT3 (Prop_lut3_I1_O)        0.306    42.871 r  dpu_inst/mac0/R_r[31]_i_3725/O
+                         net (fo=29, unplaced)        0.518    43.389    dpu_inst/mac0/R_r[31]_i_3725_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    43.513 r  dpu_inst/mac0/R_r[31]_i_4472/O
+                         net (fo=2, unplaced)         0.460    43.973    dpu_inst/mac0/R_r[31]_i_4472_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    44.097 r  dpu_inst/mac0/R_r[31]_i_4308/O
+                         net (fo=2, unplaced)         0.460    44.557    dpu_inst/mac0/R_r[31]_i_4308_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    44.681 r  dpu_inst/mac0/R_r[31]_i_4127/O
+                         net (fo=2, unplaced)         0.460    45.141    dpu_inst/mac0/R_r[31]_i_4127_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    45.265 r  dpu_inst/mac0/R_r[31]_i_3587/O
+                         net (fo=3, unplaced)         0.467    45.732    dpu_inst/mac0/R_r[31]_i_3587_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    45.856 r  dpu_inst/mac0/R_r[31]_i_2900/O
+                         net (fo=5, unplaced)         0.477    46.333    dpu_inst/mac0/R_r[31]_i_2900_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124    46.457 r  dpu_inst/mac0/R_r[31]_i_3579/O
+                         net (fo=2, unplaced)         0.460    46.917    dpu_inst/mac1/R_r_reg[31]_i_2122
+                         LUT4 (Prop_lut4_I2_O)        0.124    47.041 r  dpu_inst/mac1/R_r[31]_i_2890/O
+                         net (fo=1, unplaced)         0.000    47.041    dpu_inst/mac0/R_r[31]_i_3080_0[0]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    47.574 r  dpu_inst/mac0/R_r_reg[31]_i_2122/CO[3]
+                         net (fo=1, unplaced)         0.000    47.574    dpu_inst/mac1/CO[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    47.691 r  dpu_inst/mac1/R_r_reg[31]_i_2084/CO[3]
+                         net (fo=1, unplaced)         0.000    47.691    dpu_inst/mac1/R_r_reg[31]_i_2084_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    47.808 r  dpu_inst/mac1/R_r_reg[31]_i_2104/CO[3]
+                         net (fo=1, unplaced)         0.000    47.808    dpu_inst/mac0/R_r[31]_i_1391_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    47.925 r  dpu_inst/mac0/R_r_reg[31]_i_2113/CO[3]
+                         net (fo=1, unplaced)         0.000    47.925    dpu_inst/mac0/R_r_reg[31]_i_2113_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.042 r  dpu_inst/mac0/R_r_reg[31]_i_2160/CO[3]
+                         net (fo=1, unplaced)         0.000    48.042    dpu_inst/mac1/R_r[31]_i_4179[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.159 r  dpu_inst/mac1/R_r_reg[31]_i_2081/CO[3]
+                         net (fo=1, unplaced)         0.000    48.159    dpu_inst/mac1/R_r_reg[31]_i_2081_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.276 r  dpu_inst/mac1/R_r_reg[31]_i_2158/CO[3]
+                         net (fo=1, unplaced)         0.000    48.276    dpu_inst/mac1/R_r_reg[31]_i_2158_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.393 r  dpu_inst/mac1/R_r_reg[31]_i_2077/CO[3]
+                         net (fo=1, unplaced)         0.000    48.393    dpu_inst/mac1/R_r_reg[31]_i_2077_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.510 r  dpu_inst/mac1/R_r_reg[31]_i_1395/CO[3]
+                         net (fo=1, unplaced)         0.000    48.510    dpu_inst/mac1/R_r_reg[31]_i_1395_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.627 r  dpu_inst/mac1/R_r_reg[31]_i_2086/CO[3]
+                         net (fo=1, unplaced)         0.000    48.627    dpu_inst/mac0/R_r[31]_i_3677_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.744 r  dpu_inst/mac0/R_r_reg[31]_i_2102/CO[3]
+                         net (fo=1, unplaced)         0.000    48.744    dpu_inst/mac0/R_r_reg[31]_i_2102_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.861 r  dpu_inst/mac0/R_r_reg[31]_i_2111/CO[3]
+                         net (fo=1, unplaced)         0.000    48.861    dpu_inst/mac0/R_r_reg[31]_i_2111_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    48.978 r  dpu_inst/mac0/R_r_reg[31]_i_2161/CO[3]
+                         net (fo=1, unplaced)         0.000    48.978    dpu_inst/mac0/R_r_reg[31]_i_2161_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    49.095 r  dpu_inst/mac0/R_r_reg[31]_i_4171/CO[3]
+                         net (fo=1, unplaced)         0.000    49.095    dpu_inst/mac0/R_r_reg[31]_i_4171_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    49.212 r  dpu_inst/mac0/R_r_reg[31]_i_4169/CO[3]
+                         net (fo=1, unplaced)         0.000    49.212    dpu_inst/mac0/R_r_reg[31]_i_4169_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    49.329 r  dpu_inst/mac0/R_r_reg[31]_i_4080/CO[3]
+                         net (fo=1, unplaced)         0.000    49.329    dpu_inst/mac0/R_r_reg[31]_i_4080_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    49.446 r  dpu_inst/mac0/R_r_reg[31]_i_3515/CO[3]
+                         net (fo=1, unplaced)         0.000    49.446    dpu_inst/mac0/R_r_reg[31]_i_3515_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    49.563 r  dpu_inst/mac0/R_r_reg[31]_i_2771/CO[3]
+                         net (fo=1, unplaced)         0.000    49.563    dpu_inst/mac0/R_r_reg[31]_i_2771_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256    49.819 r  dpu_inst/mac0/R_r_reg[31]_i_2076/O[2]
+                         net (fo=96, unplaced)        0.551    50.370    dpu_inst/mac0/mac1/p_0_in47_in
+                         LUT4 (Prop_lut4_I1_O)        0.301    50.671 f  dpu_inst/mac0/R_r[31]_i_1419/O
+                         net (fo=5, unplaced)         0.992    51.663    dpu_inst/mac0/R_r[31]_i_1419_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    51.787 r  dpu_inst/mac0/R_r[31]_i_1388/O
+                         net (fo=15, unplaced)        0.785    52.572    dpu_inst/mac0/R_r[31]_i_1388_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    52.696 r  dpu_inst/mac0/R_r[31]_i_1378/O
+                         net (fo=2, unplaced)         0.743    53.439    dpu_inst/mac0/R_r[31]_i_1378_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    53.563 r  dpu_inst/mac0/R_r[31]_i_839/O
+                         net (fo=11, unplaced)        0.987    54.550    dpu_inst/mac0/R_r[31]_i_839_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    54.674 r  dpu_inst/mac0/R_r[31]_i_1370/O
+                         net (fo=2, unplaced)         0.975    55.649    dpu_inst/mac0/R_r[31]_i_1370_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    55.773 f  dpu_inst/mac0/R_r[31]_i_836/O
+                         net (fo=1, unplaced)         0.732    56.505    dpu_inst/mac0/R_r[31]_i_836_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    56.629 r  dpu_inst/mac0/R_r[31]_i_417/O
+                         net (fo=14, unplaced)        0.500    57.129    dpu_inst/mac0/R_r[31]_i_417_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    57.253 r  dpu_inst/mac0/R_r[31]_i_3134/O
+                         net (fo=6, unplaced)         0.764    58.017    dpu_inst/mac0/R_r[31]_i_3134_n_0
+                         LUT4 (Prop_lut4_I0_O)        0.124    58.141 r  dpu_inst/mac0/R_r[31]_i_2287/O
+                         net (fo=1, unplaced)         0.000    58.141    dpu_inst/mac0/R_r[31]_i_2287_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    58.654 r  dpu_inst/mac0/R_r_reg[31]_i_1487/CO[3]
+                         net (fo=1, unplaced)         0.000    58.654    dpu_inst/mac0/R_r_reg[31]_i_1487_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    58.771 r  dpu_inst/mac0/R_r_reg[31]_i_2271/CO[3]
+                         net (fo=1, unplaced)         0.000    58.771    dpu_inst/mac0/R_r_reg[31]_i_2271_n_0
+                         CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.281    59.052 f  dpu_inst/mac0/R_r_reg[31]_i_1479/CO[0]
+                         net (fo=15, unplaced)        0.364    59.416    dpu_inst/mac0/R_r_reg[31]_i_1479_n_3
+                         LUT5 (Prop_lut5_I4_O)        0.367    59.783 r  dpu_inst/mac0/R_r[31]_i_3633/O
+                         net (fo=1, unplaced)         0.449    60.232    dpu_inst/mac0/R_r[31]_i_3633_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    60.356 r  dpu_inst/mac0/R_r[31]_i_2966/O
+                         net (fo=106, unplaced)       0.550    60.906    dpu_inst/mac0/R_r[31]_i_2966_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    61.030 r  dpu_inst/mac0/R_r[31]_i_3699/O
+                         net (fo=2, unplaced)         0.460    61.490    dpu_inst/mac0/R_r[31]_i_3699_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    61.614 r  dpu_inst/mac0/R_r[31]_i_3030/O
+                         net (fo=2, unplaced)         0.460    62.074    dpu_inst/mac0/R_r[31]_i_3030_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    62.198 r  dpu_inst/mac0/R_r[31]_i_3089/O
+                         net (fo=2, unplaced)         0.460    62.658    dpu_inst/mac0/R_r[31]_i_3089_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    62.782 r  dpu_inst/mac0/R_r[31]_i_2236/O
+                         net (fo=2, unplaced)         0.460    63.242    dpu_inst/mac0/R_r[31]_i_2236_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    63.366 r  dpu_inst/mac0/R_r[31]_i_3735/O
+                         net (fo=1, unplaced)         0.449    63.815    dpu_inst/mac0/R_r[31]_i_3735_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    63.939 r  dpu_inst/mac0/R_r[31]_i_3069/O
+                         net (fo=1, unplaced)         0.732    64.671    dpu_inst/mac0/R_r[31]_i_3069_n_0
+                         LUT4 (Prop_lut4_I0_O)        0.124    64.795 f  dpu_inst/mac0/R_r[31]_i_2218/O
+                         net (fo=1, unplaced)         0.449    65.244    dpu_inst/mac0/R_r[31]_i_2218_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    65.368 f  dpu_inst/mac0/R_r[31]_i_1455/O
+                         net (fo=1, unplaced)         0.449    65.817    dpu_inst/mac0/R_r[31]_i_1455_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    65.941 r  dpu_inst/mac0/R_r[31]_i_867/O
+                         net (fo=1, unplaced)         0.000    65.941    dpu_inst/mac0/R_r[31]_i_867_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    66.454 r  dpu_inst/mac0/R_r_reg[31]_i_434/CO[3]
+                         net (fo=1, unplaced)         0.000    66.454    dpu_inst/mac0/R_r_reg[31]_i_434_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    66.571 r  dpu_inst/mac0/R_r_reg[31]_i_438/CO[3]
+                         net (fo=1, unplaced)         0.000    66.571    dpu_inst/mac0/R_r_reg[31]_i_438_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    66.688 r  dpu_inst/mac0/R_r_reg[31]_i_436/CO[3]
+                         net (fo=1, unplaced)         0.000    66.688    dpu_inst/mac0/R_r_reg[31]_i_436_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    66.805 r  dpu_inst/mac0/R_r_reg[31]_i_437/CO[3]
+                         net (fo=1, unplaced)         0.000    66.805    dpu_inst/mac0/R_r_reg[31]_i_437_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    66.922 r  dpu_inst/mac0/R_r_reg[31]_i_435/CO[3]
+                         net (fo=1, unplaced)         0.000    66.922    dpu_inst/mac0/R_r_reg[31]_i_435_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    67.039 r  dpu_inst/mac0/R_r_reg[31]_i_427/CO[3]
+                         net (fo=1, unplaced)         0.000    67.039    dpu_inst/mac0/R_r_reg[31]_i_427_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    67.370 r  dpu_inst/mac0/R_r_reg[31]_i_212/O[3]
+                         net (fo=17, unplaced)        0.656    68.026    dpu_inst/mac0/mac1/plusOp[27]
+                         LUT4 (Prop_lut4_I2_O)        0.307    68.333 f  dpu_inst/mac0/R_r[31]_i_899/O
+                         net (fo=1, unplaced)         0.449    68.782    dpu_inst/mac0/R_r[31]_i_899_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    68.906 r  dpu_inst/mac0/R_r[31]_i_443/O
+                         net (fo=5, unplaced)         0.477    69.383    dpu_inst/mac0/R_r[31]_i_443_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    69.507 f  dpu_inst/mac0/R_r[31]_i_433/O
+                         net (fo=77, unplaced)        0.542    70.049    dpu_inst/mac0/R_r[31]_i_433_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    70.173 r  dpu_inst/mac0/R_r[31]_i_215/O
+                         net (fo=1, unplaced)         0.449    70.622    dpu_inst/mac0/R_r[31]_i_215_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    70.746 f  dpu_inst/mac0/R_r[31]_i_78/O
+                         net (fo=16, unplaced)        0.503    71.249    dpu_inst/mac0/R_r[31]_i_78_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124    71.373 r  dpu_inst/mac0/R_r[31]_i_791/O
+                         net (fo=15, unplaced)        0.502    71.875    dpu_inst/mac0/R_r[31]_i_791_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    71.999 r  dpu_inst/mac0/R_r[31]_i_3791/O
+                         net (fo=1, unplaced)         0.000    71.999    dpu_inst/mac0/R_r[31]_i_3791_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    72.532 r  dpu_inst/mac0/R_r_reg[31]_i_3198/CO[3]
+                         net (fo=1, unplaced)         0.000    72.532    dpu_inst/mac0/R_r_reg[31]_i_3198_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    72.869 r  dpu_inst/mac0/R_r_reg[31]_i_2344/O[1]
+                         net (fo=3, unplaced)         0.629    73.498    dpu_inst/mac0/R_r_reg[31]_i_2344_n_6
+                         LUT4 (Prop_lut4_I0_O)        0.306    73.804 r  dpu_inst/mac0/R_r[31]_i_2342/O
+                         net (fo=1, unplaced)         0.000    73.804    dpu_inst/mac0/R_r[31]_i_2342_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    74.337 r  dpu_inst/mac0/R_r_reg[31]_i_1552/CO[3]
+                         net (fo=1, unplaced)         0.000    74.337    dpu_inst/mac0/R_r_reg[31]_i_1552_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    74.674 r  dpu_inst/mac0/R_r_reg[31]_i_949/O[1]
+                         net (fo=127, unplaced)       0.717    75.391    dpu_inst/mac0/mac2/expDiffNotLarge
+                         LUT3 (Prop_lut3_I1_O)        0.306    75.697 r  dpu_inst/mac0/R_r[31]_i_2318/O
+                         net (fo=27, unplaced)        0.516    76.213    dpu_inst/mac0/R_r[31]_i_2318_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    76.337 r  dpu_inst/mac0/R_r[31]_i_3778/O
+                         net (fo=2, unplaced)         0.460    76.797    dpu_inst/mac0/R_r[31]_i_3778_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    76.921 r  dpu_inst/mac0/R_r[31]_i_3148/O
+                         net (fo=2, unplaced)         0.460    77.381    dpu_inst/mac0/R_r[31]_i_3148_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    77.505 r  dpu_inst/mac0/R_r[31]_i_2300/O
+                         net (fo=2, unplaced)         0.460    77.965    dpu_inst/mac0/R_r[31]_i_2300_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    78.089 r  dpu_inst/mac0/R_r[31]_i_1503/O
+                         net (fo=4, unplaced)         0.473    78.562    dpu_inst/mac0/R_r[31]_i_1503_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    78.686 r  dpu_inst/mac0/R_r[31]_i_1569/O
+                         net (fo=5, unplaced)         0.477    79.163    dpu_inst/mac0/R_r[31]_i_1569_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124    79.287 r  dpu_inst/mac0/R_r[31]_i_2374/O
+                         net (fo=2, unplaced)         0.460    79.747    dpu_inst/mac2/R_r_reg[31]_i_978
+                         LUT4 (Prop_lut4_I2_O)        0.124    79.871 r  dpu_inst/mac2/R_r[31]_i_1606/O
+                         net (fo=1, unplaced)         0.000    79.871    dpu_inst/mac0/R_r[31]_i_2523_0[0]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    80.404 r  dpu_inst/mac0/R_r_reg[31]_i_978/CO[3]
+                         net (fo=1, unplaced)         0.000    80.404    dpu_inst/mac2/R_r[31]_i_541[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    80.521 r  dpu_inst/mac2/R_r_reg[31]_i_461/CO[3]
+                         net (fo=1, unplaced)         0.000    80.521    dpu_inst/mac2/R_r_reg[31]_i_461_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    80.638 r  dpu_inst/mac2/R_r_reg[31]_i_913/CO[3]
+                         net (fo=1, unplaced)         0.000    80.638    dpu_inst/mac0/R_r[31]_i_483_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    80.755 r  dpu_inst/mac0/R_r_reg[31]_i_447/CO[3]
+                         net (fo=1, unplaced)         0.000    80.755    dpu_inst/mac0/R_r_reg[31]_i_447_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    80.872 r  dpu_inst/mac0/R_r_reg[31]_i_964/CO[3]
+                         net (fo=1, unplaced)         0.000    80.872    dpu_inst/mac2/R_r[31]_i_3806[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    80.989 r  dpu_inst/mac2/R_r_reg[31]_i_459/CO[3]
+                         net (fo=1, unplaced)         0.000    80.989    dpu_inst/mac2/R_r_reg[31]_i_459_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.106 r  dpu_inst/mac2/R_r_reg[31]_i_503/CO[3]
+                         net (fo=1, unplaced)         0.000    81.106    dpu_inst/mac2/R_r_reg[31]_i_503_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.223 r  dpu_inst/mac2/R_r_reg[31]_i_451/CO[3]
+                         net (fo=1, unplaced)         0.000    81.223    dpu_inst/mac2/R_r_reg[31]_i_451_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.340 r  dpu_inst/mac2/R_r_reg[31]_i_991/CO[3]
+                         net (fo=1, unplaced)         0.000    81.340    dpu_inst/mac2/R_r_reg[31]_i_991_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.457 r  dpu_inst/mac2/R_r_reg[31]_i_463/CO[3]
+                         net (fo=1, unplaced)         0.000    81.457    dpu_inst/mac0/R_r[31]_i_2462_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.574 r  dpu_inst/mac0/R_r_reg[31]_i_508/CO[3]
+                         net (fo=1, unplaced)         0.000    81.574    dpu_inst/mac0/R_r_reg[31]_i_508_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.691 r  dpu_inst/mac0/R_r_reg[31]_i_449/CO[3]
+                         net (fo=1, unplaced)         0.000    81.691    dpu_inst/mac0/R_r_reg[31]_i_449_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.808 r  dpu_inst/mac0/R_r_reg[31]_i_1000/CO[3]
+                         net (fo=1, unplaced)         0.000    81.808    dpu_inst/mac0/R_r_reg[31]_i_1000_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    81.925 r  dpu_inst/mac0/R_r_reg[31]_i_3235/CO[3]
+                         net (fo=1, unplaced)         0.000    81.925    dpu_inst/mac0/R_r_reg[31]_i_3235_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    82.042 r  dpu_inst/mac0/R_r_reg[31]_i_3135/CO[3]
+                         net (fo=1, unplaced)         0.000    82.042    dpu_inst/mac0/R_r_reg[31]_i_3135_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    82.159 r  dpu_inst/mac0/R_r_reg[31]_i_2289/CO[3]
+                         net (fo=1, unplaced)         0.000    82.159    dpu_inst/mac0/R_r_reg[31]_i_2289_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    82.276 r  dpu_inst/mac0/R_r_reg[31]_i_1489/CO[3]
+                         net (fo=1, unplaced)         0.000    82.276    dpu_inst/mac0/R_r_reg[31]_i_1489_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    82.393 r  dpu_inst/mac0/R_r_reg[31]_i_902/CO[3]
+                         net (fo=1, unplaced)         0.000    82.393    dpu_inst/mac0/R_r_reg[31]_i_902_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256    82.649 r  dpu_inst/mac0/R_r_reg[31]_i_445/O[2]
+                         net (fo=67, unplaced)        0.542    83.191    dpu_inst/mac0/mac2/p_0_in47_in
+                         LUT2 (Prop_lut2_I0_O)        0.301    83.492 r  dpu_inst/mac0/R_r[31]_i_457/O
+                         net (fo=99, unplaced)        0.831    84.323    dpu_inst/mac0/R_r[31]_i_457_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    84.447 f  dpu_inst/mac0/R_r[31]_i_233/O
+                         net (fo=1, unplaced)         0.964    85.411    dpu_inst/mac0/R_r[31]_i_233_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    85.535 r  dpu_inst/mac0/R_r[31]_i_85/O
+                         net (fo=51, unplaced)        0.748    86.283    dpu_inst/mac0/R_r[31]_i_85_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    86.407 r  dpu_inst/mac0/R_r[31]_i_243/O
+                         net (fo=4, unplaced)         0.988    87.395    dpu_inst/mac0/R_r[31]_i_243_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    87.519 f  dpu_inst/mac0/R_r[31]_i_87/O
+                         net (fo=36, unplaced)        0.523    88.042    dpu_inst/mac0/R_r[31]_i_87_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    88.166 f  dpu_inst/mac0/R_r[31]_i_223/O
+                         net (fo=8, unplaced)         1.002    89.168    dpu_inst/mac0/R_r[31]_i_223_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    89.292 r  dpu_inst/mac0/R_r[31]_i_81/O
+                         net (fo=18, unplaced)        0.506    89.798    dpu_inst/mac0/R_r[31]_i_81_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.124    89.922 f  dpu_inst/mac0/R_r[31]_i_3247/O
+                         net (fo=1, unplaced)         0.449    90.371    dpu_inst/mac0/R_r[31]_i_3247_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    90.495 f  dpu_inst/mac0/R_r[31]_i_2540/O
+                         net (fo=1, unplaced)         0.449    90.944    dpu_inst/mac0/R_r[31]_i_2540_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    91.068 r  dpu_inst/mac0/R_r[31]_i_1905/O
+                         net (fo=7, unplaced)         0.484    91.552    dpu_inst/mac0/R_r[31]_i_1905_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    91.676 r  dpu_inst/mac0/R_r[31]_i_1903/O
+                         net (fo=6, unplaced)         0.481    92.157    dpu_inst/mac0/mac2/p_0_out[1]
+                         LUT2 (Prop_lut2_I1_O)        0.124    92.281 r  dpu_inst/mac0/R_r[31]_i_1911/O
+                         net (fo=1, unplaced)         0.000    92.281    dpu_inst/mac0/R_r[31]_i_1911_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    92.814 r  dpu_inst/mac0/R_r_reg[31]_i_1290/CO[3]
+                         net (fo=1, unplaced)         0.000    92.814    dpu_inst/mac0/R_r_reg[31]_i_1290_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    92.931 r  dpu_inst/mac0/R_r_reg[31]_i_1758/CO[3]
+                         net (fo=1, unplaced)         0.000    92.931    dpu_inst/mac0/R_r_reg[31]_i_1758_n_0
+                         CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.281    93.212 f  dpu_inst/mac0/R_r_reg[31]_i_1183/CO[0]
+                         net (fo=14, unplaced)        0.362    93.574    dpu_inst/mac0/R_r_reg[31]_i_1183_n_3
+                         LUT5 (Prop_lut5_I4_O)        0.367    93.941 r  dpu_inst/mac0/R_r[31]_i_2447/O
+                         net (fo=1, unplaced)         0.449    94.390    dpu_inst/mac0/R_r[31]_i_2447_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    94.514 r  dpu_inst/mac0/R_r[31]_i_1766/O
+                         net (fo=99, unplaced)        0.573    95.087    dpu_inst/mac0/R_r[31]_i_1766_n_0
+                         MUXF7 (Prop_muxf7_S_O)       0.314    95.401 r  dpu_inst/mac0/R_r_reg[31]_i_1802/O
+                         net (fo=2, unplaced)         0.463    95.864    dpu_inst/mac0/R_r_reg[31]_i_1802_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.298    96.162 r  dpu_inst/mac0/R_r[31]_i_1786/O
+                         net (fo=2, unplaced)         0.460    96.622    dpu_inst/mac0/R_r[31]_i_1786_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124    96.746 r  dpu_inst/mac0/R_r[31]_i_1250/O
+                         net (fo=2, unplaced)         0.460    97.206    dpu_inst/mac0/R_r[31]_i_1250_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    97.330 r  dpu_inst/mac0/R_r[31]_i_1185/O
+                         net (fo=2, unplaced)         0.460    97.790    dpu_inst/mac0/R_r[31]_i_1185_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    97.914 r  dpu_inst/mac0/R_r[31]_i_752/O
+                         net (fo=28, unplaced)        0.517    98.431    dpu_inst/mac0/R_r[31]_i_752_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    98.555 r  dpu_inst/mac0/R_r[31]_i_767/O
+                         net (fo=2, unplaced)         0.460    99.015    dpu_inst/mac0/R_r[31]_i_767_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    99.139 r  dpu_inst/mac0/R_r[31]_i_399/O
+                         net (fo=1, unplaced)         0.000    99.139    dpu_inst/mac0/R_r[31]_i_399_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    99.652 r  dpu_inst/mac0/R_r_reg[31]_i_190/CO[3]
+                         net (fo=1, unplaced)         0.000    99.652    dpu_inst/mac0/R_r_reg[31]_i_190_n_0
+                         CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.232    99.884 r  dpu_inst/mac0/R_r_reg[31]_i_189/O[0]
+                         net (fo=1, unplaced)         0.813   100.697    dpu_inst/mac0/mac2/resultBeforeRound__0[27]
+                         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.671   101.368 r  dpu_inst/mac0/R_r_reg[31]_i_69/CO[3]
+                         net (fo=1, unplaced)         0.000   101.368    dpu_inst/mac0/R_r_reg[31]_i_69_n_0
+                         CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.232   101.600 r  dpu_inst/mac0/R_r_reg[31]_i_71/O[0]
+                         net (fo=8, unplaced)         0.508   102.108    dpu_inst/mac0/mac2/plusOp[28]
+                         LUT4 (Prop_lut4_I0_O)        0.295   102.403 f  dpu_inst/mac0/R_r[31]_i_384/O
+                         net (fo=1, unplaced)         0.449   102.852    dpu_inst/mac0/R_r[31]_i_384_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   102.976 r  dpu_inst/mac0/R_r[31]_i_185/O
+                         net (fo=8, unplaced)         0.487   103.463    dpu_inst/mac0/R_r[31]_i_185_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   103.587 f  dpu_inst/mac0/R_r[31]_i_176/O
+                         net (fo=77, unplaced)        0.542   104.129    dpu_inst/mac0/R_r[31]_i_176_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   104.253 r  dpu_inst/mac0/R_r[31]_i_72/O
+                         net (fo=1, unplaced)         0.449   104.702    dpu_inst/mac0/R_r[31]_i_72_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124   104.826 f  dpu_inst/mac0/R_r[31]_i_22/O
+                         net (fo=16, unplaced)        0.503   105.329    dpu_inst/mac0/R_r[31]_i_22_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124   105.453 r  dpu_inst/mac0/R_r[30]_i_25/O
+                         net (fo=16, unplaced)        0.503   105.956    dpu_inst/mac0/R_r[30]_i_25_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124   106.080 r  dpu_inst/mac0/R_r[31]_i_2404/O
+                         net (fo=1, unplaced)         0.000   106.080    dpu_inst/mac0/R_r[31]_i_2404_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533   106.613 r  dpu_inst/mac0/R_r_reg[31]_i_1718/CO[3]
+                         net (fo=1, unplaced)         0.000   106.613    dpu_inst/mac0/R_r_reg[31]_i_1718_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337   106.950 r  dpu_inst/mac0/R_r_reg[31]_i_1099/O[1]
+                         net (fo=3, unplaced)         0.629   107.579    dpu_inst/mac0/R_r_reg[31]_i_1099_n_6
+                         LUT4 (Prop_lut4_I0_O)        0.306   107.885 r  dpu_inst/mac0/R_r[31]_i_1097/O
+                         net (fo=1, unplaced)         0.000   107.885    dpu_inst/mac0/R_r[31]_i_1097_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533   108.418 r  dpu_inst/mac0/R_r_reg[31]_i_570/CO[3]
+                         net (fo=1, unplaced)         0.000   108.418    dpu_inst/mac0/R_r_reg[31]_i_570_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337   108.755 r  dpu_inst/mac0/R_r_reg[31]_i_263/O[1]
+                         net (fo=134, unplaced)       0.718   109.473    dpu_inst/mac0/mac3/expDiffNotLarge
+                         LUT3 (Prop_lut3_I1_O)        0.306   109.779 r  dpu_inst/mac0/R_r[19]_i_55/O
+                         net (fo=23, unplaced)        0.512   110.291    dpu_inst/mac0/R_r[19]_i_55_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124   110.415 r  dpu_inst/mac0/R_r[31]_i_3230/O
+                         net (fo=2, unplaced)         0.460   110.875    dpu_inst/mac0/R_r[31]_i_3230_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   110.999 r  dpu_inst/mac0/R_r[31]_i_2410/O
+                         net (fo=2, unplaced)         0.460   111.459    dpu_inst/mac0/R_r[31]_i_2410_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   111.583 r  dpu_inst/mac0/R_r[31]_i_1750/O
+                         net (fo=2, unplaced)         0.460   112.043    dpu_inst/mac0/R_r[31]_i_1750_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124   112.167 r  dpu_inst/mac0/R_r[31]_i_1153/O
+                         net (fo=4, unplaced)         0.473   112.640    dpu_inst/mac0/R_r[31]_i_1153_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   112.764 r  dpu_inst/mac0/R_r[31]_i_694/O
+                         net (fo=5, unplaced)         0.477   113.241    dpu_inst/mac0/R_r[31]_i_694_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124   113.365 r  dpu_inst/mac0/R_r[31]_i_1162/O
+                         net (fo=2, unplaced)         0.460   113.825    dpu_inst/mac3/R_r_reg[31]_i_313
+                         LUT4 (Prop_lut4_I2_O)        0.124   113.949 r  dpu_inst/mac3/R_r[31]_i_674/O
+                         net (fo=1, unplaced)         0.000   113.949    dpu_inst/mac0/R_r[23]_i_137_0[0]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533   114.482 r  dpu_inst/mac0/R_r_reg[31]_i_313/CO[3]
+                         net (fo=1, unplaced)         0.000   114.482    dpu_inst/mac3/R_r[31]_i_330[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   114.599 r  dpu_inst/mac3/R_r_reg[31]_i_610/CO[3]
+                         net (fo=1, unplaced)         0.000   114.599    dpu_inst/mac3/R_r_reg[31]_i_610_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   114.716 r  dpu_inst/mac3/R_r_reg[31]_i_295/CO[3]
+                         net (fo=1, unplaced)         0.000   114.716    dpu_inst/mac0/R_r[31]_i_130_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   114.833 r  dpu_inst/mac0/R_r_reg[31]_i_304/CO[3]
+                         net (fo=1, unplaced)         0.000   114.833    dpu_inst/mac0/R_r_reg[31]_i_304_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   114.950 r  dpu_inst/mac0/R_r_reg[31]_i_353/CO[3]
+                         net (fo=1, unplaced)         0.000   114.950    dpu_inst/mac3/R_r[27]_i_47[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.067 r  dpu_inst/mac3/R_r_reg[31]_i_275/CO[3]
+                         net (fo=1, unplaced)         0.000   115.067    dpu_inst/mac3/R_r_reg[31]_i_275_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.184 r  dpu_inst/mac3/R_r_reg[31]_i_351/CO[3]
+                         net (fo=1, unplaced)         0.000   115.184    dpu_inst/mac3/R_r_reg[31]_i_351_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.301 r  dpu_inst/mac3/R_r_reg[31]_i_320/CO[3]
+                         net (fo=1, unplaced)         0.000   115.301    dpu_inst/mac3/R_r_reg[31]_i_320_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.418 r  dpu_inst/mac3/R_r_reg[31]_i_134/CO[3]
+                         net (fo=1, unplaced)         0.000   115.418    dpu_inst/mac3/R_r_reg[31]_i_134_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.535 r  dpu_inst/mac3/R_r_reg[31]_i_355/CO[3]
+                         net (fo=1, unplaced)         0.000   115.535    dpu_inst/mac0/R_r[31]_i_1735_0[0]
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.652 r  dpu_inst/mac0/R_r_reg[31]_i_293/CO[3]
+                         net (fo=1, unplaced)         0.000   115.652    dpu_inst/mac0/R_r_reg[31]_i_293_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.769 r  dpu_inst/mac0/R_r_reg[31]_i_302/CO[3]
+                         net (fo=1, unplaced)         0.000   115.769    dpu_inst/mac0/R_r_reg[31]_i_302_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.886 r  dpu_inst/mac0/R_r_reg[31]_i_356/CO[3]
+                         net (fo=1, unplaced)         0.000   115.886    dpu_inst/mac0/R_r_reg[31]_i_356_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   116.003 r  dpu_inst/mac0/R_r_reg[23]_i_198/CO[3]
+                         net (fo=1, unplaced)         0.000   116.003    dpu_inst/mac0/R_r_reg[23]_i_198_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   116.120 r  dpu_inst/mac0/R_r_reg[23]_i_194/CO[3]
+                         net (fo=1, unplaced)         0.000   116.120    dpu_inst/mac0/R_r_reg[23]_i_194_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   116.237 r  dpu_inst/mac0/R_r_reg[23]_i_193/CO[3]
+                         net (fo=1, unplaced)         0.000   116.237    dpu_inst/mac0/R_r_reg[23]_i_193_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   116.354 r  dpu_inst/mac0/R_r_reg[23]_i_191/CO[3]
+                         net (fo=1, unplaced)         0.000   116.354    dpu_inst/mac0/R_r_reg[23]_i_191_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   116.471 r  dpu_inst/mac0/R_r_reg[31]_i_590/CO[3]
+                         net (fo=1, unplaced)         0.000   116.471    dpu_inst/mac0/R_r_reg[31]_i_590_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256   116.727 r  dpu_inst/mac0/R_r_reg[31]_i_271/O[2]
+                         net (fo=96, unplaced)        0.551   117.278    dpu_inst/mac0/mac3/p_0_in47_in
+                         LUT4 (Prop_lut4_I1_O)        0.301   117.579 f  dpu_inst/mac0/R_r[31]_i_158/O
+                         net (fo=10, unplaced)        1.007   118.586    dpu_inst/mac0/R_r[31]_i_158_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   118.710 r  dpu_inst/mac0/R_r[31]_i_127/O
+                         net (fo=15, unplaced)        0.785   119.495    dpu_inst/mac0/R_r[31]_i_127_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124   119.619 r  dpu_inst/mac0/R_r[31]_i_103/O
+                         net (fo=3, unplaced)         0.750   120.369    dpu_inst/mac0/R_r[31]_i_103_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124   120.493 r  dpu_inst/mac0/R_r[31]_i_39/O
+                         net (fo=16, unplaced)        0.995   121.488    dpu_inst/mac0/R_r[31]_i_39_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   121.612 r  dpu_inst/mac0/R_r[31]_i_115/O
+                         net (fo=1, unplaced)         0.964   122.576    dpu_inst/mac0/R_r[31]_i_115_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   122.700 f  dpu_inst/mac0/R_r[31]_i_38/O
+                         net (fo=7, unplaced)         0.976   123.676    dpu_inst/mac0/R_r[31]_i_38_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   123.800 r  dpu_inst/mac0/R_r[19]_i_56/O
+                         net (fo=68, unplaced)        0.539   124.339    dpu_inst/mac0/R_r[19]_i_56_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124   124.463 r  dpu_inst/mac0/R_r[27]_i_37/O
+                         net (fo=2, unplaced)         0.460   124.923    dpu_inst/mac0/mac3/p_0_out[0]
+                         LUT2 (Prop_lut2_I1_O)        0.124   125.047 r  dpu_inst/mac0/R_r[27]_i_28/O
+                         net (fo=1, unplaced)         0.000   125.047    dpu_inst/mac0/R_r[27]_i_28_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513   125.560 r  dpu_inst/mac0/R_r_reg[27]_i_15/CO[3]
+                         net (fo=1, unplaced)         0.000   125.560    dpu_inst/mac0/R_r_reg[27]_i_15_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   125.677 r  dpu_inst/mac0/R_r_reg[30]_i_36/CO[3]
+                         net (fo=1, unplaced)         0.000   125.677    dpu_inst/mac0/R_r_reg[30]_i_36_n_0
+                         CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.281   125.958 r  dpu_inst/mac0/R_r_reg[30]_i_24/CO[0]
+                         net (fo=16, unplaced)        0.365   126.323    dpu_inst/mac0/R_r_reg[30]_i_24_n_3
+                         LUT2 (Prop_lut2_I1_O)        0.367   126.690 r  dpu_inst/mac0/R_r[30]_i_26/O
+                         net (fo=70, unplaced)        0.540   127.230    dpu_inst/mac0/R_r[30]_i_26_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124   127.354 r  dpu_inst/mac0/R_r[19]_i_67/O
+                         net (fo=3, unplaced)         0.982   128.336    dpu_inst/mac0/R_r[19]_i_67_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   128.460 r  dpu_inst/mac0/R_r[19]_i_45/O
+                         net (fo=2, unplaced)         0.743   129.203    dpu_inst/mac0/R_r[19]_i_45_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124   129.327 r  dpu_inst/mac0/R_r[3]_i_60/O
+                         net (fo=1, unplaced)         0.941   130.268    dpu_inst/mac0/R_r[3]_i_60_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   130.392 r  dpu_inst/mac0/R_r[3]_i_41/O
+                         net (fo=1, unplaced)         0.964   131.356    dpu_inst/mac0/R_r[3]_i_41_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   131.480 f  dpu_inst/mac0/R_r[3]_i_29/O
+                         net (fo=1, unplaced)         0.732   132.212    dpu_inst/mac0/R_r[3]_i_29_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   132.336 r  dpu_inst/mac0/R_r[3]_i_15/O
+                         net (fo=1, unplaced)         0.732   133.068    dpu_inst/mac0/R_r[3]_i_15_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124   133.192 r  dpu_inst/mac0/R_r[3]_i_7/O
+                         net (fo=1, unplaced)         0.000   133.192    dpu_inst/mac0/R_r[3]_i_7_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513   133.705 r  dpu_inst/mac0/R_r_reg[3]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   133.705    dpu_inst/mac0/R_r_reg[3]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   133.822 r  dpu_inst/mac0/R_r_reg[7]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   133.822    dpu_inst/mac0/R_r_reg[7]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   133.939 r  dpu_inst/mac0/R_r_reg[11]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   133.939    dpu_inst/mac0/R_r_reg[11]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   134.056 r  dpu_inst/mac0/R_r_reg[15]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   134.056    dpu_inst/mac0/R_r_reg[15]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   134.173 r  dpu_inst/mac0/R_r_reg[19]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   134.173    dpu_inst/mac0/R_r_reg[19]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   134.290 r  dpu_inst/mac0/R_r_reg[23]_i_1/CO[3]
+                         net (fo=1, unplaced)         0.000   134.290    dpu_inst/mac0/R_r_reg[23]_i_1_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331   134.621 r  dpu_inst/mac0/R_r_reg[27]_i_1/O[3]
+                         net (fo=2, unplaced)         0.611   135.232    dpu_inst/mac0/R_r_reg[30]_i_4_0[4]
+                         LUT4 (Prop_lut4_I2_O)        0.307   135.539 f  dpu_inst/mac0/R_r[22]_i_6/O
+                         net (fo=1, unplaced)         0.449   135.988    dpu_inst/mac0/R_r[22]_i_6_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   136.112 r  dpu_inst/mac0/R_r[22]_i_5/O
+                         net (fo=2, unplaced)         0.460   136.572    dpu_inst/mac0/R_r[22]_i_5_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   136.696 r  dpu_inst/mac0/R_r[22]_i_1/O
+                         net (fo=23, unplaced)        0.671   137.367    dpu_inst_n_31
+                         FDRE                                         r  R_r_reg[0]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=0)                   0.000    10.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.838    10.838 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.763    11.600    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.091    11.691 r  clk_IBUF_BUFG_inst/O
+                         net (fo=324, unplaced)       0.439    12.130    clk_IBUF_BUFG
+                         FDRE                                         r  R_r_reg[0]/C
+                         clock pessimism              0.179    12.309    
+                         clock uncertainty           -0.035    12.274    
+                         FDRE (Setup_fdre_C_R)       -0.557    11.717    R_r_reg[0]
+  -------------------------------------------------------------------
+                         required time                         11.717    
+                         arrival time                        -137.367    
+  -------------------------------------------------------------------
+                         slack                               -125.650    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.615ns  (arrival time - required time)
+  Source:                 A3_r_reg[31]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            R_r_reg[31]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.859ns  (logic 0.290ns (33.775%)  route 0.569ns (66.225%))
+  Logic Levels:           2  (LUT2=1 LUT6=1)
+  Clock Path Skew:        0.145ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.033ns
+    Source Clock Delay      (SCD):    0.679ns
+    Clock Pessimism Removal (CPR):    0.210ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.200     0.200 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.338     0.539    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.026     0.565 r  clk_IBUF_BUFG_inst/O
+                         net (fo=324, unplaced)       0.114     0.679    clk_IBUF_BUFG
+                         FDRE                                         r  A3_r_reg[31]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 r  A3_r_reg[31]/Q
+                         net (fo=13, unplaced)        0.152     0.978    dpu_inst/mac0/aX3[31]
+                         LUT2 (Prop_lut2_I1_O)        0.098     1.076 r  dpu_inst/mac0/R_r[31]_i_2/O
+                         net (fo=4, unplaced)         0.416     1.492    dpu_inst/mac0/R_r[31]_i_2_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.045     1.537 r  dpu_inst/mac0/R_r[31]_i_1/O
+                         net (fo=1, unplaced)         0.000     1.537    R_comb[31]
+                         FDRE                                         r  R_r_reg[31]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.389     0.389 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.356     0.745    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.029     0.774 r  clk_IBUF_BUFG_inst/O
+                         net (fo=324, unplaced)       0.259     1.033    clk_IBUF_BUFG
+                         FDRE                                         r  R_r_reg[31]/C
+                         clock pessimism             -0.210     0.824    
+                         FDRE (Hold_fdre_C_D)         0.099     0.923    R_r_reg[31]
+  -------------------------------------------------------------------
+                         required time                         -0.923    
+                         arrival time                           1.537    
+  -------------------------------------------------------------------
+                         slack                                  0.615    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk
+Waveform(ns):       { 0.000 5.000 }
+Period(ns):         10.000
+Sources:            { clk }
+
+Check Type        Corner  Lib Pin  Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location  Pin
+Min Period        n/a     BUFG/I   n/a            2.155         10.000      7.845                clk_IBUF_BUFG_inst/I
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                A0_r_reg[0]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500                A0_r_reg[0]/C
+
+
+

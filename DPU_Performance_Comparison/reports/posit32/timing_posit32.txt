@@ -1,0 +1,847 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Wed Jun  3 09:40:13 2026
+| Host         : BOOK-CI84SRJIDA running 64-bit major release  (build 9200)
+| Command      : report_timing_summary -file C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Performance_Comparison/reports/posit32/timing_posit32.txt
+| Design       : POSIT32_DPU_perf_top
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Synthesized
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (288)
+6. checking no_output_delay (32)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (288)
+--------------------------------
+ There are 288 input ports with no input delay specified. (HIGH)
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (32)
+--------------------------------
+ There are 32 ports with no output delay specified. (HIGH)
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+   -120.517    -7192.871                     63                   63        0.377        0.000                      0                   63        4.500        0.000                       0                   321  
+
+
+Timing constraints are not met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock  Waveform(ns)       Period(ns)      Frequency(MHz)
+-----  ------------       ----------      --------------
+clk    {0.000 5.000}      10.000          100.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+clk              -120.517    -7192.871                     63                   63        0.377        0.000                      0                   63        4.500        0.000                       0                   321  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk
+  To Clock:  clk
+
+Setup :           63  Failing Endpoints,  Worst Slack     -120.517ns,  Total Violation    -7192.871ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.377ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack        4.500ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (VIOLATED) :        -120.517ns  (required time - arrival time)
+  Source:                 B3_r_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            R_r_reg[30]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        130.381ns  (logic 51.838ns (39.759%)  route 78.542ns (60.240%))
+  Logic Levels:           216  (CARRY4=85 DSP48E1=2 LUT1=4 LUT2=9 LUT3=15 LUT4=16 LUT5=32 LUT6=53)
+  Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.130ns = ( 12.130 - 10.000 ) 
+    Source Clock Delay      (SCD):    2.454ns
+    Clock Pessimism Removal (CPR):    0.179ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.971     0.971 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.803     1.774    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.096     1.870 r  clk_IBUF_BUFG_inst/O
+                         net (fo=320, unplaced)       0.584     2.454    clk_IBUF_BUFG
+                         FDRE                                         r  B3_r_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  B3_r_reg[1]/Q
+                         net (fo=2, unplaced)         0.481     3.413    dpu_inst/posit16_mul3/Y_decoder/lzoc/B3_r[1]
+                         LUT2 (Prop_lut2_I0_O)        0.295     3.708 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_110__2/O
+                         net (fo=1, unplaced)         0.000     3.708    dpu_inst/posit16_mul3/Y_decoder/lzoc/L[30]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533     4.241 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_70__2/CO[3]
+                         net (fo=1, unplaced)         0.000     4.241    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_70__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     4.358 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_94__2/CO[3]
+                         net (fo=1, unplaced)         0.000     4.358    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_94__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     4.475 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_103__2/CO[3]
+                         net (fo=1, unplaced)         0.000     4.475    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_103__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     4.592 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_9__5/CO[3]
+                         net (fo=1, unplaced)         0.000     4.592    dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_9__5_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     4.709 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_8__5/CO[3]
+                         net (fo=1, unplaced)         0.000     4.709    dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_8__5_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     4.826 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_7__5/CO[3]
+                         net (fo=1, unplaced)         0.000     4.826    dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_7__5_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331     5.157 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_5__5/O[3]
+                         net (fo=3, unplaced)         0.848     6.005    dpu_inst/posit16_mul3/Y_decoder_n_35
+                         LUT4 (Prop_lut4_I0_O)        0.307     6.312 r  dpu_inst/posit16_mul3/eqOp_carry__0_i_2__5/O
+                         net (fo=1, unplaced)         0.000     6.312    dpu_inst/posit16_mul3/Y_decoder/lzoc/S[0]
+                         CARRY4 (Prop_carry4_S[0]_CO[1])
+                                                      0.458     6.770 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry__0/CO[1]
+                         net (fo=54, unplaced)        0.396     7.166    dpu_inst/posit16_mul3/Y_decoder/lzoc/CO[0]
+                         LUT3 (Prop_lut3_I1_O)        0.332     7.498 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_114__2/O
+                         net (fo=2, unplaced)         0.460     7.958    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_114__2_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     8.082 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_132__2/O
+                         net (fo=1, unplaced)         0.449     8.531    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_132__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124     8.655 f  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_116__2/O
+                         net (fo=2, unplaced)         0.460     9.115    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_116__2_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124     9.239 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_71__2/O
+                         net (fo=45, unplaced)        0.529     9.768    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_71__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124     9.892 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_105__2/O
+                         net (fo=3, unplaced)         0.750    10.642    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_105__2_n_0
+                         LUT5 (Prop_lut5_I1_O)        0.124    10.766 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_69__2/O
+                         net (fo=33, unplaced)        0.521    11.287    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_69__2_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    11.411 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_97__2/O
+                         net (fo=4, unplaced)         0.473    11.884    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_97__2_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    12.008 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_48__2/O
+                         net (fo=32, unplaced)        0.520    12.528    dpu_inst/posit16_mul3/Y_decoder/lzoc/eqOp_carry_i_6__5_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    12.652 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_62__1/O
+                         net (fo=2, unplaced)         0.460    13.112    dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_62__1_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    13.236 r  dpu_inst/posit16_mul3/Y_decoder/lzoc/multOp_i_22__2/O
+                         net (fo=2, unplaced)         0.803    14.039    dpu_inst/posit16_mul3/Y_decoder_n_11
+                         DSP48E1 (Prop_dsp48e1_B[6]_PCOUT[47])
+                                                      3.851    17.890 r  dpu_inst/posit16_mul3/multOp__1/PCOUT[47]
+                         net (fo=1, unplaced)         0.000    17.890    dpu_inst/posit16_mul3/multOp__1_n_106
+                         DSP48E1 (Prop_dsp48e1_PCIN[47]_P[0])
+                                                      1.518    19.408 r  dpu_inst/posit16_mul3/multOp__2/P[0]
+                         net (fo=2, unplaced)         0.803    20.211    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_151__1_0[0]
+                         LUT2 (Prop_lut2_I0_O)        0.124    20.335 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_283__2/O
+                         net (fo=1, unplaced)         0.000    20.335    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_283__2_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    20.868 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_241__1/CO[3]
+                         net (fo=1, unplaced)         0.000    20.868    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_241__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    20.985 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_236__2/CO[3]
+                         net (fo=1, unplaced)         0.000    20.985    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_236__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.102 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_158__1/CO[3]
+                         net (fo=1, unplaced)         0.000    21.102    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_158__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.219 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_227__4/CO[3]
+                         net (fo=1, unplaced)         0.000    21.219    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_227__4_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.336 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_155__2/CO[3]
+                         net (fo=1, unplaced)         0.000    21.336    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_155__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.453 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_156__2/CO[3]
+                         net (fo=1, unplaced)         0.000    21.453    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_156__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.570 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_153__2/CO[3]
+                         net (fo=1, unplaced)         0.000    21.570    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_153__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.687 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_154__2/CO[3]
+                         net (fo=1, unplaced)         0.000    21.687    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_154__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    21.804 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_150__2/CO[3]
+                         net (fo=1, unplaced)         0.000    21.804    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_150__2_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    22.135 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_151__1/O[3]
+                         net (fo=72, unplaced)        1.059    23.194    dpu_inst/posit16_mul3/X_decoder/lzoc/ovf_m
+                         LUT6 (Prop_lut6_I5_O)        0.307    23.501 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_207__5/O
+                         net (fo=1, unplaced)         0.665    24.166    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_207__5_n_0
+                         CARRY4 (Prop_carry4_S[0]_O[2])
+                                                      0.668    24.834 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_142__2/O[2]
+                         net (fo=8, unplaced)         0.982    25.816    dpu_inst/posit16_mul3/X_decoder/lzoc/RegimeAns_tmp[0]
+                         LUT5 (Prop_lut5_I3_O)        0.301    26.117 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_209__5/O
+                         net (fo=1, unplaced)         0.449    26.566    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_209__5_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    26.690 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_144__2/O
+                         net (fo=8, unplaced)         0.487    27.177    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_144__2_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    27.301 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_198__3/O
+                         net (fo=1, unplaced)         0.449    27.750    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_198__3_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    27.874 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_141__1/O
+                         net (fo=70, unplaced)        0.540    28.414    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_141__1_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    28.538 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_385__2/O
+                         net (fo=2, unplaced)         0.460    28.998    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_385__2_n_0
+                         LUT3 (Prop_lut3_I2_O)        0.124    29.122 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_363__2/O
+                         net (fo=2, unplaced)         0.460    29.582    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_363__2_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    29.706 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_325__3/O
+                         net (fo=2, unplaced)         0.460    30.166    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_325__3_n_0
+                         LUT4 (Prop_lut4_I3_O)        0.124    30.290 f  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_317__5/O
+                         net (fo=2, unplaced)         0.743    31.033    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_317__5_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    31.157 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_312__2/O
+                         net (fo=1, unplaced)         0.732    31.889    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_312__2_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    32.013 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_291__2/O
+                         net (fo=1, unplaced)         0.449    32.462    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_291__2_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124    32.586 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_260__2/O
+                         net (fo=1, unplaced)         0.000    32.586    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_260__2_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    33.099 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_178__1/CO[3]
+                         net (fo=1, unplaced)         0.000    33.099    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_178__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    33.216 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_127__1/CO[3]
+                         net (fo=1, unplaced)         0.000    33.216    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_127__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    33.333 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_85__2/CO[3]
+                         net (fo=1, unplaced)         0.000    33.333    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_85__2_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    33.670 f  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_46__2/O[1]
+                         net (fo=4, unplaced)         0.336    34.006    dpu_inst/posit16_mul3/X_decoder/lzoc/p_1_in[13]
+                         LUT1 (Prop_lut1_I0_O)        0.306    34.312 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_88__2/O
+                         net (fo=1, unplaced)         0.000    34.312    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_88__2_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    34.845 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_45__1/CO[3]
+                         net (fo=1, unplaced)         0.000    34.845    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_45__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    34.962 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_38__2/CO[3]
+                         net (fo=1, unplaced)         0.000    34.962    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_38__2_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    35.299 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_36__2/O[1]
+                         net (fo=3, unplaced)         0.330    35.629    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_36__2_n_6
+                         LUT6 (Prop_lut6_I0_O)        0.306    35.935 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_19__9/O
+                         net (fo=1, unplaced)         0.000    35.935    dpu_inst/posit16_mul3/X_decoder/lzoc/posit16_add1/Y_decoder/L[10]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    36.468 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_7__10/CO[3]
+                         net (fo=1, unplaced)         0.000    36.468    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_7__10_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    36.799 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_5__10/O[3]
+                         net (fo=5, unplaced)         0.858    37.657    dpu_inst/posit16_mul3/X_decoder/lzoc/A3_r_reg[31]_6[3]
+                         LUT4 (Prop_lut4_I0_O)        0.307    37.964 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry__0_i_2__10/O
+                         net (fo=1, unplaced)         0.000    37.964    dpu_inst/posit16_add1/Y_decoder/lzoc/eqOp_carry_i_186__1[0]
+                         CARRY4 (Prop_carry4_S[0]_CO[1])
+                                                      0.458    38.422 r  dpu_inst/posit16_add1/Y_decoder/lzoc/eqOp_carry__0/CO[1]
+                         net (fo=58, unplaced)        0.398    38.820    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_769[0]
+                         LUT3 (Prop_lut3_I1_O)        0.332    39.152 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_430/O
+                         net (fo=2, unplaced)         0.460    39.612    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_430_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    39.736 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_432__0/O
+                         net (fo=1, unplaced)         0.449    40.185    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_432__0_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    40.309 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_306__0/O
+                         net (fo=4, unplaced)         0.473    40.782    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_306__0_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124    40.906 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_305__3/O
+                         net (fo=48, unplaced)        0.530    41.436    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_305__3_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    41.560 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_443__0/O
+                         net (fo=3, unplaced)         0.750    42.310    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_443__0_n_0
+                         LUT5 (Prop_lut5_I1_O)        0.124    42.434 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_578/O
+                         net (fo=34, unplaced)        0.522    42.956    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_578_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    43.080 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_403__1/O
+                         net (fo=4, unplaced)         0.473    43.553    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_403__1_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    43.677 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_311__4/O
+                         net (fo=37, unplaced)        0.524    44.201    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_6__10_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    44.325 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_415__0/O
+                         net (fo=2, unplaced)         0.460    44.785    dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_415__0_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    44.909 r  dpu_inst/posit16_mul3/X_decoder/lzoc/eqOp_carry_i_303__5/O
+                         net (fo=2, unplaced)         0.460    45.369    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_626_1
+                         LUT2 (Prop_lut2_I1_O)        0.124    45.493 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_768/O
+                         net (fo=1, unplaced)         0.000    45.493    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_768_n_0
+                         CARRY4 (Prop_carry4_S[0]_O[1])
+                                                      0.427    45.920 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_626/O[1]
+                         net (fo=5, unplaced)         1.025    46.945    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_626_n_6
+                         LUT5 (Prop_lut5_I0_O)        0.306    47.251 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_819/O
+                         net (fo=1, unplaced)         0.449    47.700    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_819_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    47.824 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_699__0/O
+                         net (fo=40, unplaced)        0.526    48.350    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_699__0_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    48.474 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_683__0/O
+                         net (fo=2, unplaced)         0.743    49.217    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_683__0_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    49.341 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_693__0/O
+                         net (fo=1, unplaced)         0.732    50.073    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_693__0_n_0
+                         LUT5 (Prop_lut5_I2_O)        0.124    50.197 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_527__0/O
+                         net (fo=1, unplaced)         0.732    50.929    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_527__0_n_0
+                         LUT5 (Prop_lut5_I2_O)        0.124    51.053 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_353__4/O
+                         net (fo=1, unplaced)         0.000    51.053    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_353__4_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    51.566 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_245__3/CO[3]
+                         net (fo=1, unplaced)         0.000    51.566    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_245__3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    51.683 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_246__3/CO[3]
+                         net (fo=1, unplaced)         0.000    51.683    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_246__3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    51.800 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_244__1/CO[3]
+                         net (fo=1, unplaced)         0.000    51.800    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_244__1_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    51.917 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_243__3/CO[3]
+                         net (fo=1, unplaced)         0.000    51.917    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_243__3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    52.034 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_242__3/CO[3]
+                         net (fo=1, unplaced)         0.000    52.034    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_242__3_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    52.365 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_315__4/O[3]
+                         net (fo=5, unplaced)         0.996    53.361    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_315__4_n_4
+                         LUT6 (Prop_lut6_I1_O)        0.307    53.668 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_448/O
+                         net (fo=1, unplaced)         0.732    54.400    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_448_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    54.524 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_310__4/O
+                         net (fo=46, unplaced)        0.529    55.053    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_310__4_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    55.177 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_592/O
+                         net (fo=2, unplaced)         0.743    55.920    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_592_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    56.044 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_424__0/O
+                         net (fo=1, unplaced)         0.449    56.493    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_424__0_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    56.617 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_301__0/O
+                         net (fo=39, unplaced)        0.525    57.142    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_301__0_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    57.266 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_407__0/O
+                         net (fo=3, unplaced)         0.750    58.016    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_407__0_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    58.140 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_292__5/O
+                         net (fo=37, unplaced)        0.524    58.664    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_292__5_n_0
+                         LUT3 (Prop_lut3_I1_O)        0.124    58.788 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_296__4/O
+                         net (fo=2, unplaced)         0.743    59.531    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_296__4_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    59.655 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_177__2/O
+                         net (fo=45, unplaced)        0.529    60.184    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_177__2_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.116    60.300 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_178__2/O
+                         net (fo=1, unplaced)         0.000    60.300    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_178__2_n_0
+                         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.576    60.876 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_107__4/CO[3]
+                         net (fo=1, unplaced)         0.000    60.876    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_107__4_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    61.207 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_108__3/O[3]
+                         net (fo=73, unplaced)        0.513    61.720    dpu_inst/posit16_mul2/X_decoder/lzoc/posit16_add1/reg_sign
+                         LUT2 (Prop_lut2_I0_O)        0.307    62.027 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_174__4/O
+                         net (fo=15, unplaced)        0.502    62.529    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_174__4_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    62.653 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_716/O
+                         net (fo=3, unplaced)         0.750    63.403    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_716_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    63.527 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_725__0/O
+                         net (fo=1, unplaced)         0.732    64.259    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_725__0_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    64.383 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_561__0/O
+                         net (fo=1, unplaced)         0.941    65.324    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_561__0_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    65.448 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_378__3/O
+                         net (fo=1, unplaced)         0.000    65.448    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_378__3_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    65.961 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_262__1/CO[3]
+                         net (fo=1, unplaced)         0.000    65.961    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_262__1_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    66.298 f  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_150__4/O[1]
+                         net (fo=4, unplaced)         0.336    66.634    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_150__4_n_6
+                         LUT1 (Prop_lut1_I0_O)        0.306    66.940 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_265__4/O
+                         net (fo=1, unplaced)         0.000    66.940    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_265__4_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    67.473 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_149__4/CO[3]
+                         net (fo=1, unplaced)         0.000    67.473    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_149__4_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    67.590 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_87__4/CO[3]
+                         net (fo=1, unplaced)         0.000    67.590    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_87__4_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    67.707 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_46__4/CO[3]
+                         net (fo=1, unplaced)         0.000    67.707    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_46__4_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    67.824 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_39__4/CO[3]
+                         net (fo=1, unplaced)         0.000    67.824    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_39__4_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    68.161 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_37__4/O[1]
+                         net (fo=2, unplaced)         0.323    68.484    dpu_inst/posit16_mul2/X_decoder/lzoc/posit16_add1/plusOp[21]
+                         LUT5 (Prop_lut5_I0_O)        0.306    68.790 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_19__11/O
+                         net (fo=1, unplaced)         0.000    68.790    dpu_inst/posit16_mul2/X_decoder/lzoc/posit16_add2/Y_decoder/L[10]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    69.323 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_7__12/CO[3]
+                         net (fo=1, unplaced)         0.000    69.323    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_7__12_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    69.654 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_5__12/O[3]
+                         net (fo=5, unplaced)         0.858    70.512    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_13__11_0[3]
+                         LUT4 (Prop_lut4_I0_O)        0.307    70.819 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry__0_i_2__12/O
+                         net (fo=1, unplaced)         0.000    70.819    dpu_inst/posit16_add2/Y_decoder/lzoc/eqOp_carry_i_145__4[0]
+                         CARRY4 (Prop_carry4_S[0]_CO[1])
+                                                      0.458    71.277 r  dpu_inst/posit16_add2/Y_decoder/lzoc/eqOp_carry__0/CO[1]
+                         net (fo=57, unplaced)        0.398    71.675    dpu_inst/posit16_mul2/X_decoder/lzoc/R_r_reg[31]_i_687[0]
+                         LUT3 (Prop_lut3_I1_O)        0.332    72.007 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_262__2/O
+                         net (fo=2, unplaced)         0.460    72.467    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_262__2_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    72.591 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_264__2/O
+                         net (fo=1, unplaced)         0.449    73.040    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_264__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    73.164 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_206__4/O
+                         net (fo=4, unplaced)         0.473    73.637    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_206__4_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124    73.761 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_205__2/O
+                         net (fo=47, unplaced)        0.530    74.291    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_205__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    74.415 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_275__5/O
+                         net (fo=5, unplaced)         0.760    75.175    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_275__5_n_0
+                         LUT5 (Prop_lut5_I1_O)        0.124    75.299 r  dpu_inst/posit16_mul2/X_decoder/lzoc/R_r[31]_i_745/O
+                         net (fo=34, unplaced)        0.522    75.821    dpu_inst/posit16_mul2/X_decoder/lzoc/R_r[31]_i_745_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    75.945 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_312__5/O
+                         net (fo=1, unplaced)         0.732    76.677    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_312__5_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.124    76.801 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_242__4/O
+                         net (fo=2, unplaced)         0.460    77.261    dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_242__4_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    77.385 r  dpu_inst/posit16_mul2/X_decoder/lzoc/eqOp_carry_i_203__5/O
+                         net (fo=2, unplaced)         0.460    77.845    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_415_0
+                         LUT2 (Prop_lut2_I1_O)        0.124    77.969 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_686/O
+                         net (fo=1, unplaced)         0.000    77.969    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_686_n_0
+                         CARRY4 (Prop_carry4_S[0]_O[1])
+                                                      0.427    78.396 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_415/O[1]
+                         net (fo=12, unplaced)        1.045    79.441    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_415_n_6
+                         LUT5 (Prop_lut5_I0_O)        0.306    79.747 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_923/O
+                         net (fo=1, unplaced)         0.449    80.196    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_923_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    80.320 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_691/O
+                         net (fo=45, unplaced)        0.529    80.849    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_691_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    80.973 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_960/O
+                         net (fo=2, unplaced)         0.975    81.948    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_960_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    82.072 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_758/O
+                         net (fo=3, unplaced)         0.750    82.822    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_758_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    82.946 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_470/O
+                         net (fo=1, unplaced)         0.665    83.611    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_470_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124    83.735 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_227/O
+                         net (fo=1, unplaced)         0.000    83.735    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_227_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    84.248 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_71/CO[3]
+                         net (fo=1, unplaced)         0.000    84.248    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_71_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    84.365 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_72/CO[3]
+                         net (fo=1, unplaced)         0.000    84.365    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_72_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    84.482 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_70/CO[3]
+                         net (fo=1, unplaced)         0.000    84.482    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_70_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    84.599 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_69/CO[3]
+                         net (fo=1, unplaced)         0.000    84.599    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_69_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    84.716 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_68/CO[3]
+                         net (fo=1, unplaced)         0.000    84.716    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_68_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    85.047 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_189/O[3]
+                         net (fo=5, unplaced)         0.996    86.043    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_189_n_4
+                         LUT6 (Prop_lut6_I1_O)        0.307    86.350 f  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_279__5/O
+                         net (fo=1, unplaced)         0.732    87.082    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_279__5_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    87.206 f  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_210__2/O
+                         net (fo=46, unplaced)        0.529    87.735    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_210__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    87.859 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_249__4/O
+                         net (fo=3, unplaced)         0.750    88.609    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_249__4_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    88.733 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_258__1/O
+                         net (fo=2, unplaced)         0.460    89.193    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_258__1_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    89.317 f  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_201__2/O
+                         net (fo=41, unplaced)        0.526    89.843    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_201__2_n_0
+                         LUT3 (Prop_lut3_I2_O)        0.124    89.967 f  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_195__4/O
+                         net (fo=4, unplaced)         0.473    90.440    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_195__4_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    90.564 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_189__5/O
+                         net (fo=39, unplaced)        0.525    91.089    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_189__5_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124    91.213 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_197__5/O
+                         net (fo=4, unplaced)         0.473    91.686    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_197__5_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124    91.810 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_136__5/O
+                         net (fo=44, unplaced)        0.528    92.338    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_136__5_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124    92.462 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_140__5/O
+                         net (fo=1, unplaced)         0.000    92.462    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_140__5_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    92.995 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_92__2/CO[3]
+                         net (fo=1, unplaced)         0.000    92.995    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_92__2_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331    93.326 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_93__2/O[3]
+                         net (fo=73, unplaced)        0.513    93.839    dpu_inst/posit16_mul0/X_decoder/lzoc/posit16_add2/reg_sign
+                         LUT2 (Prop_lut2_I0_O)        0.307    94.146 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_133__2/O
+                         net (fo=15, unplaced)        0.502    94.648    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_133__2_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124    94.772 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_1038/O
+                         net (fo=3, unplaced)         0.750    95.522    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_1038_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124    95.646 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_1047/O
+                         net (fo=1, unplaced)         0.732    96.378    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_1047_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    96.502 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_883/O
+                         net (fo=1, unplaced)         0.941    97.443    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_883_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    97.567 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_646/O
+                         net (fo=1, unplaced)         0.000    97.567    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_646_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513    98.080 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_393/CO[3]
+                         net (fo=1, unplaced)         0.000    98.080    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_393_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    98.197 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_118__5/CO[3]
+                         net (fo=1, unplaced)         0.000    98.197    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_118__5_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    98.314 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_82__4/CO[3]
+                         net (fo=1, unplaced)         0.000    98.314    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_82__4_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337    98.651 f  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_45__2/O[1]
+                         net (fo=4, unplaced)         0.336    98.987    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_45__2_n_6
+                         LUT1 (Prop_lut1_I0_O)        0.306    99.293 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_85__3/O
+                         net (fo=1, unplaced)         0.000    99.293    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_85__3_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533    99.826 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_44__2/CO[3]
+                         net (fo=1, unplaced)         0.000    99.826    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_44__2_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    99.943 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_37__5/CO[3]
+                         net (fo=1, unplaced)         0.000    99.943    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_37__5_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337   100.280 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_35__5/O[1]
+                         net (fo=2, unplaced)         0.323   100.603    dpu_inst/posit16_mul0/X_decoder/lzoc/posit16_add2/plusOp[21]
+                         LUT5 (Prop_lut5_I0_O)        0.306   100.909 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_19__12/O
+                         net (fo=1, unplaced)         0.000   100.909    dpu_inst/posit16_mul0/X_decoder/lzoc/posit16_add3/X_decoder/L[10]
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533   101.442 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_7__13/CO[3]
+                         net (fo=1, unplaced)         0.000   101.442    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_7__13_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331   101.773 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_5__13/O[3]
+                         net (fo=5, unplaced)         0.858   102.631    dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry_i_5__13_n_4
+                         LUT4 (Prop_lut4_I0_O)        0.307   102.938 r  dpu_inst/posit16_mul0/X_decoder/lzoc/eqOp_carry__0_i_2__13/O
+                         net (fo=1, unplaced)         0.000   102.938    dpu_inst/posit16_add3/X_decoder/lzoc/R_r[30]_i_19[0]
+                         CARRY4 (Prop_carry4_S[0]_CO[1])
+                                                      0.458   103.396 r  dpu_inst/posit16_add3/X_decoder/lzoc/eqOp_carry__0/CO[1]
+                         net (fo=51, unplaced)        0.395   103.791    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[30]_i_11_2[0]
+                         LUT6 (Prop_lut6_I3_O)        0.332   104.123 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_68/O
+                         net (fo=1, unplaced)         0.941   105.064    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_68_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   105.188 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_36/O
+                         net (fo=45, unplaced)        0.529   105.717    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_72_0
+                         LUT6 (Prop_lut6_I2_O)        0.124   105.841 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_74/O
+                         net (fo=5, unplaced)         0.760   106.601    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_74_n_0
+                         LUT5 (Prop_lut5_I1_O)        0.124   106.725 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_37/O
+                         net (fo=42, unplaced)        0.527   107.252    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_37_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   107.376 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_40/O
+                         net (fo=42, unplaced)        0.527   107.903    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_40_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124   108.027 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_326/O
+                         net (fo=41, unplaced)        0.496   108.523    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_326_n_0
+                         LUT5 (Prop_lut5_I3_O)        0.124   108.647 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_45/O
+                         net (fo=4, unplaced)         0.493   109.140    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_45_n_0
+                         CARRY4 (Prop_carry4_DI[1]_O[3])
+                                                      0.629   109.769 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_336/O[3]
+                         net (fo=3, unplaced)         0.986   110.755    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_336_n_4
+                         LUT6 (Prop_lut6_I0_O)        0.307   111.062 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_557/O
+                         net (fo=2, unplaced)         0.460   111.522    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_557_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   111.646 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_337/O
+                         net (fo=31, unplaced)        0.519   112.165    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_337_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124   112.289 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_555/O
+                         net (fo=42, unplaced)        0.497   112.786    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_555_n_0
+                         LUT6 (Prop_lut6_I4_O)        0.124   112.910 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_624/O
+                         net (fo=2, unplaced)         0.743   113.653    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_624_n_0
+                         LUT5 (Prop_lut5_I2_O)        0.124   113.777 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_627/O
+                         net (fo=1, unplaced)         0.419   114.196    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_627_n_0
+                         LUT4 (Prop_lut4_I0_O)        0.124   114.320 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_377/O
+                         net (fo=1, unplaced)         0.449   114.769    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_377_n_0
+                         LUT5 (Prop_lut5_I1_O)        0.124   114.893 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_147/O
+                         net (fo=1, unplaced)         0.000   114.893    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_147_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513   115.406 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_51/CO[3]
+                         net (fo=1, unplaced)         0.000   115.406    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_51_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.523 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_52/CO[3]
+                         net (fo=1, unplaced)         0.000   115.523    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_52_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.640 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_50/CO[3]
+                         net (fo=1, unplaced)         0.000   115.640    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_50_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.757 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_49/CO[3]
+                         net (fo=1, unplaced)         0.000   115.757    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_49_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   115.874 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_48/CO[3]
+                         net (fo=1, unplaced)         0.000   115.874    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_48_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331   116.205 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_109/O[3]
+                         net (fo=5, unplaced)         0.996   117.201    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[31]_i_109_n_4
+                         LUT6 (Prop_lut6_I1_O)        0.307   117.508 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_81/O
+                         net (fo=1, unplaced)         0.732   118.240    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_81_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124   118.364 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_39/O
+                         net (fo=46, unplaced)        0.529   118.893    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_39_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124   119.017 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_107/O
+                         net (fo=3, unplaced)         0.750   119.767    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_107_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124   119.891 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_92/O
+                         net (fo=2, unplaced)         0.460   120.351    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_92_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   120.475 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_42/O
+                         net (fo=41, unplaced)        0.526   121.001    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_42_n_0
+                         LUT3 (Prop_lut3_I2_O)        0.124   121.125 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_50/O
+                         net (fo=4, unplaced)         0.473   121.598    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_50_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124   121.722 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_44/O
+                         net (fo=39, unplaced)        0.525   122.247    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_44_n_0
+                         LUT5 (Prop_lut5_I4_O)        0.124   122.371 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_52/O
+                         net (fo=4, unplaced)         0.473   122.844    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_52_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124   122.968 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_53/O
+                         net (fo=3, unplaced)         0.467   123.435    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_53_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.124   123.559 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_26/O
+                         net (fo=2, unplaced)         0.460   124.019    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_26_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124   124.143 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_30/O
+                         net (fo=1, unplaced)         0.000   124.143    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_30_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513   124.656 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[30]_i_13/CO[3]
+                         net (fo=1, unplaced)         0.000   124.656    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[30]_i_13_n_0
+                         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.331   124.987 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[30]_i_11/O[3]
+                         net (fo=73, unplaced)        0.513   125.500    dpu_inst/posit16_mul0/X_decoder/lzoc/posit16_add3/reg_sign
+                         LUT2 (Prop_lut2_I0_O)        0.307   125.807 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_33/O
+                         net (fo=15, unplaced)        0.502   126.309    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_33_n_0
+                         LUT6 (Prop_lut6_I2_O)        0.124   126.433 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_27/O
+                         net (fo=3, unplaced)         0.750   127.183    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_27_n_0
+                         LUT4 (Prop_lut4_I1_O)        0.124   127.307 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_36/O
+                         net (fo=1, unplaced)         0.732   128.039    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_36_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   128.163 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_18/O
+                         net (fo=1, unplaced)         0.941   129.104    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_18_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124   129.228 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_11/O
+                         net (fo=1, unplaced)         0.000   129.228    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[3]_i_11_n_0
+                         CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.513   129.741 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[3]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   129.741    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[3]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   129.858 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[7]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   129.858    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[7]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   129.975 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[11]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   129.975    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[11]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   130.092 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[15]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   130.092    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[15]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   130.209 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[19]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   130.209    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[19]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117   130.326 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[23]_i_3/CO[3]
+                         net (fo=1, unplaced)         0.000   130.326    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[23]_i_3_n_0
+                         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.337   130.663 f  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[27]_i_3/O[1]
+                         net (fo=2, unplaced)         0.323   130.986    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[27]_i_3_n_6
+                         LUT1 (Prop_lut1_I0_O)        0.306   131.292 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[27]_i_6/O
+                         net (fo=1, unplaced)         0.000   131.292    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[27]_i_6_n_0
+                         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.533   131.825 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[27]_i_2/CO[3]
+                         net (fo=1, unplaced)         0.000   131.825    dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[27]_i_2_n_0
+                         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.256   132.081 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r_reg[30]_i_3/O[2]
+                         net (fo=1, unplaced)         0.452   132.533    dpu_inst/posit16_mul0/X_decoder/lzoc/posit16_add3/plusOp[30]
+                         LUT5 (Prop_lut5_I3_O)        0.301   132.834 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[30]_i_2/O
+                         net (fo=1, unplaced)         0.000   132.834    dpu_inst_n_1
+                         FDRE                                         r  R_r_reg[30]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=0)                   0.000    10.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.838    10.838 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.763    11.600    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.091    11.691 r  clk_IBUF_BUFG_inst/O
+                         net (fo=320, unplaced)       0.439    12.130    clk_IBUF_BUFG
+                         FDRE                                         r  R_r_reg[30]/C
+                         clock pessimism              0.179    12.309    
+                         clock uncertainty           -0.035    12.274    
+                         FDRE (Setup_fdre_C_D)        0.044    12.318    R_r_reg[30]
+  -------------------------------------------------------------------
+                         required time                         12.318    
+                         arrival time                        -132.835    
+  -------------------------------------------------------------------
+                         slack                               -120.517    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.377ns  (arrival time - required time)
+  Source:                 C0_r_reg[31]/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            R_r_reg[31]/D
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.621ns  (logic 0.244ns (39.275%)  route 0.377ns (60.725%))
+  Logic Levels:           1  (LUT5=1)
+  Clock Path Skew:        0.145ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.033ns
+    Source Clock Delay      (SCD):    0.679ns
+    Clock Pessimism Removal (CPR):    0.210ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.200     0.200 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.338     0.539    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.026     0.565 r  clk_IBUF_BUFG_inst/O
+                         net (fo=320, unplaced)       0.114     0.679    clk_IBUF_BUFG
+                         FDRE                                         r  C0_r_reg[31]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 r  C0_r_reg[31]/Q
+                         net (fo=65, unplaced)        0.377     1.203    dpu_inst/posit16_mul0/X_decoder/lzoc/C0_r[31]
+                         LUT5 (Prop_lut5_I2_O)        0.097     1.300 r  dpu_inst/posit16_mul0/X_decoder/lzoc/R_r[31]_i_1/O
+                         net (fo=1, unplaced)         0.000     1.300    R_comb[31]
+                         FDRE                                         r  R_r_reg[31]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk
+                         IBUF (Prop_ibuf_I_O)         0.389     0.389 r  clk_IBUF_inst/O
+                         net (fo=1, unplaced)         0.356     0.745    clk_IBUF
+                         BUFG (Prop_bufg_I_O)         0.029     0.774 r  clk_IBUF_BUFG_inst/O
+                         net (fo=320, unplaced)       0.259     1.033    clk_IBUF_BUFG
+                         FDRE                                         r  R_r_reg[31]/C
+                         clock pessimism             -0.210     0.824    
+                         FDRE (Hold_fdre_C_D)         0.099     0.923    R_r_reg[31]
+  -------------------------------------------------------------------
+                         required time                         -0.923    
+                         arrival time                           1.300    
+  -------------------------------------------------------------------
+                         slack                                  0.377    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk
+Waveform(ns):       { 0.000 5.000 }
+Period(ns):         10.000
+Sources:            { clk }
+
+Check Type        Corner  Lib Pin  Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location  Pin
+Min Period        n/a     BUFG/I   n/a            2.155         10.000      7.845                clk_IBUF_BUFG_inst/I
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                A0_r_reg[0]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         5.000       4.500                A0_r_reg[0]/C
+
+
+
