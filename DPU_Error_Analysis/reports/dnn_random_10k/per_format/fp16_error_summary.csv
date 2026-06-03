@@ -1,0 +1,2 @@
+format,num_tests,exact_matches_to_reference_rounded_fp16,exact_match_percent,mean_abs_error,max_abs_error,mean_rel_error,max_rel_error,rmse
+fp16,10000,5661,56.61,0.0002246866182431404,0.00192264374345541,0.0010330255970575593,1.3421643466546924,0.000318068202801738
