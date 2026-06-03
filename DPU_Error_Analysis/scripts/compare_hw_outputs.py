@@ -4,14 +4,7 @@ Compare DPU hardware outputs against high-precision Python reference results.
 
 Currently implemented:
   - fp16
-
-Input files:
-  data/dnn_random_10k/references/fp16_reference.csv
-  data/dnn_random_10k/hw_outputs/fp16_hw_outputs.txt
-
-Output files:
-  data/dnn_random_10k/compared/fp16_compared.csv
-  reports/dnn_random_10k/per_format/fp16_error_summary.csv
+  - fp32
 """
 
 import argparse
@@ -26,26 +19,31 @@ EXP_DIR = BASE_DIR / "data" / "dnn_random_10k"
 REPORT_DIR = BASE_DIR / "reports" / "dnn_random_10k" / "per_format"
 
 
-def fp16_hex_to_float(hex_string: str) -> float:
-    hex_string = hex_string.strip()
-    raw = bytes.fromhex(hex_string)
-    return struct.unpack(">e", raw)[0]
-
-
-def float_to_fp16_hex(value: float) -> str:
-    packed = struct.pack(">e", value)
-    return packed.hex().upper()
+FORMAT_CONFIG = {
+    "fp16": {
+        "decode": lambda h: struct.unpack(">e", bytes.fromhex(h.strip()))[0],
+        "encode": lambda x: struct.pack(">e", x).hex().upper(),
+        "rounded_label": "reference_rounded_fp16",
+    },
+    "fp32": {
+        "decode": lambda h: struct.unpack(">f", bytes.fromhex(h.strip()))[0],
+        "encode": lambda x: struct.pack(">f", x).hex().upper(),
+        "rounded_label": "reference_rounded_fp32",
+    },
+}
 
 
 def safe_relative_error(abs_error: float, reference: float, epsilon: float = 1e-12) -> float:
     return abs_error / max(abs(reference), epsilon)
 
 
-def compare_fp16() -> None:
-    reference_path = EXP_DIR / "references" / "fp16_reference.csv"
-    hw_path = EXP_DIR / "hw_outputs" / "fp16_hw_outputs.txt"
-    compared_path = EXP_DIR / "compared" / "fp16_compared.csv"
-    summary_path = REPORT_DIR / "fp16_error_summary.csv"
+def compare_format(fmt: str) -> None:
+    cfg = FORMAT_CONFIG[fmt]
+
+    reference_path = EXP_DIR / "references" / f"{fmt}_reference.csv"
+    hw_path = EXP_DIR / "hw_outputs" / f"{fmt}_hw_outputs.txt"
+    compared_path = EXP_DIR / "compared" / f"{fmt}_compared.csv"
+    summary_path = REPORT_DIR / f"{fmt}_error_summary.csv"
 
     compared_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
@@ -58,20 +56,24 @@ def compare_fp16() -> None:
 
     if len(reference_rows) != len(hw_hex_values):
         raise ValueError(
-            f"Line count mismatch: references={len(reference_rows)}, hardware={len(hw_hex_values)}"
+            f"Line count mismatch for {fmt}: references={len(reference_rows)}, hardware={len(hw_hex_values)}"
         )
+
+    rounded_hex_col = f"{cfg['rounded_label']}_hex"
+    rounded_real_col = f"{cfg['rounded_label']}_real"
+    exact_col = f"exact_match_to_{cfg['rounded_label']}"
 
     fieldnames = [
         "test_id",
         "reference_real",
-        "reference_rounded_fp16_hex",
-        "reference_rounded_fp16_real",
+        rounded_hex_col,
+        rounded_real_col,
         "hw_hex",
         "hw_real",
         "abs_error",
         "rel_error",
         "squared_error",
-        "exact_match_to_reference_rounded_fp16",
+        exact_col,
     ]
 
     abs_errors = []
@@ -87,13 +89,11 @@ def compare_fp16() -> None:
             test_id = int(row["test_id"])
             reference_real = float(row["reference_real"])
 
-            hw_real = fp16_hex_to_float(hw_hex)
+            hw_real = cfg["decode"](hw_hex)
 
-            # Useful strict comparison: round the mathematical reference to FP16
-            # and check whether the HW result matches that rounded FP16 encoding.
             try:
-                reference_rounded_hex = float_to_fp16_hex(reference_real)
-                reference_rounded_real = fp16_hex_to_float(reference_rounded_hex)
+                reference_rounded_hex = cfg["encode"](reference_real)
+                reference_rounded_real = cfg["decode"](reference_rounded_hex)
             except OverflowError:
                 reference_rounded_hex = "OVERFLOW"
                 reference_rounded_real = math.inf if reference_real > 0 else -math.inf
@@ -112,14 +112,14 @@ def compare_fp16() -> None:
             writer.writerow({
                 "test_id": test_id,
                 "reference_real": reference_real,
-                "reference_rounded_fp16_hex": reference_rounded_hex,
-                "reference_rounded_fp16_real": reference_rounded_real,
+                rounded_hex_col: reference_rounded_hex,
+                rounded_real_col: reference_rounded_real,
                 "hw_hex": hw_hex,
                 "hw_real": hw_real,
                 "abs_error": abs_error,
                 "rel_error": rel_error,
                 "squared_error": squared_error,
-                "exact_match_to_reference_rounded_fp16": exact_match,
+                exact_col: exact_match,
             })
 
     n = len(abs_errors)
@@ -134,7 +134,7 @@ def compare_fp16() -> None:
         fieldnames_summary = [
             "format",
             "num_tests",
-            "exact_matches_to_reference_rounded_fp16",
+            "exact_matches_to_reference_rounded",
             "exact_match_percent",
             "mean_abs_error",
             "max_abs_error",
@@ -145,9 +145,9 @@ def compare_fp16() -> None:
         writer = csv.DictWriter(sf, fieldnames=fieldnames_summary)
         writer.writeheader()
         writer.writerow({
-            "format": "fp16",
+            "format": fmt,
             "num_tests": n,
-            "exact_matches_to_reference_rounded_fp16": exact_matches,
+            "exact_matches_to_reference_rounded": exact_matches,
             "exact_match_percent": exact_percent,
             "mean_abs_error": mean_abs_error,
             "max_abs_error": max_abs_error,
@@ -156,26 +156,25 @@ def compare_fp16() -> None:
             "rmse": rmse,
         })
 
-    print("FP16 comparison completed.")
+    print(f"{fmt.upper()} comparison completed.")
     print(f"Compared file: {compared_path}")
     print(f"Summary file:  {summary_path}")
     print()
-    print(f"num_tests          = {n}")
-    print(f"exact_match_percent= {exact_percent:.4f}%")
-    print(f"mean_abs_error     = {mean_abs_error}")
-    print(f"max_abs_error      = {max_abs_error}")
-    print(f"mean_rel_error     = {mean_rel_error}")
-    print(f"max_rel_error      = {max_rel_error}")
-    print(f"rmse               = {rmse}")
+    print(f"num_tests           = {n}")
+    print(f"exact_match_percent = {exact_percent:.4f}%")
+    print(f"mean_abs_error      = {mean_abs_error}")
+    print(f"max_abs_error       = {max_abs_error}")
+    print(f"mean_rel_error      = {mean_rel_error}")
+    print(f"max_rel_error       = {max_rel_error}")
+    print(f"rmse                = {rmse}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--format", required=True, choices=["fp16"])
+    parser.add_argument("--format", required=True, choices=sorted(FORMAT_CONFIG.keys()))
     args = parser.parse_args()
 
-    if args.format == "fp16":
-        compare_fp16()
+    compare_format(args.format)
 
 
 if __name__ == "__main__":
