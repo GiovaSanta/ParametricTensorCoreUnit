@@ -1,0 +1,2 @@
+format,num_tests,exact_matches_to_reference_rounded,exact_match_percent,mean_abs_error,max_abs_error,mean_rel_error,max_rel_error,rmse
+fxp16_32,10000,4,0.04,0.0009274367866487657,0.003921756934290865,0.010861537992352087,53.736618611812055,0.001154261985519124
