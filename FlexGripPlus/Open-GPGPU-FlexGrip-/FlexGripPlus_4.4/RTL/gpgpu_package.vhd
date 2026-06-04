@@ -123,7 +123,7 @@ package gpgpu_package is
 	);
 
 	type alu_opcode_type is (IADD, IADDC, ISUB, SET, MIN, MAX, SHL, SHR, AND_OP, OR_OP, XOR_OP, NEG_OP, IMUL24, IMAD24, IMAD24C, CVT,
-													FADD, FMUL, FMAD, FSET, RCP, SIN, COS, LG2, EX2, RSQ, RRO_SIN_OP, RRO_EX2_OP, FHMMA, PosHMMA, IHMMA, FXPHMMA, UNKNOWN); -- added for FPU , added forTCU (gio)
+													FADD, FMUL, FMAD, FSET, RCP, SIN, COS, LG2, EX2, RSQ, RRO_SIN_OP, RRO_EX2_OP, FHMMA, PosHMMA, IHMMA, FXPHMMA, LNSHMMA, UNKNOWN); -- added for FPU , added forTCU (gio)
 	type alu_opcode_array is array (alu_opcode_type) of std_logic_vector(5 downto 0);
 	constant encode_alu_opcode : alu_opcode_array := (IADD   	 => "000000",
 													  IADDC  	 => "000001",
@@ -153,11 +153,12 @@ package gpgpu_package is
 													  RSQ	 	 => "011001",
 													  RRO_SIN_OP => "011010",
 													  RRO_EX2_OP => "011011",
-													  FHMMA		 => "011100",  --added gio
+													  FHMMA		 => "011100", --added gio
 													  PosHMMA	 => "011101", --added gio
 													  IHMMA		 => "011110", --added gio
-													  FXPHMMA	 => "011111",
-		                                              UNKNOWN 	 => "100000");
+													  FXPHMMA	 => "011111", --added gio
+													  LNSHMMA	 => "100000", --added gio
+		                                              UNKNOWN 	 => "100001");
 
 	type flow_opcode_type is (BRANCH, CALL, RET, PREBREAK, BREAK, BAR, JOIN, UNKNOWN);
 	type flow_opcode_array is array (flow_opcode_type) of std_logic_vector(3 downto 0);

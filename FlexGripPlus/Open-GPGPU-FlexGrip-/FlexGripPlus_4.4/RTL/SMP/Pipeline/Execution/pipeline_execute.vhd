@@ -143,7 +143,6 @@ architecture p_exec_arch of pipeline_execute is
   signal src2_i : vector_register;
   signal src3_i : vector_register;
 
-
   signal cvt_type_i             : std_logic_vector(2 downto 0);
   signal w32_i                  : std_logic;
   signal is_signed_i            : std_logic;
@@ -233,9 +232,9 @@ begin
   rro_signal_start <= '1' when RRO_SIN_OP|RRO_EX2_OP,
 					  '0' when others;
 
-  --this signal start tcu hardware oèeration when alu_opcode_in is equal to HMMA 
+  --this signal start tcu hardware operation when alu_opcode_in is equal to HMMA 
   with alu_opcode_in select
-  tcu_signal_start <= '1' when FHMMA | PosHMMA | IHMMA | FXPHMMA,
+  tcu_signal_start <= '1' when FHMMA | PosHMMA | IHMMA | FXPHMMA | LNSHMMA,
             '0' when others;
 					  
   --
@@ -341,7 +340,7 @@ begin
               pipeline_execute_state_machine <= ALU_EXEC;
 
               --addeded condition for correct hmma execution. 
-              if( (alu_opcode_in = FHMMA) or (alu_opcode_in = PosHMMA) or (alu_opcode_in = IHMMA) or (alu_opcode_in = FXPHMMA ) ) then
+              if( (alu_opcode_in = FHMMA) or (alu_opcode_in = PosHMMA) or (alu_opcode_in = IHMMA) or (alu_opcode_in = FXPHMMA ) or (alu_opcode_in = LNSHMMA ) ) then
                   --tensor core 0 wire mapping to from outputreadstage to srcs. tc0 executes content from threadgroup0 and threadgroup4 (octect0 ) and threadgroup1 and threadgroup5 (octect 1)
                   --octect0 related- from thrgroup0 
                   --src1 related

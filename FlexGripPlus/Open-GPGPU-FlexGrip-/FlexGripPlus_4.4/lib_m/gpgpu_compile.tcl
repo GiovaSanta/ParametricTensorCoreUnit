@@ -8,6 +8,132 @@ catch {file delete -force work}
 exec vlib work
 exec vmap gpgpu work
 
+# ---------------------------------------------------------------------------
+# Explicit DPU format libraries
+#
+# The parametricDPU uses VHDL library clauses such as:
+#   library FP16_DPU;
+#   library POSIT8_DPU;
+#   library LNS16_DPU;
+#
+# Therefore, the corresponding DPU entities must be compiled into these
+# logical libraries before the main FlexGrip hierarchy is compiled/elaborated.
+# This avoids relying on stale precompiled libraries inside lib_m.
+# ---------------------------------------------------------------------------
+
+set DPU_ROOT "$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU"
+
+proc reset_lib {logical_name physical_dir} {
+    puts "Resetting library: $logical_name -> $physical_dir"
+    catch {vdel -lib $logical_name -all}
+    catch {file delete -force $physical_dir}
+    exec vlib $physical_dir
+    exec vmap $logical_name $physical_dir
+}
+
+proc compile_vhdl {logical_name file_path} {
+    if {![file exists $file_path]} {
+        puts "ERROR: missing VHDL source file:"
+        puts "  $file_path"
+        error "Missing VHDL source file"
+    }
+
+    puts "Compiling into $logical_name:"
+    puts "  $file_path"
+    vcom -64 -2008 -work $logical_name $file_path
+}
+
+proc compile_vhdl_list {logical_name file_list} {
+    foreach file_path $file_list {
+        compile_vhdl $logical_name $file_path
+    }
+}
+
+# Create clean local libraries.
+reset_lib FixedP8_16_dpu  fixedp8_16_dpu
+reset_lib FixedP16_32_DPU fixedp16_32_dpu
+reset_lib INT8_16_DPU     int8_16_dpu
+reset_lib INT16_32_DPU    int16_32_dpu
+reset_lib FP8_DPU         fp8_dpu
+reset_lib FP16_DPU        fp16_dpu
+reset_lib FP32_DPU        fp32_dpu
+reset_lib POSIT8_DPU      posit8_dpu
+reset_lib POSIT16_DPU     posit16_dpu
+reset_lib POSIT32_DPU     posit32_dpu
+reset_lib LNS16_DPU       lns16_dpu
+
+# Compile DPU libraries in dependency order.
+compile_vhdl_list FP16_DPU [list \
+    "$DPU_ROOT/FP16DPU/FP16_FMA.vhd" \
+    "$DPU_ROOT/FP16DPU/FP16_DPU.vhd" \
+]
+
+compile_vhdl_list FP8_DPU [list \
+    "$DPU_ROOT/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd" \
+    "$DPU_ROOT/FP8e4m3DPU/DPU_FP8e4m3flopoco.vhd" \
+]
+
+compile_vhdl_list FP32_DPU [list \
+    "$DPU_ROOT/FP32DPU/FMA_FP32e8m23flopoco.vhd" \
+    "$DPU_ROOT/FP32DPU/DPU_FP32e8m23flopoco.vhd" \
+]
+
+compile_vhdl_list POSIT8_DPU [list \
+    "$DPU_ROOT/posit8DPU/Posit_Adder.vhd" \
+    "$DPU_ROOT/posit8DPU/Posit_Mult.vhd" \
+    "$DPU_ROOT/posit8DPU/Posit_DPU.vhd" \
+]
+
+compile_vhdl_list POSIT16_DPU [list \
+    "$DPU_ROOT/posit16DPU/posit16_0_Add.vhd" \
+    "$DPU_ROOT/posit16DPU/posit16_0_Mul.vhd" \
+    "$DPU_ROOT/posit16DPU/posit16_0_DPU.vhd" \
+]
+
+compile_vhdl_list POSIT32_DPU [list \
+    "$DPU_ROOT/posit32DPU/Posit32_2_Add.vhd" \
+    "$DPU_ROOT/posit32DPU/Posit32_2_Mul.vhd" \
+    "$DPU_ROOT/posit32DPU/Posit32_2_DPU.vhd" \
+]
+
+compile_vhdl_list FixedP8_16_dpu [list \
+    "$DPU_ROOT/FixPoint8_16DPU/FixedPoint8_16_MAC.vhd" \
+    "$DPU_ROOT/FixPoint8_16DPU/FixedPoint8_16DPU.vhd" \
+]
+
+compile_vhdl_list FixedP16_32_DPU [list \
+    "$DPU_ROOT/FixPoint16_32DPU/FixedPointMAC.vhd" \
+    "$DPU_ROOT/FixPoint16_32DPU/FixedPointDPU.vhd" \
+]
+
+compile_vhdl_list INT8_16_DPU [list \
+    "$DPU_ROOT/int8_16/INT8_Adder.vhd" \
+    "$DPU_ROOT/int8_16/INT8_Mult.vhd" \
+    "$DPU_ROOT/int8_16/INT8_DPU.vhd" \
+]
+
+compile_vhdl_list INT16_32_DPU [list \
+    "$DPU_ROOT/int16_32/def_package.vhd" \
+    "$DPU_ROOT/int16_32/Adder_INT.vhd" \
+    "$DPU_ROOT/int16_32/Multiplier_INT.vhd" \
+    "$DPU_ROOT/int16_32/DPU_TOP_INT.vhd" \
+]
+
+# LNS16 DPU.
+# Adjust the folder name below if your LNS files are stored under a different
+# directory name than LNS16DPU.
+compile_vhdl_list LNS16_DPU [list \
+	"$DPU_ROOT/LNS16DPU/LNSSubCorrectionPkg.vhd" \
+    "$DPU_ROOT/LNS16DPU/LNSMul_4_9_comb.vhd" \
+    "$DPU_ROOT/LNS16DPU/LNSAddSub_4_9_comb.vhd" \
+    "$DPU_ROOT/LNS16DPU/LNS16_4_9_DPU.vhd" \
+]
+
+# ---------------------------------------------------------------------------
+# Main FlexGrip hierarchy starts below.
+# ---------------------------------------------------------------------------
+
+
 set gpgpu_vhdls [list \
 	"# TB - configuration" \
 	"$GPGPU_GENERIC_ROOT/TB/configuration/pick_bench.vhd" \
@@ -121,10 +247,6 @@ set gpgpu_vhdls [list \
 	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/SFU/sfu.vhd" \
 	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/SFU/sfu_proc.vhd" \
 	"## Pipeline - Execution - ParametricDualTCU" \
-	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_DPU.vhd" \
-	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP16DPU/FP16_FMA.vhd" \
-	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/DPU_FP8e4m3flopoco.vhd" \
-"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/FP8e4m3DPU/FMA_FP8e4m3flopoco.vhd" \
 	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/parametricDPU/mux_rel0.vhd" \
 	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectBuffers.vhd" \
 	"$GPGPU_GENERIC_ROOT/SMP/Pipeline/Execution/doubleTCU/doubleParametricTCUsRel0/parametricTCUrel0/octectCoreRel0/octectCoreTop.vhd" \

@@ -32,6 +32,9 @@ use POSIT16_DPU.all;
 library POSIT32_DPU;
 use POSIT32_DPU.all;
 
+library LNS16_DPU;
+use LNS16_DPU.all;
+
 -- rel 0 parametric DPU supported formats:
 -- posit8, posit16, posit32
 -- float8e4m3, float16, float32
@@ -89,6 +92,8 @@ signal out_DPU_FixP16_32: std_logic_vector(31 downto 0);
 signal out_DPU_int8_16: std_logic_vector(15 downto 0);
 signal out_DPU_int16_32: std_logic_vector(31 downto 0);
 
+signal out_DPU_LNS16 : std_logic_vector(15 downto 0);
+
 --the multiplexer
 component mux_rel0 is
     Port ( widthSel: in std_logic_vector( 1 downto 0); --selects the width
@@ -103,6 +108,7 @@ component mux_rel0 is
            fixP16_32out: in std_logic_vector ( 31 downto 0 );
            int8_16out: in std_logic_vector( 15 downto 0 );
            int16_32out: in std_logic_vector(31 downto 0 );
+           LNS16out: in std_logic_vector(15 downto 0);
            out8bit : out std_logic_vector( 7 downto 0 );
            out16bit: out std_logic_vector( 15 downto 0);
            out32bit: out std_logic_vector( 31 downto 0) );
@@ -268,6 +274,23 @@ component dot_unit_coreINT is
 	);
 end component;
 
+--LNS16 DPU
+
+component LNS16_4_9_DPU is
+    port (
+        A0 : in  std_logic_vector(15 downto 0);
+        A1 : in  std_logic_vector(15 downto 0);
+        A2 : in  std_logic_vector(15 downto 0);
+        A3 : in  std_logic_vector(15 downto 0);
+        B0 : in  std_logic_vector(15 downto 0);
+        B1 : in  std_logic_vector(15 downto 0);
+        B2 : in  std_logic_vector(15 downto 0);
+        B3 : in  std_logic_vector(15 downto 0);
+        C0 : in  std_logic_vector(15 downto 0);
+        R  : out std_logic_vector(15 downto 0)
+    );
+end component;
+
 constant ZERO8  : std_logic_vector(7 downto 0)  := (others => '0');
 constant ZERO16 : std_logic_vector(15 downto 0) := (others => '0');
 constant ZERO32 : std_logic_vector(31 downto 0) := (others => '0');
@@ -282,6 +305,8 @@ signal is_fixP8_16  : std_logic;
 signal is_fixP16_32 : std_logic;
 signal is_int8_16   : std_logic;
 signal is_int16_32  : std_logic;
+
+signal is_lns16     : std_logic;
 
 -- FP8 gated inputs
 signal A0_8_fp8_g, A1_8_fp8_g, A2_8_fp8_g, A3_8_fp8_g : std_logic_vector(7 downto 0);
@@ -333,6 +358,11 @@ signal A0_16_int16_32_g, A1_16_int16_32_g, A2_16_int16_32_g, A3_16_int16_32_g : 
 signal B0_16_int16_32_g, B1_16_int16_32_g, B2_16_int16_32_g, B3_16_int16_32_g : std_logic_vector(15 downto 0);
 signal C0_32_int16_32_g : std_logic_vector(31 downto 0);
 
+--LNS16 gated inputs
+signal A0_16_LNS16_g, A1_16_LNS16_g, A2_16_LNS16_g, A3_16_LNS16_g : std_logic_vector(15 downto 0);
+signal B0_16_LNS16_g, B1_16_LNS16_g, B2_16_LNS16_g, B3_16_LNS16_g : std_logic_vector(15 downto 0);
+signal C0_16_LNS16_g : std_logic_vector(15 downto 0);
+
 begin
 
 -- Format selection decoding
@@ -349,6 +379,8 @@ is_fixP16_32 <= '1' when widthSel = "01" and typeSel = "010" else '0';
 
 is_int8_16   <= '1' when widthSel = "00" and typeSel = "011" else '0';
 is_int16_32  <= '1' when widthSel = "01" and typeSel = "011" else '0';
+
+is_LNS16     <= '1' when widthSel = "01" and typeSel = "100" else '0';
 
 -- FP8 gating
 A0_8_fp8_g <= A0_8 when is_fp8 = '1' else ZERO8;
@@ -459,6 +491,17 @@ B1_16_int16_32_g <= B1_16 when is_int16_32 = '1' else ZERO16;
 B2_16_int16_32_g <= B2_16 when is_int16_32 = '1' else ZERO16;
 B3_16_int16_32_g <= B3_16 when is_int16_32 = '1' else ZERO16;
 C0_32_int16_32_g <= C0_32 when is_int16_32 = '1' else ZERO32;
+
+--LNS16 gating
+A0_16_LNS16_g <= A0_16 when is_LNS16 = '1' else ZERO16;
+A1_16_LNS16_g <= A1_16 when is_LNS16 = '1' else ZERO16;
+A2_16_LNS16_g <= A2_16 when is_LNS16 = '1' else ZERO16;
+A3_16_LNS16_g <= A3_16 when is_LNS16 = '1' else ZERO16;
+B0_16_LNS16_g <= B0_16 when is_LNS16 = '1' else ZERO16;
+B1_16_LNS16_g <= B1_16 when is_LNS16 = '1' else ZERO16;
+B2_16_LNS16_g <= B2_16 when is_LNS16 = '1' else ZERO16;
+B3_16_LNS16_g <= B3_16 when is_LNS16 = '1' else ZERO16;
+C0_16_LNS16_g <= C0_16 when is_LNS16 = '1' else ZERO16;
 
 dpu_fp8 : DotProductUnitFP8e4m3 
     port map (
@@ -599,6 +642,21 @@ dpu_int16_32: dot_unit_coreINT
         c_X0 => C0_32_int16_32_g,
         w_XX3 => out_DPU_int16_32
     );
+
+dpu_LNS16: LNS16_4_9_DPU
+    port map (
+        A0 => A0_16_LNS16_g,
+        A1 => A1_16_LNS16_g,
+        A2 => A2_16_LNS16_g,
+        A3 => A3_16_LNS16_g,
+        B0 => B0_16_LNS16_g,
+        B1 => B1_16_LNS16_g,
+        B2 => B2_16_LNS16_g,
+        B3 => B3_16_LNS16_g,
+        C0 => C0_16_LNS16_g,
+        R   => out_DPU_LNS16
+    );
+
 mux : mux_rel0 
     port map ( widthSel => widthSel,
                typeSel => typeSel ,
@@ -612,6 +670,7 @@ mux : mux_rel0
                fixP16_32out => out_DPU_FixP16_32 ,
                int8_16out => out_DPU_int8_16,
                int16_32out => out_DPU_int16_32,
+               LNS16out => out_DPU_LNS16,
                out8bit => res_8, 
                out16bit => res_16, 
                out32bit => res_32 ) ;

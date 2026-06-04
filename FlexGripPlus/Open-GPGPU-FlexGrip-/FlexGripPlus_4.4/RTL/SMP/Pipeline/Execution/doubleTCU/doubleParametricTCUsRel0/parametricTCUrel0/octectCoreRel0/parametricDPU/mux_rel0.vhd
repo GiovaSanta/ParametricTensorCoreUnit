@@ -14,6 +14,7 @@ entity mux_rel0 is
          fixP16_32out: in std_logic_vector ( 31 downto 0 );
          int8_16out: in std_logic_vector (15 downto 0);
          int16_32out: in std_logic_vector(31 downto 0);
+         LNS16out: in std_logic_vector(15 downto 0);
          out8bit : out std_logic_vector( 7 downto 0 );
          out16bit: out std_logic_vector( 15 downto 0);
          out32bit: out std_logic_vector( 31 downto 0) );
@@ -45,7 +46,8 @@ process( widthSel,
          fixP8_16out,
          fixP16_32out,
          int8_16out,
-         int16_32out
+         int16_32out,
+         LNS16out
          )
 
     begin
@@ -99,6 +101,11 @@ process( widthSel,
             out8bit <= (others => '0') ;
             out16bit <= (others => '0') ;
             out32bit <= int16_32out ;
+
+        elsif( widthSel = "01" AND typeSel = "100" ) then
+            out8bit <= (others => '0');
+            out16bit <= LNS16out ;
+            out32bit <= (others => '0');
         
         else
             out8bit <= (others => '0');

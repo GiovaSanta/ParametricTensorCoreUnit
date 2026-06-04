@@ -549,6 +549,7 @@ begin
                   else PosHMMA                when ( (instr_opcode_b = "0101") and (instr_subop_b = "001"))
                   else IHMMA                  when ( (instr_opcode_b = "0101") and (instr_subop_b = "011"))
                   else FXPHMMA                when ( (instr_opcode_b = "0101") and (instr_subop_b = "010"))
+                  else LNSHMMA                when ( (instr_opcode_b = "0101") and (instr_subop_b = "100"))
                   --else IHMMA                when ( (instr_opcde_b = "0101") and (instr_subop_b = "001"))
                   --else FixPHMMA             when ( (instr_opcode_b = "0101") and (instr_subop_b = "011"))
 
@@ -656,7 +657,7 @@ else '1' when (is_full_marker_b = '1' and (src1_mem_type_i = MEM_SHARED or dest_
              -- SFU added by JDGB and JERC
 			      else x"000000" & "0" & instruction_in(15 downto 9)    when ((instr_opcode_i = ALU) and ((alu_opcode_i = SIN) or (alu_opcode_i = COS) or (alu_opcode_i = RRO_SIN_OP) or (alu_opcode_i = RRO_EX2_OP)or (alu_opcode_i = LG2) or (alu_opcode_i = EX2) or (alu_opcode_i = RSQ))) -- SIN, COS, RRO, LG2, EX2, RSQ
 			      --HMMA added by gio
-            else x"000000" & "0" & instruction_in(15 downto 9)     when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) )
+            else x"000000" & "0" & instruction_in(15 downto 9)     when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) )
             --
              else x"000000" & "00" & instruction_in(14 downto 9)   when (((instr_opcode_i = ALU) and (instr_src1_shared_i = '0')) and (instr_is_long_b = '0'))
              else x"000000" & "0" & instruction_in(15 downto 9)    when (((instr_opcode_i = ALU) and (instr_src1_shared_i = '0')) and (instr_is_long_b = '1') and (instr_marker_i /= IMM))
@@ -724,7 +725,7 @@ else x"000000" & "0" & instruction_in(22 downto 16) when (((instr_opcode_i = MOV
             --
             else x"000000" & "0" & instruction_in(52 downto 46)  when (instr_opcode_i = ALU) or ((instr_opcode_i = MOV) and (mov_opcode_i = STORE) and (mov_mem_type_i = MEM_SHARED))
             --added HMMA case gio
-            else x"000000" & "0" & instruction_in(52 downto 46) when ((instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ))) 
+            else x"000000" & "0" & instruction_in(52 downto 46) when ((instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) )) 
             --
             else (others => '0');
 
@@ -989,9 +990,9 @@ else READ when ((instr_opcode_i = MOV) and (mov_opcode_i = MOV) and (mov_mem_typ
                       -- ADDED GIANLUCA ROASCIO - THE FOLLOWING LINE WAS PRESENT FOR src2_data_type_i BUT NOT HERE, MAYBE A FORGETFULNESS
                       else reg_to_data_type   when ((instr_opcode_i = ALU) and (alu_opcode_i = IADD))
                       --added gio hmma instruction case
-                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '1') ) 
-                      else DT_U64 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '1') )
-                      else DT_U32  when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '0') )
+                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '1') ) 
+                      else DT_U64 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '1') )
+                      else DT_U32  when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '0') )
                       --
                       -- MODIFIED GIANLUCA ROASCIO
                       --else subop_to_data_type when ((instr_opcode_i = ALU) and (src2_mem_type_i = MEM_CONST) and ((alu_opcode_i = AND_OP) or (alu_opcode_i = OR_OP) or (alu_opcode_i = XOR_OP) or (alu_opcode_i = NEG_OP)))
@@ -1036,9 +1037,9 @@ else READ when ((instr_opcode_i = MOV) and (mov_opcode_i = MOV) and (mov_mem_typ
                       -- ADDED GIANLUCA ROASCIO - ISUB WAS NOT LISTED
                       else reg_to_data_type   when ((instr_opcode_i = ALU) and (alu_opcode_i = ISUB))
                       --added gio 
-                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '1') ) 
-                      else DT_U64 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '1') )
-                      else DT_U32  when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '0') )
+                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '1') ) 
+                      else DT_U64 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '1') )
+                      else DT_U32  when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '0') )
                       --
                       -- MODIFIED GIANLUCA ROASCIO
                       --else subop_to_data_type when ((instr_opcode_i = ALU) and (src2_mem_type_i = MEM_CONST) and ((alu_opcode_i = AND_OP) or (alu_opcode_i = OR_OP) or (alu_opcode_i = XOR_OP) or (alu_opcode_i = NEG_OP)))
@@ -1096,9 +1097,9 @@ else READ when ((instr_opcode_i = MOV) and (mov_opcode_i = MOV) and (mov_mem_typ
                       else DT_NONE          when ((instr_opcode_i = MOV) and (mov_opcode_i = LOAD) and (mov_mem_type_i = FLAGS))
                       else DT_NONE          when ((instr_opcode_i = MOV) and (mov_opcode_i = STORE) and (mov_mem_type_i = FLAGS))
                       --added gio hmma instruction case 
-                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) ) and (w32_i = '1') ) 
-                      else DT_U64 when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA)) and (w32_i = '0') and (instruction_in(54) = '1') )
-                      else DT_U32  when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA)) and (w32_i = '0') and (instruction_in(54) = '0') )
+                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA )) and (w32_i = '1') ) 
+                      else DT_U64 when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA )) and (w32_i = '0') and (instruction_in(54) = '1') )
+                      else DT_U32  when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA )) and (w32_i = '0') and (instruction_in(54) = '0') )
                       else DT_U128 when ( (instr_opcode_i = ALU) and  ((alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) )and (instruction_in(54) = '1') )
                       else DT_U64 when ( (instr_opcode_i = ALU)  and  ((alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (instruction_in(54) = '0') )
                       --
@@ -1112,9 +1113,9 @@ else READ when ((instr_opcode_i = MOV) and (mov_opcode_i = MOV) and (mov_mem_typ
                       else reg_to_data_type when ((instr_opcode_i = ALU) and (alu_opcode_i = IADD))
                       else reg_to_data_type when ((instr_opcode_i = ALU) and (alu_opcode_i = CVT))
                       --added gio hmma instruction case
-                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA)) and (w32_i = '1') ) 
-                      else DT_U64 when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA)) and (w32_i = '0') and (instruction_in(54) = '1') )
-                      else DT_U32  when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA)) and (w32_i = '0') and (instruction_in(54) = '0') )
+                      else DT_U128 when ( (instr_opcode_i = ALU) and ( (alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '1') ) 
+                      else DT_U64 when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '1') )
+                      else DT_U32  when ( (instr_opcode_i = ALU) and ((alu_opcode_i = FHMMA) or (alu_opcode_i = PosHMMA) or (alu_opcode_i = LNSHMMA ) ) and (w32_i = '0') and (instruction_in(54) = '0') )
                       else DT_U128 when ( (instr_opcode_i = ALU) and  ( (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (instruction_in(54) = '1') )
                       else DT_U64 when ( (instr_opcode_i = ALU)  and  ( (alu_opcode_i = IHMMA) or (alu_opcode_i = FXPHMMA ) ) and (instruction_in(54) = '0') )
                       --
