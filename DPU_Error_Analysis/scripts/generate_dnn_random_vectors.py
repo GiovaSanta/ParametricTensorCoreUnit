@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 """
-Generate DNN-like random test vectors for DPU error analysis.
+Generate DNN-like random test vectors for floating-point DPU error analysis.
 
 Implemented formats:
   - fp8  : float8_e4m3 using ml_dtypes
   - fp16 : IEEE-754 binary16
   - fp32 : IEEE-754 binary32
 
-For each vector:
-  R = A0*B0 + A1*B1 + A2*B2 + A3*B3 + C0
+Important:
+  reference_real is the full-precision Python reference computed from the
+  original random real operands, before quantization to the target format.
 
-The vector file stores encoded hexadecimal operands for the VHDL testbench.
-The reference CSV stores the decoded real operands and the high-precision Python
-reference result computed from those decoded operands.
+  quantized_input_reference_real is also stored for debugging/secondary analysis.
 """
 
 import argparse
@@ -33,13 +32,11 @@ REPO_EXPERIMENT_DIR = Path("DPU_Error_Analysis/data/dnn_random_10k")
 # -----------------------------------------------------------------------------
 
 def float_to_fp8_e4m3_hex(value: float) -> str:
-    """Encode Python float to FP8 e4m3 hex using ml_dtypes."""
     encoded = np.array([value], dtype=float8_e4m3)
     return format(encoded.view(np.uint8)[0], "02X")
 
 
 def fp8_e4m3_hex_to_float(hex_string: str) -> float:
-    """Decode FP8 e4m3 hex into Python float using ml_dtypes."""
     raw = np.array([int(hex_string.strip(), 16)], dtype=np.uint8)
     decoded = raw.view(float8_e4m3)[0]
     return float(decoded)
@@ -50,13 +47,11 @@ def fp8_e4m3_hex_to_float(hex_string: str) -> float:
 # -----------------------------------------------------------------------------
 
 def float_to_fp16_hex(value: float) -> str:
-    """Encode Python float to IEEE-754 binary16 hex string, uppercase, no 0x."""
     packed = struct.pack(">e", value)
     return packed.hex().upper()
 
 
 def fp16_hex_to_float(hex_string: str) -> float:
-    """Decode IEEE-754 binary16 hex string into Python float."""
     raw = bytes.fromhex(hex_string)
     return struct.unpack(">e", raw)[0]
 
@@ -66,13 +61,11 @@ def fp16_hex_to_float(hex_string: str) -> float:
 # -----------------------------------------------------------------------------
 
 def float_to_fp32_hex(value: float) -> str:
-    """Encode Python float to IEEE-754 binary32 hex string, uppercase, no 0x."""
     packed = struct.pack(">f", value)
     return packed.hex().upper()
 
 
 def fp32_hex_to_float(hex_string: str) -> float:
-    """Decode IEEE-754 binary32 hex string into Python float."""
     raw = bytes.fromhex(hex_string)
     return struct.unpack(">f", raw)[0]
 
@@ -103,13 +96,21 @@ def generate_float_format(
 
     fieldnames = [
         "test_id",
+
         "A0_hex", "A1_hex", "A2_hex", "A3_hex",
         "B0_hex", "B1_hex", "B2_hex", "B3_hex",
         "C0_hex",
-        "A0_real", "A1_real", "A2_real", "A3_real",
-        "B0_real", "B1_real", "B2_real", "B3_real",
-        "C0_real",
+
+        "A0_raw", "A1_raw", "A2_raw", "A3_raw",
+        "B0_raw", "B1_raw", "B2_raw", "B3_raw",
+        "C0_raw",
+
+        "A0_quantized_real", "A1_quantized_real", "A2_quantized_real", "A3_quantized_real",
+        "B0_quantized_real", "B1_quantized_real", "B2_quantized_real", "B3_quantized_real",
+        "C0_quantized_real",
+
         "reference_real",
+        "quantized_input_reference_real",
     ]
 
     kept = 0
@@ -122,41 +123,52 @@ def generate_float_format(
         while kept < num_tests:
             attempts += 1
 
-            # DNN-like operand distribution: small values around zero.
+            # Original full-precision Python random operands.
             A_raw = [random.uniform(-value_range, value_range) for _ in range(4)]
             B_raw = [random.uniform(-value_range, value_range) for _ in range(4)]
             C_raw = random.uniform(-value_range, value_range)
 
-            # Quantize to target format, then decode back.
-            # The Python reference is computed from the actual quantized values
-            # received by the DPU.
+            # Full-precision Python reference BEFORE format quantization.
+            reference_real = sum(A_raw[i] * B_raw[i] for i in range(4)) + C_raw
+
+            # Keep same safe DNN-like output range.
+            if abs(reference_real) > 5.0:
+                continue
+
+            # Quantize operands sent to hardware.
             A_hex = [encoder(x) for x in A_raw]
             B_hex = [encoder(x) for x in B_raw]
             C_hex = encoder(C_raw)
 
-            A = [decoder(x) for x in A_hex]
-            B = [decoder(x) for x in B_hex]
-            C = decoder(C_hex)
+            # Decode quantized operands for secondary/debug reference.
+            A_q = [decoder(x) for x in A_hex]
+            B_q = [decoder(x) for x in B_hex]
+            C_q = decoder(C_hex)
 
-            reference = sum(A[i] * B[i] for i in range(4)) + C
-
-            # Safety filter.
-            # With A,B,C in [-1,1], the result should naturally remain in [-5,5].
-            if abs(reference) > 5.0:
-                continue
+            quantized_input_reference_real = sum(A_q[i] * B_q[i] for i in range(4)) + C_q
 
             # VHDL vector file: 9 hexadecimal operands per line.
             vf.write(" ".join(A_hex + B_hex + [C_hex]) + "\n")
 
             writer.writerow({
                 "test_id": kept,
+
                 "A0_hex": A_hex[0], "A1_hex": A_hex[1], "A2_hex": A_hex[2], "A3_hex": A_hex[3],
                 "B0_hex": B_hex[0], "B1_hex": B_hex[1], "B2_hex": B_hex[2], "B3_hex": B_hex[3],
                 "C0_hex": C_hex,
-                "A0_real": A[0], "A1_real": A[1], "A2_real": A[2], "A3_real": A[3],
-                "B0_real": B[0], "B1_real": B[1], "B2_real": B[2], "B3_real": B[3],
-                "C0_real": C,
-                "reference_real": reference,
+
+                "A0_raw": A_raw[0], "A1_raw": A_raw[1], "A2_raw": A_raw[2], "A3_raw": A_raw[3],
+                "B0_raw": B_raw[0], "B1_raw": B_raw[1], "B2_raw": B_raw[2], "B3_raw": B_raw[3],
+                "C0_raw": C_raw,
+
+                "A0_quantized_real": A_q[0], "A1_quantized_real": A_q[1],
+                "A2_quantized_real": A_q[2], "A3_quantized_real": A_q[3],
+                "B0_quantized_real": B_q[0], "B1_quantized_real": B_q[1],
+                "B2_quantized_real": B_q[2], "B3_quantized_real": B_q[3],
+                "C0_quantized_real": C_q,
+
+                "reference_real": reference_real,
+                "quantized_input_reference_real": quantized_input_reference_real,
             })
 
             kept += 1
