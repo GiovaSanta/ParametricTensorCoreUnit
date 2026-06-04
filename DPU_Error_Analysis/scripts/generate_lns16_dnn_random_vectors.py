@@ -2,19 +2,17 @@
 """
 Generate DNN-like random test vectors for LNS16 4_9 DPU error analysis.
 
-Format:
-  - 16-bit LNS
+LNS16 format:
   - bits 15:14 = 01 for normal finite values
   - bit 13 = sign
   - bits 12:0 = signed fixed-point log2 value
   - fractional log bits W_F = 9
 
-For each vector:
-  R = A0*B0 + A1*B1 + A2*B2 + A3*B3 + C0
+Important:
+  reference_real is the full-precision Python reference computed from the
+  original random real operands, before quantization to LNS16.
 
-The vector file stores encoded LNS16 hexadecimal operands.
-The reference CSV stores decoded real operands and the high-precision Python
-reference computed from those decoded operands.
+  quantized_input_reference_real is also stored for debugging/secondary analysis.
 """
 
 import argparse
@@ -69,7 +67,6 @@ def encode_lns_real(value: float) -> int:
 
     sign = 1 if value < 0.0 else 0
     mag = abs(value)
-
     log_fixed = int(round(math.log2(mag) * SCALE))
 
     if not (-4096 <= log_fixed <= 4095):
@@ -82,10 +79,6 @@ def encode_lns_real(value: float) -> int:
 
 def lns_int_to_hex(x: int) -> str:
     return f"{x & 0xFFFF:04X}"
-
-
-def lns_hex_to_float(hex_string: str) -> float:
-    return decode_lns_int(int(hex_string.strip(), 16))
 
 
 def generate_lns16(num_tests: int, seed: int, value_range: float) -> None:
@@ -102,28 +95,40 @@ def generate_lns16(num_tests: int, seed: int, value_range: float) -> None:
 
     fieldnames = [
         "test_id",
+
         "A0_hex", "A1_hex", "A2_hex", "A3_hex",
         "B0_hex", "B1_hex", "B2_hex", "B3_hex",
         "C0_hex",
-        "A0_real", "A1_real", "A2_real", "A3_real",
-        "B0_real", "B1_real", "B2_real", "B3_real",
-        "C0_real",
+
+        "A0_raw", "A1_raw", "A2_raw", "A3_raw",
+        "B0_raw", "B1_raw", "B2_raw", "B3_raw",
+        "C0_raw",
+
+        "A0_quantized_real", "A1_quantized_real",
+        "A2_quantized_real", "A3_quantized_real",
+        "B0_quantized_real", "B1_quantized_real",
+        "B2_quantized_real", "B3_quantized_real",
+        "C0_quantized_real",
+
         "reference_real",
+        "quantized_input_reference_real",
     ]
 
     kept = 0
     attempts = 0
 
-    with vector_path.open("w", encoding="utf-8") as vf, reference_path.open("w", newline="", encoding="utf-8") as rf:
+    with vector_path.open("w", encoding="utf-8") as vf, reference_path.open(
+        "w", newline="", encoding="utf-8"
+    ) as rf:
         writer = csv.DictWriter(rf, fieldnames=fieldnames)
         writer.writeheader()
 
         while kept < num_tests:
             attempts += 1
 
-            # Avoid values too close to zero because log encoding becomes extreme.
-            # Still DNN-like: small values around zero, but with a minimum magnitude.
-            def rand_nonzero():
+            # LNS cannot represent arbitrary tiny values well, because it stores log2(|x|).
+            # So we use DNN-like values around zero but avoid magnitudes too close to zero.
+            def rand_nonzero() -> float:
                 sign = -1.0 if random.random() < 0.5 else 1.0
                 mag = random.uniform(0.05, value_range)
                 return sign * mag
@@ -136,6 +141,13 @@ def generate_lns16(num_tests: int, seed: int, value_range: float) -> None:
             else:
                 C_raw = rand_nonzero()
 
+            # Full-precision Python reference BEFORE LNS16 quantization.
+            reference_real = sum(A_raw[i] * B_raw[i] for i in range(4)) + C_raw
+
+            # Same safe DNN-like output range used for the other formats.
+            if abs(reference_real) > 5.0:
+                continue
+
             try:
                 A_int = [encode_lns_real(x) for x in A_raw]
                 B_int = [encode_lns_real(x) for x in B_raw]
@@ -147,27 +159,51 @@ def generate_lns16(num_tests: int, seed: int, value_range: float) -> None:
             B_hex = [lns_int_to_hex(x) for x in B_int]
             C_hex = lns_int_to_hex(C_int)
 
-            A = [decode_lns_int(x) for x in A_int]
-            B = [decode_lns_int(x) for x in B_int]
-            C = decode_lns_int(C_int)
+            # Decode quantized LNS values only for secondary/debug reference.
+            A_q = [decode_lns_int(x) for x in A_int]
+            B_q = [decode_lns_int(x) for x in B_int]
+            C_q = decode_lns_int(C_int)
 
-            reference = sum(A[i] * B[i] for i in range(4)) + C
+            quantized_input_reference_real = sum(A_q[i] * B_q[i] for i in range(4)) + C_q
 
-            # Same safe DNN-like output range used for other formats.
-            if abs(reference) > 5.0:
-                continue
-
+            # VHDL vector file: A0 A1 A2 A3 B0 B1 B2 B3 C0
             vf.write(" ".join(A_hex + B_hex + [C_hex]) + "\n")
 
             writer.writerow({
                 "test_id": kept,
-                "A0_hex": A_hex[0], "A1_hex": A_hex[1], "A2_hex": A_hex[2], "A3_hex": A_hex[3],
-                "B0_hex": B_hex[0], "B1_hex": B_hex[1], "B2_hex": B_hex[2], "B3_hex": B_hex[3],
+
+                "A0_hex": A_hex[0],
+                "A1_hex": A_hex[1],
+                "A2_hex": A_hex[2],
+                "A3_hex": A_hex[3],
+                "B0_hex": B_hex[0],
+                "B1_hex": B_hex[1],
+                "B2_hex": B_hex[2],
+                "B3_hex": B_hex[3],
                 "C0_hex": C_hex,
-                "A0_real": A[0], "A1_real": A[1], "A2_real": A[2], "A3_real": A[3],
-                "B0_real": B[0], "B1_real": B[1], "B2_real": B[2], "B3_real": B[3],
-                "C0_real": C,
-                "reference_real": reference,
+
+                "A0_raw": A_raw[0],
+                "A1_raw": A_raw[1],
+                "A2_raw": A_raw[2],
+                "A3_raw": A_raw[3],
+                "B0_raw": B_raw[0],
+                "B1_raw": B_raw[1],
+                "B2_raw": B_raw[2],
+                "B3_raw": B_raw[3],
+                "C0_raw": C_raw,
+
+                "A0_quantized_real": A_q[0],
+                "A1_quantized_real": A_q[1],
+                "A2_quantized_real": A_q[2],
+                "A3_quantized_real": A_q[3],
+                "B0_quantized_real": B_q[0],
+                "B1_quantized_real": B_q[1],
+                "B2_quantized_real": B_q[2],
+                "B3_quantized_real": B_q[3],
+                "C0_quantized_real": C_q,
+
+                "reference_real": reference_real,
+                "quantized_input_reference_real": quantized_input_reference_real,
             })
 
             kept += 1
