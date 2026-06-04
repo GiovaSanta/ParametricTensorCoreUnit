@@ -1,0 +1,12 @@
+format,metric_domain,reference_definition,error_unit,num_tests,exact_matches,exact_match_percent,mean_abs_error,max_abs_error,mean_rel_error,max_rel_error,rmse
+fp8,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4628,46.28,0.036041377453188445,0.2982759222808524,0.6517842916497887,4415.544773557256,0.04886163850876529
+fp16,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4701,47.01,0.000278190710413079,0.002112946334221988,0.002044864671343359,3.9195521311901813,0.0003768442404749261
+fp32,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4556,45.56,3.472901272151951e-08,3.140189033246088e-07,6.227485098477958e-07,0.004576424653571627,4.6939827445421947e-08
+posit8,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4719,47.19,0.012570704120983118,0.10712813414801836,0.07444436536979215,48.85556649732831,0.01647118230373686
+posit16,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4635,46.35,7.545428195233645e-05,0.0005533297684037208,0.0005666444490342777,1.0,9.9462329408157e-05
+posit32,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4675,46.75,2.186888517015026e-09,1.559095830216961e-08,3.388407141625054e-08,0.00023734320224447672,2.928074241647671e-09
+lns16,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4480,44.8,0.000622814124560077,0.00973436837877184,0.005697279480910573,1.0,0.0009180254683809382
+fxp8_16,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,112,1.12,0.029372573259088763,0.147620758834222,0.5304126278091588,3614.5366329104822,0.03672427774885282
+fxp16_32,decoded_real_domain,full-precision Python real-valued dot-product reference,real_value,10000,4,0.04,0.0009274367866487657,0.003921756934290865,0.010861537992352087,53.736618611812055,0.001154261985519124
+int8_16,integer_domain,exact Python integer dot-product reference,integer_counts,10000,10000,100.0,0.0,0,0.0,0.0,0.0
+int16_32,integer_domain,exact Python integer dot-product reference,integer_counts,10000,10000,100.0,0.0,0,0.0,0.0,0.0
