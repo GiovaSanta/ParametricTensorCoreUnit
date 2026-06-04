@@ -145,7 +145,7 @@ def plot_format(fmt: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--format", required=True, choices=["fp8", "fp16", "fp32", "posit8", "posit16", "posit32"])
+    parser.add_argument("--format", required=True, choices=["fp8", "fp16", "fp32", "posit8", "posit16", "posit32", "lns16"])
     args = parser.parse_args()
 
     plot_format(args.format)
