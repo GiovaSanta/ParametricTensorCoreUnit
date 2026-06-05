@@ -544,6 +544,7 @@ package riscv_klessydra is
   constant TCU_INT16    : std_logic_vector(6 downto 0) := "0001001";
   constant TCU_FIXED8   : std_logic_vector(6 downto 0) := "0001100";
   constant TCU_FIXED16  : std_logic_vector(6 downto 0) := "0001101";
+  constant TCU_LNS16    : std_logic_vector(6 downto 0) := "0010001"; --local bits(4 downto 2) indicate format type selection. bit 1 indicate if input operand is 32 bit, bit 0 indicate whether it is 16bit or 8bit width.
   
   -- instr. to change privilege level & interrupt-management instruction
   -- funct12 bits for instructions SYSTEM -> PRIV:

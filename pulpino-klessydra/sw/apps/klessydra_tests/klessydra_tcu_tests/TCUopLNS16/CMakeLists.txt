@@ -1,0 +1,1 @@
+add_application(TCUopLNS16 TCUopLNS16.c LABELS "klessydra_tests")

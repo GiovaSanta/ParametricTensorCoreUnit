@@ -525,7 +525,8 @@ begin
                    (FUNCT7_wires = TCU_INT8)     or
                    (FUNCT7_wires = TCU_INT16)    or
                    (FUNCT7_wires = TCU_FIXED8)   or
-                   (FUNCT7_wires = TCU_FIXED16) then
+                   (FUNCT7_wires = TCU_FIXED16)  or
+                   (FUNCT7_wires = TCU_LNS16) then
 
                   -- Valid HMMA / TCU instruction.
                   -- Do not request IE, LS, or DSP.

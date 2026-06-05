@@ -91,7 +91,7 @@ architecture rtl of TCU_Branch is
   -- src2 = B
   -- src3 = C / accumulator
   --
-  -- "pair00" type is enough for FP8,FP16,POSIT8,POSIT16, INT8, FIXED8
+  -- "pair00" type is enough for FP8,FP16,POSIT8,POSIT16, LNS16, INT8, FIXED8
   -- "pair01" type is needed for FP32, POSIT32
   ---------------------------------------------------------------------------
   signal tc0_src1_rf_port_a_pair00_s : arraySize16_32 ;
@@ -373,6 +373,13 @@ begin
             tcu_result_is_8bit_lat   <= '0';
             tcu_result_is_32bit_lat  <= '1';
             regs_per_operand_v       := 2;
+          when "0010010" =>  --LNS16
+            tcu_wrapper_widthSel_lat <= "01";
+            tcu_wrapper_typeSel_lat  <= "100";
+            tcu_result_is_8bit_lat   <= '0';
+            tcu_result_is_32bit_lat  <= '0';
+            regs_per_operand_v       := 2;
+
           when others =>
             tcu_wrapper_widthSel_lat <= "01";
             tcu_wrapper_typeSel_lat  <= "000";
@@ -392,7 +399,7 @@ begin
           --   C = src3 = rd  only
           --   one 32-bit register contains 4 x 8-bit values
           --
-          -- For native 16-bit operand formats FP16/POSIT16:
+          -- For native 16-bit operand formats FP16/POSIT16/LNS16:
           --   A = src1 = rs1, rs1+1
           --   B = src2 = rs2, rs2+1
           --   C = src3 = rd,  rd+1
@@ -424,7 +431,7 @@ begin
           -----------------------------------------------------------------
           -- First packed 32-bit register is always used.
           -- For FP8 this register contains 4 FP8 operands.
-          -- For FP16/POSIT16 this register contains 2 16-bit operands.
+          -- For FP16/POSIT16/LNS16 this register contains 2 16-bit operands.
           -----------------------------------------------------------------
 
           tc0_src1_rf_port_a_pair00_s(tcu_lane_idx_v) <= regfile_i(harc_EXEC)(tcu_rs1_idx_wire);
