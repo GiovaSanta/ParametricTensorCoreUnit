@@ -25,6 +25,15 @@ LNS16:
         --output-report LNS16operands/validation_report.txt \
         --output-csv LNS16operands/validation_element_errors.csv
 
+
+POSIT16:
+    python tools/compare_flexgrip_d_matrix.py \
+        --format posit16 \
+        --golden-file softPosit16_1operands/hmma_8instr_dualTC_4octects_posit16_single_experiment.txt \
+        --hw-file softPosit16_1operands/hw_D_matrix_extracted.txt \
+        --output-report softPosit16_1operands/validation_report.txt \
+        --output-csv softPosit16_1operands/validation_element_errors.csv
+
 This script performs two checks:
 
 1. Encoded-domain exact comparison:
@@ -40,6 +49,7 @@ This script performs two checks:
 Supported decoded formats:
     fp16
     lns16
+    posit16
 """
 
 from __future__ import annotations
@@ -64,6 +74,13 @@ HEX_WORD_RE = re.compile(r"^[0-9A-Fa-f]{1,4}$")
 #   wF = 9, scale = 2^9 = 512
 LNS16_WF = 9
 LNS16_SCALE = 1 << LNS16_WF
+
+# Posit16 convention used by the current posit16 generator:
+#   posit<16,1>
+# If your RTL/generator changes to posit<16,2>, update POSIT16_ES.
+POSIT16_NBITS = 16
+POSIT16_ES = 1
+POSIT16_NAR = 1 << (POSIT16_NBITS - 1)
 
 
 @dataclass(frozen=True)
@@ -223,6 +240,74 @@ def decode_lns16(hex_word: str) -> float:
     return sign * (2.0 ** (log_fixed / LNS16_SCALE))
 
 
+
+def posit_bits_to_float(ui: int, nbits: int = POSIT16_NBITS, es: int = POSIT16_ES) -> float:
+    """
+    Decode a posit integer into a Python float.
+
+    Current automated posit16 flow uses posit<16,1>, matching the generator.
+    """
+    ui &= (1 << nbits) - 1
+
+    if ui == 0:
+        return 0.0
+
+    nar = 1 << (nbits - 1)
+    if ui == nar:
+        return float("nan")
+
+    sign = bool(ui & nar)
+
+    if sign:
+        ui = ((~ui) + 1) & ((1 << nbits) - 1)
+
+    body_len = nbits - 1
+    body = ui & ((1 << body_len) - 1)
+    bits = [(body >> i) & 1 for i in range(body_len - 1, -1, -1)]
+
+    reg_bit = bits[0]
+    run = 0
+    idx = 0
+
+    while idx < len(bits) and bits[idx] == reg_bit:
+        run += 1
+        idx += 1
+
+    # Skip regime termination bit if present.
+    if idx < len(bits):
+        idx += 1
+
+    k = run - 1 if reg_bit == 1 else -run
+
+    exp = 0
+    for _ in range(es):
+        exp <<= 1
+        if idx < len(bits):
+            exp |= bits[idx]
+            idx += 1
+
+    frac = 1.0
+    scale = 0.5
+
+    while idx < len(bits):
+        if bits[idx]:
+            frac += scale
+        scale *= 0.5
+        idx += 1
+
+    value = (2.0 ** (k * (1 << es) + exp)) * frac
+
+    return -value if sign else value
+
+
+def decode_posit16(hex_word: str) -> float:
+    """
+    Decode posit<16,1> into a Python float.
+    """
+    bits = int(hex_word, 16) & 0xFFFF
+    return posit_bits_to_float(bits, POSIT16_NBITS, POSIT16_ES)
+
+
 def decode_word(hex_word: str, fmt: str) -> float:
     fmt_l = fmt.lower()
 
@@ -232,9 +317,12 @@ def decode_word(hex_word: str, fmt: str) -> float:
     if fmt_l == "lns16":
         return decode_lns16(hex_word)
 
+    if fmt_l == "posit16":
+        return decode_posit16(hex_word)
+
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}. "
-        "Currently supported: fp16, lns16."
+        "Currently supported: fp16, lns16, posit16."
     )
 
 
@@ -482,8 +570,8 @@ def main() -> int:
     parser.add_argument(
         "--format",
         required=True,
-        choices=["fp16", "lns16"],
-        help="Numeric format used to decode 16-bit words. Supported: fp16, lns16.",
+        choices=["fp16", "lns16", "posit16"],
+        help="Numeric format used to decode 16-bit words. Supported: fp16, lns16, posit16.",
     )
     parser.add_argument(
         "--golden-file",
