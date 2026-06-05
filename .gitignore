@@ -82,6 +82,22 @@ ThesisSummaryDraft.docx
 ThesisSummaryDraft.pdf
 values_dot_productFP8_rel5_valuesObtainedByDPU_not4Sim.txt
 
+# ModelSim / Questa compiled libraries and logs
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/work/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/fixedp8_16_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/fixedp16_32_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/int8_16_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/int16_32_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/fp8_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/fp16_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/fp32_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/posit8_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/posit16_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/posit32_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/lns16_dpu/
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/transcript
+FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/*.wlf
+
 # Ignore Vivado-generated directories anywhere
 **/*.cache/
 **/*.hw/
