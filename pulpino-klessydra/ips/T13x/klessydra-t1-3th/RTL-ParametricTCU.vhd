@@ -373,7 +373,7 @@ begin
             tcu_result_is_8bit_lat   <= '0';
             tcu_result_is_32bit_lat  <= '1';
             regs_per_operand_v       := 2;
-          when "0010010" =>  --LNS16
+          when "0010001" =>  --LNS16
             tcu_wrapper_widthSel_lat <= "01";
             tcu_wrapper_typeSel_lat  <= "100";
             tcu_result_is_8bit_lat   <= '0';
