@@ -92,7 +92,7 @@ FORMAT_CONFIGS = {
         experiment_generator="generate_lns16_experiment.py",
         experiment_file="hmma_8instr_dualTC_4octects_lns16_single_experiment.txt",
         global_mem_generator="generate_flexgrip_16bit_global_mem.py",
-        decoded_compare_format=None,
+        decoded_compare_format="lns16",
     ),
 }
 

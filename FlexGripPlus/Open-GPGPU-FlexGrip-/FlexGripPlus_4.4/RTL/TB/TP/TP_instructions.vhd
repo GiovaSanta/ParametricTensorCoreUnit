@@ -315,7 +315,6 @@ begin
 			when 169 => instruction_out <= x"00000780";
 
 
-
             when others => null;
         
         end case;

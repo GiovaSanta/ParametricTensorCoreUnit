@@ -9,12 +9,21 @@ Default golden section:
 Typical usage from:
     FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/
 
+FP16:
     python tools/compare_flexgrip_d_matrix.py \
         --format fp16 \
         --golden-file fp16operands/hmma_8instr_dualTC_4octects_fp16_single_experiment.txt \
         --hw-file fp16operands/hw_D_matrix_extracted.txt \
         --output-report fp16operands/validation_report.txt \
         --output-csv fp16operands/validation_element_errors.csv
+
+LNS16:
+    python tools/compare_flexgrip_d_matrix.py \
+        --format lns16 \
+        --golden-file LNS16operands/hmma_8instr_dualTC_4octects_lns16_single_experiment.txt \
+        --hw-file LNS16operands/hw_D_matrix_extracted.txt \
+        --output-report LNS16operands/validation_report.txt \
+        --output-csv LNS16operands/validation_element_errors.csv
 
 This script performs two checks:
 
@@ -28,8 +37,9 @@ This script performs two checks:
           if golden_real == 0 and abs_error == 0 -> rel_error = 0
           if golden_real == 0 and abs_error != 0 -> rel_error = inf
 
-Currently supported decoded format:
+Supported decoded formats:
     fp16
+    lns16
 """
 
 from __future__ import annotations
@@ -46,6 +56,14 @@ import numpy as np
 
 
 HEX_WORD_RE = re.compile(r"^[0-9A-Fa-f]{1,4}$")
+
+# LNS16 4_9 format used by your generated VHDL modules:
+#   bits 15:14 = 01 for normal finite values
+#   bit 13     = sign
+#   bits 12:0  = signed fixed-point log2(|value|)
+#   wF = 9, scale = 2^9 = 512
+LNS16_WF = 9
+LNS16_SCALE = 1 << LNS16_WF
 
 
 @dataclass(frozen=True)
@@ -166,15 +184,57 @@ def decode_fp16(hex_word: str) -> float:
     return float(value)
 
 
+def bits_to_signed13(x: int) -> int:
+    """
+    Convert the 13-bit signed field used by LNS16 into a Python signed int.
+    """
+    v = x & 0x1FFF
+
+    if v & 0x1000:
+        v -= 0x2000
+
+    return v
+
+
+def decode_lns16(hex_word: str) -> float:
+    """
+    Decode the LNS16 4_9 format used by the VHDL modules.
+
+    Encoding:
+        0x0000       -> zero
+        bits 15:14   -> 01 for normal finite values
+        bit 13       -> sign
+        bits 12:0    -> signed fixed-point log2 magnitude, scaled by 2^9
+
+    Real value:
+        sign * 2^(log_fixed / 512)
+    """
+    bits = int(hex_word, 16) & 0xFFFF
+
+    if bits == 0x0000:
+        return 0.0
+
+    if (bits >> 14) != 0b01:
+        raise ValueError(f"Unsupported non-normal LNS16 value: 0x{bits:04X}")
+
+    sign = -1.0 if ((bits >> 13) & 1) else 1.0
+    log_fixed = bits_to_signed13(bits)
+
+    return sign * (2.0 ** (log_fixed / LNS16_SCALE))
+
+
 def decode_word(hex_word: str, fmt: str) -> float:
     fmt_l = fmt.lower()
 
     if fmt_l == "fp16":
         return decode_fp16(hex_word)
 
+    if fmt_l == "lns16":
+        return decode_lns16(hex_word)
+
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}. "
-        "Currently supported: fp16."
+        "Currently supported: fp16, lns16."
     )
 
 
@@ -325,7 +385,6 @@ def build_report(
 ) -> str:
     summary = compute_summary(comparisons)
 
-    mismatches = [item for item in comparisons if not item.encoded_exact_match]
     nonzero_error_items = [item for item in comparisons if item.abs_error != 0.0]
 
     # Sort by absolute error descending for the most informative diagnostic list.
@@ -423,8 +482,8 @@ def main() -> int:
     parser.add_argument(
         "--format",
         required=True,
-        choices=["fp16"],
-        help="Numeric format used to decode 16-bit words. Currently supported: fp16.",
+        choices=["fp16", "lns16"],
+        help="Numeric format used to decode 16-bit words. Supported: fp16, lns16.",
     )
     parser.add_argument(
         "--golden-file",
