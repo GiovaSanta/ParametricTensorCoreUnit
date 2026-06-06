@@ -59,6 +59,7 @@ FORMAT_ELEMENT_BITS = {
     "fp8": 8,
     "posit8": 8,
     "fxp8_16": 16,
+    "fxp16_32": 32,
 }
 
 # LNS16 4_9 format:
@@ -92,6 +93,10 @@ FP8_EXP_BIAS = 7
 # FXP8/FXP16 mixed format output convention:
 #   D is signed_5_M10 -> 16-bit two's complement, 10 fractional bits.
 FXP16_FRAC_BITS = 10
+
+# FXP16/FXP32 mixed format output convention:
+#   D is signed_11_M20 -> 32-bit two's complement, 20 fractional bits.
+FXP32_FRAC_BITS = 20
 
 
 @dataclass(frozen=True)
@@ -403,6 +408,13 @@ def decode_fxp8_16_output(hex_word: str) -> float:
     return float(raw) / float(1 << FXP16_FRAC_BITS)
 
 
+def decode_fxp16_32_output(hex_word: str) -> float:
+    raw = int(hex_word, 16) & 0xFFFFFFFF
+    if raw & 0x80000000:
+        raw -= 0x100000000
+    return float(raw) / float(1 << FXP32_FRAC_BITS)
+
+
 def decode_word(hex_word: str, fmt: str) -> float:
     fmt_l = fmt.lower()
 
@@ -429,6 +441,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "fxp8_16":
         return decode_fxp8_16_output(hex_word)
+
+    if fmt_l == "fxp16_32":
+        return decode_fxp16_32_output(hex_word)
 
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}."
