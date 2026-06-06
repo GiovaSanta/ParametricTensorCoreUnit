@@ -8,6 +8,7 @@ Default golden section:
 
 Supported decoded formats:
     fp16      -> 16-bit IEEE half
+    fp32      -> 32-bit IEEE single
     lns16     -> LNS16 4_9
     posit16   -> posit<16,1>
     fp8       -> FP8 E4M3, 8-bit
@@ -49,6 +50,7 @@ import numpy as np
 
 FORMAT_ELEMENT_BITS = {
     "fp16": 16,
+    "fp32": 32,
     "lns16": 16,
     "posit16": 16,
     "fp8": 8,
@@ -213,6 +215,12 @@ def decode_fp16(hex_word: str) -> float:
     return float(value)
 
 
+def decode_fp32(hex_word: str) -> float:
+    bits = np.array([int(hex_word, 16)], dtype=np.uint32)
+    value = bits.view(np.float32)[0]
+    return float(value)
+
+
 def bits_to_signed13(x: int) -> int:
     v = x & 0x1FFF
 
@@ -329,6 +337,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "fp16":
         return decode_fp16(hex_word)
+
+    if fmt_l == "fp32":
+        return decode_fp32(hex_word)
 
     if fmt_l == "lns16":
         return decode_lns16(hex_word)

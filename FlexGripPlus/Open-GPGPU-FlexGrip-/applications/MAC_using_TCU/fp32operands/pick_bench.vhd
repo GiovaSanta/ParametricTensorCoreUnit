@@ -81,7 +81,7 @@ package pick_bench is
     constant BENCH_CMEMREG18 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG19 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG20 : std_logic_vector(7 downto 0) := x"00";--adress D of global mem
-    constant BENCH_CMEMREG21 : std_logic_vector(7 downto 0) := x"12"; 
+    constant BENCH_CMEMREG21 : std_logic_vector(7 downto 0) := x"0C"; 
     constant BENCH_CMEMREG22 : std_logic_vector(7 downto 0) := x"00";
     constant BENCH_CMEMREG23 : std_logic_vector(7 downto 0) := x"00";
     

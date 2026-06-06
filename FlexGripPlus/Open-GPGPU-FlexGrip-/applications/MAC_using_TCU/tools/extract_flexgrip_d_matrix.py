@@ -11,6 +11,9 @@ For 16-bit output elements:
 For 8-bit output elements:
     AABBCCDD -> DD CC BB AA
 
+For 32-bit output elements:
+    AABBCCDD -> AABBCCDD
+
 Default:
     start address = 0x600
     matrix shape  = 16x16
@@ -90,7 +93,10 @@ def split_32bit_word(word_hex: str, element_bits: int) -> List[str]:
         b0 = word[6:8]
         return [b0, b1, b2, b3]
 
-    raise ValueError("Only --element-bits 8 or 16 are supported.")
+    if element_bits == 32:
+        return [word]
+
+    raise ValueError("Only --element-bits 8, 16, or 32 are supported.")
 
 
 def extract_matrix_words(
@@ -162,7 +168,7 @@ def main() -> int:
     parser.add_argument("--rows", type=int, default=16, help="Matrix rows. Default: 16.")
     parser.add_argument("--cols", type=int, default=16, help="Matrix columns. Default: 16.")
     parser.add_argument("--address-stride", type=int, default=4, help="Address step between 32-bit words. Default: 4.")
-    parser.add_argument("--element-bits", type=int, choices=[8, 16], default=16, help="Matrix element width. Default: 16.")
+    parser.add_argument("--element-bits", type=int, choices=[8, 16, 32], default=16, help="Matrix element width. Default: 16.")
 
     args = parser.parse_args()
 
