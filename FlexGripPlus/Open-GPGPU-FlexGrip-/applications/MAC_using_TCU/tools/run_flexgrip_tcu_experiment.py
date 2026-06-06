@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FlexGrip Plus TCU experiment runner - Version 0.6
+FlexGrip Plus TCU experiment runner - Version 0.8
 
 Current scope:
   - runs a format-specific experiment generator
@@ -52,6 +52,8 @@ class FormatConfig:
     tp_instructions_file: str = "TP_instructions.vhd"
     pick_bench_file: str = "pick_bench.vhd"
     decoded_compare_format: str | None = None
+    output_element_bits: int = 16
+    output_start_addr: str = "0x600"
     golden_label: str = "#FULL_D_16x16_one_shot_reference encoded"
 
 
@@ -99,6 +101,18 @@ FORMAT_CONFIGS = {
         experiment_file="hmma_8instr_dualTC_4octects_posit16_single_experiment.txt",
         global_mem_generator="generate_flexgrip_16bit_global_mem.py",
         decoded_compare_format="posit16",
+        output_element_bits=16,
+    ),
+
+    "fp8": FormatConfig(
+        name="fp8",
+        operands_dir=REPO_REL_MAC_APP_ROOT / "fp8e4m3eoperands",
+        experiment_generator="generate_fp8_experiment.py",
+        experiment_file="hmma_8instr_dualTC_4octects_fp8_single_experiment.txt",
+        global_mem_generator="generate_flexgrip_8bit_global_mem.py",
+        decoded_compare_format="fp8",
+        output_element_bits=8,
+        output_start_addr="0x300",
     ),
 }
 
@@ -309,6 +323,10 @@ def extract_hardware_d_matrix(repo_root: Path, cfg: FormatConfig, rdata_log_path
             rdata_log_path,
             "--output",
             hw_d_matrix_path,
+            "--start-addr",
+            cfg.output_start_addr,
+            "--element-bits",
+            str(cfg.output_element_bits),
         ],
         cwd=repo_root,
     )
@@ -409,7 +427,7 @@ def main() -> int:
     repo_root = repo_root_from_script()
     cfg = FORMAT_CONFIGS[args.format]
 
-    print("FlexGrip Plus TCU experiment runner - Version 0.6")
+    print("FlexGrip Plus TCU experiment runner - Version 0.8")
     print(f"Repository root: {repo_root}")
     print(f"Selected format: {cfg.name}")
     print(f"Skip simulation: {args.skip_sim}")
@@ -452,7 +470,7 @@ def main() -> int:
         print_step("Simulation skipped")
         print("The active FlexGrip Plus benchmark files are ready, but vsim was not launched.")
 
-    print_step("Version 0.6 completed successfully")
+    print_step("Version 0.8 completed successfully")
     print("Done.")
 
     if args.skip_sim:

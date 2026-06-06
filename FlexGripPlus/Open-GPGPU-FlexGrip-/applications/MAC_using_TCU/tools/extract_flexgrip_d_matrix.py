@@ -1,33 +1,31 @@
 #!/usr/bin/env python3
 """
-Extract the 16x16 hardware D matrix from a FlexGrip Plus gpgpu_rdata.log file.
+Extract a 16x16 hardware D matrix from a FlexGrip Plus gpgpu_rdata.log file.
 
 The FlexGrip output log stores memory words like:
-
     00600 C4B8C54E
 
-Each 32-bit word contains two 16-bit matrix elements.
-
-For the current Tensor Core result layout, the lower 16 bits are the first
-matrix element and the upper 16 bits are the second matrix element:
-
+For 16-bit output elements:
     C4B8C54E -> C54E C4B8
 
-By default, this script extracts:
+For 8-bit output elements:
+    AABBCCDD -> DD CC BB AA
+
+Default:
     start address = 0x600
     matrix shape  = 16x16
-    word count    = 128 32-bit words
-    element count = 256 16-bit elements
+    element bits  = 16
 
-Output format:
-    one 16x16 matrix, row-major, 16 encoded hex words per row.
-
-Typical usage from:
-    FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/
-
+Typical usage:
     python tools/extract_flexgrip_d_matrix.py \
         --input fp16operands/gpgpu_rdata.log \
         --output fp16operands/hw_D_matrix_extracted.txt
+
+FP8 usage:
+    python tools/extract_flexgrip_d_matrix.py \
+        --input fp8e4m3eoperands/gpgpu_rdata.log \
+        --output fp8e4m3eoperands/hw_D_matrix_extracted.txt \
+        --element-bits 8
 """
 
 from __future__ import annotations
@@ -35,21 +33,13 @@ from __future__ import annotations
 import argparse
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 
 LOG_LINE_RE = re.compile(r"^\s*([0-9A-Fa-f]+)\s+([0-9A-Fa-f]{8})\s*$")
 
 
 def parse_address(value: str) -> int:
-    """
-    Accept addresses such as:
-      00600
-      0x600
-      @000001d5
-
-    For FlexGrip logs, plain addresses like 00600 are interpreted as hex.
-    """
     text = value.strip()
 
     if text.startswith("@"):
@@ -62,10 +52,6 @@ def parse_address(value: str) -> int:
 
 
 def parse_gpgpu_rdata_log(path: Path) -> Dict[int, str]:
-    """
-    Return a mapping:
-        address_int -> 8-hex-digit uppercase 32-bit word
-    """
     memory: Dict[int, str] = {}
 
     with path.open("r", encoding="utf-8") as f:
@@ -89,22 +75,22 @@ def parse_gpgpu_rdata_log(path: Path) -> Dict[int, str]:
     return memory
 
 
-def split_32bit_word_to_16bit_elements(word_hex: str) -> Tuple[str, str]:
-    """
-    Convert one 32-bit memory word into two 16-bit encoded elements.
-
-    Example:
-        C4B8C54E -> C54E, C4B8
-
-    Reason:
-        lower 16-bit half is stored first in the matrix stream.
-    """
+def split_32bit_word(word_hex: str, element_bits: int) -> List[str]:
     word = word_hex.upper().zfill(8)
 
-    high16 = word[0:4]
-    low16 = word[4:8]
+    if element_bits == 16:
+        high16 = word[0:4]
+        low16 = word[4:8]
+        return [low16, high16]
 
-    return low16, high16
+    if element_bits == 8:
+        b3 = word[0:2]
+        b2 = word[2:4]
+        b1 = word[4:6]
+        b0 = word[6:8]
+        return [b0, b1, b2, b3]
+
+    raise ValueError("Only --element-bits 8 or 16 are supported.")
 
 
 def extract_matrix_words(
@@ -113,13 +99,21 @@ def extract_matrix_words(
     rows: int,
     cols: int,
     address_stride: int,
+    element_bits: int,
 ) -> List[str]:
     needed_elements = rows * cols
+    elements_per_32bit_word = 32 // element_bits
 
-    if needed_elements % 2 != 0:
-        raise ValueError("This extractor expects an even number of 16-bit elements.")
+    if 32 % element_bits != 0:
+        raise ValueError("element_bits must divide 32.")
 
-    needed_32bit_words = needed_elements // 2
+    if needed_elements % elements_per_32bit_word != 0:
+        raise ValueError(
+            "This extractor expects the matrix element count to be an integer "
+            "number of 32-bit words."
+        )
+
+    needed_32bit_words = needed_elements // elements_per_32bit_word
 
     extracted: List[str] = []
 
@@ -131,11 +125,7 @@ def extract_matrix_words(
                 f"Missing expected address 0x{address:X} in gpgpu_rdata.log"
             )
 
-        word32 = memory[address]
-        elem0, elem1 = split_32bit_word_to_16bit_elements(word32)
-
-        extracted.append(elem0)
-        extracted.append(elem1)
+        extracted.extend(split_32bit_word(memory[address], element_bits))
 
     if len(extracted) != needed_elements:
         raise RuntimeError(
@@ -163,36 +153,16 @@ def write_matrix(path: Path, matrix_lines: List[str]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Extract a 16x16 encoded D matrix from FlexGrip Plus gpgpu_rdata.log."
+        description="Extract an encoded D matrix from FlexGrip Plus gpgpu_rdata.log."
     )
 
-    parser.add_argument(
-        "-i",
-        "--input",
-        required=True,
-        type=Path,
-        help="Input gpgpu_rdata.log file.",
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        required=True,
-        type=Path,
-        help="Output matrix text file.",
-    )
-    parser.add_argument(
-        "--start-addr",
-        default="0x600",
-        help="Start address of the D matrix in the log. Default: 0x600.",
-    )
+    parser.add_argument("-i", "--input", required=True, type=Path, help="Input gpgpu_rdata.log file.")
+    parser.add_argument("-o", "--output", required=True, type=Path, help="Output matrix text file.")
+    parser.add_argument("--start-addr", default="0x600", help="Start address of D matrix. Default: 0x600.")
     parser.add_argument("--rows", type=int, default=16, help="Matrix rows. Default: 16.")
     parser.add_argument("--cols", type=int, default=16, help="Matrix columns. Default: 16.")
-    parser.add_argument(
-        "--address-stride",
-        type=int,
-        default=4,
-        help="Address step between 32-bit words. Default: 4.",
-    )
+    parser.add_argument("--address-stride", type=int, default=4, help="Address step between 32-bit words. Default: 4.")
+    parser.add_argument("--element-bits", type=int, choices=[8, 16], default=16, help="Matrix element width. Default: 16.")
 
     args = parser.parse_args()
 
@@ -206,6 +176,7 @@ def main() -> int:
         rows=args.rows,
         cols=args.cols,
         address_stride=args.address_stride,
+        element_bits=args.element_bits,
     )
 
     matrix_lines = words_to_matrix_lines(extracted_words, args.rows, args.cols)
@@ -216,8 +187,9 @@ def main() -> int:
     print(f"Output matrix:  {args.output}")
     print(f"Start address:  0x{start_addr:X}")
     print(f"Matrix shape:   {args.rows}x{args.cols}")
+    print(f"Element bits:   {args.element_bits}")
     print(f"Elements:       {args.rows * args.cols}")
-    print(f"32-bit words:   {(args.rows * args.cols) // 2}")
+    print(f"32-bit words:   {(args.rows * args.cols) // (32 // args.element_bits)}")
     print()
     print("First output row:")
     print(matrix_lines[0])

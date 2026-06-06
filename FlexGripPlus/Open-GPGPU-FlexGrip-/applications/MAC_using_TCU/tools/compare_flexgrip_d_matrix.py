@@ -6,8 +6,13 @@ including decoded-real error metrics.
 Default golden section:
     #FULL_D_16x16_one_shot_reference encoded
 
-Typical usage from:
-    FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/
+Supported decoded formats:
+    fp16      -> 16-bit IEEE half
+    lns16     -> LNS16 4_9
+    posit16   -> posit<16,1>
+    fp8       -> FP8 E4M3, 8-bit
+
+Typical usage from MAC_using_TCU:
 
 FP16:
     python tools/compare_flexgrip_d_matrix.py \
@@ -17,39 +22,13 @@ FP16:
         --output-report fp16operands/validation_report.txt \
         --output-csv fp16operands/validation_element_errors.csv
 
-LNS16:
+FP8:
     python tools/compare_flexgrip_d_matrix.py \
-        --format lns16 \
-        --golden-file LNS16operands/hmma_8instr_dualTC_4octects_lns16_single_experiment.txt \
-        --hw-file LNS16operands/hw_D_matrix_extracted.txt \
-        --output-report LNS16operands/validation_report.txt \
-        --output-csv LNS16operands/validation_element_errors.csv
-
-
-POSIT16:
-    python tools/compare_flexgrip_d_matrix.py \
-        --format posit16 \
-        --golden-file softPosit16_1operands/hmma_8instr_dualTC_4octects_posit16_single_experiment.txt \
-        --hw-file softPosit16_1operands/hw_D_matrix_extracted.txt \
-        --output-report softPosit16_1operands/validation_report.txt \
-        --output-csv softPosit16_1operands/validation_element_errors.csv
-
-This script performs two checks:
-
-1. Encoded-domain exact comparison:
-      golden_hex == hardware_hex
-
-2. Decoded-real numerical comparison:
-      decode(golden_hex) vs decode(hardware_hex)
-      abs_error = abs(hw_real - golden_real)
-      rel_error = abs_error / abs(golden_real), except:
-          if golden_real == 0 and abs_error == 0 -> rel_error = 0
-          if golden_real == 0 and abs_error != 0 -> rel_error = inf
-
-Supported decoded formats:
-    fp16
-    lns16
-    posit16
+        --format fp8 \
+        --golden-file fp8e4m3eoperands/hmma_8instr_dualTC_4octects_fp8_single_experiment.txt \
+        --hw-file fp8e4m3eoperands/hw_D_matrix_extracted.txt \
+        --output-report fp8e4m3eoperands/validation_report.txt \
+        --output-csv fp8e4m3eoperands/validation_element_errors.csv
 """
 
 from __future__ import annotations
@@ -65,9 +44,16 @@ from typing import List
 import numpy as np
 
 
-HEX_WORD_RE = re.compile(r"^[0-9A-Fa-f]{1,4}$")
+# ---------- Format metadata ----------
 
-# LNS16 4_9 format used by your generated VHDL modules:
+FORMAT_ELEMENT_BITS = {
+    "fp16": 16,
+    "lns16": 16,
+    "posit16": 16,
+    "fp8": 8,
+}
+
+# LNS16 4_9 format:
 #   bits 15:14 = 01 for normal finite values
 #   bit 13     = sign
 #   bits 12:0  = signed fixed-point log2(|value|)
@@ -77,10 +63,13 @@ LNS16_SCALE = 1 << LNS16_WF
 
 # Posit16 convention used by the current posit16 generator:
 #   posit<16,1>
-# If your RTL/generator changes to posit<16,2>, update POSIT16_ES.
 POSIT16_NBITS = 16
 POSIT16_ES = 1
-POSIT16_NAR = 1 << (POSIT16_NBITS - 1)
+
+# FP8 E4M3 convention used by the current fp8 generator.
+FP8_EXP_BITS = 4
+FP8_MAN_BITS = 3
+FP8_EXP_BIAS = 7
 
 
 @dataclass(frozen=True)
@@ -96,14 +85,34 @@ class ElementComparison:
     encoded_exact_match: bool
 
 
-def normalize_hex_word(token: str) -> str:
+def hex_re_for_bits(element_bits: int) -> re.Pattern[str]:
+    max_digits = element_bits // 4
+    return re.compile(rf"^[0-9A-Fa-f]{{1,{max_digits}}}$")
+
+
+def normalize_hex_word(token: str, element_bits: int) -> str:
     token = token.strip()
+    max_digits = element_bits // 4
 
-    if not HEX_WORD_RE.fullmatch(token):
-        raise ValueError(f"Invalid 16-bit hex token: {token!r}")
+    if not hex_re_for_bits(element_bits).fullmatch(token):
+        raise ValueError(f"Invalid {element_bits}-bit hex token: {token!r}")
 
-    return token.upper().zfill(4)
+    return token.upper().zfill(max_digits)
 
+
+def element_bits_for_format(fmt: str) -> int:
+    fmt_l = fmt.lower()
+
+    if fmt_l not in FORMAT_ELEMENT_BITS:
+        raise ValueError(
+            f"Unsupported format {fmt!r}. "
+            f"Supported: {', '.join(sorted(FORMAT_ELEMENT_BITS))}"
+        )
+
+    return FORMAT_ELEMENT_BITS[fmt_l]
+
+
+# ---------- Matrix readers ----------
 
 def find_section_line(lines: List[str], section_label: str) -> int:
     wanted = section_label.strip().lower()
@@ -120,9 +129,10 @@ def read_matrix_after_section(
     section_label: str,
     rows: int,
     cols: int,
+    element_bits: int,
 ) -> List[List[str]]:
     """
-    Read rows*cols 16-bit hex tokens immediately after a section label.
+    Read rows*cols encoded hex tokens immediately after a section label.
 
     Blank lines are ignored.
     If a new '#' section begins after tokens were collected, parsing stops.
@@ -133,7 +143,7 @@ def read_matrix_after_section(
     needed = rows * cols
     tokens: List[str] = []
 
-    for line_no, raw in enumerate(lines[start_idx:], start=start_idx + 1):
+    for raw in lines[start_idx:]:
         stripped = raw.strip()
 
         if not stripped:
@@ -145,7 +155,7 @@ def read_matrix_after_section(
             continue
 
         for token in stripped.split():
-            tokens.append(normalize_hex_word(token))
+            tokens.append(normalize_hex_word(token, element_bits))
 
         if len(tokens) >= needed:
             break
@@ -159,27 +169,23 @@ def read_matrix_after_section(
     return [tokens[r * cols : (r + 1) * cols] for r in range(rows)]
 
 
-def read_plain_matrix(path: Path, rows: int, cols: int) -> List[List[str]]:
-    """
-    Read a plain encoded matrix file.
-
-    Expected format:
-        16 hex words per row
-        16 rows by default
-
-    Blank lines and comment lines starting with '#' are ignored.
-    """
+def read_plain_matrix(
+    path: Path,
+    rows: int,
+    cols: int,
+    element_bits: int,
+) -> List[List[str]]:
     tokens: List[str] = []
 
     with path.open("r", encoding="utf-8") as f:
-        for line_no, raw in enumerate(f, start=1):
+        for raw in f:
             stripped = raw.strip()
 
             if not stripped or stripped.startswith("#"):
                 continue
 
             for token in stripped.split():
-                tokens.append(normalize_hex_word(token))
+                tokens.append(normalize_hex_word(token, element_bits))
 
     needed = rows * cols
 
@@ -192,19 +198,15 @@ def read_plain_matrix(path: Path, rows: int, cols: int) -> List[List[str]]:
     return [tokens[r * cols : (r + 1) * cols] for r in range(rows)]
 
 
+# ---------- Decoders ----------
+
 def decode_fp16(hex_word: str) -> float:
-    """
-    Decode a 16-bit IEEE FP16 hex word into a Python float.
-    """
     bits = np.array([int(hex_word, 16)], dtype=np.uint16)
     value = bits.view(np.float16)[0]
     return float(value)
 
 
 def bits_to_signed13(x: int) -> int:
-    """
-    Convert the 13-bit signed field used by LNS16 into a Python signed int.
-    """
     v = x & 0x1FFF
 
     if v & 0x1000:
@@ -214,18 +216,6 @@ def bits_to_signed13(x: int) -> int:
 
 
 def decode_lns16(hex_word: str) -> float:
-    """
-    Decode the LNS16 4_9 format used by the VHDL modules.
-
-    Encoding:
-        0x0000       -> zero
-        bits 15:14   -> 01 for normal finite values
-        bit 13       -> sign
-        bits 12:0    -> signed fixed-point log2 magnitude, scaled by 2^9
-
-    Real value:
-        sign * 2^(log_fixed / 512)
-    """
     bits = int(hex_word, 16) & 0xFFFF
 
     if bits == 0x0000:
@@ -240,13 +230,7 @@ def decode_lns16(hex_word: str) -> float:
     return sign * (2.0 ** (log_fixed / LNS16_SCALE))
 
 
-
 def posit_bits_to_float(ui: int, nbits: int = POSIT16_NBITS, es: int = POSIT16_ES) -> float:
-    """
-    Decode a posit integer into a Python float.
-
-    Current automated posit16 flow uses posit<16,1>, matching the generator.
-    """
     ui &= (1 << nbits) - 1
 
     if ui == 0:
@@ -273,7 +257,6 @@ def posit_bits_to_float(ui: int, nbits: int = POSIT16_NBITS, es: int = POSIT16_E
         run += 1
         idx += 1
 
-    # Skip regime termination bit if present.
     if idx < len(bits):
         idx += 1
 
@@ -301,11 +284,32 @@ def posit_bits_to_float(ui: int, nbits: int = POSIT16_NBITS, es: int = POSIT16_E
 
 
 def decode_posit16(hex_word: str) -> float:
-    """
-    Decode posit<16,1> into a Python float.
-    """
     bits = int(hex_word, 16) & 0xFFFF
     return posit_bits_to_float(bits, POSIT16_NBITS, POSIT16_ES)
+
+
+def decode_fp8_e4m3(hex_word: str) -> float:
+    code = int(hex_word, 16) & 0xFF
+
+    sign = -1.0 if (code & 0x80) else 1.0
+    exp_field = (code >> 3) & 0xF
+    frac_field = code & 0x7
+
+    if exp_field == 0:
+        if frac_field == 0:
+            return -0.0 if sign < 0 else 0.0
+        mant = frac_field / (2 ** FP8_MAN_BITS)
+        return sign * (2 ** (1 - FP8_EXP_BIAS)) * mant
+
+    if exp_field == 0xF:
+        if frac_field == 0:
+            return math.copysign(math.inf, sign)
+        return math.nan
+
+    mant = 1.0 + frac_field / (2 ** FP8_MAN_BITS)
+    exp_unbiased = exp_field - FP8_EXP_BIAS
+
+    return sign * mant * (2 ** exp_unbiased)
 
 
 def decode_word(hex_word: str, fmt: str) -> float:
@@ -320,11 +324,15 @@ def decode_word(hex_word: str, fmt: str) -> float:
     if fmt_l == "posit16":
         return decode_posit16(hex_word)
 
+    if fmt_l == "fp8":
+        return decode_fp8_e4m3(hex_word)
+
     raise NotImplementedError(
-        f"Decoded-real comparison is not implemented for format {fmt!r}. "
-        "Currently supported: fp16, lns16, posit16."
+        f"Decoded-real comparison is not implemented for format {fmt!r}."
     )
 
+
+# ---------- Comparison / reporting ----------
 
 def relative_error(abs_error: float, golden_real: float) -> float:
     denom = abs(golden_real)
@@ -388,20 +396,22 @@ def compute_summary(comparisons: List[ElementComparison]) -> dict:
     abs_errors = [item.abs_error for item in comparisons]
     rel_errors = [item.rel_error for item in comparisons]
 
+    finite_abs_errors = finite_values(abs_errors)
     finite_rel_errors = finite_values(rel_errors)
 
-    mean_abs_error = sum(abs_errors) / total if total else 0.0
-    max_abs_error = max(abs_errors) if abs_errors else 0.0
-    rmse = math.sqrt(sum(e * e for e in abs_errors) / total) if total else 0.0
+    mean_abs_error = sum(finite_abs_errors) / len(finite_abs_errors) if finite_abs_errors else 0.0
+    max_abs_error = max(finite_abs_errors) if finite_abs_errors else 0.0
+    rmse = math.sqrt(sum(e * e for e in finite_abs_errors) / len(finite_abs_errors)) if finite_abs_errors else 0.0
 
-    if finite_rel_errors:
-        mean_rel_error = sum(finite_rel_errors) / len(finite_rel_errors)
-        max_rel_error = max(finite_rel_errors)
-    else:
-        mean_rel_error = math.inf if any(math.isinf(e) for e in rel_errors) else 0.0
-        max_rel_error = math.inf if any(math.isinf(e) for e in rel_errors) else 0.0
+    mean_rel_error = sum(finite_rel_errors) / len(finite_rel_errors) if finite_rel_errors else 0.0
+    max_rel_error = max(finite_rel_errors) if finite_rel_errors else 0.0
 
     infinite_rel_error_count = sum(1 for e in rel_errors if math.isinf(e))
+    nan_error_count = sum(
+        1 for item in comparisons
+        if math.isnan(item.golden_real) or math.isnan(item.hardware_real)
+        or math.isnan(item.abs_error) or math.isnan(item.rel_error)
+    )
 
     return {
         "total_elements": total,
@@ -414,6 +424,7 @@ def compute_summary(comparisons: List[ElementComparison]) -> dict:
         "mean_rel_error": mean_rel_error,
         "max_rel_error": max_rel_error,
         "infinite_rel_error_count": infinite_rel_error_count,
+        "nan_error_count": nan_error_count,
     }
 
 
@@ -473,9 +484,11 @@ def build_report(
 ) -> str:
     summary = compute_summary(comparisons)
 
-    nonzero_error_items = [item for item in comparisons if item.abs_error != 0.0]
+    nonzero_error_items = [
+        item for item in comparisons
+        if math.isfinite(item.abs_error) and item.abs_error != 0.0
+    ]
 
-    # Sort by absolute error descending for the most informative diagnostic list.
     largest_errors = sorted(
         nonzero_error_items,
         key=lambda item: item.abs_error,
@@ -492,6 +505,7 @@ def build_report(
     lines.append(f"Golden section:            {section_label}")
     lines.append(f"Hardware file:             {hw_file}")
     lines.append(f"Matrix shape:              {rows}x{cols}")
+    lines.append(f"Element bits:              {element_bits_for_format(fmt)}")
     lines.append("")
     lines.append("Encoded-domain exact comparison")
     lines.append("-" * 70)
@@ -508,19 +522,20 @@ def build_report(
     lines.append(f"Mean relative error:       {fmt_float(summary['mean_rel_error'])}")
     lines.append(f"Max relative error:        {fmt_float(summary['max_rel_error'])}")
     lines.append(f"Infinite relative errors:  {summary['infinite_rel_error_count']}")
+    lines.append(f"NaN-related error rows:    {summary['nan_error_count']}")
     lines.append("")
     lines.append("Interpretation")
     lines.append("-" * 70)
 
-    if summary["encoded_mismatches"] == 0:
-        lines.append("Encoded result:            EXACT MATCH")
-    else:
-        lines.append("Encoded result:            NOT EXACT")
+    lines.append(
+        "Encoded result:            "
+        + ("EXACT MATCH" if summary["encoded_mismatches"] == 0 else "NOT EXACT")
+    )
 
-    if summary["max_abs_error"] == 0.0:
-        lines.append("Decoded-real result:       ZERO ERROR")
-    else:
-        lines.append("Decoded-real result:       NONZERO ERROR")
+    lines.append(
+        "Decoded-real result:       "
+        + ("ZERO ERROR" if summary["max_abs_error"] == 0.0 else "NONZERO ERROR")
+    )
 
     lines.append("")
 
@@ -570,8 +585,8 @@ def main() -> int:
     parser.add_argument(
         "--format",
         required=True,
-        choices=["fp16", "lns16", "posit16"],
-        help="Numeric format used to decode 16-bit words. Supported: fp16, lns16, posit16.",
+        choices=sorted(FORMAT_ELEMENT_BITS.keys()),
+        help="Numeric format used to decode encoded result words.",
     )
     parser.add_argument(
         "--golden-file",
@@ -619,6 +634,8 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    element_bits = element_bits_for_format(args.format)
+
     output_csv = args.output_csv
     if output_csv is None:
         output_csv = args.output_report.parent / "validation_element_errors.csv"
@@ -628,12 +645,14 @@ def main() -> int:
         section_label=args.golden_label,
         rows=args.rows,
         cols=args.cols,
+        element_bits=element_bits,
     )
 
     hardware_matrix = read_plain_matrix(
         path=args.hw_file,
         rows=args.rows,
         cols=args.cols,
+        element_bits=element_bits,
     )
 
     comparisons = compare_matrices(
@@ -665,7 +684,6 @@ def main() -> int:
     print(f"Per-element CSV written to:   {output_csv}")
 
     # Return 0 even if there are errors/mismatches.
-    # Numerical validation may intentionally produce nonzero error.
     return 0
 
 
