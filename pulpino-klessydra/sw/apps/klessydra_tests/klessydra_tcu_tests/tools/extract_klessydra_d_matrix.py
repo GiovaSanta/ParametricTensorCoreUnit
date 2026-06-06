@@ -7,6 +7,7 @@ Supported backends:
     posit16
     lns16
     fp8
+    posit8
 
 For 16-bit element formats:
     one 32-bit SLM word contains two 16-bit elements.
@@ -124,7 +125,7 @@ def write_matrix(path: Path, matrix: List[List[str]]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extract Klessydra D matrix from final_touched_words.slm.")
-    parser.add_argument("--format", required=True, choices=["fp16", "posit16", "lns16", "fp8"])
+    parser.add_argument("--format", required=True, choices=["fp16", "posit16", "lns16", "fp8", "posit8"])
     parser.add_argument("--input", required=True, type=Path, help="Path to final_touched_words.slm")
     parser.add_argument("--output", required=True, type=Path, help="Output plain matrix file")
     parser.add_argument("--rows", type=int, default=16)
@@ -135,7 +136,7 @@ def main() -> int:
 
     if args.format in {"fp16", "posit16", "lns16"}:
         matrix = extract_16bit_matrix_from_first_words(words, args.rows, args.cols)
-    elif args.format == "fp8":
+    elif args.format in {"fp8", "posit8"}:
         matrix = extract_8bit_matrix_from_first_words(words, args.rows, args.cols)
     else:
         raise NotImplementedError(args.format)
