@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FlexGrip Plus TCU experiment runner - Version 1.1
+FlexGrip Plus TCU experiment runner - Version 1.3
 
 Current scope:
   - runs a format-specific experiment generator
@@ -55,6 +55,7 @@ class FormatConfig:
     output_element_bits: int = 16
     output_start_addr: str = "0x600"
     golden_label: str = "#FULL_D_16x16_one_shot_reference encoded"
+    real_golden_label: str | None = None
 
 
 REPO_REL_FLEXGRIP_ROOT = Path("FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4")
@@ -135,6 +136,19 @@ FORMAT_CONFIGS = {
         decoded_compare_format="fp8",
         output_element_bits=8,
         output_start_addr="0x300",
+    ),
+
+    "fxp8_16": FormatConfig(
+        name="fxp8_16",
+        operands_dir=REPO_REL_MAC_APP_ROOT / "fixedPoint8operands",
+        experiment_generator="generate_fxp8_16_experiment.py",
+        experiment_file="hmma_8instr_dualTC_4octects_fxp8fxp16_single_experiment_compact.txt",
+        global_mem_generator="generate_flexgrip_fxp8_16_global_mem.py",
+        decoded_compare_format="fxp8_16",
+        output_element_bits=16,
+        output_start_addr="0x400",
+        golden_label="#FULL_D_16x16_full_precision_real_reference_rounded_fxp16 encoded",
+        real_golden_label="#FULL_D_16x16_full_precision_real_reference decoded_real",
     ),
 
     "posit8": FormatConfig(
@@ -396,25 +410,27 @@ def compare_against_golden(
     ensure_file(experiment_path, "golden experiment file")
     ensure_file(hw_d_matrix_path, "extracted hardware D matrix file")
 
-    run_command(
-        [
-            sys.executable,
-            compare_script,
-            "--format",
-            cfg.decoded_compare_format,
-            "--golden-file",
-            experiment_path,
-            "--hw-file",
-            hw_d_matrix_path,
-            "--output-report",
-            report_path,
-            "--output-csv",
-            csv_path,
-            "--golden-label",
-            cfg.golden_label,
-        ],
-        cwd=repo_root,
-    )
+    command = [
+        sys.executable,
+        compare_script,
+        "--format",
+        cfg.decoded_compare_format,
+        "--golden-file",
+        experiment_path,
+        "--hw-file",
+        hw_d_matrix_path,
+        "--output-report",
+        report_path,
+        "--output-csv",
+        csv_path,
+        "--golden-label",
+        cfg.golden_label,
+    ]
+
+    if cfg.real_golden_label is not None:
+        command.extend(["--real-golden-label", cfg.real_golden_label])
+
+    run_command(command, cwd=repo_root)
 
     ensure_file(report_path, "validation report")
     ensure_file(csv_path, "validation per-element CSV")
@@ -460,7 +476,7 @@ def main() -> int:
     repo_root = repo_root_from_script()
     cfg = FORMAT_CONFIGS[args.format]
 
-    print("FlexGrip Plus TCU experiment runner - Version 1.1")
+    print("FlexGrip Plus TCU experiment runner - Version 1.3")
     print(f"Repository root: {repo_root}")
     print(f"Selected format: {cfg.name}")
     print(f"Skip simulation: {args.skip_sim}")
@@ -503,7 +519,7 @@ def main() -> int:
         print_step("Simulation skipped")
         print("The active FlexGrip Plus benchmark files are ready, but vsim was not launched.")
 
-    print_step("Version 1.1 completed successfully")
+    print_step("Version 1.3 completed successfully")
     print("Done.")
 
     if args.skip_sim:

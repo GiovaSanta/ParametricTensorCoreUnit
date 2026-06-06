@@ -13,6 +13,7 @@ Supported decoded formats:
     posit16   -> posit<16,1>
     posit32   -> posit<32,2>
     fp8       -> FP8 E4M3, 8-bit
+    fxp8_16   -> mixed fixed-point: A/B 8-bit, C/D 16-bit signed_5_M10
     posit8    -> posit<8,0>, 8-bit
 
 Typical usage from MAC_using_TCU:
@@ -57,6 +58,7 @@ FORMAT_ELEMENT_BITS = {
     "posit32": 32,
     "fp8": 8,
     "posit8": 8,
+    "fxp8_16": 16,
 }
 
 # LNS16 4_9 format:
@@ -86,6 +88,10 @@ POSIT8_ES = 0
 FP8_EXP_BITS = 4
 FP8_MAN_BITS = 3
 FP8_EXP_BIAS = 7
+
+# FXP8/FXP16 mixed format output convention:
+#   D is signed_5_M10 -> 16-bit two's complement, 10 fractional bits.
+FXP16_FRAC_BITS = 10
 
 
 @dataclass(frozen=True)
@@ -212,6 +218,45 @@ def read_plain_matrix(
         )
 
     return [tokens[r * cols : (r + 1) * cols] for r in range(rows)]
+
+
+
+def read_real_matrix_after_section(
+    path: Path,
+    section_label: str,
+    rows: int,
+    cols: int,
+) -> List[List[float]]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start_idx = find_section_line(lines, section_label) + 1
+
+    needed = rows * cols
+    values: List[float] = []
+
+    for raw in lines[start_idx:]:
+        stripped = raw.strip()
+
+        if not stripped:
+            continue
+
+        if stripped.startswith("#"):
+            if values:
+                break
+            continue
+
+        for token in stripped.split():
+            values.append(float(token))
+
+        if len(values) >= needed:
+            break
+
+    if len(values) != needed:
+        raise ValueError(
+            f"Real-valued section {section_label!r} in {path} contains {len(values)} values; "
+            f"expected {needed} for a {rows}x{cols} matrix."
+        )
+
+    return [values[r * cols : (r + 1) * cols] for r in range(rows)]
 
 
 # ---------- Decoders ----------
@@ -344,6 +389,20 @@ def decode_fp8_e4m3(hex_word: str) -> float:
     return sign * mant * (2 ** exp_unbiased)
 
 
+
+def decode_fxp8_16_output(hex_word: str) -> float:
+    """
+    Decode the mixed FXP8/FXP16 result D.
+
+    A/B are 8-bit signed_2_M5, but D is 16-bit signed_5_M10.
+    Therefore comparison decodes the 16-bit result as signed int16 / 2^10.
+    """
+    raw = int(hex_word, 16) & 0xFFFF
+    if raw & 0x8000:
+        raw -= 0x10000
+    return float(raw) / float(1 << FXP16_FRAC_BITS)
+
+
 def decode_word(hex_word: str, fmt: str) -> float:
     fmt_l = fmt.lower()
 
@@ -367,6 +426,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "posit8":
         return decode_posit8(hex_word)
+
+    if fmt_l == "fxp8_16":
+        return decode_fxp8_16_output(hex_word)
 
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}."
@@ -392,6 +454,7 @@ def compare_matrices(
     rows: int,
     cols: int,
     fmt: str,
+    real_golden: List[List[float]] | None = None,
 ) -> List[ElementComparison]:
     comparisons: List[ElementComparison] = []
 
@@ -400,7 +463,11 @@ def compare_matrices(
             golden_hex = golden[r][c]
             hardware_hex = hardware[r][c]
 
-            golden_real = decode_word(golden_hex, fmt)
+            if real_golden is None:
+                golden_real = decode_word(golden_hex, fmt)
+            else:
+                golden_real = float(real_golden[r][c])
+
             hardware_real = decode_word(hardware_hex, fmt)
 
             abs_err = abs(hardware_real - golden_real)
@@ -522,6 +589,7 @@ def build_report(
     cols: int,
     comparisons: List[ElementComparison],
     max_rows_to_print: int,
+    real_golden_label: str | None = None,
 ) -> str:
     summary = compute_summary(comparisons)
 
@@ -543,7 +611,9 @@ def build_report(
     lines.append("")
     lines.append(f"Format:                    {fmt}")
     lines.append(f"Golden file:               {golden_file}")
-    lines.append(f"Golden section:            {section_label}")
+    lines.append(f"Golden encoded section:    {section_label}")
+    if real_golden_label is not None:
+        lines.append(f"Golden real section:       {real_golden_label}")
     lines.append(f"Hardware file:             {hw_file}")
     lines.append(f"Matrix shape:              {rows}x{cols}")
     lines.append(f"Element bits:              {element_bits_for_format(fmt)}")
@@ -660,8 +730,17 @@ def main() -> int:
         "--golden-label",
         default="#FULL_D_16x16_one_shot_reference encoded",
         help=(
-            "Golden matrix section label. "
+            "Golden encoded matrix section label. "
             "Default: '#FULL_D_16x16_one_shot_reference encoded'"
+        ),
+    )
+    parser.add_argument(
+        "--real-golden-label",
+        default=None,
+        help=(
+            "Optional real-valued golden matrix section label. "
+            "When provided, decoded-real errors are computed against this real section, "
+            "while encoded exact matches are still checked against --golden-label."
         ),
     )
     parser.add_argument("--rows", type=int, default=16, help="Matrix rows. Default: 16.")
@@ -696,12 +775,22 @@ def main() -> int:
         element_bits=element_bits,
     )
 
+    real_golden_matrix = None
+    if args.real_golden_label is not None:
+        real_golden_matrix = read_real_matrix_after_section(
+            path=args.golden_file,
+            section_label=args.real_golden_label,
+            rows=args.rows,
+            cols=args.cols,
+        )
+
     comparisons = compare_matrices(
         golden=golden_matrix,
         hardware=hardware_matrix,
         rows=args.rows,
         cols=args.cols,
         fmt=args.format,
+        real_golden=real_golden_matrix,
     )
 
     report = build_report(
@@ -713,6 +802,7 @@ def main() -> int:
         cols=args.cols,
         comparisons=comparisons,
         max_rows_to_print=args.max_rows_to_print,
+        real_golden_label=args.real_golden_label,
     )
 
     args.output_report.parent.mkdir(parents=True, exist_ok=True)
