@@ -2,19 +2,13 @@
 """
 Extract Klessydra TCU D matrix from final_touched_words.slm.
 
-Initial backend: FP16.
+Supported backends:
+    fp16
+    posit16
 
-For TCUopFP16, the file:
-    .../TCUopFP16/slm_files/final_touched_words.slm
-
-contains the final D matrix starting from the first touched word.
-
-Each SLM line has:
-    @address 32bit_word
-
-For FP16:
-    one 32-bit word contains two FP16 elements.
-    The observed Klessydra packing is low 16-bit element first, then high 16-bit element.
+For 16-bit element formats:
+    one 32-bit SLM word contains two 16-bit elements.
+    Observed Klessydra packing is low 16-bit element first, then high 16-bit element.
 
 Example:
     c4b8c54e -> C54E C4B8
@@ -62,14 +56,14 @@ def parse_slm_words(path: Path) -> List[Tuple[int, str]]:
     return words
 
 
-def split_word_fp16_low_high(word: str) -> List[str]:
+def split_word_16bit_low_high(word: str) -> List[str]:
     word = word.upper().zfill(8)
     high = word[0:4]
     low = word[4:8]
     return [low, high]
 
 
-def extract_fp16_matrix_from_first_words(
+def extract_16bit_matrix_from_first_words(
     words: List[Tuple[int, str]],
     rows: int,
     cols: int,
@@ -79,13 +73,13 @@ def extract_fp16_matrix_from_first_words(
 
     if len(words) < needed_words:
         raise ValueError(
-            f"Not enough SLM words for {rows}x{cols} FP16 matrix: "
+            f"Not enough SLM words for {rows}x{cols} 16-bit matrix: "
             f"found {len(words)}, need {needed_words}"
         )
 
     elements: List[str] = []
     for _, word in words[:needed_words]:
-        elements.extend(split_word_fp16_low_high(word))
+        elements.extend(split_word_16bit_low_high(word))
 
     elements = elements[:needed_elements]
 
@@ -99,7 +93,7 @@ def write_matrix(path: Path, matrix: List[List[str]]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extract Klessydra D matrix from final_touched_words.slm.")
-    parser.add_argument("--format", required=True, choices=["fp16"])
+    parser.add_argument("--format", required=True, choices=["fp16", "posit16"])
     parser.add_argument("--input", required=True, type=Path, help="Path to final_touched_words.slm")
     parser.add_argument("--output", required=True, type=Path, help="Output plain matrix file")
     parser.add_argument("--rows", type=int, default=16)
@@ -108,8 +102,8 @@ def main() -> int:
 
     words = parse_slm_words(args.input)
 
-    if args.format == "fp16":
-        matrix = extract_fp16_matrix_from_first_words(words, args.rows, args.cols)
+    if args.format in {"fp16", "posit16"}:
+        matrix = extract_16bit_matrix_from_first_words(words, args.rows, args.cols)
     else:
         raise NotImplementedError(args.format)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Klessydra TCU experiment runner - Version 0.3
+Klessydra TCU experiment runner - Version 0.4
 
 Initial FP16 backend.
 
@@ -95,6 +95,50 @@ FORMAT_CONFIGS = {
             "klessydra_tcu_tests/TCUopFP16/validation_element_errors.csv"
         ),
     ),
+    "posit16": FormatConfig(
+        name="posit16",
+        generator_script=Path(
+            "FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/"
+            "softPosit16_1operands/generate_posit16_experiment.py"
+        ),
+        experiment_file=Path(
+            "FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/"
+            "softPosit16_1operands/hmma_8instr_dualTC_4octects_posit16_single_experiment.txt"
+        ),
+        patcher_script_names=(
+            Path("tools/klessydra/patch_klessydra_posit16_c_from_experiment.py"),
+            Path(
+                "pulpino-klessydra/sw/apps/klessydra_tests/"
+                "klessydra_tcu_tests/tools/patch_klessydra_posit16_c_from_experiment.py"
+            ),
+        ),
+        c_file=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/TCUopPOSIT16.c"
+        ),
+        golden_out=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/golden_D_matrix.txt"
+        ),
+        make_target="TCUopPOSIT16.vsimc",
+        compare_format="posit16",
+        final_slm_file=Path(
+            "pulpino-klessydra/sw/build/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/slm_files/final_touched_words.slm"
+        ),
+        hw_matrix_file=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/hw_D_matrix_extracted.txt"
+        ),
+        validation_report=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/validation_report.txt"
+        ),
+        validation_csv=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopPOSIT16/validation_element_errors.csv"
+        ),
+    ),
 }
 
 
@@ -116,7 +160,7 @@ def auto_detect_make_cwd(repo_root: Path) -> Path:
       ../../build
 
     Relative to repo root, that is:
-      pulpino-klessydra/sw/build
+      pulpino-klessydra/sw/apps/klessydra_tests/build
     """
     for candidate in MAKE_CWD_CANDIDATES:
         full = as_abs(repo_root, candidate)
@@ -302,7 +346,7 @@ def run_validation(
         print("Validation skipped because no hardware D matrix file exists yet.")
         print("Expected/default hardware matrix: {}".format(hw_matrix))
         print()
-        print("This is expected for runner v0.3 unless you provide:")
+        print("This is expected for runner v0.4 unless you provide:")
         print("  --hw-file path/to/hw_D_matrix_extracted.txt")
         print("or implement:")
         print("  tools/klessydra/extract_klessydra_d_matrix.py")
@@ -374,7 +418,7 @@ def main() -> int:
     cfg = FORMAT_CONFIGS[args.format]
     make_cwd = args.make_cwd if args.make_cwd is not None else auto_detect_make_cwd(repo_root)
 
-    print_banner("Klessydra TCU experiment runner v0.3")
+    print_banner("Klessydra TCU experiment runner v0.4")
     print("Repository root: {}".format(repo_root))
     print("Format:          {}".format(cfg.name))
     print("C benchmark:     {}".format(as_abs(repo_root, cfg.c_file)))
@@ -413,7 +457,7 @@ def main() -> int:
         print_banner("Step 5 - Validate D matrix")
         print("Skipped by user.")
 
-    print_banner("Klessydra runner v0.3 completed")
+    print_banner("Klessydra runner v0.4 completed")
     print("Experiment file: {}".format(as_abs(repo_root, cfg.experiment_file)))
     print("Golden D file:   {}".format(as_abs(repo_root, cfg.golden_out)))
     print("Extraction done: {}".format(extracted))
