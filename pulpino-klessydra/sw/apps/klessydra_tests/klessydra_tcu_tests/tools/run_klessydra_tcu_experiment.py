@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Klessydra TCU experiment runner - Version 0.9
+Klessydra TCU experiment runner - Version 1.0
 
 Initial FP16 backend.
 
@@ -48,6 +48,8 @@ class FormatConfig:
     hw_matrix_file: Path
     validation_report: Path
     validation_csv: Path
+    golden_label: str = "#FULL_D_16x16_one_shot_reference encoded"
+    real_golden_label: Optional[str] = None
 
 
 FORMAT_CONFIGS = {
@@ -359,6 +361,52 @@ FORMAT_CONFIGS = {
             "klessydra_tcu_tests/TCUopPOSIT32/validation_element_errors.csv"
         ),
     ),
+    "fxp8_16": FormatConfig(
+        name="fxp8_16",
+        generator_script=Path(
+            "FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/"
+            "fixedPoint8operands/generate_fxp8_16_experiment.py"
+        ),
+        experiment_file=Path(
+            "FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/"
+            "fixedPoint8operands/hmma_8instr_dualTC_4octects_fxp8fxp16_single_experiment_compact.txt"
+        ),
+        patcher_script_names=(
+            Path("tools/klessydra/patch_klessydra_fxp8_16_c_from_experiment.py"),
+            Path(
+                "pulpino-klessydra/sw/apps/klessydra_tests/"
+                "klessydra_tcu_tests/tools/patch_klessydra_fxp8_16_c_from_experiment.py"
+            ),
+        ),
+        c_file=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/TCUopFIXED8_16.c"
+        ),
+        golden_out=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/golden_D_matrix.txt"
+        ),
+        make_target="TCUopFIXED8_16.vsimc",
+        compare_format="fxp8_16",
+        final_slm_file=Path(
+            "pulpino-klessydra/sw/build/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/slm_files/final_touched_words.slm"
+        ),
+        hw_matrix_file=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/hw_D_matrix_extracted.txt"
+        ),
+        validation_report=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/validation_report.txt"
+        ),
+        validation_csv=Path(
+            "pulpino-klessydra/sw/apps/klessydra_tests/"
+            "klessydra_tcu_tests/TCUopFIXED8_16/validation_element_errors.csv"
+        ),
+        golden_label="#FULL_D_16x16_full_precision_real_reference_rounded_fxp16 encoded",
+        real_golden_label="#FULL_D_16x16_full_precision_real_reference decoded_real",
+    ),
 }
 
 
@@ -566,7 +614,7 @@ def run_validation(
         print("Validation skipped because no hardware D matrix file exists yet.")
         print("Expected/default hardware matrix: {}".format(hw_matrix))
         print()
-        print("This is expected for runner v0.9 unless you provide:")
+        print("This is expected for runner v1.0 unless you provide:")
         print("  --hw-file path/to/hw_D_matrix_extracted.txt")
         print("or implement:")
         print("  tools/klessydra/extract_klessydra_d_matrix.py")
@@ -574,23 +622,28 @@ def run_validation(
 
     comparator = find_comparator(repo_root)
 
+    command = [
+        sys.executable,
+        str(comparator),
+        "--format",
+        cfg.compare_format,
+        "--golden-file",
+        str(as_abs(repo_root, cfg.experiment_file)),
+        "--hw-file",
+        str(hw_matrix),
+        "--output-report",
+        str(as_abs(repo_root, cfg.validation_report)),
+        "--output-csv",
+        str(as_abs(repo_root, cfg.validation_csv)),
+        "--golden-label",
+        cfg.golden_label,
+    ]
+
+    if cfg.real_golden_label is not None:
+        command.extend(["--real-golden-label", cfg.real_golden_label])
+
     run_command(
-        [
-            sys.executable,
-            str(comparator),
-            "--format",
-            cfg.compare_format,
-            "--golden-file",
-            str(as_abs(repo_root, cfg.experiment_file)),
-            "--hw-file",
-            str(hw_matrix),
-            "--output-report",
-            str(as_abs(repo_root, cfg.validation_report)),
-            "--output-csv",
-            str(as_abs(repo_root, cfg.validation_csv)),
-            "--golden-label",
-            "#FULL_D_16x16_one_shot_reference encoded",
-        ],
+        command,
         cwd=repo_root,
         description="Step 5 - Validate D matrix",
         dry_run=dry_run,
@@ -638,7 +691,7 @@ def main() -> int:
     cfg = FORMAT_CONFIGS[args.format]
     make_cwd = args.make_cwd if args.make_cwd is not None else auto_detect_make_cwd(repo_root)
 
-    print_banner("Klessydra TCU experiment runner v0.9")
+    print_banner("Klessydra TCU experiment runner v1.0")
     print("Repository root: {}".format(repo_root))
     print("Format:          {}".format(cfg.name))
     print("C benchmark:     {}".format(as_abs(repo_root, cfg.c_file)))
@@ -677,7 +730,7 @@ def main() -> int:
         print_banner("Step 5 - Validate D matrix")
         print("Skipped by user.")
 
-    print_banner("Klessydra runner v0.9 completed")
+    print_banner("Klessydra runner v1.0 completed")
     print("Experiment file: {}".format(as_abs(repo_root, cfg.experiment_file)))
     print("Golden D file:   {}".format(as_abs(repo_root, cfg.golden_out)))
     print("Extraction done: {}".format(extracted))
