@@ -6,6 +6,7 @@ Supported backends:
     fp16
     posit16
     lns16
+    fp8
 
 For 16-bit element formats:
     one 32-bit SLM word contains two 16-bit elements.
@@ -87,6 +88,35 @@ def extract_16bit_matrix_from_first_words(
     return [elements[r * cols : (r + 1) * cols] for r in range(rows)]
 
 
+def split_word_8bit_little_endian(word: str) -> List[str]:
+    word = word.upper().zfill(8)
+    # Memory order is low byte first.
+    return [word[6:8], word[4:6], word[2:4], word[0:2]]
+
+
+def extract_8bit_matrix_from_first_words(
+    words: List[Tuple[int, str]],
+    rows: int,
+    cols: int,
+) -> List[List[str]]:
+    needed_elements = rows * cols
+    needed_words = (needed_elements + 3) // 4
+
+    if len(words) < needed_words:
+        raise ValueError(
+            f"Not enough SLM words for {rows}x{cols} 8-bit matrix: "
+            f"found {len(words)}, need {needed_words}"
+        )
+
+    elements: List[str] = []
+    for _, word in words[:needed_words]:
+        elements.extend(split_word_8bit_little_endian(word))
+
+    elements = elements[:needed_elements]
+
+    return [elements[r * cols : (r + 1) * cols] for r in range(rows)]
+
+
 def write_matrix(path: Path, matrix: List[List[str]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(" ".join(row) for row in matrix) + "\n", encoding="utf-8")
@@ -94,7 +124,7 @@ def write_matrix(path: Path, matrix: List[List[str]]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extract Klessydra D matrix from final_touched_words.slm.")
-    parser.add_argument("--format", required=True, choices=["fp16", "posit16", "lns16"])
+    parser.add_argument("--format", required=True, choices=["fp16", "posit16", "lns16", "fp8"])
     parser.add_argument("--input", required=True, type=Path, help="Path to final_touched_words.slm")
     parser.add_argument("--output", required=True, type=Path, help="Output plain matrix file")
     parser.add_argument("--rows", type=int, default=16)
@@ -105,6 +135,8 @@ def main() -> int:
 
     if args.format in {"fp16", "posit16", "lns16"}:
         matrix = extract_16bit_matrix_from_first_words(words, args.rows, args.cols)
+    elif args.format == "fp8":
+        matrix = extract_8bit_matrix_from_first_words(words, args.rows, args.cols)
     else:
         raise NotImplementedError(args.format)
 

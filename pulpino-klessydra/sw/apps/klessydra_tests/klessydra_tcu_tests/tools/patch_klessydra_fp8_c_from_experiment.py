@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Patch Klessydra TCUopLNS16.c from a generated 16x16 LNS16 experiment file.
+Patch Klessydra TCUopFP8.c from a generated 16x16 FP8 experiment file.
 
 Input experiment file sections expected:
     #FULL_A_16x16 encoded
@@ -8,15 +8,10 @@ Input experiment file sections expected:
     #FULL_C_16x16 encoded
     #FULL_D_16x16_one_shot_reference encoded
 
-Klessydra 16-bit C benchmark convention:
-    A   is stored row-major.
-    B_T is stored as B transpose.
-    C   is stored row-major.
-    D   is initialized to zeros and filled by the HMMA assembly code.
-
-This patcher is intentionally a bit more robust than the FP16/Posit16
-specific patchers: it detects the existing C declaration prefix for A, B_T,
-C, and D, so it can handle either lns16_t or uint16_t style typedefs.
+This v02 patcher is more robust than v01:
+    - it detects the actual declaration prefix of A, B_T, C, D;
+    - it tolerates whitespace/blank lines before the final closing brace;
+    - it handles volatile fp8_t D correctly even if spacing differs.
 """
 
 from __future__ import annotations
@@ -27,14 +22,14 @@ from pathlib import Path
 from typing import List
 
 
-HEX16_RE = re.compile(r"^[0-9A-Fa-f]{1,4}$")
+HEX8_RE = re.compile(r"^[0-9A-Fa-f]{1,2}$")
 
 
-def normalize_hex16(token: str) -> str:
+def normalize_hex8(token: str) -> str:
     token = token.strip()
-    if not HEX16_RE.fullmatch(token):
-        raise ValueError(f"Invalid LNS16 hex token: {token!r}")
-    return "0x" + token.upper().zfill(4)
+    if not HEX8_RE.fullmatch(token):
+        raise ValueError(f"Invalid FP8 hex token: {token!r}")
+    return "0x" + token.upper().zfill(2)
 
 
 def find_section_line(lines: list[str], label: str) -> int:
@@ -63,7 +58,7 @@ def read_matrix_after_section(path: Path, label: str, rows: int = 16, cols: int 
             continue
 
         for tok in stripped.split():
-            tokens.append(normalize_hex16(tok))
+            tokens.append(normalize_hex8(tok))
 
         if len(tokens) >= needed:
             break
@@ -79,16 +74,16 @@ def transpose_matrix(m: List[List[str]]) -> List[List[str]]:
 
 
 def zeros_matrix(rows: int = 16, cols: int = 16) -> List[List[str]]:
-    return [["0x0000" for _ in range(cols)] for _ in range(rows)]
+    return [["0x00" for _ in range(cols)] for _ in range(rows)]
 
 
 def find_declaration_prefix(source: str, name: str) -> str:
     """
     Return the declaration prefix before array name, for example:
-        'lns16_t'
-        'volatile lns16_t'
-        'uint16_t'
-        'volatile uint16_t'
+        'fp8_t'
+        'volatile fp8_t'
+        'uint8_t'
+        'volatile uint8_t'
     """
     pattern = re.compile(
         rf"(?m)^\s*((?:volatile\s+)?[A-Za-z_][A-Za-z0-9_]*\s+){re.escape(name)}\s*\["
@@ -119,7 +114,7 @@ def replace_c_array(source: str, name: str, replacement: str) -> str:
     """
     pattern = re.compile(
         rf"(?m)^\s*(?:volatile\s+)?[A-Za-z_][A-Za-z0-9_]*\s+"
-        rf"{re.escape(name)}\s*\[[^\]]+\]\s*\[[^\]]+\]\s*=\s*\{{.*?\n\}};",
+        rf"{re.escape(name)}\s*\[[^\]]+\]\s*\[[^\]]+\]\s*=\s*\{{.*?\n\s*\}};",
         re.DOTALL,
     )
 
@@ -137,7 +132,7 @@ def write_plain_matrix(path: Path, matrix: List[List[str]]) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Patch Klessydra LNS16 C matrices from generated experiment.")
+    parser = argparse.ArgumentParser(description="Patch Klessydra FP8 C matrices from generated experiment.")
     parser.add_argument("--experiment-file", required=True, type=Path)
     parser.add_argument("--c-file", required=True, type=Path)
     parser.add_argument("--output-c-file", type=Path, default=None,
@@ -196,7 +191,7 @@ def main() -> int:
 
     out_c.write_text(source, encoding="utf-8")
 
-    print("Patched Klessydra LNS16 C matrices.")
+    print("Patched Klessydra FP8 C matrices.")
     print(f"Experiment file: {args.experiment_file}")
     print(f"C file written:  {out_c}")
     print(f"A declaration:   {prefix_A}")
