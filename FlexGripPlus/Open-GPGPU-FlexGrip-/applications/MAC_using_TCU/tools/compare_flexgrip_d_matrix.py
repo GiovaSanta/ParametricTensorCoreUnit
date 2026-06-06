@@ -11,6 +11,7 @@ Supported decoded formats:
     fp32      -> 32-bit IEEE single
     lns16     -> LNS16 4_9
     posit16   -> posit<16,1>
+    posit32   -> posit<32,2>
     fp8       -> FP8 E4M3, 8-bit
     posit8    -> posit<8,0>, 8-bit
 
@@ -53,6 +54,7 @@ FORMAT_ELEMENT_BITS = {
     "fp32": 32,
     "lns16": 16,
     "posit16": 16,
+    "posit32": 32,
     "fp8": 8,
     "posit8": 8,
 }
@@ -69,6 +71,11 @@ LNS16_SCALE = 1 << LNS16_WF
 #   posit<16,1>
 POSIT16_NBITS = 16
 POSIT16_ES = 1
+
+# Posit32 convention used by the current posit32 generator:
+#   posit<32,2>
+POSIT32_NBITS = 32
+POSIT32_ES = 2
 
 # Posit8 convention used by the current posit8 generator:
 #   posit<8,0>
@@ -303,6 +310,11 @@ def decode_posit16(hex_word: str) -> float:
     return posit_bits_to_float(bits, POSIT16_NBITS, POSIT16_ES)
 
 
+def decode_posit32(hex_word: str) -> float:
+    bits = int(hex_word, 16) & 0xFFFFFFFF
+    return posit_bits_to_float(bits, POSIT32_NBITS, POSIT32_ES)
+
+
 def decode_posit8(hex_word: str) -> float:
     bits = int(hex_word, 16) & 0xFF
     return posit_bits_to_float(bits, POSIT8_NBITS, POSIT8_ES)
@@ -346,6 +358,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "posit16":
         return decode_posit16(hex_word)
+
+    if fmt_l == "posit32":
+        return decode_posit32(hex_word)
 
     if fmt_l == "fp8":
         return decode_fp8_e4m3(hex_word)

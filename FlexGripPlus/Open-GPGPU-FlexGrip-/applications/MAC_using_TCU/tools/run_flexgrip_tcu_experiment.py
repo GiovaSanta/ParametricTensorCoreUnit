@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FlexGrip Plus TCU experiment runner - Version 1.0
+FlexGrip Plus TCU experiment runner - Version 1.1
 
 Current scope:
   - runs a format-specific experiment generator
@@ -113,6 +113,17 @@ FORMAT_CONFIGS = {
         global_mem_generator="generate_flexgrip_16bit_global_mem.py",
         decoded_compare_format="posit16",
         output_element_bits=16,
+    ),
+
+    "posit32": FormatConfig(
+        name="posit32",
+        operands_dir=REPO_REL_MAC_APP_ROOT / "softPosit32_2operands",
+        experiment_generator="generate_posit32_experiment.py",
+        experiment_file="hmma_8instr_dualTC_4octects_posit32_single_experiment.txt",
+        global_mem_generator="generate_flexgrip_32bit_global_mem.py",
+        decoded_compare_format="posit32",
+        output_element_bits=32,
+        output_start_addr="0xC00",
     ),
 
     "fp8": FormatConfig(
@@ -449,7 +460,7 @@ def main() -> int:
     repo_root = repo_root_from_script()
     cfg = FORMAT_CONFIGS[args.format]
 
-    print("FlexGrip Plus TCU experiment runner - Version 1.0")
+    print("FlexGrip Plus TCU experiment runner - Version 1.1")
     print(f"Repository root: {repo_root}")
     print(f"Selected format: {cfg.name}")
     print(f"Skip simulation: {args.skip_sim}")
@@ -492,7 +503,7 @@ def main() -> int:
         print_step("Simulation skipped")
         print("The active FlexGrip Plus benchmark files are ready, but vsim was not launched.")
 
-    print_step("Version 1.0 completed successfully")
+    print_step("Version 1.1 completed successfully")
     print("Done.")
 
     if args.skip_sim:
