@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""
+Patch Klessydra TCUopFP16.c from a generated 16x16 FP16 experiment file.
+
+Input experiment file sections expected:
+    #FULL_A_16x16 encoded
+    #FULL_B_16x16 encoded
+    #FULL_C_16x16 encoded
+    #FULL_D_16x16_one_shot_reference encoded
+
+Klessydra FP16 C benchmark convention:
+    A   is stored row-major.
+    B_T is stored as B transpose, because the benchmark consumes B in
+        column-major/transposed layout.
+    C   is stored row-major.
+    D   is initialized to zeros and filled by the HMMA assembly code.
+
+This script only patches the C source matrices. It does not yet run simulation
+or extract D. It is the first backend adapter step for Klessydra.
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+from pathlib import Path
+from typing import List
+
+
+HEX16_RE = re.compile(r"^[0-9A-Fa-f]{1,4}$")
+
+
+def normalize_hex16(token: str) -> str:
+    token = token.strip()
+    if not HEX16_RE.fullmatch(token):
+        raise ValueError(f"Invalid FP16 hex token: {token!r}")
+    return "0x" + token.upper().zfill(4)
+
+
+def find_section_line(lines: list[str], label: str) -> int:
+    wanted = label.strip().lower()
+    for idx, line in enumerate(lines):
+        if line.strip().lower() == wanted:
+            return idx
+    raise ValueError(f"Could not find section label: {label}")
+
+
+def read_matrix_after_section(path: Path, label: str, rows: int = 16, cols: int = 16) -> List[List[str]]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = find_section_line(lines, label) + 1
+
+    tokens: list[str] = []
+    needed = rows * cols
+
+    for raw in lines[start:]:
+        stripped = raw.strip()
+        if not stripped:
+            continue
+
+        if stripped.startswith("#"):
+            if tokens:
+                break
+            continue
+
+        for tok in stripped.split():
+            tokens.append(normalize_hex16(tok))
+
+        if len(tokens) >= needed:
+            break
+
+    if len(tokens) != needed:
+        raise ValueError(f"Section {label!r} has {len(tokens)} values; expected {needed}.")
+
+    return [tokens[r * cols:(r + 1) * cols] for r in range(rows)]
+
+
+def transpose_matrix(m: List[List[str]]) -> List[List[str]]:
+    return [list(row) for row in zip(*m)]
+
+
+def zeros_matrix(rows: int = 16, cols: int = 16) -> List[List[str]]:
+    return [["0x0000" for _ in range(cols)] for _ in range(rows)]
+
+
+def c_matrix_initializer(type_name: str, name: str, dims: str, matrix: List[List[str]], comment: str = "") -> str:
+    comment_part = f" {comment}" if comment else ""
+    out: list[str] = []
+    out.append(f"{type_name} {name}{dims} = {{{comment_part}")
+    out.append("")
+    for r, row in enumerate(matrix):
+        comma = "," if r != len(matrix) - 1 else ""
+        out.append("    { " + ", ".join(row) + f" }}{comma}")
+        out.append("")
+    out.append("};")
+    return "\n".join(out)
+
+
+def replace_c_array(source: str, type_name: str, name: str, replacement: str) -> str:
+    """
+    Replace a top-level C array initializer of the form:
+        <type> <name>[...][...] = { ... };
+    """
+    pattern = re.compile(
+        rf"{re.escape(type_name)}\s+{re.escape(name)}\s*\[[^\]]+\]\s*\[[^\]]+\]\s*=\s*\{{.*?\n\}};",
+        re.DOTALL,
+    )
+
+    new_source, count = pattern.subn(replacement, source, count=1)
+    if count != 1:
+        raise RuntimeError(f"Could not replace C array {name}; matches found: {count}")
+
+    return new_source
+
+
+def write_plain_matrix(path: Path, matrix: List[List[str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    clean = [[v[2:].upper() if v.startswith("0x") else v.upper() for v in row] for row in matrix]
+    path.write_text("\n".join(" ".join(row) for row in clean) + "\n", encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Patch Klessydra FP16 C matrices from generated experiment.")
+    parser.add_argument("--experiment-file", required=True, type=Path)
+    parser.add_argument("--c-file", required=True, type=Path)
+    parser.add_argument("--output-c-file", type=Path, default=None,
+                        help="Optional output C file. Default: patch --c-file in place.")
+    parser.add_argument("--golden-out", type=Path, default=None,
+                        help="Optional output plain 16x16 golden D matrix file.")
+    parser.add_argument("--backup", action="store_true",
+                        help="Create a .bak copy of the original C file before overwriting in place.")
+    args = parser.parse_args()
+
+    A = read_matrix_after_section(args.experiment_file, "#FULL_A_16x16 encoded")
+    B = read_matrix_after_section(args.experiment_file, "#FULL_B_16x16 encoded")
+    C = read_matrix_after_section(args.experiment_file, "#FULL_C_16x16 encoded")
+    D_golden = read_matrix_after_section(args.experiment_file, "#FULL_D_16x16_one_shot_reference encoded")
+
+    B_T = transpose_matrix(B)
+    D_zero = zeros_matrix()
+
+    source = args.c_file.read_text(encoding="utf-8")
+
+    source = replace_c_array(
+        source,
+        "fp16_t",
+        "A",
+        c_matrix_initializer("fp16_t", "A", "[N_ROW_1][N_COL_1]", A, "//A is stored in row major layout"),
+    )
+
+    source = replace_c_array(
+        source,
+        "fp16_t",
+        "B_T",
+        c_matrix_initializer("fp16_t", "B_T", "[N_COL_2][N_COL_1]", B_T, "//B is stored in column major layout in memory (so this below is B transpose)"),
+    )
+
+    source = replace_c_array(
+        source,
+        "fp16_t",
+        "C",
+        c_matrix_initializer("fp16_t", "C", "[N_ROW_1][N_COL_2]", C, "// C is stored in row major layout in memory"),
+    )
+
+    source = replace_c_array(
+        source,
+        "volatile fp16_t",
+        "D",
+        c_matrix_initializer("volatile fp16_t", "D", "[N_ROW_1][N_COL_2]", D_zero, "// D is stored in row-major layout in memory"),
+    )
+
+    out_c = args.output_c_file or args.c_file
+
+    if args.output_c_file is None and args.backup:
+        backup_path = args.c_file.with_suffix(args.c_file.suffix + ".bak")
+        backup_path.write_text(args.c_file.read_text(encoding="utf-8"), encoding="utf-8")
+        print(f"Backup written: {backup_path}")
+
+    out_c.write_text(source, encoding="utf-8")
+
+    print("Patched Klessydra FP16 C matrices.")
+    print(f"Experiment file: {args.experiment_file}")
+    print(f"C file written:  {out_c}")
+    print("A:   row-major")
+    print("B_T: transpose of FULL_B_16x16")
+    print("C:   row-major")
+    print("D:   zero-initialized")
+
+    if args.golden_out is not None:
+        write_plain_matrix(args.golden_out, D_golden)
+        print(f"Golden D matrix written: {args.golden_out}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
