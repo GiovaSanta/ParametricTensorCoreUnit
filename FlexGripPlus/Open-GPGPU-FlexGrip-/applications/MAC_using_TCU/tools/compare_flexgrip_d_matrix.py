@@ -61,6 +61,7 @@ FORMAT_ELEMENT_BITS = {
     "fxp8_16": 16,
     "fxp16_32": 32,
     "int8_16": 16,
+    "int16_32": 32,
 }
 
 # LNS16 4_9 format:
@@ -423,6 +424,13 @@ def decode_int8_16_output(hex_word: str) -> float:
     return float(raw)
 
 
+def decode_int16_32_output(hex_word: str) -> float:
+    raw = int(hex_word, 16) & 0xFFFFFFFF
+    if raw & 0x80000000:
+        raw -= 0x100000000
+    return float(raw)
+
+
 def decode_word(hex_word: str, fmt: str) -> float:
     fmt_l = fmt.lower()
 
@@ -455,6 +463,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "int8_16":
         return decode_int8_16_output(hex_word)
+
+    if fmt_l == "int16_32":
+        return decode_int16_32_output(hex_word)
 
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}."
