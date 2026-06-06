@@ -11,6 +11,7 @@ Supported decoded formats:
     lns16     -> LNS16 4_9
     posit16   -> posit<16,1>
     fp8       -> FP8 E4M3, 8-bit
+    posit8    -> posit<8,0>, 8-bit
 
 Typical usage from MAC_using_TCU:
 
@@ -51,6 +52,7 @@ FORMAT_ELEMENT_BITS = {
     "lns16": 16,
     "posit16": 16,
     "fp8": 8,
+    "posit8": 8,
 }
 
 # LNS16 4_9 format:
@@ -65,6 +67,11 @@ LNS16_SCALE = 1 << LNS16_WF
 #   posit<16,1>
 POSIT16_NBITS = 16
 POSIT16_ES = 1
+
+# Posit8 convention used by the current posit8 generator:
+#   posit<8,0>
+POSIT8_NBITS = 8
+POSIT8_ES = 0
 
 # FP8 E4M3 convention used by the current fp8 generator.
 FP8_EXP_BITS = 4
@@ -288,6 +295,11 @@ def decode_posit16(hex_word: str) -> float:
     return posit_bits_to_float(bits, POSIT16_NBITS, POSIT16_ES)
 
 
+def decode_posit8(hex_word: str) -> float:
+    bits = int(hex_word, 16) & 0xFF
+    return posit_bits_to_float(bits, POSIT8_NBITS, POSIT8_ES)
+
+
 def decode_fp8_e4m3(hex_word: str) -> float:
     code = int(hex_word, 16) & 0xFF
 
@@ -326,6 +338,9 @@ def decode_word(hex_word: str, fmt: str) -> float:
 
     if fmt_l == "fp8":
         return decode_fp8_e4m3(hex_word)
+
+    if fmt_l == "posit8":
+        return decode_posit8(hex_word)
 
     raise NotImplementedError(
         f"Decoded-real comparison is not implemented for format {fmt!r}."
