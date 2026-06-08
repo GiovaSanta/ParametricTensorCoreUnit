@@ -1,0 +1,4 @@
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_accum_results(0)(31) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_accum_results(0)(31) -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/ACCUM_STG/accum_partial_results_stg_1(0)(31) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/ACCUM_STG/accum_partial_results_stg_1(0)(31) -

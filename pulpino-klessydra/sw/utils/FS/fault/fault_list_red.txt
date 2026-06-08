@@ -1,0 +1,8 @@
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_mul_results(0)(0) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_mul_results(0)(0) -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_mul_results(0)(1) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/dsp_out_mul_results(0)(1) -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/mul_en(0) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/mul_en(0) -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/busy_mul -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/DSP/busy_mul -

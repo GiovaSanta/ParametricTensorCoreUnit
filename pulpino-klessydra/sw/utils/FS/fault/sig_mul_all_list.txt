@@ -1,0 +1,20 @@
+signal mul_en                          : std_logic_vector(accl_range);  -- enables the use of the multipliers
+signal mul_en_pending                  : std_logic_vector(accl_range);  -- signal to preserve the request to access the multiplier "multhithreaded mode" only
+signal busy_mul                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+signal dsp_out_mul_results             : array_2d(fu_range)(SIMD_Width-1 downto 0);
+signal dsp_mul_a                       : array_2d(fu_range)(SIMD_Width -1 downto 0); --  Contains the results of the 16-bit multipliers
+signal dsp_mul_b                       : array_2d(fu_range)(SIMD_Width -1 downto 0); --  Contains the results of the 16-bit multipliers
+signal dsp_mul_c                       : array_2d(fu_range)(SIMD_Width -1 downto 0); --  Contains the results of the 16-bit multipliers
+signal dsp_mul_d                       : array_2d(fu_range)(SIMD_Width -1 downto 0); --  Contains the results of the 16-bit multipliers
+signal mul_stage_1_en                  : std_logic_vector(accl_range);
+signal mul_stage_2_en                  : std_logic_vector(accl_range);
+signal mul_stage_3_en                  : std_logic_vector(accl_range);
+signal FUNCT_SELECT_MASK               : array_2d(accl_range)(31 downto 0); -- when the mask is set to "FFFFFFFF" we enable KDOTP32 execution using the 16-bit muls
+  signal mul_tmp_a                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal mul_tmp_b                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal mul_tmp_c                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal mul_tmp_d                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal dsp_in_mul_operands             : array_3d(fu_range)(1 downto 0)(SIMD_Width-1 downto 0);
+  signal busy_mul_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal mul_en_pending_wire             : std_logic_vector(accl_range);  -- signal to preserve the request to access the multiplier "multhithreaded mode" only
+  signal mul_en_wire                     : std_logic_vector(accl_range);  -- enables the use of the multipliers

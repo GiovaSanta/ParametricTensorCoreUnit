@@ -1,0 +1,1 @@
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/SCI/SC/mem(0)(0) -

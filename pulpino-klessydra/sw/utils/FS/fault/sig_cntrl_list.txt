@@ -1,0 +1,33 @@
+  signal fu_gnt                          : array_2D(accl_range)(4 downto 0); -- Each threa has grant bits equal to the total number of FUs
+  signal fu_rd_ptr                       : array_2D(4 downto 0)(TPS_BUF_CEIL-1 downto 0); -- five rd pointers each has a number of bits equal to ceil(log2(THREAD_POOL_SIZE-1))
+  signal fu_wr_ptr                       : array_2D(4 downto 0)(TPS_BUF_CEIL-1 downto 0); -- five rd pointers each has a number of bits equal to ceil(log2(THREAD_POOL_SIZE-1))
+  signal fu_issue_buffer                 : array_3D(4 downto 0)(THREAD_POOL_SIZE-2 downto 0)(TPS_CEIL-1 downto 0);
+  signal dsp_sc_data_write_int           : array_2d(accl_range)(SIMD_Width-1 downto 0);
+  signal MVTYPE_DSP                      : array_2d(accl_range)(1 downto 0);
+  signal vec_write_rd_DSP                : std_logic_vector(accl_range);  -- Indicates whether the result being written is a vector or a scalar
+  signal vec_read_rs1_DSP                : std_logic_vector(accl_range);  -- Indicates whether the operand being read is a vector or a scalar
+  signal vec_read_rs2_DSP                : std_logic_vector(accl_range);  -- Indicates whether the operand being read is a vector or a scalar
+  signal dotp                            : std_logic_vector(accl_range);  -- indicator used in the pipeline handler to switch functional units
+  signal dotpps                          : std_logic_vector(accl_range);  -- indicator used in the pipeline handler to switch functional units
+  signal slt                             : std_logic_vector(accl_range);  -- indicator used in the pipeline handler to switch functional units
+  signal halt_dsp_lat                    : std_logic_vector(accl_range);
+  signal recover_state                   : std_logic_vector(accl_range);
+  signal dsp_data_gnt_i_lat              : std_logic_vector(accl_range);
+  signal decoded_instruction_DSP_lat     : array_2d(accl_range)(DSP_UNIT_INSTR_SET_SIZE -1 downto 0);
+  signal dsp_rs1_to_sc                   : array_2d(accl_range)(SPM_ADDR_WID-1 downto 0);
+  signal dsp_rs2_to_sc                   : array_2d(accl_range)(SPM_ADDR_WID-1 downto 0);
+  signal dsp_rd_to_sc                    : array_2d(accl_range)(SPM_ADDR_WID-1 downto 0);
+  signal dsp_sc_data_read_mask           : array_2d(accl_range)(SIMD_Width-1 downto 0);
+  signal RS1_Data_IE_lat                 : array_2d(accl_range)(31 downto 0);
+  signal RS2_Data_IE_lat                 : array_2d(accl_range)(31 downto 0);
+  signal RD_Data_IE_lat                  : array_2d(accl_range)(Addr_Width -1 downto 0);
+  signal MVSIZE_READ                     : array_2d(accl_range)(Addr_Width downto 0);  -- Bytes remaining to read
+  signal MVSIZE_READ_MASK                : array_2d(accl_range)(Addr_Width downto 0);  -- Bytes remaining to read
+  signal MVSIZE_WRITE                    : array_2d(accl_range)(Addr_Width downto 0);  -- Bytes remaining to write
+  signal MPSCLFAC_DSP                    : array_2d(accl_range)(4 downto 0);
+  signal busy_DSP_internal_lat           : std_logic_vector(accl_range);
+  signal rf_rs2                          : std_logic_vector(accl_range);
+  signal relu_instr                      : std_logic_vector(accl_range);
+  signal SIMD_RD_BYTES                   : array_2d(accl_range)(31 downto 0);
+  signal dsp_except_data                 : array_2d(ACCL_NUM-1 downto 0)(31 downto 0);
+  signal state_DSP                       : array_2d(ACCL_NUM-1 downto 0)(1 downto 0)

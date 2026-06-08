@@ -1,0 +1,49 @@
+signal FUNCT_SELECT_MASK               : array_2d(accl_range)(31 downto 0); -- when the mask is set to "FFFFFFFF" we enable KDOTP32 execution using the 16-bit muls
+  signal dsp_add_8_0                     : array_3d(fu_range)(SIMD-1 downto 0)(8 downto 0); -- 9-bits, contains the results of 8-bit adders
+  signal dsp_add_16_8                    : array_3d(fu_range)(SIMD-1 downto 0)(8 downto 0); -- 9-bits  contains the results of 8-bit adders
+  signal twos_complement                 : array_2d(accl_range)(31 downto 0);
+  signal carry_pass                      : array_2d(accl_range)(2 downto 0);  -- carry enable signal, depending on it's configuration, we can do KADDV8, KADDV16, KADDV32
+  signal dsp_out_cmp_results             : array_2d(fu_range)(SIMD_Width-1 downto 0);
+  signal dsp_in_shifter_operand_lat      : array_2d(fu_range)(SIMD_Width-1 downto 0);            -- 15 bits because i only want to latch the signed bits
+  signal dsp_int_shifter_operand         : array_2d(fu_range)(SIMD_Width-1 downto 0);
+  signal MSB_stage_2                     : array_3d(accl_range)(1 downto 0)(4*SIMD-1 downto 0);
+  signal MSB_stage_3                     : array_3d(accl_range)(1 downto 0)(4*SIMD-1 downto 0);
+signal mul_en                          : std_logic_vector(accl_range);  -- enables the use of the multipliers
+signal mul_en_pending                  : std_logic_vector(accl_range);  -- signal to preserve the request to access the multiplier "multhithreaded mode" only
+signal busy_mul                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal accum_en                        : std_logic_vector(accl_range);  -- enables the use of the accumulator
+  signal accum_en_pending                : std_logic_vector(accl_range);  -- signal to preserve the request to access the accumulator "multhithreaded mode" only
+  signal busy_acc                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal add_en                          : std_logic_vector(accl_range);  -- enables the use of the adders
+  signal add_en_pending                  : std_logic_vector(accl_range);  -- signal to preserve the request to access the adder "multhithreaded mode" only
+  signal busy_add                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal cmp_en                          : std_logic_vector(accl_range);  -- enables the use of the shifters
+  signal cmp_en_pending                  : std_logic_vector(accl_range);  -- signal to preserve the request to access the ReLU "multhithreaded mode" only
+  signal busy_cmp                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal shift_en                        : std_logic_vector(accl_range);  -- enables the use of the shifters
+  signal shift_en_pending                : std_logic_vector(accl_range);  -- signal to preserve the request to access the shifter "multhithreaded mode" only
+  signal busy_shf                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal cmp_en_wire                     : std_logic_vector(accl_range);  -- enables the use of the shifters
+  signal shift_en_wire                   : std_logic_vector(accl_range);  -- enables the use of the shifters
+  signal add_en_wire                     : std_logic_vector(accl_range);  -- enables the use of the adders
+  signal mul_en_wire                     : std_logic_vector(accl_range);  -- enables the use of the multipliers
+  signal accum_en_wire                   : std_logic_vector(accl_range);  -- enables the use of the accumulatorss
+  signal add_en_pending_wire             : std_logic_vector(accl_range);  -- signal to preserve the request to access the adder "multhithreaded mode" only
+  signal shift_en_pending_wire           : std_logic_vector(accl_range);  -- signal to preserve the request to access the shifter "multhithreaded mode" only
+  signal mul_en_pending_wire             : std_logic_vector(accl_range);  -- signal to preserve the request to access the multiplier "multhithreaded mode" only
+  signal accum_en_pending_wire           : std_logic_vector(accl_range);  -- signal to preserve the request to access the accumulator "multhithreaded mode" only
+  signal cmp_en_pending_wire             : std_logic_vector(accl_range);  -- signal to preserve the request to access the ReLU "multhithreaded mode" only
+  signal busy_add_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal busy_mul_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal busy_shf_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal busy_acc_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal busy_cmp_wire                   : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal MSB_stage_1                     : array_3d(accl_range)(1 downto 0)(4*SIMD-1 downto 0);
+  signal dsp_in_cmp_operands             : array_2d(fu_range)(SIMD_Width-1 downto 0);
+  signal mul_tmp_a                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal mul_tmp_b                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal mul_tmp_c                       : array_3d(fu_range)(SIMD-1 downto 0)(Data_Width-1 downto 0);
+  signal dsp_add_32_24_wire              : array_3d(fu_range)(SIMD-1 downto 0)(8 downto 0); -- 9-bits, this should be 8 if we choose to discard the overflow of the addition of the upper byte
+  signal dsp_shift_enabler               : array_2d(accl_range)(15 downto 0);
+  signal dsp_in_shift_amount             : array_2d(accl_range)(4 downto 0);
+  signal dsp_in_shifter_operand_lat_wire : array_2d(fu_range)(SIMD_Width-1 downto 0);

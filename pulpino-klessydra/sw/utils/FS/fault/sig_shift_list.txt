@@ -1,0 +1,9 @@
+  signal shift_en                        : std_logic_vector(accl_range);  -- enables the use of the shifters
+  signal shift_en_pending                : std_logic_vector(accl_range);  -- signal to preserve the request to access the shifter "multhithreaded mode" only
+  signal busy_shf                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal dsp_in_shifter_operand_lat      : array_2d(fu_range)(SIMD_Width-1 downto 0);            -- 15 bits because i only want to latch the signed bits
+  signal dsp_int_shifter_operand         : array_2d(fu_range)(SIMD_Width-1 downto 0);
+  signal dsp_out_shifter_results         : array_2d(fu_range)(SIMD_Width-1 downto 0);
+  signal shifter_stage_1_en              : std_logic_vector(accl_range);
+  signal shifter_stage_2_en              : std_logic_vector(accl_range);
+  signal shifter_stage_3_en              : std_logic_vector(accl_range);

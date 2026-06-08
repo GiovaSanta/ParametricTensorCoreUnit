@@ -1,0 +1,8 @@
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/busy_TCU -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/busy_TCU -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/core_busy_TCU -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/core_busy_TCU -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_wrapper_result_valid_s -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/tcu_wrapper_result_valid_s -
+sa0 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WB_EN -
+sa1 /top_i/core_region_i/CORE/RISCV_CORE/Pipe/ACCL_generate/TCU_BRANCH_i/TCU_WB_EN -

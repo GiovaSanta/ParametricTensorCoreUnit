@@ -1,0 +1,8 @@
+  signal accum_stage_1_en                : std_logic_vector(accl_range);
+  signal accum_stage_2_en                : std_logic_vector(accl_range);
+  signal accum_stage_3_en                : std_logic_vector(accl_range);
+  signal accum_en                        : std_logic_vector(accl_range);  -- enables the use of the accumulator
+  signal accum_en_pending                : std_logic_vector(accl_range);  -- signal to preserve the request to access the accumulator "multhithreaded mode" only
+  signal busy_acc                        : std_logic;  -- busy signal active only when the FU is shared and currently in use 
+  signal dsp_out_accum_results           : array_2d(fu_range)(31 downto 0);
+  signal ACCUM_STG/accum_partial_results_stg_1 : array_2d(fu_range)(31 downto 0);
