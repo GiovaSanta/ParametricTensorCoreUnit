@@ -1,0 +1,33 @@
+FlexGrip Plus D matrix decoded-real validation report
+======================================================================
+
+Format:                    int16_32
+Golden file:               /home/giooo00/GioThesis/ParametricTensorCoreUnit/FlexGripPlus/Open-GPGPU-FlexGrip-/applications/MAC_using_TCU/int16operands/hmma_8instr_dualTC_4octects_int16int32_single_experiment.txt
+Golden encoded section:    #FULL_D_16x16_one_shot_reference encoded
+Hardware file:             /home/giooo00/GioThesis/ParametricTensorCoreUnit/pulpino-klessydra/sw/apps/klessydra_tests/klessydra_tcu_tests/TCUopINT16_32/hw_D_matrix_extracted.txt
+Matrix shape:              16x16
+Element bits:              32
+
+Encoded-domain exact comparison
+----------------------------------------------------------------------
+Total elements:            256
+Exact encoded matches:     256 / 256
+Exact encoded match %:     100.000000%
+Encoded mismatches:        0
+
+Decoded-real error metrics
+----------------------------------------------------------------------
+Mean absolute error:       0
+Max absolute error:        0
+RMSE:                      0
+Mean relative error:       0
+Max relative error:        0
+Infinite relative errors:  0
+NaN-related error rows:    0
+
+Interpretation
+----------------------------------------------------------------------
+Encoded result:            EXACT MATCH
+Decoded-real result:       ZERO ERROR
+
+No decoded-real errors found.
