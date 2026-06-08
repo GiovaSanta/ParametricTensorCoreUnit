@@ -1,0 +1,19 @@
+Fault simulation smoke test
+
+Format: INT16_32
+Fault model: stuck-at-0
+Injected signal: TCU_WB_EN
+Simulation outcome: completed
+Output file produced: final_touched_words.slm
+Classification: SDC
+
+Validation result:
+Exact encoded matches: 0 / 256
+Exact encoded match %: 0.000000%
+Encoded mismatches: 256
+Mean absolute error: 66663.2265625
+Max absolute error: 224497
+RMSE: 82441.7215694
+
+Interpretation:
+The fault did not halt the simulation, but corrupted the complete output D matrix.
