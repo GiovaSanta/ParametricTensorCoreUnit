@@ -72,6 +72,231 @@ DNN workloads are often described at the matrix level. Each element of an output
 
 \section{Dot Product and Multiply-Accumulate Operations}
 
+%This section goal is to say: matrix multiplication is internally made of dot products and MACs.
+
+%paragraph 1: dot product definition
+After the discussion of the relevance of matrix-based operations in neural network layers, the focus is shifted to a more detailed study of their inner operations, namely dot products. The dot product operation can be mathematically described by Equation~\eqref{eq:dot_product}. It consists of the accumulation of the respective products between the elements of two vectors containing elements $a_i$ and $b_i$. The final result is a single scalar value.
+
+\begin{equation}
+\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^{n} a_i b_i
+\label{eq:dot_product}
+\end{equation}
+The dot product is fundamental because it combines multiplication and accumulation operations in a simple mathematical formulation.
+
+%paragraph 2: Dot products inside matrix multiplication.
+With regard to how the dot product operation appears inside matrix
+multiplication, each element of the output matrix is computed from one
+row of the first operand matrix and one column of the second operand
+matrix. The respective row and column involved in the computation are
+treated as two vectors. The generic element $C_{ij}$ of the result
+matrix is therefore obtained from the dot product between one row of
+operand matrix $A$ and one column of operand matrix $B$, as shown in
+Equation~\eqref{eq:matrix_multiplication}.
+
+\begin{equation}
+C_{ij} = \sum_{k=1}^{n} A_{ik} B_{kj}
+\label{eq:matrix_multiplication}
+\end{equation}
+
+Hence, if the result matrix has dimensions $16 \times 16$, the
+computation of its elements requires 256 independent dot product
+operations.
+
+%paragraph 3
+
+Relating to the mathematical concept of the dot product operation, different hardware organizations can be used to implement the same computation. These possible hardware configurations can be described at a high level through functional blocks such as multipliers, adders, and multiply-accumulate units. The choice between different organizations depends on the desired balance between latency, throughput, and area \cite{hickmann2019matrixfunctionalunits}.
+One possible configuration involves chaining MAC circuits with each other, accumulating the products until the final result is reached. This configuration can be further divided into early-accumulate and late-accumulate organizations. In the former, the additional term $c_0$ is included at the beginning of the chain, while in the latter it is added at the end of the chain. These configurations are presented in Figure~\ref{fig:early_accumulate_mac_chain} and Figure~\ref{fig:late_accumulate_mac_chain}. The figures assume the dot product operation between two vectors containing four elements each, together with the contribution of the additional term $c_0$.
+Another type of configuration is the adder-tree organization. Contrary to the previously mentioned chain-based configurations, this structure is composed of separate multiplier (MUL) and adder (ADD) blocks, which perform the intermediate products and accumulations of the dot product. Figure~\ref{fig:adder_tree_dot_product} illustrates this organization, again considering four elements per operand vector.
+These possible configurations among others make it possible for designers to choose the optimal hardware configurations when designing the dot product unit. A more detailed study related to which configurations have been chosen regarding the parametric dot product unit designed for this work will be more discussed in Chapter~\ref{ch:parametric_dpu} of this document.
+\newpage
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.8cm,
+        minimum height=0.8cm,
+        align=center
+    },
+    title/.style={
+        font=\itshape
+    }
+]
+\node[smallblock] (c0) at (0.0,0.0) {$c_0$};
+\node[block] (mac0) at (2.0,0.0) {MAC};
+\node[block] (mac1) at (4.5,0.0) {MAC};
+\node[block] (mac2) at (7.0,0.0) {MAC};
+\node[block] (mac3) at (9.5,0.0) {MAC};
+\node[smallblock] (d0) at (11.5,0.0) {$d_0$};
+\draw[->] (c0) -- (mac0);
+\draw[->] (mac0) -- (mac1);
+\draw[->] (mac1) -- (mac2);
+\draw[->] (mac2) -- (mac3);
+\draw[->] (mac3) -- (d0);
+\node at ($(mac0.north)+(-0.35,0.8)$) (a0) {$a_0$};
+\node at ($(mac0.north)+(0.35,0.8)$) (b0) {$b_0$};
+\node at ($(mac1.north)+(-0.35,0.8)$) (a1) {$a_1$};
+\node at ($(mac1.north)+(0.35,0.8)$) (b1) {$b_1$};
+\node at ($(mac2.north)+(-0.35,0.8)$) (a2) {$a_2$};
+\node at ($(mac2.north)+(0.35,0.8)$) (b2) {$b_2$};
+\node at ($(mac3.north)+(-0.35,0.8)$) (a3) {$a_3$};
+\node at ($(mac3.north)+(0.35,0.8)$) (b3) {$b_3$};
+\draw[->] (a0) -- ($(mac0.north)+(-0.25,0.02)$);
+\draw[->] (b0) -- ($(mac0.north)+(0.25,0.02)$);
+\draw[->] (a1) -- ($(mac1.north)+(-0.25,0.02)$);
+\draw[->] (b1) -- ($(mac1.north)+(0.25,0.02)$);
+\draw[->] (a2) -- ($(mac2.north)+(-0.25,0.02)$);
+\draw[->] (b2) -- ($(mac2.north)+(0.25,0.02)$);
+\draw[->] (a3) -- ($(mac3.north)+(-0.25,0.02)$);
+\draw[->] (b3) -- ($(mac3.north)+(0.25,0.02)$);
+\end{tikzpicture}
+\caption{Conceptual early-accumulate organization for dot-product computation.}
+\label{fig:early_accumulate_mac_chain}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.75cm,
+        minimum height=0.65cm,
+        align=center
+    }
+]
+% Main computation chain
+\node[block] (mul0) at (0.0,0.0) {MUL};
+\node[block] (mac1) at (2.4,0.0) {MAC};
+\node[block] (mac2) at (4.8,0.0) {MAC};
+\node[block] (mac3) at (7.2,0.0) {MAC};
+\node[block] (add0) at (9.6,0.0) {ADD};
+\node (d0) at (11.4,0.0) {$d_0$};
+% Horizontal flow
+\draw[->] (mul0) -- (mac1);
+\draw[->] (mac1) -- (mac2);
+\draw[->] (mac2) -- (mac3);
+\draw[->] (mac3) -- (add0);
+\draw[->] (add0) -- (d0);
+% Input pair for MUL
+\node (b0) at (-0.35,1.5) {$b_0$};
+\node (a0) at (0.35,1.5) {$a_0$};
+\draw[->] (b0) -- (-0.25,0.45);
+\draw[->] (a0) -- (0.25,0.45);
+% Input pair for first MAC
+\node (b1) at (2.05,1.5) {$b_1$};
+\node (a1) at (2.75,1.5) {$a_1$};
+\draw[->] (b1) -- (2.15,0.45);
+\draw[->] (a1) -- (2.65,0.45);
+% Input pair for second MAC
+\node (b2) at (4.45,1.5) {$b_2$};
+\node (a2) at (5.15,1.5) {$a_2$};
+\draw[->] (b2) -- (4.55,0.45);
+\draw[->] (a2) -- (5.05,0.45);
+% Input pair for third MAC
+\node (b3) at (6.85,1.5) {$b_3$};
+\node (a3) at (7.55,1.5) {$a_3$};
+\draw[->] (b3) -- (6.95,0.45);
+\draw[->] (a3) -- (7.45,0.45);
+% Late addition of c0
+\node (c0) at (9.6,1.5) {$c_0$};
+\draw[->] (c0) -- (add0);
+\end{tikzpicture}
+\caption{Conceptual late-accumulate organization for dot-product computation.}
+\label{fig:late_accumulate_mac_chain}
+\end{figure}
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.8cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.75cm,
+        minimum height=0.65cm,
+        align=center
+    }
+]
+% Multiplication stage
+\node[block] (mul0) at (0.0,2.4) {MUL};
+\node[block] (mul1) at (2.0,2.4) {MUL};
+\node[block] (mul2) at (4.0,2.4) {MUL};
+\node[block] (mul3) at (6.0,2.4) {MUL};
+% Inputs above multipliers
+\node (a0) at (-0.35,3.5) {$a_0$};
+\node (b0) at (0.35,3.5) {$b_0$};
+\node (a1) at (1.65,3.5) {$a_1$};
+\node (b1) at (2.35,3.5) {$b_1$};
+\node (a2) at (3.65,3.5) {$a_2$};
+\node (b2) at (4.35,3.5) {$b_2$};
+\node (a3) at (5.65,3.5) {$a_3$};
+\node (b3) at (6.35,3.5) {$b_3$};
+\draw[->] (a0) -- (-0.25,2.8);
+\draw[->] (b0) -- (0.25,2.8);
+\draw[->] (a1) -- (1.75,2.8);
+\draw[->] (b1) -- (2.25,2.8);
+\draw[->] (a2) -- (3.75,2.8);
+\draw[->] (b2) -- (4.25,2.8);
+\draw[->] (a3) -- (5.75,2.8);
+\draw[->] (b3) -- (6.25,2.8);
+% First adder level
+\node[block] (add0) at (1.0,1.0) {ADD};
+\node[block] (add1) at (5.0,1.0) {ADD};
+\draw[->] (mul0.south) -- (0.0,1.7) -- (add0.north);
+\draw[->] (mul1.south) -- (2.0,1.7) -- (add0.north);
+\draw[->] (mul2.south) -- (4.0,1.7) -- (add1.north);
+\draw[->] (mul3.south) -- (6.0,1.7) -- (add1.north);
+% Second adder level
+\node[block] (add2) at (3.0,-0.4) {ADD};
+\draw[->] (add0.south) -- (1.0,0.2) -- (add2.north);
+\draw[->] (add1.south) -- (5.0,0.2) -- (add2.north);
+% Final accumulation with c0
+\node[block] (add3) at (3.0,-1.8) {ADD};
+\node[smallblock] (c0) at (1.0,-1.8) {$c_0$};
+\node[smallblock] (d0) at (5.0,-1.8) {$d_0$};
+\draw[->] (add2) -- (add3);
+\draw[->] (c0) -- (add3);
+\draw[->] (add3) -- (d0);
+\end{tikzpicture}
+\caption{Conceptual adder-tree organization for dot-product computation.}
+\label{fig:adder_tree_dot_product}
+\end{figure}
+%paragraph4: why did we discuss dot-products, MACs, and these hardware organizations? 
+
+Starting from these possible organizations, the dot product operation
+can be interpreted as a dedicated hardware block. Since matrix multiplication
+is composed of many independent dot products, this type of unit can be
+used as a basic computational block for matrix-oriented accelerators.
+This connection also motivates the discussion of Tensor Core Units,
+which extend dot-product-based computation toward matrix-level
+acceleration and are introduced in the following section.
+
 \section{Tensor Core Units and HMMA-style Execution}
 
 \section{Numerical Formats in Hardware}

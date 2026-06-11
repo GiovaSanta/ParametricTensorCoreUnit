@@ -14,6 +14,8 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{verbatim}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
 
 % Definition of a new language for listings
 %\lstdefinelanguage{P4}
@@ -139,28 +141,8 @@ The results aim to clarify the trade-offs between precision, architectural compl
 
 \input{chapters/chap2background}
 
-\chapter{Background and Related Work}
-
-\section{Matrix Multiplication and Dot Product Acceleration}
-
-\section{NVIDIA Tensor Cores and HMMA-Style Execution}
-
-\section{Numerical Formats in Hardware}
-
-\section{GPU Architecture and the FlexGrip Plus}
-Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
-
-\section{RISC-V Cores and the Klessydra T13}
-
-\section{Related Work}
-
-talk about previous related work on tensor core units, How vendors exploit tiling + mixed precision,talking about low precision formats for AI : FP16/BF16 in training, FP8 trend (training/inference), INT8/INT4 quantization for inference,
-Papers/approaches that implement FP8, posit, LNS, etc. in hardware. 
-introduce the concepts of Fault resilience / approximate computing which is what connects directly to the research question : 1.fault injection studies on DNN accelerators, 2.resilience of reduced precision / quantized networks, numerical noise vs hardware fault tolerance.
-
-then, one paragraph that talks about that many works either study formats at algorithm level or build units without full system integration, and introduce how my work is fundamental:
-
 \chapter{Parametric Dot Product Unit Architecture}
+\label{ch:parametric_dpu}
 
 \section{Design Goals}
 
