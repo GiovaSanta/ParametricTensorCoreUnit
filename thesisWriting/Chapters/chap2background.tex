@@ -1,6 +1,7 @@
 \chapter{Background and Related Work}
 
 \section{Matrix-Based Computation in AI Workloads}
+\label{sec:matrix_ai_workloads}
 %purpose of the section: Explain why AI/DNN workloads become matrix-based workloads
 
 %Goal of this section:
@@ -297,7 +298,35 @@ This connection also motivates the discussion of Tensor Core Units,
 which extend dot-product-based computation toward matrix-level
 acceleration and are introduced in the following section.
 
-\section{Tensor Core Units and HMMA-style Execution}
+\section{Tensor Core Units and the HMMA-style Execution}
+%paragraph1: why tensor core units exist.
+
+As described in Section~\ref{sec:matrix_ai_workloads}, matrix-based operations play a central role in AI workloads. Since matrix multiplication is composed of many products and accumulations, executing these operations only through general-purpose scalar units can be inefficient. For this reason, modern GPU architectures introduce specialized hardware units for matrix-oriented computation. NVIDIA Tensor Cores are an example of this approach, as they are designed to accelerate matrix multiply-and-accumulate operations on small matrix fragments \cite{nvidia2017volta,markidis2018tensorcore}.
+%paragraph2: How tensor cores relate to matrix/tile multiplication.
+
+Since the matrices involved in DNN workloads can have large dimensions,
+matrix multiplication is usually decomposed into smaller tiles or
+fragments. Tensor Core-style units operate on these smaller matrix
+fragments, performing matrix multiply-and-accumulate operations that
+contribute to the final output matrix. The results of many fragment
+operations are then combined to produce the complete matrix result.
+%new inserted paragraph
+
+At a conceptual level, the connection between a Dot Product Unit and a Tensor Core-style accelerator comes from the structure of matrix multiplication itself. Each element of an output matrix tile can be obtained from the dot product between one row fragment of the first operand and one column fragment of the second operand. Therefore, a matrix-oriented accelerator can be viewed as an organization that groups multiple dot-product or MAC-based datapaths in order to compute several output elements of a tile in parallel. In this sense, the Tensor Core Unit extends the idea of dot-product acceleration from the scalar-output level to the matrix-fragment level.
+
+%paragraph3: What HMMA-style execution means at high level.
+At the programming level, NVIDIA exposes Tensor Core computation through interfaces such as the Warp Matrix Multiply Accumulate (WMMA) API. At a lower level, this computation is associated with matrix multiply-and-accumulate instructions, often referred to as HMMA- or MMA-style operations. These operations are executed cooperatively by a warp, which is a group of NVIDIA threads, rather than by a single thread \cite{raihan2019modeling}. Each thread holds only a fragment of the matrix operands and accumulators, while the warp as a whole performs the matrix operation. In this way, the computation is expressed as a warp-level matrix operation instead of a collection of independent scalar instructions. Conceptually, this type of operation computes a matrix multiply-and-accumulate of the form shown in Equation~\eqref{eq:hmma_mma}.
+
+\begin{equation}
+D = A \times B + C
+\label{eq:hmma_mma}
+\end{equation}
+
+In this expression, $A$ and $B$ represent input matrix fragments, $C$ represents the accumulator fragment, and $D$ represents the resulting output fragment.
+
+%paragraph4: Why this matters for your thesis and connected to your own TCU/DPU work.
+The TCU execution model shows how matrix-oriented workloads can be accelerated by grouping many multiply-and-accumulate operations into specialized HMMA-style hardware instructions. The efficiency of these units does not depend only on the hardware organization, but also on the numerical formats supported by the datapath. Different formats can influence performance, hardware cost, memory usage, numerical accuracy, and fault resilience. For this reason, the next section introduces the numerical formats considered in this thesis for hardware acceleration.
+
 
 \section{Numerical Formats in Hardware}
 
