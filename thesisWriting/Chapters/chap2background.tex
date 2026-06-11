@@ -1,0 +1,86 @@
+\chapter{Background and Related Work}
+
+\section{Matrix-Based Computation in AI Workloads}
+%purpose of the section: Explain why AI/DNN workloads become matrix-based workloads
+
+%Goal of this section:
+%
+%Explain why modern AI and DNN workloads are strongly based on matrix, vector and tensor computations. This section should prepare the reader for the next section on dot product and multiply-accumulate operations.
+%
+%Paragraph1:
+%
+% What kind of numerical objects are used in neural networks ?
+% Mention inputs, weights, activations, and outputs.
+% Explain that they are commonly represented as vectors, matrices, or tensors.
+% Do not discuss hardware details.
+%
+Neural networks operate on numerical data that is usually organized in the
+form of vectors, matrices, or tensors. Inputs, weights, intermediate
+activations, and outputs of a layer of a neural network can all be represented with these structures. This
+makes many neural network computations strongly related to linear algebra,
+because the same type of arithmetic operation is repeated many times over
+large groups of values. For this reason, matrix-based computation is one of
+the main computational patterns involved in modern AI workloads.
+
+%Paragraph 2:
+% Why do neural network layers involve linear algebra ?
+% Explain that many layers compute weighted combinations of input values.
+% Mention that this naturally leads to matrix-vector or matrix-matrix operations. 
+%
+Neural networks are composed of many layers, each computing its outputs from the previous layer's values. Specifically, each layer contains an interconnection of neurons, which form combinations of values to pass to the subsequent layers. Each neuron performs this operation by multiplying the input values by its learned weights. After these multiplications, the products computed by the neurons are summed together along with a bias. Therefore, in the layers of a neural network, there are groups of mathematical operations equivalent to a dot product plus bias. Specifically, one dot product operation is associated with the workload of a neuron, but since layers contain groups of neurons, the layer performs many dot product operations collectively. As a consequence, these many dot products can be grouped together mathematically as a matrix-vector multiplication; when multiple input samples are processed together as a batch, this becomes a matrix-matrix multiplication. For this reason, neural network layers are strongly connected to linear algebra operations \cite{higham2018deeplearning}.
+
+%Paragraph 3:
+
+% Where do matrix operations appear in actual DNN models ?
+% Mention fully connected layers and batched execution 
+% Mention that convolutional layers can also be implemented through matrix-based kernels such as GEMM-style approaches
+% Possible citation: \cite{anderson2017lowmemory}
+
+The matrix-based computations previously introduced appear in specific
+layers of a typical deep neural network. Since a deep neural network
+contains different types of layers, the amount of matrix-based computation
+depends on the layer type. Typically, fully connected layers and
+convolutional layers contain large numbers of matrix-based operations
+\cite{higham2018deeplearning}. In fact, even though convolutional layers
+are spatial/filter operations, they are often implemented or reorganized
+through matrix-based kernels. It is common for the operations performed by
+convolutional layers to transform the mathematical convolution into
+general matrix multiplication (GEMM), allowing the same computation to be
+performed through optimized matrix multiplication routines
+\cite{anderson2017lowmemory}. Therefore, since these layers are commonly found in deep neural networks, matrix multiplication appears repeatedly in DNN
+training and inference.
+
+%Paragraph 4:
+
+% Why are these operations computationally important ?
+% Explain that DNN training and inference repeat these operations many times over large numbers of parameters and activations.
+% Possible citation: \cite{sze2017efficient}
+Matrix-based operations are computationally important in DNNs because they are repeatedly executed across many layers. Modern neural networks contain many activations and parameters during both inference and training. During inference, the network performs a forward pass through the layers to produce an output. During training, the cost is higher because the model also performs backpropagation and updates the weights used by each layer. These computations are applied to large tensors, so the total number of arithmetic operations becomes very high. Therefore, matrix-based computation represents a major part of the DNN workload and one of the dominant sources of computational cost \cite{sze2017efficient}.
+
+%Paragraph 5:
+
+% Why does the computational cost of DNNs motivate hardware acceleration ?
+% Explain that when the dominant computation is regular and matrix-based, specialized hardware can exploit parallelism and repeated arithmetic patterns.
+% Possible citation: \cite{chetlur2014cudnn}
+Since matrix-based operations represent a major part of DNN workloads, they are natural candidates for acceleration. Their structure is regular and repetitive, because similar arithmetic patterns are applied over many tensor elements. This regularity exposes data-level parallelism. For this reason, GPUs and specialized accelerators can be useful, as they exploit parallelism by executing many arithmetic operations concurrently \cite{sze2017efficient}. For instance, this is also why optimized libraries such as cuDNN provide efficient implementations of common DNN primitives \cite{chetlur2014cudnn}. Consequently, studying dedicated hardware units for matrix, dot-product, and MAC acceleration is well motivated.
+%Paragraph 6:
+
+% Transition to the next section
+% Explain that matrix multiplication is ultimatly decomposed into dot products and multiply accumulate operations, which are the arithmetic kernels studied in the next section.
+DNN workloads are often described at the matrix level. Each element of an output matrix is computed from a row of one matrix and a column of another matrix. And this specific row-column calculation correspond to a dot-product operation, which is formed of repeated products and accumulations of such products. In the industry, the operation of a multiplication between two values and the addition of a third is known as Multiply and Accumulate (MAC). The next section focuses on dot product operations and MAC operations specifically, as  they are the basic kernels behind matrix multiplication acceleration.
+
+
+\section{Dot Product and Multiply-Accumulate Operations}
+
+\section{Tensor Core Units and HMMA-style Execution}
+
+\section{Numerical Formats in Hardware}
+
+\section{GPU Architecture and the FlexGrip Plus}
+Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
+
+\section{RISC-V Architecture and the Klessydra T13}
+
+\section{Fault Resilience and Fault Injection in Hardware Accelerators}
+
+\section{Related Work}
