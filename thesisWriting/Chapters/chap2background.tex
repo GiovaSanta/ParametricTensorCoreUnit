@@ -452,7 +452,7 @@ Klessydra is a family of open-source RISC-V processing cores developed for resea
 A relevant characteristic of the Klessydra T13 architecture is the support for hardware multithreading. In fact for this specific Klessydra core,  instead of executing only a single software thread, the processor can manage, and schedule multiple hardware threads, also referred to as harts in the RISC-V terminology. This execution model allows the processor pipeline to interleave instructions coming from different threads, improving the ability to tolerate stalls and to exploit parallelism at processor level. 
 For this reason, Klessydra T13 provides an interesting architectural context for studying how custom execution units or accelerator-oriented datapaths could interact with a multi-threaded RISC-V pipeline. 
 
-The possibility of modifying and extending the RTL description of the processor is of particular importance for this thesis. Since the objective is to study dot-product datapaths and their possible rolw in matrix-oriented acceleration, an open and inspectable RISC-V based architecture provides useful environment for reasoning about custom hardware support. In this context , Klessydra T13 can be considered not only a processor core, but a reference platform for exploring how specialized datapaths could be connected to the instruction flow and the execution pipeline.
+The possibility of modifying and extending the RTL description of the processor is of particular importance for this thesis. Since the objective is to study dot-product datapaths and their possible role in matrix-oriented acceleration, an open and inspectable RISC-V based architecture provides useful environment for reasoning about custom hardware support. In this context, Klessydra T13 can be considered not only a processor core, but a reference platform for exploring how specialized datapaths could be connected to the instruction flow and the execution pipeline.
 
 \subsection{Relevance to Custom Accelerator Integration}
 
@@ -460,5 +460,33 @@ The relevance of RISC-V and Klessydra T13 in this thesis is connected to the pos
 
 
 \section{Fault Resilience and Fault Injection in Hardware Accelerators}
+\label{sec:fault_resilience_background}
+
+%this section in the background is constructed to answer: what is the difference between a fault, an error, and a failure ? 
+%also to answer Why can hardware accelerators be vulnerable to faults ? What is fault injection? Why does the numerical format matter for fault behavior? Why is this relevant to dot product and TCU like accelerators ? 
+
+\subsection{Faults, Errors, and Failures}
+In this thesis, the dtudy of the reliability of the constructed RTL hardware systems is of important matter. It is important to distinguish hence the concepts of faults, errors and failures. A fault is a physical or logical defect that affects the operation of the system, such as a bit flip, a transiant disturbance or a permanent defect in a hardware resource. An error on the other hand is the incorrect internal state that may be produced when a fault affects the computation. A failure occurs when the error propagates to the output and causes the system to produce an incorrect final result. The distinction is useful because not every fault necessarly becomes visible at the final output of the final computation.
+
+Faults can be classified according to the duration and the behavior. A transiant fault affects the system only for limited amount of time for instance because of a temporary disturbance that changes the value of a specific signal. A permanent fault is different because it involves remaining in the system until the affected hardware is repaired or replaced. More in detail a permanent fault may be present due to a damaged component or by manufacturing defects of the part. Another type to mention are intermittent faults which appear and disappear over time depending on the operating conditions of the circuit. These different fault types are relevant because they can affect hardware accelerators in different ways, and their impact depends on whether the fault is masked, corrected, or propagated to the final result \cite{avizienis2004dependability}. 
+
+\subsection{Reliability Challenges in Hardware Accelerators}
+
+%explaining why accelerators can be sensible to faults especially because they perform repeated arithmetic operations.
+As explained previously, hardware accelerators like the TCU are designed to improve the performance , energy efficiency  and other metrics by the execution of arithmetic operations in parallel. However, the related level of parallelism in such components can also make reliability analysis important, because faults effecting arithmetic units, storage elements, memories or interconnection logic may influence many operations or propagate through several stages of the computation. In matrix-oriented accelerators, an incorrect partial product or accumulated value can contribute in fact to the final dot product or matrix element, depending on whether the error is masked on propagated. 
+
+With respect to this thesis work, the specific numerical format utilized from the available ones implemented inside the accelerator can also influence the effect of faults. For example, a bit flip in a sign bit, exponent field, fraction field, regime field or logarithimic field of a specific encoded value may produce different numerical consequences depending on the given rapresentation. For instance, in floating-point formats, faults affecting exponent related bits can cause large changes in magnitude, while faults in fraction bits may produce smaller numerical perturbations. Additionally, in alternative emerging formats such as posit or LNS, the position and meaning of each bit are different hence the same type of hardware fault can lead to a different error behavior.For this reason, the impact of a hardware fault depends not only on
+where the fault occurs in the circuit, but also on the numerical format
+used to represent the data.
+
+\subsection{Fault Injection as an Evaluation Method}
+Fault injection is the method used to evaluate the reliability of a hardware system by intentionally introducing faults and observing their effects on the computation. Instead of waiting for real hardware faults to occur, fault injection allows on purpose and specific fault scenarios to be reproduced in a controlled way. This makes it possible for instance to study whether a specific injected fault is masked, whether it produces an internal error, or whether it propagates to the final output as an incorrect result.
+
+In many research contexts, fault injection is performed at the simulation level. In this approach, the hardware designed is simulated while faults are being introduced into signals and components of the RTL-level circuit. The output produced by the faulty execution can then be compared with a fault-free reference (the golden model) execution. This comparison allows the effect of the injected fault  to be classified, for example as masked if the final result is not affected, or as an error if teh output differs from the expected results.
+
+Lastly, since there are different types of faults which can be introduced in the circuit, the type of fault introduced during fault-injection depends on the fault model for the analysis. A common  model is the bit-flip model, where the value of a selected bit is inverted for a given instant of the simulation cycle. Other models include the stuck-at faults, wehre a signal is forced permanently to zero or to one, and transient faults, where the disturbance affects the system temporarly.The choice of fault model is important because different models can produce different effects on the computation and may represent different physical phenomena or design-level assumptions.
+
+In the context of this thesis, fault injection is relevant because it provides a way to study how numerical datapaths behave when hardware-level disturbances affect the computation. Since dot-product units combine multiplication and accumulation operations, an injected fault may affect an intermediate product, a partial sum, or the final output. For this reason, fault injection represents a useful method for evaluating not only whether a datapath produces correct results in fault-free conditions, but also how its numerical behavior changes when faults are introduced.
+
 
 \section{Related Work}
