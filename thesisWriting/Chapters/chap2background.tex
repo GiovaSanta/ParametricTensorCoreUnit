@@ -330,6 +330,81 @@ The TCU execution model shows how matrix-oriented workloads can be accelerated b
 
 \section{Numerical Formats in Hardware}
 
+%paragraph1: Why do numerical formats mmatter in hardware accelerators? Why are we now talking about numerical formats ?
+Numerical formats define how values used in arithmetic operations are represented and manipulated inside specific datapaths. In hardware accelerators, the choice of format has a direct impact on precision, dynamic range, hardware cost, latency, memory usage, and fault resilience. This section introduces the numerical format families considered in this thesis, including standard representations such as integer, fixed-point, and floating-point formats, as well as alternative representations such as posit and logarithmic number system formats.
+
+\subsection{Integer Formats}
+
+Integer formats represent values using a fixed number of bits in the integer domain. Depending on the number of available bits, the representable values belong to a specific numerical range. Assuming a signed two's-complement representation, an 8-bit signed integer can represent values from $-128$ to $127$, while a 16-bit signed integer can represent values from $-32768$ to $32767$. Compared to formats used to represent fractional or real-valued data, integer arithmetic is simple and hardware-efficient.
+
+Integer formats are included in the scope of this thesis because low-bit integer representations can reduce memory footprint and simplify arithmetic datapaths, potentially improving latency and throughput. For this reason, integer arithmetic has also been used in quantization schemes for efficient neural-network inference \cite{jacob2018quantization}. However, integer formats have limited dynamic range and do not directly represent fractional values. Consequently, quantization and scaling are required when real-valued neural-network data is mapped to integer representations.
+
+\subsection{Fixed-Point Formats}
+
+The fixed-point numerical format is used to represent real values by assigning a fixed number of bits to the integer part and a fixed number of bits to the fractional part. Depending on the total number of bits available and on how these bits are divided, both the range and the precision of the represented values change. If more bits are assigned to the integer part, the representable range increases, but the resolution between consecutive values becomes coarser. On the other hand, if more bits are assigned to the fractional part, the precision increases, but the representable range decreases.
+
+Fixed-point formats are useful in hardware because they provide a simple and linear representation for real-valued quantities while keeping the arithmetic structure close to integer arithmetic. Since the position of the binary point is fixed, fixed-point operations do not require exponent alignment or normalization, which are typical of floating-point arithmetic. For neural-network inference, fixed-point representations have been studied as a way to reduce arithmetic complexity and memory cost compared to floating-point computation, especially in hardware-oriented and low-power implementations \cite{shin2017fixedpoint}. However, fixed-point formats require careful scaling, since an inappropriate choice of integer and fractional bits can lead to overflow or excessive quantization error.
+
+\subsection{Floating-Point Formats}
+
+Floating-point formats are widely used to represent real numbers in general-purpose processors and hardware accelerators. Their encoding is composed of three main fields: a sign bit, an exponent field, and a fraction field. The sign bit determines whether the represented value is positive or negative. The exponent field scales the value by a power of two, allowing the position of the binary point to move. This is what gives floating-point formats a larger dynamic range than fixed-point formats. The fraction field, also referred to as the significand or mantissa field, stores the significant digits of the represented value.
+
+In a simplified form, a normalized floating-point value can be expressed as shown in Equation~\eqref{eq:floating_point_value}. In this expression, $s$ is the sign bit, $f$ is the fraction field, $E$ is the stored biased exponent, and $B$ is the exponent bias. Special encodings are also reserved for zero, subnormal values, infinities, and Not-a-Number (NaN) values.
+
+\begin{equation}
+x = (-1)^s \cdot (1.f)_2 \cdot 2^{E-B}
+\label{eq:floating_point_value}
+\end{equation}
+
+As happens also for integer and fixed-point formats, the total number of bits used for the floating-point representation changes the characteristics of the represented values. For instance, the IEEE 754 single-precision format, also known as binary32 or FP32, uses 32 bits divided into one sign bit, eight exponent bits with an exponent bias of $B=127$, and twenty-three explicitly stored fraction bits. Since normalized values include an implicit leading bit, the effective significand precision is 24 bits. The approximate normal range of positive values extends from $1.18 \times 10^{-38}$ to $3.40 \times 10^{38}$.
+
+The precision of floating-point numbers is not uniform over the entire representable range. Instead, the spacing between two consecutive representable values depends on the exponent. Around values whose exponent is $e$, the distance between adjacent normalized binary32 values is approximately
+
+\begin{equation}
+\Delta = 2^{e-23}.
+\label{eq:binary32_spacing}
+\end{equation}
+
+As a consequence, values close to one have a smaller absolute spacing than very large values. For example, between $1$ and $2$, the distance between two consecutive binary32 values is $2^{-23}$, while between $2$ and $4$ it becomes $2^{-22}$. This is why floating-point formats can cover a wide numerical range while still keeping an approximately constant relative precision.
+
+However, despite the high precision and wide dynamic range of FP32, single-precision floating-point arithmetic requires more memory and more complex hardware than lower-precision alternatives. This is one of the main reasons why half-precision formats, such as FP16, and even lower-precision variants have become important in modern accelerators. Mixed-precision approaches exploit this idea by using lower-precision formats for many arithmetic operations, while preserving numerical accuracy through higher-precision accumulation or scaling techniques \cite{micikevicius2018mixed}.
+
+More recently, even lower-precision floating-point formats such as FP8 have been proposed for deep-learning workloads. FP8 formats further reduce storage and arithmetic cost, but they also provide fewer exponent and fraction bits than FP16 or FP32. As a result, FP8 formats must carefully balance dynamic range and precision. For example, FP8 proposals often distinguish between different exponent/fraction allocations, such as exponent field to four bits and mantissa field equal to three bits (E4M3) or exponent bitwidth equal to five and mantissa bit width equal to rwo (E5M2), to support different numerical requirements in neural-network computation \cite{micikevicius2022fp8}.
+
+\subsection{Posit Formats}
+
+The Posit numerical format is an emerging format utilized to encode real numbers. It has been constructed thinking to give an alternate way of rapresentation then the famous standard floating point one previously introduced. More specifically, this numerical format does not divide the bit pattern into a fixed-size exponent and fraction bits unlike the floating point format. Instead, the typical posit value is encoded using a sign bit, a variable-legth regime field , an exponent field and a fraction field. The number of bits available for the exponent and fraction depends on the length of the regime field \cite{gustafson2017posit}. 
+More in detail, for a nonzero posit encoded value, the numerical interpretation can be expressed in simplified form as shown in Equation~\eqref{eq}. In the Equation,$s$ is the sign bit, $k$ is the value associated with the regime field, $e$ is the exponent value, and $f$ is the fraction. The term $useed$ depends on the exponent-size parameter and is defined as $useed = 2^{2^{es}}$. 
+
+\begin{equation}
+x = (-1)^s \cdot useed^k \cdot 2^e \cdot (1.f)
+\label{eq}
+\end{equation}
+
+Because the regime field can consume a variable number of bits, the number of bits left for the fraction changes depending on the magnitude of the represented value. This gives posit formats a tapered precision behavior, where values close to one can be represented with more precision, while very large or very small values are represented with fewer fraction bits.
+
+With regard to hardware accelerator circuits, posfit formats have been studied as low-precision alternatives to floating-point formats. For example, one possible application is related to DNN inference workloads, where posit representations have been explored as a way to reduce the number of bits used for computation while preserving acceptable accuracy in some workloads \cite{carmichael2018deeppositron}. Additionally, posit formats are relevant to the scope of this thesis because previous work investigated the impact of hardware faults on TCU structures in GPUs when using different real-number formats, including floating-point and posit representations \cite{sierra2023realformatsreliability}. That work is particularly connected to this thesis because it links numerical format selection with the structural reliability of TCU-like accelerators. However, posit arithmetic also introduces hardware challenges, since the variable-length regime field requires additional decoding logic. For this reason, posit formats represent an interesting tradeoff to study when comparing numerical datapaths for dot-product and matrix-oriented acceleration.
+
+\subsection{Logarithmic Number System Formats}
+
+Along with posit, there is another emerging way of encoding real values: the logarithmic number system (LNS) format. This numerical format rapresents real numbers by encoding the logarithmm base two of their magnitude rather then the magnitude itself. In a simplified form, a nonzero LNS value can be described using a sign bit and a logarithmic field that represents the absolute value of the number in the log domain. This makes the rapresentation different from the fixed-point, floating-point, and posit formats introduced previously, as in those real number related formats the numerical value is encoded more directly through integer, fraction, exponent, or regime-related fields. In LNS, the encoded value correspons to the logarithm of the represented number, and the real value must be reconstructed through an exponential interpretation. This representation can be expressed as shown in Equation~\eqref{eq:lns_value}. In this expression, $s$ is the sign bit and $L$ is the encoded logarithmic value, corresponding to $\log_2(|x|)$. Additionally, since the logarithm of zero is not finite, zero usually requires a special encoding.
+
+\begin{equation}
+x = (-1)^s \cdot 2^L
+\label{eq:lns_value}
+\end{equation}
+
+%paragraph 3: which should answer why is LNS included in the comparison? 
+
+The main advantage of LNS arithmetix is that the multiplication and division operation are easy to perform in hardware in the logarithmic domain. Since the logarithm of a product is the sum of the logarithms, multiplying two LNS values mainly requires adding their logarithmic fields and combining their sign bits. However, addition and subtraction operations are more complex if using LNS format, because the sum of the two values cannot be obtained by simply adding their logarithmic encodings. Addition operations in LNS format hence require also correction functions, approximations or lookup-table based methods. This creates an important tradeoff: LNS can simplify multiplication-heavy datapaths, but it can make accumulation more expensive than in linear-domain formats \cite{haselman2005comparison}.
+
+\subsection{Summary of Format Tradeoffs}
+
+The formats introduced in this section represent different tradeoffs in terms of precision, dynamic range, memory usage, and hardware complexity. Integer and fixed-point formats provide simple and efficient arithmetic structures, but they require careful scaling when real-valued data is represented. Floating-point formats provide a wider dynamic range and are widely used in general-purpose computation, but they require more complex hardware units. Posit formats introduce a tapered precision behavior that can be attractive for low-precision computation, although their variable-length encoding increases the complexity of the datapath. Finally, LNS formats simplify multiplication and division in the logarithmic domain, but make addition and accumulation more complex.
+
+These differences are important for the dot-product units and matrix-oriented accelerators that will be discussed in the following chapters. The choice of numerical format can therefore influence not only the numerical behavior of the accelerator, but also its area, latency, and suitability for hardware implementation. For this reason, the following chapters compare different datapath implementations based on these numerical formats in the context of dot-product acceleration.
+
+
 \section{GPU Architecture and the FlexGrip Plus}
 Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
 
