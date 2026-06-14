@@ -299,6 +299,7 @@ which extend dot-product-based computation toward matrix-level
 acceleration and are introduced in the following section.
 
 \section{Tensor Core Units and the HMMA-style Execution}
+\label{sec:tensor_core_hmma}
 %paragraph1: why tensor core units exist.
 
 As described in Section~\ref{sec:matrix_ai_workloads}, matrix-based operations play a central role in AI workloads. Since matrix multiplication is composed of many products and accumulations, executing these operations only through general-purpose scalar units can be inefficient. For this reason, modern GPU architectures introduce specialized hardware units for matrix-oriented computation. NVIDIA Tensor Cores are an example of this approach, as they are designed to accelerate matrix multiply-and-accumulate operations on small matrix fragments \cite{nvidia2017volta,markidis2018tensorcore}.
@@ -329,7 +330,7 @@ The TCU execution model shows how matrix-oriented workloads can be accelerated b
 
 
 \section{Numerical Formats in Hardware}
-
+\label{sec:numerical_formats_hardware}
 %paragraph1: Why do numerical formats mmatter in hardware accelerators? Why are we now talking about numerical formats ?
 Numerical formats define how values used in arithmetic operations are represented and manipulated inside specific datapaths. In hardware accelerators, the choice of format has a direct impact on precision, dynamic range, hardware cost, latency, memory usage, and fault resilience. This section introduces the numerical format families considered in this thesis, including standard representations such as integer, fixed-point, and floating-point formats, as well as alternative representations such as posit and logarithmic number system formats.
 
@@ -406,9 +407,57 @@ These differences are important for the dot-product units and matrix-oriented ac
 
 
 \section{GPU Architecture and the FlexGrip Plus}
-Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
+\label{sec:gpu_flexgrip_background}
+\subsection{GPU Parallel Execution Model}
+%paragraph1: explaining why GPUs matter for AI/matrix workloads.
+Graphic Processing Units (GPUs) are used yo accelerate workloads which are composed by a lot of data-level parallelism. Henceforth, matrix-based computation is an optimal way to make use of these units.In fact, matrix-based computations consists of many operations which can be executed independently over different elements of vectors, matrices, or tensors. And since as discussed, modern artificial intelligence workloads are stronly based on operations such as dot products, matrix multiplication, and convolution, GPUs rapresent an important hardware platform for accelerating these computations.
+
+In NVIDIA's CUDA programming model, parallel execution is organized through a hiererchy of threads, thread blocks, as well as grids. A thread is an execution element, while a thread block is a group of threads that can cooperate during the exeucution of a kernel. Multiple thread blocks of a kernel are then organized into a grid, which rapresents the complete workload which is launched by the GPU. This hirierchy constructed by NVIDIA allows large computational problems to be divided into smaller operations that can be mapped onto the available hardware resources of the GPU \cite{nvidiaCudaProgrammingGuide}.
+
+A key aspect of the GPU execution to remark is the Single Instruction, Multiple Threads (SIMT) model. In SIMT, groups of threads execute the same instruction stream while operating on different data elements. In NVIDIA GPUs, these groups are called warps which are typically composed of 32 threads. This model allows data-parallel workloads to be executed because the same operation can be applied at the same time independently to many elements of a vector, matrix, or tensor. Howevever, when threads inside the same warp follow different control-flow paths, execution divergence could occur, reducing the efficiency of parallel execution \cite{nvidiaCudaProgrammingGuide}. 
+
+Finally, the mentioned execution model is particularly useful for matrix-based workloads because the same pattern is repeated over many data elements for such operations. For instance, in matrix multiplication, different threads can compute different output elements or partial products while the overall computation follows a regular and highly parallel structure. This makes GPUs suitable for workloads where a large number of dot products or multiply-accumulate operations must be evaluated. For this reason, GPU architectures are an important reference point when studying hardware acceleration for matrix-oriented computation which is subject of this thesis.
+
+\subsection{GPU Datapaths and Specialized Units}
+%goal is to explain why GPUs do not rely on generic arithmetic units but also include specialized datapaths for common operations.
+Inside a GPU, parallel execution is supported by a large number of arithmetic datapaths distributed across the processing units of the architecture. These datapaths execute the operations issued by the launched threads of the kernel, allowing the GPU to exploit the high degree parallelism available in data-intensive workloads. Traditionlly, arithmetic operations involving integer and floating-point additions or multiplications are performed by general-purpose execution units inside the GPU. However, as the workloads become more dominated by specifc computational patters, such as matrix multiplication and dot-product operations, specialixed hardware units can be introduced in the datapath to improve the througput and other metrics related to the given workload.
+
+As discussed in Section~\ref{sec:tensor_core_hmma}, TCUs are specilized datapaths designed to accelerate matrix multiply-accumulate operations. It is important also to remark from an architectural point of view that GPU designs  allow the inclusion of TCUs for dedicated workloads.  This way, instead of relying only on general-purpose arithmeitc units, matrix-oriented datapaths can increase throughput by operating directly on small fragments of matrices or vectors.As already discussed, this is particularly important for AI workloads, where dot products and matrix multiplications are repeatedly executed across many layers.
+
+The design of these specialized datapaths is strongly connected to the numerical format adopted for the computation. As discussed in Section~\ref{sec:numerical_formats_hardware}, different formats lead to different tradeoffs in terms of precision, dynamic range, memory usage, and hardware complexity. For this reason, a matrix-oriented datapath designed for floating-point arithmetic can have a very different internal structure compared to one designed for integer, fixed-point, posit, or LNS arithmetic. The numerical format therefore affects both the behavior of the computation and the hardware resources required to implement the accelerator.
+
+\subsection{FlexGrip Plus as a GPU-like Research Platform}
+The FlexGrip Plus is an open-source soft GPU model described fully at the RTL level and inspired by the NVIDIA G80 microarchitecture. It representts a GPU-like platforms that can execute CUDA-compatible program under the SM 1.0 CUDA programming model. For this reason, the FlexGrip Plus is useful in research contects where the internal hardware structure of a GPU-like architecture must be inspected or analyzed in more detail than would be possible in a commerial closed GPU device \cite{condia2020flexgripplus}.
+
+In the context of this thesis, the FlexGrip Plus GPU is relevant because it provides a GPU-like reference architecture that can be studied at the RTL level. This is important when analyzing accelerators and specialized datapaths, since the internal behavior of the architecture can be observed more directly though simulation tolls. Moreover, since the FlexGrip Plus has been developed also for the purpose reliability analysis, it also represents a useful background platform for understanding how hardware faults can affect GPU-like execution and computations \cite{condia2020flexgripplus}.
+
+%connecting the FLexGrip Plus Gpu to the context of the thesis.
+
+Since FlexGrip Plus exposes the internal structure of the processing pipeline and execution units, it can be used as a reference environment for reasoning about how specialized datapaths could be integrated into a GPU-like architecture. In this thesis, it is relevant because the proposed dot-product datapaths and numerical-format comparisons related to the TCU accelerator are studied with the broaded objective of understanding how matrix-oriented acceleration could be supported in programmable architectures.
+
 
 \section{RISC-V Architecture and the Klessydra T13}
+\label{sec:riscv_klessydra_background}
+
+\subsection{RISC-V as an Open Instruction Set Architecture}
+RISC-V is an open source instruction set architecture based on the reduced instruction set computer design philosophy. Differently from proprietary instruction sets like the ARM variants, RISC-V is openly specified and can be used as basis for academic industrial, and research-oriented processor implementations. Henceforth, CPU cores contructed around the RISC-V istruction set architecture can be used as basis for academic, industrial and research-oriented processor implementations. This makes it particularly interesting in hardware research, where the processor architecture may need to be inspected, modified or extended with custom instructions and specialized accelerators \cite{riscvUnprivilegedSpec}. 
+
+One important characteristic of RISC-V is its modular organization. The base integer instruction set can be extended through standard extension like multiplciation, atomic operations, floating-point support or vector processing support. In addition to these standard extensions, RISC-V also leaves space for custom instructions related extensions. This is particularly usefull in research -oriented processor designs, because new instructions or specialized execution units can be explored while keeping the processor compatible with general RISC-V programming model. 
+
+\subsection{Klessydra T13 Processor Architecture}
+%paragraph 1: for this as always we keep it broad by introducing what Klessydra is, why it is relevant , and its relationship with RISC-V and Pulpino. 
+
+Klessydra is a family of open-source RISC-V processing cores developed for research-oriented and embedded computing applications. The Klessydra cores are integrated within the PULPino environment environment, allowing them to be simulated, configured and tested at the RTL level as part of an open-source microcontroller platform. Within this family, the Klessydra T13 core is relevant to this thesis because it provides a RISC-V-compatible processor architecture that can be inspected and modified at RTL level, making it suitable for studying custom datapaths and accelerator integrationn \cite{klessydraPulpinoGithub}.
+
+A relevant characteristic of the Klessydra T13 architecture is the support for hardware multithreading. In fact for this specific Klessydra core,  instead of executing only a single software thread, the processor can manage, and schedule multiple hardware threads, also referred to as harts in the RISC-V terminology. This execution model allows the processor pipeline to interleave instructions coming from different threads, improving the ability to tolerate stalls and to exploit parallelism at processor level. 
+For this reason, Klessydra T13 provides an interesting architectural context for studying how custom execution units or accelerator-oriented datapaths could interact with a multi-threaded RISC-V pipeline. 
+
+The possibility of modifying and extending the RTL description of the processor is of particular importance for this thesis. Since the objective is to study dot-product datapaths and their possible rolw in matrix-oriented acceleration, an open and inspectable RISC-V based architecture provides useful environment for reasoning about custom hardware support. In this context , Klessydra T13 can be considered not only a processor core, but a reference platform for exploring how specialized datapaths could be connected to the instruction flow and the execution pipeline.
+
+\subsection{Relevance to Custom Accelerator Integration}
+
+The relevance of RISC-V and Klessydra T13 in this thesis is connected to the possibility of studying acceleration from the point of view of an open processor architecture. While GPU-like platforms are useful for understanding massively parallel execution and matrix-oriented datapaths, a RISC-V-based platform makes it possible to reason about custom instructions, inner circuits interaction, and execution-pipeline integration. This is important because dot-product acceleration does not only depend on the arithmetic datapath itself, but also on how that datapath can be connected to a programmable architecture.
+
 
 \section{Fault Resilience and Fault Injection in Hardware Accelerators}
 
