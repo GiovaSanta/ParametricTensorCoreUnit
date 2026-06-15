@@ -86,9 +86,49 @@ From an architectural point of view, the LNS DPU was implemented using a multipl
 
 This organization was adopted because the available LNS arithmetic components were provided as separate multiplication and addition operators rather than complete multiply-accumulate blocks. Therefore, the LNS DPU preserves the same computational model defined in Equation~\eqref{eq:dpu_computational_model}, while using a tree-based datapath organization suitable for the available logarithmic arithmetic operators.
 
-
-
 \section{Standalone Verification of Format-Specific DPUs}
+
+After constructing the individual format-specific DPU variants, each datapath was verified independently before being integrated into the final top-level parametric architecture. This standalone verification phase was necessary to ensure that each DPU correctly implemented the computational model previously described in Equation~\eqref{eq:dpu_computational_model}.
+
+For each format, a dedicated simulation testbench was created. The testbench applied 10,000 randomly generated input vectors to the corresponding DPU. For each test case, the output produced by the hardware description was compared against an expected reference result. This approach made it possible to validate the functional behavior of each datapath in isolation, without the additional complexity introduced by the top-level format-selection logic.
+
+Figure~\ref{fig:dpu_standalone_verification_flow} summarizes the standalone verification flow used for the format-specific DPU variants.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    node distance=1.4cm and 1.8cm,
+    box/.style={
+        rectangle,
+        draw,
+        rounded corners,
+        align=center,
+        minimum width=3.6cm,
+        minimum height=1.0cm
+    },
+    arrow/.style={->, thick}
+]
+
+\node[box] (gen) {10,000-test\\generator (.py)};
+\node[box, above=of gen] (txt) {Generated test\\vectors (.txt)};
+\node[box, right=of txt] (tb) {Format-specific DPU\\testbench (.vhd)};
+\node[box, right=of tb] (out) {Simulated\\output (.txt)};
+\node[box, below=of out] (err) {Absolute-error\\computation (.py)};
+\node[box, below=of err] (plot) {Error plot\\(.png)};
+
+\draw[arrow] (gen) -- (txt);
+\draw[arrow] (txt) -- (tb);
+\draw[arrow] (tb) -- (out);
+\draw[arrow] (out) -- (err);
+\draw[arrow] (err) -- (plot);
+
+\end{tikzpicture}
+\caption{Standalone DPU verification flow.}
+\label{fig:dpu_standalone_verification_flow}
+\end{figure}
+
+More specifically, the initial Python script was used to generate the random test cases and to select the numerical format to be tested. The generated test-vector file contained the input operands and the expected result for each test case. During simulation, the VHDL testbench read these values, applied the inputs to the corresponding DPU, and wrote the simulated output to a separate text file. A Python post-processing script was then used to compare the simulated output against the expected result and compute the absolute error. The resulting error values were finally used to generate validation plots for the different DPU variants, which are presented in the experimental results chapter.
+
 
 \section{Top-Level Parametric DPU Wrapper}
 
