@@ -1,4 +1,5 @@
 \chapter{Background and Related Work}
+\label{ch:background}
 
 \section{Matrix-Based Computation in AI Workloads}
 \label{sec:matrix_ai_workloads}
@@ -72,6 +73,7 @@ DNN workloads are often described at the matrix level. Each element of an output
 
 
 \section{Dot Product and Multiply-Accumulate Operations}
+\label{sec:dpus_structures}
 
 %This section goal is to say: matrix multiplication is internally made of dot products and MACs.
 
@@ -489,4 +491,4 @@ Lastly, since there are different types of faults which can be introduced in the
 In the context of this thesis, fault injection is relevant because it provides a way to study how numerical datapaths behave when hardware-level disturbances affect the computation. Since dot-product units combine multiplication and accumulation operations, an injected fault may affect an intermediate product, a partial sum, or the final output. For this reason, fault injection represents a useful method for evaluating not only whether a datapath produces correct results in fault-free conditions, but also how its numerical behavior changes when faults are introduced.
 
 
-\section{Related Work}
+%\section{Related Work}

@@ -1,0 +1,97 @@
+
+\chapter{Parametric Dot Product Unit Architecture}
+\label{ch:parametric_dpu}
+%in this chapter i talk about the first real contribution chapter. Chapter 2 explained the background, chapter 3 explains what architecture i have designed and compared....
+
+%chapter 3 will be about design description of the dpus for the formats + the construction + the validation flow... the error graphs and performance reports dont need to be showed in this chapter, those will be moved mostly to the evaluation chapter.
+
+%chapter 3 explains what i have built and how i have built it in the sense of the DPUs.
+
+\section{Chapter Overview}
+
+The previous chapter introduced the general concepts needed to understand matrix-based computation, dot product operations, along with the general information of the GPU and RISC-V like architectures which the final parametric accelerator is meant to live. Starting from those concepts this chapter focuses on the first level of design and validation of the Parametric Dot Product Unit (DPU). The objective is to describe the approach of how the different numerical-format datapaths were constructed, individually verified, and then integrated into a common top level architecture.
+
+The proposed architecture is based on a dot-product computation that combines multiple multiplication operations with accumulation stage. This operation is representative of the arithmetic pattern used in matrix multiplication and neural network workloads as described previously. For this reason, the DPU is used as a basic computational block for comparing different numerical formats under the same functional model. 
+
+The design process of this first release of the parametric DPU followed a format-specific approach; First, dedicated DPUs were constructed for each numerical rapresentation considered in the thesis, including floating-point, integer, fixed-point, posit, and logarithimn number systems formats. After this standalone validation phase, the individual datapaths of the separate DPUs were integrated into a top-level wrapper, where the selected numerical format and operand width determine which internal DPU is used for the computation at hand.
+
+\section{Dot Product Computational Model}
+
+Generally, given a format, the DPU considered in this thesis computes a fixed-size multiply-accumulate operation based on four pairs of input operands and one additional accumulation input. More specifically, the unit receives four operands from a first input vector, four operand from a second one, and an additional scalar value which is accumulated. Equation ~\eqref{eq:dpu_computational_model} depicts this concepts more clearly. In the equation, $A_i$ and $B_i$ represent the input operand pairs, $C_0$ represents the initial accumulation value, and $R$ is the final result produced by the DPU. This operation corresponds to a small dot-product computation with an additional accumulation term, making it compatible with the multiply-accumulate structure discussed in Chapter~\ref{ch:background}.
+
+\begin{equation}
+R = A_0B_0 + A_1B_1 + A_2B_2 + A_3B_3 + C_0
+\label{eq:dpu_computational_model}
+\end{equation}
+
+The choice of a four-product structure is motivated by the fine-grained organization of Tensor Core-like matrix multiply-accumulate operations. As discussed in the previous chapter, Tensor Core execution can be viewed as a matrix-level operation decomposed into smaller dot-product computations. In particular, a 4-by-4 matrix multiply-accumulate operation can be decomposed into sixteen four-element dot products \cite{raihan2019modeling}. For this reason, the DPU adopted in this work is organized as a four-lane dot-product block with an additional accumulation input. The term $C_0$ represents the incoming accumulation value, while the four products $A_iB_i$ represent the four multiplicative contributions of a reduced dot-product operation.
+
+The same computational model describes is adopted for all the DPU variants considered in this thesis. This choice make it possible to compare different numerical formats under the same operation, while changing only the arithmetic representation and the internal datapath used to compute the result. Therefore, the floating-point, integer, fixed-point, posit, and LNS implementations all target the same mathematical behavior, but they differ in the way multiplication, accumulation, rounding, scaling, and special cases are handled internally.
+
+This common computational model is important because it separates the functional objective of the DPU from the implementation details of each numerical format. The following sections therefore describe how the same dot-product operation was implemented through different format-specific datapaths and how each variant was validated before being integrated into the top-level parametric architecture.
+
+\section{Format-Specific DPU Construction}
+
+%section which explains my real construction flow.... in the sense that i didnt immediatly build one magic parametric DPU immediatly, but i have built one specific DPU per format first !
+The construction of the first release of the parametric DPU started from the development of individual format-specified DPU variants. Instead of immediatly designing a single unified datapath for all the formats, for this first release each numerical rapresentation was first treated independently.This approach made it possible to focus on the arithmetic requirements of each format and to validate the corresponding datapath in isolation before integrating it into the final parametric architecture.
+
+Althoguh all variants implement the same computational model, the internal datapath organization is not nessarily identical for every format for this first release. As introduced in Section~\ref{sec:dpus_structures}, the general dot-product operation can be organized either through an early-accumulation structure or through a multiplier-and-adder-tree structure.Depending on the arithmetic operators available in the FloPoCo library for a given representation, the DPU was constructed either by a chain of multiply accumulate stages or by combining separate multiplier and adder blocks.
+
+\subsection{Arithmetic Operator Generation with FloPoCo}
+All the arithmetic operators used for the formats were generated using FloPoCo. FloPoCo is an arithmetic core generator that produces hardware descritpion of numerical operators with particular ephasis on Field Programmable Gate Array (FPGA)- oriented arithmetic datapaths \cite{dedinechin2011flopoco}. In this work, it was used to generate parametrized arithmetic components by specifying the numerical format parameters required by each implementation.
+For the floating-point variants, FloPoCo allowed the exponent and fraction widths to be selected according to the target precision. This made it possible to generate operators for reduced-precision arithmetic which involved 8 bit operand, as well as generating more common circuits supporting more bits in their operands. The generated components were then manually interconnected to construct complete DPU variants implementing the computational model defined in Equation~\eqref{eq:dpu_computational_model}.
+
+\subsection{Floating-Point DPU Variants}
+%subsection should explain: that i started from floating point format, that i used flocopoco to generate arithmetic operators. for Fp16 I generated/used MAC or multiplier adder blocks. I manually interconnected the generated blocks. The result was a format-specific FP16 DPU computing the same equation. Later the same approach was repeated for other floating point widths operands.
+
+The first family of format-specific datapaths developed in this work is based on the floating-point arithmatic. For this type of format, three DPU variants were considered each constructed considering the widths of the operands as 8 bits, 16 bits, and 32 bits respectively. These variants are refered to as FP8E4M3,  FP16, and FP32 in the rest of the thesis. FP8E4M3 rapresents a reduced-precision floating point format, while FP16 and FP32 correspond to half-precision floating-point arithmetic, respectively. 
+
+Following the FloPoCo-based generation approach described above, the arithmetic operators for each floating-point width were generated by selecting the appropriate exponent and fraction parameters. The generated operators were then interconnected to implement the four-product accumulation structure of the DPU. In this way, each floating-point variant computes the same mathematical operation, while using arithmetic components configured for the target precision.
+
+The floating-point DPU variants were implemented using an early-accumulation structure based on a chain composed of four multiply and accumulate circuits. Each MAC circuit component had been generated thorugh FloPoCo as discussed. Each MAC stage then multiplies one pair of operands and adds the result to the partial sum produced by the previous MAC. After the four MAC stages, the final output corresponds to the complete dot-product result.
+
+This organization was adopted for the floating-point datapaths because configurable floating-point MAC operators were available through FloPoCo. As a result, the FP8E4M3, FP16, and FP32 DPUs share the same early-accumulation structure, while differing in the numerical precision and in the internal parameters of the generated arithmetic operators.
+
+\subsection{Integer DPU Variants}
+
+The integer DPU variants were developed to evaluate the behavior of the dot-product architecture when using fixed-width integer arithmetic. Two integer configurations were considered in this work: \texttt{INT8\_16} and \texttt{INT16\_32}. In the first case, the input operands are represented using 8-bit integer values, while the internal accumulation and output are represented on 16 bits. In the second case, the input operands use 16-bit integer values, while the accumulation and output are represented on 32 bits. This choice allows the result of the multiplications and additions to be represented with a wider word length than the input operands, reducing the risk of overflow during the accumulation stage.
+
+Unlike the floating-point DPU variants, the integer datapaths were implemented using a multiplier-and-adder-tree organization. In this structure, the four products $A_iB_i$ are computed first by four parallel integer multipliers. The resulting products are then combined through a tree of adders, together with the accumulation input $C_0$, to produce the final output $R$. This organization directly reflects the dot-product equation introduced in Equation~\eqref{eq:dpu_computational_model}.
+
+The use of a multiplier-and-adder-tree structure was suitable for the integer variants because the required arithmetic operators are simpler than exponent-based formats and can be directly implemented using fixed-width multipliers and adders. Therefore, the \texttt{INT8\_16} and \texttt{INT16\_32} DPUs preserve the same functional behavior as the floating-point variants, but use a different internal datapath organization based on parallel product generation followed by tree-based accumulation.
+
+\subsection{Fixed-Point DPU Variants}
+%paragraph1: to explain what fixed-point variants exist in my design
+The fixed-point DPU variants were developed to evaluate dot-product computation using fixed-width arithmetic with an implicit scaling factor. Similarly to the integer related DPUs, two fixed-point configurations were considered in this work: \texttt{FXP8\_16} and \texttt{FXP16\_32}. In these configurations, the first number indicates the input operand width, while the second number indicates the wider accumulation and output width. This organization allows the products and partial sums to be represented with a larger word length than the input operands.
+%paragraph 2: specifc implemented bit-level format details 
+More specifically, in the implemented fixed-point datapaths, for the \texttt{FXP8\_16} variant, each input operand is represented on 8 bits, composed of 1 sign bit, 2 integer bits, and 5 fractional bits. For the \texttt{FXP16\_32} variant, each input operand is represented on 16 bits, composed of 1 sign bit, 5 integer bits, and 10 fractional bits. The 32-bit output format used by the \texttt{FXP16\_32} datapath is composed of 1 sign bit, 11 integer bits, and 20 fractional bits.
+%paragrap3: MAC-chain architecture
+Unlike the integer variants, the fixed-point DPUs were implemented using an early-accumulation structure similar to the one adopted for the floating-point datapaths. The computation is organized as a chain of multiply-accumulate stages, where each stage multiplies one pair of input operands and adds the result to the partial sum produced by the previous stage. The input value $C_0$ is used as the initial accumulation term, and after four MAC stages the final output corresponds to the complete DPU result.
+%paragraph4: why this architecture was used
+This structure was adopted because the available fixed-point arithmetic components in the FloPoCo library supported a MAC-chain implementation. Therefore, the \texttt{FXP8\_16} and \texttt{FXP16\_32} variants preserve the same computational model as the other DPUs, while using fixed-point arithmetic and an early-accumulation datapath organization.
+
+\subsection{Posit DPU Variants}
+
+The posit DPU variants developed to evaluate the dot-product architecture using the posit number representation. In this work, three posit configurations were considered using operands with widths 8 bits, 16 bits, and 32 bits respectively. These varients are referred to as \texttt{Posit8}, \texttt{Posit16}, and \texttt{Posit32} in the rest of the thesis.
+
+The implemented posit configurations correspond to $\mathrm{Posit}\langle 8,0\rangle$, $\mathrm{Posit}\langle 16,1\rangle$, and $\mathrm{Posit}\langle 32,2\rangle$. In this notation, the first parameter indicates the total number of bits used to encode the value, while the second parameter indicates the exponent-size parameter $es$. Therefore, the \texttt{Posit8} variant uses $es=0$, the \texttt{Posit16} variant uses $es=1$, and the \texttt{Posit32} variant uses $es=2$.
+
+Finally, from an architectural point of view, the implemented posit DPUs use a multiplier-and-adder-tree organization structure. The four products $A_iB_i$ are first computed using separate posit multipliers. The resulting products are then accumulated through posit adders, together with the input value $C_0$, to obtain the final output $R$. This particular type of organization was adopted for these specific DPUs because the available posit related FloPoCo libraries provided arithmetic components as separate multiplication and addition operators rather than complete multiply-accumulate blocks. Therefore, the posit variants preserve the same computational model as the other DPUs, while using a tree-based datapath organization. 
+
+\subsection{LNS DPU Variant}
+
+The LNS DPU variant was developed to evaluate the dot-product architecture using a logarithmic number system representation. In this work, a single LNS configuration was considered and used as the representative logarithmic datapath. Unlike the floating-point, integer, fixed-point, and posit families, multiple operand widths were not explored for LNS. This choice was mainly due to the practical limitations encountered with the available FloPoCo LNS operators, since in the tool configuration used in this work the generation of an RTL-level LNS adder was successfully obtained only for the 16-bit operand configuration. Nevertheless, the objective was to include one logarithmic implementation in the comparison in order to study a datapath based on a substantially different arithmetic representation.
+
+From an architectural point of view, the LNS DPU was implemented using a multiplier-and-adder-tree organization. The required LNS arithmetic operators were generated with FloPoCo and then interconnected to construct the complete DPU datapath. The four products $A_iB_i$ are first computed using separate LNS multiplication operators. The resulting products are then accumulated through LNS addition operators. The accumulation was organized as a tree, where the first two products and the last two products are added in parallel, and the resulting partial sums are then combined before adding the input accumulation value $C_0$.
+
+This organization was adopted because the available LNS arithmetic components were provided as separate multiplication and addition operators rather than complete multiply-accumulate blocks. Therefore, the LNS DPU preserves the same computational model defined in Equation~\eqref{eq:dpu_computational_model}, while using a tree-based datapath organization suitable for the available logarithmic arithmetic operators.
+
+
+
+\section{Standalone Verification of Format-Specific DPUs}
+
+\section{Top-Level Parametric DPU Wrapper}
+
+\section{Validation of the Parametric Wrapper}
+
+\section{Summary}
