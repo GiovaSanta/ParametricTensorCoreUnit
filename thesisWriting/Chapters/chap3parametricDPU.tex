@@ -129,9 +129,24 @@ Figure~\ref{fig:dpu_standalone_verification_flow} summarizes the standalone veri
 
 More specifically, the initial Python script was used to generate the random test cases and to select the numerical format to be tested. The generated test-vector file contained the input operands and the expected result for each test case. During simulation, the VHDL testbench read these values, applied the inputs to the corresponding DPU, and wrote the simulated output to a separate text file. A Python post-processing script was then used to compare the simulated output against the expected result and compute the absolute error. The resulting error values were finally used to generate validation plots for the different DPU variants, which are presented in the experimental results chapter.
 
-
 \section{Top-Level Parametric DPU Wrapper}
 
-\section{Validation of the Parametric Wrapper}
+After the standalone verification of each individual format-specific DPU variant, the validated datapaths were integrated into a common top-level architecture. The objective of the wrapper was to build a first release of the parametric DPU by grouping the different DPU implementations inside a single module and allowing the desired numerical format to be selected through dedicated control signals.
 
+The top-level parametric DPU wrapper does not replace the internal arithmetic structure of the individual DPUs. Instead, it instantiates the previously developed format-specific datapaths and selects the output of the appropriate unit according to the selected format and operand configuration. In this way, the wrapper provides a unified interface while preserving the arithmetic behavior of each individual implementation.
+
+This design choice separates the problem of numerical-format implementation from the problem of format selection. Each internal DPU remains responsible for computing the dot-product operation using its own arithmetic representation and datapath organization. The top-level wrapper is instead responsible for routing the input operands to the available DPUs and selecting the output corresponding to the active format.
+
+The overall organization of the top-level wrapper is shown in Figure~\ref{fig:parametricDPU}. The same input operands are provided to the available format-specific datapaths, while the format-selection logic determines which result is forwarded to the final output.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/ParametricDPUrel0.pdf}
+\caption{Top-level parametric DPU wrapper.}
+\label{fig:parametricDPU}
+\end{figure}
+
+As shown in the figure, the top-level wrapper groups the available format-specific DPU families inside a single architectural block. The format type and operand width selection signals determine which datapath is active for the current operation and which result is forwarded by the multiplexer. Therefore, the parametric behavior of the module is obtained through selection and multiplexing logic, while the arithmetic computation itself remains delegated to the corresponding format-specific DPU.
+
+\clearpage
 \section{Summary}
