@@ -150,3 +150,11 @@ As shown in the figure, the top-level wrapper groups the available format-specif
 
 \clearpage
 \section{Summary}
+
+This chapter descirbed the design and validation flow adopted for the first realease of the parametric Dot Product Unit. The chapter first introduced the common computational model implemented by all DPU variants, based on a four-product dot-product operation with an additional accumulation input. This model was used as a common functional reference for all the numerical formats considered in the thesis.
+
+The chapter then described the construction of the format-specific DPU variants. Floating-point, integer, fixed-point, posit, and LNS datapaths were developed independently, according to the arithmetic operators available for each representation. Some variants were implemented using an early-accumulation structure based on multiply-accumulate stages, while others were implemented using a multiplier-and-adder-tree organization. These desing decision were made based on what was available by the FloPoCo library. But in all cases, the objective was to preserve the same dot-product behavior while changing the underlying numerical representation and datapath organization.
+
+After their construction, the individual DPU variants were verified through standalone simulation testbenches. Random input vectors were generated, applied to each DPU, and compared against expected reference results. This step made it possible to validate each datapath in isolation before integrating the different implementations into a common architecture.
+
+Finally, the chapter presented the top-level parametric DPU wrapper. The wrapper groups the available format-specific datapaths inside a single module and uses format and width selection signals to determine which result is forwarded to the output. Therefore, the parametric behavior of the first DPU release is obtained through selection and multiplexing logic, while the arithmetic computation itself remains delegated to the corresponding format-specific DPU. This architecture represents the fundamental computational building block used in the next stage of the work. In the next chapter, the higher-level Tensor Core Unit architecture is presented, showing how the parametric DPU can be used as a core component to support matrix-oriented operations.
