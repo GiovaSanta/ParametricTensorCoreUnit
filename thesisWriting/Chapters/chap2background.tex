@@ -39,7 +39,7 @@ Neural networks are composed of many layers, each computing its outputs from the
 % Possible citation: \cite{anderson2017lowmemory}
 
 The matrix-based computations previously introduced appear in specific
-layers of a typical deep neural network. Since a deep neural network
+layers of a typical DNN. Since a DNN
 contains different types of layers, the amount of matrix-based computation
 depends on the layer type. Typically, fully connected layers and
 convolutional layers contain large numbers of matrix-based operations
@@ -342,11 +342,30 @@ Integer formats represent values using a fixed number of bits in the integer dom
 
 Integer formats are included in the scope of this thesis because low-bit integer representations can reduce memory footprint and simplify arithmetic datapaths, potentially improving latency and throughput. For this reason, integer arithmetic has also been used in quantization schemes for efficient neural-network inference \cite{jacob2018quantization}. However, integer formats have limited dynamic range and do not directly represent fractional values. Consequently, quantization and scaling are required when real-valued neural-network data is mapped to integer representations.
 
+Figure~\ref{fig:integerExample} shows an example of signed 16-bit two's-complement encoding for an integer value.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/IntegerFormatExample.pdf}
+\caption{Example of signed INT16 two's-complement encoding for the decimal value $-13$.}
+\label{fig:integerExample}
+\end{figure}
+
 \subsection{Fixed-Point Formats}
 
 The fixed-point numerical format is used to represent real values by assigning a fixed number of bits to the integer part and a fixed number of bits to the fractional part. Depending on the total number of bits available and on how these bits are divided, both the range and the precision of the represented values change. If more bits are assigned to the integer part, the representable range increases, but the resolution between consecutive values becomes coarser. On the other hand, if more bits are assigned to the fractional part, the precision increases, but the representable range decreases.
 
 Fixed-point formats are useful in hardware because they provide a simple and linear representation for real-valued quantities while keeping the arithmetic structure close to integer arithmetic. Since the position of the binary point is fixed, fixed-point operations do not require exponent alignment or normalization, which are typical of floating-point arithmetic. For neural-network inference, fixed-point representations have been studied as a way to reduce arithmetic complexity and memory cost compared to floating-point computation, especially in hardware-oriented and low-power implementations \cite{shin2017fixedpoint}. However, fixed-point formats require careful scaling, since an inappropriate choice of integer and fractional bits can lead to overflow or excessive quantization error.
+
+
+Figure~\ref{fig:FXPexample} shows an example of the signed 16-bit fixed-point input representation used for the fixed point 16 format width.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/FXPexample.pdf}
+\caption{Example of signed 16-bit fixed-point encoding for the decimal value $+3.25$, using one sign bit, five integer bits, and ten fractional bits.}
+\label{fig:FXPexample}
+\end{figure}
+
 
 \subsection{Floating-Point Formats}
 
@@ -374,10 +393,19 @@ However, despite the high precision and wide dynamic range of FP32, single-preci
 
 More recently, even lower-precision floating-point formats such as FP8 have been proposed for deep-learning workloads. FP8 formats further reduce storage and arithmetic cost, but they also provide fewer exponent and fraction bits than FP16 or FP32. As a result, FP8 formats must carefully balance dynamic range and precision. For example, FP8 proposals often distinguish between different exponent/fraction allocations, such as exponent field to four bits and mantissa field equal to three bits (E4M3) or exponent bitwidth equal to five and mantissa bit width equal to rwo (E5M2), to support different numerical requirements in neural-network computation \cite{micikevicius2022fp8}.
 
+Figure~\ref{fig:fp16example} shows an example of the 16-bit floating-point representation for the value $+3.25$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/FP16example3dot25.drawio.pdf}
+\caption{Example of FP16 encoding for the decimal value $+3.25$, using one sign bit, five exponent bits, and ten fraction bits.}
+\label{fig:fp16example}
+\end{figure}
+
 \subsection{Posit Formats}
 
 The Posit numerical format is an emerging format utilized to encode real numbers. It has been constructed thinking to give an alternate way of rapresentation then the famous standard floating point one previously introduced. More specifically, this numerical format does not divide the bit pattern into a fixed-size exponent and fraction bits unlike the floating point format. Instead, the typical posit value is encoded using a sign bit, a variable-legth regime field , an exponent field and a fraction field. The number of bits available for the exponent and fraction depends on the length of the regime field \cite{gustafson2017posit}. 
-More in detail, for a nonzero posit encoded value, the numerical interpretation can be expressed in simplified form as shown in Equation~\eqref{eq}. In the Equation,$s$ is the sign bit, $k$ is the value associated with the regime field, $e$ is the exponent value, and $f$ is the fraction. The term $useed$ depends on the exponent-size parameter and is defined as $useed = 2^{2^{es}}$. 
+More in detail, for a nonzero posit encoded value, the numerical interpretation can be expressed in simplified form as shown in Equation~\eqref{eq}. In the Equation, $s$ is the sign bit, $k$ is the value associated with the regime field, $e$ is the exponent value, and $f$ is the fraction. The term $useed$ depends on the exponent-size parameter and is defined as $useed = 2^{2^{es}}$. 
 
 \begin{equation}
 x = (-1)^s \cdot useed^k \cdot 2^e \cdot (1.f)
@@ -388,9 +416,23 @@ Because the regime field can consume a variable number of bits, the number of bi
 
 With regard to hardware accelerator circuits, posfit formats have been studied as low-precision alternatives to floating-point formats. For example, one possible application is related to DNN inference workloads, where posit representations have been explored as a way to reduce the number of bits used for computation while preserving acceptable accuracy in some workloads \cite{carmichael2018deeppositron}. Additionally, posit formats are relevant to the scope of this thesis because previous work investigated the impact of hardware faults on TCU structures in GPUs when using different real-number formats, including floating-point and posit representations \cite{sierra2023realformatsreliability}. That work is particularly connected to this thesis because it links numerical format selection with the structural reliability of TCU-like accelerators. However, posit arithmetic also introduces hardware challenges, since the variable-length regime field requires additional decoding logic. For this reason, posit formats represent an interesting tradeoff to study when comparing numerical datapaths for dot-product and matrix-oriented acceleration.
 
+Figure~\ref{fig:posit16example} shows an example of the \texttt{Posit<16,1>} representation for the value $+3.25$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/posit16example.pdf}
+\caption{Example of \texttt{Posit<16,1>} encoding for the decimal value $+3.25$, using a sign bit, a variable-length regime field, one exponent bit, and the remaining fraction bits.}
+\label{fig:posit16example}
+\end{figure}
+
+
+
 \subsection{Logarithmic Number System Formats}
 
-Along with posit, there is another emerging way of encoding real values: the logarithmic number system (LNS) format. This numerical format rapresents real numbers by encoding the logarithmm base two of their magnitude rather then the magnitude itself. In a simplified form, a nonzero LNS value can be described using a sign bit and a logarithmic field that represents the absolute value of the number in the log domain. This makes the rapresentation different from the fixed-point, floating-point, and posit formats introduced previously, as in those real number related formats the numerical value is encoded more directly through integer, fraction, exponent, or regime-related fields. In LNS, the encoded value correspons to the logarithm of the represented number, and the real value must be reconstructed through an exponential interpretation. This representation can be expressed as shown in Equation~\eqref{eq:lns_value}. In this expression, $s$ is the sign bit and $L$ is the encoded logarithmic value, corresponding to $\log_2(|x|)$. Additionally, since the logarithm of zero is not finite, zero usually requires a special encoding.
+Along with posit, another alternative way of encoding real values is the logarithmic number system (LNS) format. This numerical format represents real numbers by encoding the base-two logarithm of their magnitude rather than the magnitude itself. In a simplified form, a nonzero LNS value can be described using a sign bit and a logarithmic field that represents the absolute value of the number in the logarithmic domain. This makes the representation different from the fixed-point, floating-point, and posit formats introduced previously, since in those formats the numerical value is encoded more directly through integer, fraction, exponent, or regime-related fields. In LNS, the encoded value corresponds to the logarithm of the represented number, and the real value must be reconstructed through an exponential interpretation.
+
+Since the logarithm of zero is not finite, LNS formats usually require additional exception or class bits to distinguish normal finite values from special cases such as zero, overflow, underflow, or invalid results. These bits allow the encoded word to identify whether the remaining sign and logarithmic fields should be interpreted as a normal numerical value or as a special case. For normal finite values, the representation can be expressed as shown in Equation~\eqref{eq:lns_value}, where $s$ is the sign bit and $L$ corresponds to an encoded approximation of $\log_2(|x|)$.
+
 
 \begin{equation}
 x = (-1)^s \cdot 2^L
@@ -400,6 +442,15 @@ x = (-1)^s \cdot 2^L
 %paragraph 3: which should answer why is LNS included in the comparison? 
 
 The main advantage of LNS arithmetix is that the multiplication and division operation are easy to perform in hardware in the logarithmic domain. Since the logarithm of a product is the sum of the logarithms, multiplying two LNS values mainly requires adding their logarithmic fields and combining their sign bits. However, addition and subtraction operations are more complex if using LNS format, because the sum of the two values cannot be obtained by simply adding their logarithmic encodings. Addition operations in LNS format hence require also correction functions, approximations or lookup-table based methods. This creates an important tradeoff: LNS can simplify multiplication-heavy datapaths, but it can make accumulation more expensive than in linear-domain formats \cite{haselman2005comparison}.
+
+Figure~\ref{fig:lns16example} shows an example of the 16-bit logarithmic number system representation used for the LNS DPU.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/LNS16example.pdf}
+\caption{Example of LNS in 16 bits encoding for the decimal value $+3.25$, using two exception bits, one value-sign bit, and a signed logarithmic field.}
+\label{fig:lns16example}
+\end{figure}
 
 \subsection{Summary of Format Tradeoffs}
 
@@ -412,7 +463,7 @@ These differences are important for the dot-product units and matrix-oriented ac
 \label{sec:gpu_flexgrip_background}
 \subsection{GPU Parallel Execution Model}
 %paragraph1: explaining why GPUs matter for AI/matrix workloads.
-Graphic Processing Units (GPUs) are used yo accelerate workloads which are composed by a lot of data-level parallelism. Henceforth, matrix-based computation is an optimal way to make use of these units.In fact, matrix-based computations consists of many operations which can be executed independently over different elements of vectors, matrices, or tensors. And since as discussed, modern artificial intelligence workloads are stronly based on operations such as dot products, matrix multiplication, and convolution, GPUs rapresent an important hardware platform for accelerating these computations.
+Graphic Processing Units (GPUs) are used to accelerate workloads which are composed by a lot of data-level parallelism. Henceforth, matrix-based computation is an optimal way to make use of these units. In fact, matrix-based computations consists of many operations which can be executed independently over different elements of vectors, matrices, or tensors. And since as discussed, modern AI workloads are stronly based on operations such as dot products, matrix multiplication, and convolution, GPUs rapresent an important hardware platform for accelerating these computations.
 
 In NVIDIA's CUDA programming model, parallel execution is organized through a hiererchy of threads, thread blocks, as well as grids. A thread is an execution element, while a thread block is a group of threads that can cooperate during the exeucution of a kernel. Multiple thread blocks of a kernel are then organized into a grid, which rapresents the complete workload which is launched by the GPU. This hirierchy constructed by NVIDIA allows large computational problems to be divided into smaller operations that can be mapped onto the available hardware resources of the GPU \cite{nvidiaCudaProgrammingGuide}.
 
@@ -444,7 +495,7 @@ Since FlexGrip Plus exposes the internal structure of the processing pipeline an
 \subsection{RISC-V as an Open Instruction Set Architecture}
 RISC-V is an open source instruction set architecture based on the reduced instruction set computer design philosophy. Differently from proprietary instruction sets like the ARM variants, RISC-V is openly specified and can be used as basis for academic industrial, and research-oriented processor implementations. Henceforth, CPU cores contructed around the RISC-V istruction set architecture can be used as basis for academic, industrial and research-oriented processor implementations. This makes it particularly interesting in hardware research, where the processor architecture may need to be inspected, modified or extended with custom instructions and specialized accelerators \cite{riscvUnprivilegedSpec}. 
 
-One important characteristic of RISC-V is its modular organization. The base integer instruction set can be extended through standard extension like multiplciation, atomic operations, floating-point support or vector processing support. In addition to these standard extensions, RISC-V also leaves space for custom instructions related extensions. This is particularly usefull in research -oriented processor designs, because new instructions or specialized execution units can be explored while keeping the processor compatible with general RISC-V programming model. 
+One important characteristic of RISC-V is its modular organization. The base integer instruction set can be extended through standard extension like multiplication, atomic operations, floating-point support or vector processing support. In addition to these standard extensions, RISC-V also leaves space for custom instructions related extensions. This is particularly usefull in research-oriented processor designs, because new instructions or specialized execution units can be explored while keeping the processor compatible with general RISC-V programming model. 
 
 \subsection{Klessydra T13 Processor Architecture}
 %paragraph 1: for this as always we keep it broad by introducing what Klessydra is, why it is relevant , and its relationship with RISC-V and Pulpino. 
@@ -458,7 +509,7 @@ The possibility of modifying and extending the RTL description of the processor 
 
 \subsection{Relevance to Custom Accelerator Integration}
 
-The relevance of RISC-V and Klessydra T13 in this thesis is connected to the possibility of studying acceleration from the point of view of an open processor architecture. While GPU-like platforms are useful for understanding massively parallel execution and matrix-oriented datapaths, a RISC-V-based platform makes it possible to reason about custom instructions, inner circuits interaction, and execution-pipeline integration. This is important because dot-product acceleration does not only depend on the arithmetic datapath itself, but also on how that datapath can be connected to a programmable architecture.
+The relevance of RISC-V and Klessydra T13 in this thesis is connected to the possibility of studying acceleration from the point of view of an open processor architecture alternative to the GPU. While GPU-like platforms are useful for understanding massively parallel execution and matrix-oriented datapaths, a RISC-V-based platform makes it possible to reason about custom instructions, inner circuits interaction, and execution-pipeline integration. This is important because dot-product acceleration does not only depend on the arithmetic datapath itself, but also on how that datapath can be connected to a programmable architecture.
 
 
 \section{Fault Resilience and Fault Injection in Hardware Accelerators}
@@ -468,14 +519,14 @@ The relevance of RISC-V and Klessydra T13 in this thesis is connected to the pos
 %also to answer Why can hardware accelerators be vulnerable to faults ? What is fault injection? Why does the numerical format matter for fault behavior? Why is this relevant to dot product and TCU like accelerators ? 
 
 \subsection{Faults, Errors, and Failures}
-In this thesis, the dtudy of the reliability of the constructed RTL hardware systems is of important matter. It is important to distinguish hence the concepts of faults, errors and failures. A fault is a physical or logical defect that affects the operation of the system, such as a bit flip, a transiant disturbance or a permanent defect in a hardware resource. An error on the other hand is the incorrect internal state that may be produced when a fault affects the computation. A failure occurs when the error propagates to the output and causes the system to produce an incorrect final result. The distinction is useful because not every fault necessarly becomes visible at the final output of the final computation.
+In this thesis, the study of the reliability of the constructed RTL hardware systems is of important matter. It is important to distinguish hence the concepts of faults, errors and failures. A fault is a physical or logical defect that affects the operation of the system, such as a bit flip, a transiant disturbance or a permanent defect in a hardware resource. An error on the other hand is the incorrect internal state that may be produced when a fault affects the computation. A failure occurs when the error propagates to the output and causes the system to produce an incorrect final result. The distinction is useful because not every fault necessarly becomes visible at the final output of the final computation.
 
 Faults can be classified according to the duration and the behavior. A transiant fault affects the system only for limited amount of time for instance because of a temporary disturbance that changes the value of a specific signal. A permanent fault is different because it involves remaining in the system until the affected hardware is repaired or replaced. More in detail a permanent fault may be present due to a damaged component or by manufacturing defects of the part. Another type to mention are intermittent faults which appear and disappear over time depending on the operating conditions of the circuit. These different fault types are relevant because they can affect hardware accelerators in different ways, and their impact depends on whether the fault is masked, corrected, or propagated to the final result \cite{avizienis2004dependability}. 
 
 \subsection{Reliability Challenges in Hardware Accelerators}
 
 %explaining why accelerators can be sensible to faults especially because they perform repeated arithmetic operations.
-As explained previously, hardware accelerators like the TCU are designed to improve the performance , energy efficiency  and other metrics by the execution of arithmetic operations in parallel. However, the related level of parallelism in such components can also make reliability analysis important, because faults effecting arithmetic units, storage elements, memories or interconnection logic may influence many operations or propagate through several stages of the computation. In matrix-oriented accelerators, an incorrect partial product or accumulated value can contribute in fact to the final dot product or matrix element, depending on whether the error is masked on propagated. 
+As explained previously, hardware accelerators like the TCU are designed to improve the performance , energy efficiency  and other metrics by the execution of arithmetic operations in parallel. However, the related level of parallelism in such components can also make reliability analysis important, because faults effecting arithmetic units, storage elements, memories or interconnection logic may influence many operations or propagate through several stages of the computation. In matrix-oriented accelerators, an incorrect partial product or accumulated value can contribute in fact to the final dot product or matrix element, depending on whether the error is masked or propagated. 
 
 With respect to this thesis work, the specific numerical format utilized from the available ones implemented inside the accelerator can also influence the effect of faults. For example, a bit flip in a sign bit, exponent field, fraction field, regime field or logarithimic field of a specific encoded value may produce different numerical consequences depending on the given rapresentation. For instance, in floating-point formats, faults affecting exponent related bits can cause large changes in magnitude, while faults in fraction bits may produce smaller numerical perturbations. Additionally, in alternative emerging formats such as posit or LNS, the position and meaning of each bit are different hence the same type of hardware fault can lead to a different error behavior.For this reason, the impact of a hardware fault depends not only on
 where the fault occurs in the circuit, but also on the numerical format
@@ -484,7 +535,7 @@ used to represent the data.
 \subsection{Fault Injection as an Evaluation Method}
 Fault injection is the method used to evaluate the reliability of a hardware system by intentionally introducing faults and observing their effects on the computation. Instead of waiting for real hardware faults to occur, fault injection allows on purpose and specific fault scenarios to be reproduced in a controlled way. This makes it possible for instance to study whether a specific injected fault is masked, whether it produces an internal error, or whether it propagates to the final output as an incorrect result.
 
-In many research contexts, fault injection is performed at the simulation level. In this approach, the hardware designed is simulated while faults are being introduced into signals and components of the RTL-level circuit. The output produced by the faulty execution can then be compared with a fault-free reference (the golden model) execution. This comparison allows the effect of the injected fault  to be classified, for example as masked if the final result is not affected, or as an error if teh output differs from the expected results.
+In many research contexts, fault injection is performed at the simulation level. In this approach, the hardware designed is simulated while faults are being introduced into signals and components of the RTL-level circuit. The output produced by the faulty execution can then be compared with a fault-free reference (the golden model) execution. This comparison allows the effect of the injected fault  to be classified, for example as masked if the final result is not affected, or as an error if the output differs from the expected results.
 
 Lastly, since there are different types of faults which can be introduced in the circuit, the type of fault introduced during fault-injection depends on the fault model for the analysis. A common  model is the bit-flip model, where the value of a selected bit is inverted for a given instant of the simulation cycle. Other models include the stuck-at faults, wehre a signal is forced permanently to zero or to one, and transient faults, where the disturbance affects the system temporarly.The choice of fault model is important because different models can produce different effects on the computation and may represent different physical phenomena or design-level assumptions.
 
