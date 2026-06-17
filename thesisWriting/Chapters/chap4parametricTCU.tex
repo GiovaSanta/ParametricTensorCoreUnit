@@ -1,0 +1,36 @@
+\chapter{Parametric Tensor Core Unit Architecture}
+\label{ch}
+
+\section{Chapter Overview}
+
+The previous chapter introduced the parametric DPU in great details in regards to its implementation. As it has been studied, the constructed parametric DPU computes one dot product operation involving two vectors of four elements each plus an accumulation term. In this chapter, the scope moves one level higher: the goal is to show the design involved in constructing the parametric Tensor Core Unit which uses in its architecture the already described DPU. IN fact, - The TCU is not just one arithmetic block, but an organized architecture around several DPUs.
+
+The method of RTL design of this upper level unit was built from a bottom-up approach. Several parametric DPUs are grouped inside an octet core. An octet core contains local buffers and the DPU array consisting of the parametric DPUs discussed in the previous chapter. Taking inspiration from NVIDIA, is also known that two octect cores are used inside the TCU datapath. Lastly, a finite state machine has also been designed to control the execution related to the TCU's datapath. 
+
+So this chapter first explains the design objective. Then it introduces the thread-aware execution model. Afterwards it presents the top-level TCU architecture of the first release of designed in the thesis. It also shows the design of the execution related finite state machine. It also describes the datapath organization which will be explained to have the dual-octect structure, buffers and DPU arrays. The chapter also shows how format and width selections are propagated and finally it sumarizes the verification approach related to this unit. This chapter therefore acts as the bridge between the parametric DPU of Chapter 3 and the integration work discussed in the following chapters.
+
+\section{Design Objective and Architectural Approach}
+
+As said, the TCU was developed to move from one DPU to larger structure using more then one DPU for treating a larger oriented matrix block. The goal is not only arithmetic hence, but it regards that of organizing several dot-product operations. The TCU in fact is the architectural compoennts which is the layer between the DPU which has been discussed before and the later level involving the processor/GPU integration described in the following chapters of this document.
+
+The goal of the TCU, similarly to the DPU, is to be designed so that it supports more than one number format. This is implictlyey done already as the unit makes use of the DPU which already supports this. COnsequently it is easy to understand that the arithmatic behavior of the TCU changes depending on the selected format/widht just like explained when introducing the parametric DPU.
+
+Finally , from an architectural point of view, the roles of each component forming the TCU are well seperated. THis is easily understood as the DPU handles the arithmatic computation specifically. The internal Buffers serve to handle operand staging for reuse mechanisms during the execution. The finite state machine on the other hand serves to handle sequencing. Overall, the datapath of the TCU handles parallel DPU execution. Thanks to this introduced property, it is easier to integrate the design to the modules like GPUs and this will be seen in the later integration related chapters. The next sections remind of the execution model, the top-level wrapper, the finite state machine and datapath and format selection.
+
+\section{Thread-Aware Exxecution Model}
+
+%paragraph 1: why the thread-awareness matters
+
+The TCU involves operations which are cooperative with each other.  In general the matrix fregments are distributed and organized across multiple threads. Specifically, the concept is that the related hardware is organized cosnidering a groups of threads. This motivates a thread-aware architecture instead of simple standalone arithmetic block \cite{raihan2019modeling}.
+
+%paragraph 2: ThreadGroups and octets Define only what i need. 
+
+Going to more detail, a threadgroup is defined as a group of four threads. In the designed TCU hardware, it is taken into inspiration the fact that two threadgroups cooperate. This specific group of hence eight threads is interprated as an octet. The octet becomes useful because it rapresents a natural unit for feeding part of the tensor core datapath. Also, the octet abstraction has been used convientntly to organize the datapath around groups of eight cooperating lanes. 
+
+%paragraph 3: How this maps to the TCU
+
+In the design of the TCU, the thread-aware idea was very usefull for design inspiration. In fact, it maps to the octect core. One octect core of the TCU corresponds to eight execution lanes / eight threads. The eight lanes are internally divided into two groups of four. ALso the scope of the octect core in the design has the scope of the buffers. This means that in the implemented RTL design, the octect Core inside the TCU has its own dedicated buffers along with its associated needed DPU array. The purpose is to stage operands and feed multiple parametric DPUs.
+
+%paragraph4 : scope and transition 
+
+This execution model involving the introduced concepts of threadsgroups and octects provide the motivation of why it was convinient to buil an octet+based design. Essentially, to make the software to hardware map more closer with each other. The following sections describe how this organization has been implemented in the RTL with more focus. First the top level wrapper is introduced and following will be introduced the control finiste state machine and the datapath organization descriptions. 
