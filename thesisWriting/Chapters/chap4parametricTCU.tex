@@ -3,7 +3,7 @@
 
 \section{Chapter Overview}
 
-The previous chapter introduced the parametric DPU in great details in regards to its implementation. As it has been studied, the constructed parametric DPU computes one dot product operation involving two vectors of four elements each plus an accumulation term. In this chapter, the scope moves one level higher: the goal is to show the design involved in constructing the parametric Tensor Core Unit which uses in its architecture the already described DPU. IN fact, - The TCU is not just one arithmetic block, but an organized architecture around several DPUs.
+The previous chapter introduced the parametric DPU in great details in regards to its implementation. As it has been studied, the constructed parametric DPU computes one dot product operation involving two vectors of four elements each plus an accumulation term. In this chapter, the scope moves one level higher: the goal is to show the design involved in constructing the parametric Tensor Core Unit which uses in its architecture the already described DPU. In fact, the TCU is not just one arithmetic block, but an organized architecture around several DPUs.
 
 The method of RTL design of this upper level unit was built from a bottom-up approach. Several parametric DPUs are grouped inside an octet core. An octet core contains local buffers and the DPU array consisting of the parametric DPUs discussed in the previous chapter. Taking inspiration from NVIDIA, is also known that two octect cores are used inside the TCU datapath. Lastly, a finite state machine has also been designed to control the execution related to the TCU's datapath. 
 
@@ -11,26 +11,64 @@ So this chapter first explains the design objective. Then it introduces the thre
 
 \section{Design Objective and Architectural Approach}
 
-As said, the TCU was developed to move from one DPU to larger structure using more then one DPU for treating a larger oriented matrix block. The goal is not only arithmetic hence, but it regards that of organizing several dot-product operations. The TCU in fact is the architectural compoennts which is the layer between the DPU which has been discussed before and the later level involving the processor/GPU integration described in the following chapters of this document.
+As said, the TCU was developed to move from one DPU to larger structure using more then one DPU for treating a larger oriented matrix block. The goal is not only arithmetic hence, but it regards that of organizing several dot-product operations. The TCU in fact is the architectural component which is the layer between the DPU which has been discussed before and the later level involving the processor/GPU integration described in the following chapters of this document.
 
-The goal of the TCU, similarly to the DPU, is to be designed so that it supports more than one number format. This is implictlyey done already as the unit makes use of the DPU which already supports this. COnsequently it is easy to understand that the arithmatic behavior of the TCU changes depending on the selected format/widht just like explained when introducing the parametric DPU.
+The goal of the TCU, similarly to the DPU, is to be designed so that it supports more than one number format. This is implictly done already as the unit makes use of the DPU which already supports this. Consequently it is easy to understand that the arithmatic behavior of the TCU changes depending on the selected format/widht just like explained when introducing the parametric DPU.
 
-Finally , from an architectural point of view, the roles of each component forming the TCU are well seperated. THis is easily understood as the DPU handles the arithmatic computation specifically. The internal Buffers serve to handle operand staging for reuse mechanisms during the execution. The finite state machine on the other hand serves to handle sequencing. Overall, the datapath of the TCU handles parallel DPU execution. Thanks to this introduced property, it is easier to integrate the design to the modules like GPUs and this will be seen in the later integration related chapters. The next sections remind of the execution model, the top-level wrapper, the finite state machine and datapath and format selection.
+Finally , from an architectural point of view, the roles of each component forming the TCU are well seperated. This is easily understood as the DPU handles the arithmetic computation specifically. The internal Buffers serve to handle operand staging for reuse mechanisms during the execution. The finite state machine on the other hand serves to handle sequencing. Overall, the datapath of the TCU handles parallel DPU execution. Thanks to this introduced property, it is easier to integrate the design to the modules like GPUs and this will be seen in the later integration related chapters. The next sections remind of the execution model, the top-level wrapper, the finite state machine and datapath and format selection.
 
-\section{Thread-Aware Exxecution Model}
+\section{Thread-Aware Execution Model}
 
 %paragraph 1: why the thread-awareness matters
 
-The TCU involves operations which are cooperative with each other.  In general the matrix fregments are distributed and organized across multiple threads. Specifically, the concept is that the related hardware is organized cosnidering a groups of threads. This motivates a thread-aware architecture instead of simple standalone arithmetic block \cite{raihan2019modeling}.
+The TCU involves operations which are cooperative with each other.  In general the matrix fregments are distributed and organized across multiple threads. Specifically, the concept is that the related hardware is organized considering a groups of threads. This motivates a thread-aware architecture instead of simple standalone arithmetic block \cite{raihan2019modeling}.
 
 %paragraph 2: ThreadGroups and octets Define only what i need. 
 
-Going to more detail, a threadgroup is defined as a group of four threads. In the designed TCU hardware, it is taken into inspiration the fact that two threadgroups cooperate. This specific group of hence eight threads is interprated as an octet. The octet becomes useful because it rapresents a natural unit for feeding part of the tensor core datapath. Also, the octet abstraction has been used convientntly to organize the datapath around groups of eight cooperating lanes. 
+Going to more detail, a threadgroup is defined as a group of four threads. In the designed TCU hardware, it is taken into inspiration the fact that two threadgroups cooperate. This specific group of hence eight threads is interprated as an octet. The octet becomes useful because it rapresents a natural unit for feeding part of the tensor core datapath. Also, the octet abstraction has been used conviniently to organize the datapath around groups of eight cooperating lanes. Is i
 
 %paragraph 3: How this maps to the TCU
 
-In the design of the TCU, the thread-aware idea was very usefull for design inspiration. In fact, it maps to the octect core. One octect core of the TCU corresponds to eight execution lanes / eight threads. The eight lanes are internally divided into two groups of four. ALso the scope of the octect core in the design has the scope of the buffers. This means that in the implemented RTL design, the octect Core inside the TCU has its own dedicated buffers along with its associated needed DPU array. The purpose is to stage operands and feed multiple parametric DPUs.
+In the design of the TCU, the thread-aware idea was very usefull for design inspiration. In fact, it maps to the octect core. One octect core of the TCU corresponds to eight execution lanes / eight threads. The eight lanes are internally divided into two groups of four. Also the scope of the octect core in the design has the scope of the buffers. This means that in the implemented RTL design, the octect Core inside the TCU has its own dedicated buffers along with its associated needed DPU array. The purpose is to stage operands and feed multiple parametric DPUs.
 
 %paragraph4 : scope and transition 
 
-This execution model involving the introduced concepts of threadsgroups and octects provide the motivation of why it was convinient to buil an octet+based design. Essentially, to make the software to hardware map more closer with each other. The following sections describe how this organization has been implemented in the RTL with more focus. First the top level wrapper is introduced and following will be introduced the control finiste state machine and the datapath organization descriptions. 
+This execution model involving the introduced concepts of threadgroups and octects provide the motivation of why it was convinient to build an octet-based design. Essentially, to make the software to hardware map more closer with each other. The following sections describe how this organization has been implemented in the RTL with more focus. First the top level wrapper is introduced and following will be introduced the control finite state machine and the datapath organization descriptions. 
+
+\section{Top-Level Tensor Core Architecture}
+
+The top level TCU is the highest hierarchical component of the overall TCU containing the datapaths as well as the control finite state machine. Externally, it is seen as the whole accelerator block receiving operands and control signals from the outside when it is to be integrated to GPUs or CPUs. The output of its signals are both in terms of control to signal the fact for instance that it is executing, and the ones related to the data containing the result. The internal complexity of the components is hidden inside this wrapper unit. 
+
+As explained, the wrapper is divided into control path and datapath. the control path is the finite state machine (also referred to as FSM). While the datapath is the computation and operand movement related to the MMA execution. At high level, the datapath consists of two octet cores. And each of these octet core contains buffers and DPU array.  A very high level block diagram initial view of the TCU can hence be visualized in Figure~\ref{fig:tcu_high_level} where the highest level components are observed inside the TCU wrapper.
+
+This organization is the best because it separates nicely the control and datapath and consequently makes the design of the TCU much cleaner and understandable in relation to the threads executing it. It will be seen in more detail in the following sections that the FSM has the duty of deciding the sequence of operations related to a single HMMA instruction to execute on the TCU. While the datapath is the one which performs the staging and the computation itself leading to the final results of the accelerator. The next sections will describe the FSM and the datapath in a much more detailed point of view. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/highLevelTCU.pdf}
+\caption{High-level organization of the Tensor Core Unit wrapper.}
+\label{fig:tcu_high_level}
+\end{figure}
+
+\newpage
+\section{Control Finite State Machine}
+
+%goal is to introduce the FSM. why it is needed because the TCU operation happens in phases, not all at once.
+%idea: fsm is the sequential logic, the datapath is the computational/storage logic.
+
+The parametric TCU that is needed for the matrix workloads cannot do the whole related operation in one single uncontrolled step. In fact, the TCU's execution is performed in an organized matter through a control circuit which consists of a finite state machine guiding the TCU through its HMMA instruction execution. Inspiring from the TCU found in NVIDIA's GPUs, the operands which are related to the matrix multiply and accumulation operations must first load the operands first from their related register files of the threads into the tensor buffers. So, when an HMMA instruction is recognized, the operands must be loaded from the register files of the threads into related buffers.
+
+More specifically, the different operands are loaded in different phases. There is a state dedicated to the fetching of the operadnds which are related to the A matrix from the register files. In that state, each of the threads which is performing the TCU operation loads into the buffers the associated registers which contain matrix A elements only. Analogously there are also dedicated states for the loading operations of the operands related to the B and C matrices into the related storage buffer elements. Importantly, for the states related to the loading of matrix A , B and C's operands, there are two states for each phase. This is because in the case the operands of the matrices are of 32 bit width, due to the construction of the TCU's buffers which will be introduced later, and due to the limited amount of ports of the register files related to the threads, there need to be two dedicated clock cycles for fetching the four 32 bit elements of a determined operand matrix. Said equivalently, if the load related to the four elements of an operand matrix is within 64 bits in total, then it is possible to fetch the four elements related to a specific matrix in a single clock cycle. Otherwise, the four elements associated to one HMMA instruction can be loaded in the related buffers in two clock cycles, corresponding to traveling in two load states of the FSM instead of one for a specific operand matrix. 
+
+Another design decision of the controller FSM was related to the distinction of the HMMA instruction. In fact HMMA instructions which can execute on the TCU accelerator can be of either'step0' type, or of 'step1' type. If the HMMA instruction is of type step0, then each thread will load the 4 by 4 elements of A, of B and of C related to the operation. Else, if it is of step1 type, the threads need only to load new elements related to the matrix C, as the step1 instructions involve the multiplication of elements of A and B matrices which were loaded by other threads of the same octet which are hence already found in related octet buffers.  
+
+After the loading related steps into the buffers, the datapath executes multiple computation steps which is done through the parametric DPUs. Specifically, in each of the execution steps of the FSM, four parametric DPUs associated to a threadgroup of the octet compute four outputs which correspond to a one by four intermediate result vector of the full four by four final result related to the HMMA instruction. Hence, there need to be in total four states of the FSM to produce the four by four intermediate result matrix associated to the HMMA instruction of a specific thread group. 
+
+Lasty, Figure~\ref{fig:fsm_TCU} shows the concepts of the FSM circuit through the state diagram depiction, showcasing the states described previously and the flow of operations of the HMMA instruction executed on the TCU accelerator. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/FSM_TCU.pdf}
+\caption{First Release of the FSM State Diagram Controlling the TCU's Datapath .}
+\label{fig:fsm_TCU}
+\end{figure}
