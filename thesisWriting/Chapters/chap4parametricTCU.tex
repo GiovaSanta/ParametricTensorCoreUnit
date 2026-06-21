@@ -72,3 +72,31 @@ Lasty, Figure~\ref{fig:fsm_TCU} shows the concepts of the FSM circuit through th
 \caption{First Release of the FSM State Diagram Controlling the TCU's Datapath .}
 \label{fig:fsm_TCU}
 \end{figure}
+
+\section{Datapath Organization}
+
+%after explaining the control part in the previous section by explaining the fsm, we move to the part related to the computation.
+After having explained the FSM circuitry associated to the TCU, which is part of the control related circuitry of the accelerator, it is important to remark the computation related elements composing the TCU. As explained, the FSM decides the sequence of inner steps performed in the related execution of an HMMA instruction done by the threads, while the datapath contains only the hardware descriptions which store the operands related to the singular HMMA instruction and executes the dot products of the MMA operation. As introduced previously, the main organization of the datapath is done by splitting the TCU into two octet cores. Each octet core is associated to two thread groups meaning eight threads in charge of the operability of this inner unit. 
+
+Regarding the components embedded inside an octet core, each octet core contains two general elements: the octet buffers and a parametric DPU array. Both will be analyzed more in detail in this section. The datapath of the TCU in general receives control signals from the FSM and is able to understand on the basis of those signals when to activate the units composing the octet core in order to carry the computation related to the HMMA instruction at hand. Importantly, the datapath propagates related intermediate results and status signals back toward the higher level wrapper TCU unit in order so that eventually they may be  placed inside the related destination registers of the register files. 
+
+\subsection{Dual-Octet Core Structure}
+
+%what is the meaning of organizing the datapath as two octet cores ? ... architectural resons... 
+%paragraph1: position in the hiererchy.
+Earlier in this document, the top level TCU wrapper has been introduced as an organization of datapath and controller. The datapath part of such organization regarding this implementation can be considered to be non monolithc as it is divided into two symmetric octet core unit components. Each octect core is an intermediate block between the full TCU and the DPU arrays and this is the proof of an hiererchical design.
+
+%paragraph2: meaning of one octect core.
+One octet core component specifically groups local computation resources which are shared across two thread groups of four threads each. In fact, in one octet core the values fetched between the two threadgroups composing the octet are shared among them, allowing to efficiently perform the computation by exploiting reusaiblity of associated operands. Therefore this allows to make the overall TCU operation (which is a set of HMMA instructions) to be more efficient since the HMMA instructions related to the 'step1' type previously described have to load less elements into their buffers. This is because certain elements have been already loaded by the threads belonging to a different threadgroup but still related to the same octet. 
+
+The overall high level diagram of the one octet core unit is found in figure Figure~\ref{fig:octetCore}. It shows the buffers associated to the octet of threads which are to utilize such hardware in execution. Specifically, the figure is related to the octet 0 which is the one composed of thred groups 0 and 4. The four threads in thread group 0 utilize lanes 0 to 3 depicted in the picture for loading the related A0, B0, and C0 buffers related to the matrix elements which they are in charge of. While on the other hand, the treads associated to thread group 4 utilize lanes 16 through 19 of the hardware, filling the buffers A1, B1, and C1. In the diagragram it can be noticed that thanks to the buffers, threads can utilize the values loaded by the threads of the opposite thread group of the same octet so that reusability is exploited and efficiency is increased. More details regarding the inner components depicted inside the octet core will be given in the following subsections. 
+
+%paragraph3: why two octet cores
+The reason why there are two octet cores is for the increasing of parallelism of the overall accelerator. Also two octet cores keep the datapath symmetric and avoids one large monolithic compuatation block design. Both the cores can be driven by one common control logic. Lastly, two octet cores makes the architecture easier to scale test and also to explain as the mapping of software to hardware is easier to depict.  
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/octetCoreRel0.png}
+\caption{First Release of the octet Core Datapath Containing the Octet Buffers and the DPU Array Embedded Elements.}
+\label{fig:octetCore}
+\end{figure}
