@@ -100,3 +100,29 @@ The reason why there are two octet cores is for the increasing of parallelism of
 \caption{First Release of the octet Core Datapath Containing the Octet Buffers and the DPU Array Embedded Elements.}
 \label{fig:octetCore}
 \end{figure}
+
+\newpage
+\subsection{Octet Buffers and Operand Staging}
+
+%okay so this section right here will answer... how are operands prepared before the DPU array computes ? 
+
+%paragraph 1: why are buffers needed ?
+The buffers are needed for the operand staging fetched from the register files to be utilized in the tensor core's dot product operations. They help because they provide a cleaner execution flow, as well as giving the availability for the threads to utilize operands which were loaded by other threads not belonging to the same thread group of the octet. 
+
+%paragraph 2: what is staged ? 
+
+Buffers related to the octet stage the operands related to 4 by 4 matrix fragments related to the intermediate result calculation of a 4 row by 8 column matrix result. The buffers labeled as A and B in figure are the fragmanents related to matrices A and B while C is the accumulation buffer storing matrix C fragment if the given hmma instruction belongs to the first set, else it stores the intermediate results needed for accumulation leading to the final result. 
+
+%paragraph 3: FSM control of buffers
+
+To understand which operation to be done by the buffers between loading, or giving the results to the DPU array to execute, the control signal of the FSM are interfaced to the octet buffers. There is a load enable signal which enables the loads synchronously. There is also a specific control signal which selects which kind of buffer needs to be loaded depending on the current state of the FSM, the load phase signal. Additionally, there is the load pair signal for making the buffers execute the loading phase longer in the case the specific format used has operands of 32 bit width. Lastly, as said previously there is the control signal related to making the buffer understnad whether the present hmma instruction is of step 0 or step 1 type. This last distinguishment is necessary because between step0 and step 1 the four by four hmma matrix fragment of B utilized for the computation changes in bulk. A detailed rapresentation of the first release of a singular octet buffer is shown in the Figure ~\ref{fig:octetBuffers}. the figure is related to octet 0 again as it mentions lanes 0 to 3 which are ran by the threads of thread group 0 and lanes 16 to 19 which are dedicated to the elements related to thread group 4. Lastly, each of the entries of the buffers loaded by either thread groups stores a one by four vector of a related 4 by 4 matrix fragment.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/octetBuffer.png}
+\caption{First Release of the octet Core Buffers Used For Operand Staging For the DPU Array Execution.}
+\label{fig:octetBuffers}
+\end{figure}
+
+%paragraph4: Why staging helps the architecture
