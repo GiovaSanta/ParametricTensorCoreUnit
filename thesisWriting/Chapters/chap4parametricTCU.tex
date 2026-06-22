@@ -125,4 +125,20 @@ To understand which operation to be done by the buffers between loading, or givi
 \label{fig:octetBuffers}
 \end{figure}
 
-%paragraph4: Why staging helps the architecture
+\newpage
+\subsection{Parametric DPU Array}
+
+% trying to answer how are buffered operands actually computed?
+
+In the octet core, after the operands are staged in the buffers they are sent to the computation units which are collected in the DPU array circuit. The DPU array as the name suggests is a collection of parametric DPU units receiving their operands from the buffers. Each DPU of the array performs the dot-product primitive introduced in Chapter 3.
+
+Inside the DPU Array there are in total eight DPUs. This means that in parallel, the threads are able to execute eight dot product operations. More in detail, the DPU array of a single octet core outputs two 1 by 4 intermediate resulting vectors which will eventually be staged inside the register files. Considering that the FSM has four execution related states, and considering that the octet core is being executed by two threadgroups in parallel, then in the span of the four FSM execution states two 4 by 4 HMMA result fragments are being computed by the singular octect core.
+
+From a design point of view, the DPU array related to the octet core is responsible for computing a 4 by 4 intermediate result fragment of the hmma instruction for each thread group. but since the DPU Array of the octect output two 1x4 vector results per time, there need to be three additional execution steps to give off the remaining six vectors needed for the result of the related hmma instruction related to the thread groups of the octet. Because of this reason, there are buffers at the output of the array which collect the 1by4 vectors computed by the dpus. This way when the FSM enters a new execution step to calculate a new intermediate resulting 1 by 4 vector contributing to the hmma fragment result, the previously calculated vector wont be lost. This and the overall DPU array described in this section is shown in the detailed Figure ~\ref{fig:octetDPUArray}. Specifically, the Figure shows the execution when the FSM is in the first of the four execution states the 'exec0' state. The bottom of the figure highlights the overall operation which is being xecuted in the exec0 state by the two threadgroups, as well as the high-level components embedded in one octet DPU array module. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1\textwidth]{Figures/octectDPUArray.png}
+\caption{First Release of the octet Core DPU Array and elements involved in the hmma instruction operation during the 'exec0' FSM state.}
+\label{fig:octetDPUArray}
+\end{figure}
