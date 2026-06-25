@@ -134,6 +134,9 @@ In the octet core, after the operands are staged in the buffers they are sent to
 
 Inside the DPU Array there are in total eight DPUs. This means that in parallel, the threads are able to execute eight dot product operations. More in detail, the DPU array of a single octet core outputs two 1 by 4 intermediate resulting vectors which will eventually be staged inside the register files. Considering that the FSM has four execution related states, and considering that the octet core is being executed by two threadgroups in parallel, then in the span of the four FSM execution states two 4 by 4 HMMA result fragments are being computed by the singular octect core.
 
+The DPU array reuses the parametric DPU architecture introduced in Chapter 3. For this reason, format and width selection are not redefined at the TCU level. The same selection signals are propagated to the instantiated DPUs, allowing the overall TCU structure to remain unchanged while only the arithmetic behavior inside each DPU changes according to the selected numerical configuration.
+
+
 From a design point of view, the DPU array related to the octet core is responsible for computing a 4 by 4 intermediate result fragment of the hmma instruction for each thread group. but since the DPU Array of the octect output two 1x4 vector results per time, there need to be three additional execution steps to give off the remaining six vectors needed for the result of the related hmma instruction related to the thread groups of the octet. Because of this reason, there are buffers at the output of the array which collect the 1by4 vectors computed by the dpus. This way when the FSM enters a new execution step to calculate a new intermediate resulting 1 by 4 vector contributing to the hmma fragment result, the previously calculated vector wont be lost. This and the overall DPU array described in this section is shown in the detailed Figure ~\ref{fig:octetDPUArray}. Specifically, the Figure shows the execution when the FSM is in the first of the four execution states the 'exec0' state. The bottom of the figure highlights the overall operation which is being xecuted in the exec0 state by the two threadgroups, as well as the high-level components embedded in one octet DPU array module. 
 
 \begin{figure}[htbp]
@@ -141,4 +144,40 @@ From a design point of view, the DPU array related to the octet core is responsi
 \includegraphics[width=1\textwidth]{Figures/octectDPUArray.png}
 \caption{First Release of the octet Core DPU Array and elements involved in the hmma instruction operation during the 'exec0' FSM state.}
 \label{fig:octetDPUArray}
+\end{figure}
+
+\section{TCU Functional Verification}
+
+%section needed to try and answer: does the standalone TCU execute the intended sequence correctly ? . the goal of this section is to show that the standalone TCU works correctly in simulation.
+
+%paragraph1: the purpose of the verification
+The TCU described in the previous sections of this chapter has also been verified through simulation. The overall goal of this step was to check the correct sequence of the standalone TCU. Particularly in checking the correct sequencing of the signals belonging to the FSM and DPU arrays of the octets. The TCU involves two octet core units and hence the verification involves also the correctness of such units implicetly as well. The verification of the standalone TCU accelerator is done at the RTL level simulation level with the Vivado tool.
+
+%paragraph 2: Testbench setup.
+
+For verifying this first release of the parametric TCU, several steps of a general flow have been made. The first step was that of making a python script which was able to produce pseudo-random 16 by 16 A, B and C matrices relating to a multiply accumulation operation which involves four sets of HMMA step 0 and step 1 instructions specifically related to a target format. The python script script outputs the encoded and decoded values of the operands. It also calculates the most accurate decoded and encoded result matrix specific to the test. This first script also produces an input file for the testbench which bacicly gives the elements of the operand matrices so that the buffers are able to obtain the inputs for the tests. Lastly, after the simulation is done, the related RTL-testbench saves the intermediate results of the singular hmma instructions and most importantly it saves the final 16 by 16 matrix which was obtained by the TCU simulation. Another python script takes this output simulated result and calculates the error with respect to the golden matrix which has been produced by the first script introduced in this flow. 
+
+%paragraph 3: observed simulation behavior. 
+
+To check the correct opration of the implemented inner components of the TCU analyzed in this section, initially the simulation waveforms of Vivado have been observed. After the start is asserted, the FSM follows the expected sequence of operation related specifically to the numerical format which is being tested. More specifically, it was checked if the loading states made the buffers of the accelerators be filled with the values rapresenting the operands. As well as checking if the execution steps happened like intended. Lastly, it was checked visually if the done signal was asserted correctly indicating the end operation of a related hmma instruction.
+
+%paragraph 4: waveform reference.
+
+An example waveform regarding the simulation of one hmma step 0 instruction targeting an innter test regarding posit 16 format operands is portrayed inf Figure Figure~\ref{fig:tcu_functional_waveform}. As it can be seen, it portrays the correct flow of the FSM idle, loading, execution and completion related control states. It also presents the content of the octet buffers for the operand matrices being updated in the proper timing, as well as the TCU's signals related to the results for this singular hmma instruction.
+
+%paragraph 5: 
+
+The waveforms observed in Vivado were particularly useful for debugging the TCU's RTL descriptions if the results of the last hmma instruction of the full set were different then the expected ones of the final matrix. 
+
+
+Lastly, it is important to remark that the verification explained in this section only applies to standalone functional RTL behavior. It does not evaluate the area and timing of the associated RTL modules, nor presents the metrics related to the performance and the error of the operations. These specific reults regarding each specific format DPUs embedded inside the TCU will presented in the later chapters of this work. 
+
+\begin{figure}[p]
+\centering
+\includegraphics[
+    angle=+90,
+    width=0.5\textheight
+]{Figures/parametricTCUsim.png}
+\caption{Standalone RTL simulation waveform of a singular hmma step 0 instruction in the parametric TCU execution sequence.}
+\label{fig:tcu_functional_waveform}
 \end{figure}
