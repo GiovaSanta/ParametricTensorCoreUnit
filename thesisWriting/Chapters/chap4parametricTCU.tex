@@ -181,3 +181,14 @@ Lastly, it is important to remark that the verification explained in this sectio
 \caption{Standalone RTL simulation waveform of a singular hmma step 0 instruction in the parametric TCU execution sequence.}
 \label{fig:tcu_functional_waveform}
 \end{figure}
+
+\newpage
+\section{Summary}
+
+This chapter presented in detail the first relase of the parametric TCU architecture. Starting from the concepts introduced related to the granular level parametric DPU introduced in chapter 3, it presented the necessary control and datapath hiererchy needed to implement the parametric higher level accelerator. From a softawre point of view, it introduced the overall hardware descriptions needed for moving from the singular dot-product operation, to the higher level execution of a matrix multiplication and accumulation operation. 
+
+More in detail, it has been introduced that the higher level wrapper component of the TCU accelerator is split into a FSM and datapath hierechy of design. With the FSM controlling the loading, execution and completion of the sinular hmma related instructions of the sets of the MMA operation, and the datapah organized around two octet cores associated to the 16 threads in total of the SIMD programming model paradigm. Specifically on the datapath, the inner components of the octet core component have been presented : the operand buffers and the DPU array.
+
+Lasty, this chapter presented the functional verification flow that has been done while debugging the components of this first release of the parametric TCU. This debugging has been done through the observation of Vivado waveforms showing related signals of the components for the related hmma instructions executed by the testebench of the related formats. 
+
+The next chapters of the thesis will now present the integration step which has been done as soon as the TCU has been varified. Particularly, chapter 5 will present concepts related to the integration of the TCU component inside a description the Flexgrip plus GPU, and chapter 6 will present the integration of the accelerator with the klessydra T13 RISC-V core. 
