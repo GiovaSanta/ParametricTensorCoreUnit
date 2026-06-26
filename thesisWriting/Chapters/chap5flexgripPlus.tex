@@ -1,0 +1,19 @@
+\chapter{FlexGrip Plus Integration of Parametric TCU}
+
+\section{Chapter Overview}
+
+After presenting the parametric TCU in the previous chapter which was verfied independently, the accelerator has been integrated inside the FlexGrip Plus TCU. The goal is to show and prove that the designed parametric TCU becomes usable from GPU execution flow.
+
+This chapter specifically covers the integration related steps needed to insert the RTL description of the TCU inside the RTL description of the FlexGrip Plus GPU. Specifically, it will focus on the changes applied on the existing RTL components which compose the GPU, along with the additional components that are needed for the proper integration. The main design sections of the GPU which has been modified for the integration are the decode stage related logic and the execute stage. The decode logic was modified specifically so that the FlexGrip Plus' programs could recognize custom HMMA instructions supporting the various numerical formats. While the Execute related logic was modified to connect the implemented TCU wrapper itself between the already existing components inside the GPU. The chapter will explain also the Assembly related programs needed in order to prove the functionality of the custom HMMA instruction targeting the accelerator. Lastly, the functional verification flow is also presented in this chapter to show how functional assurance has been achieved when verifying the correct integration of the accelerator into the GPU.
+
+\section{Integration Objective and Warp-Level Mapping}
+
+\section{Custom HMMA Instruction Decode}
+
+\section{Double-TCU Wrapper Integration in the Execute Stage}
+
+\section{Assembly-Level Verification Programs}
+
+\section{Result Collection and Functionall Checking}
+
+\section{Summary}
