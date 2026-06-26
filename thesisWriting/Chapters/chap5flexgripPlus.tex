@@ -1,12 +1,21 @@
 \chapter{FlexGrip Plus Integration of Parametric TCU}
 
 \section{Chapter Overview}
-
 After presenting the parametric TCU in the previous chapter which was verfied independently, the accelerator has been integrated inside the FlexGrip Plus TCU. The goal is to show and prove that the designed parametric TCU becomes usable from GPU execution flow.
 
 This chapter specifically covers the integration related steps needed to insert the RTL description of the TCU inside the RTL description of the FlexGrip Plus GPU. Specifically, it will focus on the changes applied on the existing RTL components which compose the GPU, along with the additional components that are needed for the proper integration. The main design sections of the GPU which has been modified for the integration are the decode stage related logic and the execute stage. The decode logic was modified specifically so that the FlexGrip Plus' programs could recognize custom HMMA instructions supporting the various numerical formats. While the Execute related logic was modified to connect the implemented TCU wrapper itself between the already existing components inside the GPU. The chapter will explain also the Assembly related programs needed in order to prove the functionality of the custom HMMA instruction targeting the accelerator. Lastly, the functional verification flow is also presented in this chapter to show how functional assurance has been achieved when verifying the correct integration of the accelerator into the GPU.
 
 \section{Integration Objective and Warp-Level Mapping}
+
+%paragraph1: regarding the objective of the integration
+Since this is the first release of integration of the TCU, the integration objective to the GPU is simple. It is that of inserting the first release of the TCU accelerator described in the previous chapter and utilizing it by means of HMMA instructions in the assembly level. The purpose of the integration is to connect instruction decoding, execution-stage hardware, operands and results respective of the introduced accelerator.
+
+%paragraph 2:  Why one TCU is not enough in this integration work.
+
+FlexGrip plus is a GPU and as it is inspired from NVIDIA, it operates at the warp level. Since a warp is a group of 32 threads generally, to utilize all the threads in parallel execution, it was decided to compose the wrapper of the accelerator with two parametric TCUs. This is because, as discussed in the chapter 3, the standalone parametric TCU involves hardware related to a 16-thread organization (two octets). Therefore, a single parametric TCU instance would cover half of the warp-level structure. And so this is the reason why in this first integration a dual parametric TCU has been integrated: in order to make the threads of the warp execute the related hmma instructions in the same time.
+
+%paragraph3 - double-TCU solution
+So to match the 32-thread warp related to the execution of an hmma instruction, a double-TCU wrapper has been introduced in this integration work. One TCU of the wrapper is associated to one set of two octets of threads, and the second TCU is associated to the second set of two octets. Also it is important to trivially remark that a consequence of this design decision is that the internal FSM which controls the inner execution of the hmma instruction will interface to a datapath composed of two TCUs instead of one like described in the previous chapter.
 
 \section{Custom HMMA Instruction Decode}
 
