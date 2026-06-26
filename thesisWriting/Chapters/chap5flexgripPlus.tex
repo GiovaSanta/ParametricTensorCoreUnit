@@ -17,7 +17,28 @@ FlexGrip plus is a GPU and as it is inspired from NVIDIA, it operates at the war
 %paragraph3 - double-TCU solution
 So to match the 32-thread warp related to the execution of an hmma instruction, a double-TCU wrapper has been introduced in this integration work. One TCU of the wrapper is associated to one set of two octets of threads, and the second TCU is associated to the second set of two octets. Also it is important to trivially remark that a consequence of this design decision is that the internal FSM which controls the inner execution of the hmma instruction will interface to a datapath composed of two TCUs instead of one like described in the previous chapter.
 
+\section{Relevant FlexGrip Plus Execution Flow}
+
+%goal of this section is to prepare the reader for the next two sections related to the custom hmma instruction decode and the double-tcu wrapper integration in the execute stage.
+
+%paragraph1 : why this section exists
+The FlexGrip Plus GPU is composed of a single streaming multiprocessor which involves hardware which supports a pipeline of five stages: the fetch, the decode, the read, the execute, and the write back. The RTL description of the GPU contains many other modules which compose the GPU itself such as the warp scheduler and various types of memories. For the integration of the double-TCU accelerator however it was necessary to modify mainly the RTL components related to the decode stage of the pipeline and the RTL component related to the execution stage. This is because the custom HMMA instruction is needed to be first recognized to then activate the hardware of the double-TCU instantiated in the execute pipeline stage to execute the related instruction. 
+
+%paragraph 2: Decode Role
+
+Related to the decode stage of the GPU, there is a dedicated RTL description for a component regarding the decode stage of the pipeline. Such component description is responsible for recognizing the instruction types and associating signals for the future pipeline stages that follow. For the TCU integration, this module has to changed so that the custom HMMA instructions would be recognized correctly. The control information related to this stage will lead for the instruction to be treated differently then the others. More sophisticated details regarding the precise changes of the decode stage unit for the integration of the accelerator are provided in future subsection of this chapter. 
+
+%paragraph3: execute stage role
+
+After the reading of the related operands needed for the instruction, the Flexgrip Plus execution flow reaches the execution stage. Like the decode stage, there is a dedicated RTL level description for a component handling the execution datapath of the GPU. The execute stage provides the surrounding context involving the operands, the control and the result path. This specific component is remarked in the integration related steps of the double-TCU module because it is one that must be changed in order to support the hmma instruction execution of the accelerator. The changes of this module of the FlexGrip Plus involves that of inserting the instantiation of the double-TCU wrapper component inside this very RTL component. Like the decode, more details regarding the changes of this unit for the integration of the accelerators are given in a later section of this chapter due to its importance in the integration process.
+
+%paragraph 4: link to my integration
+
+Only through the necessary introduced changes related to the decode and execute modules inside the FlexGrip Plus description, the double-TCU can be well integrated and the hmma custom instruction of assembly level programs can be executed. 
+
 \section{Custom HMMA Instruction Decode}
+
+
 
 \section{Double-TCU Wrapper Integration in the Execute Stage}
 
