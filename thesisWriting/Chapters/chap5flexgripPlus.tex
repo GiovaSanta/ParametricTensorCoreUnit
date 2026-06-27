@@ -38,7 +38,29 @@ Only through the necessary introduced changes related to the decode and execute 
 
 \section{Custom HMMA Instruction Decode}
 
+%the section should answer: how does the flexgrip plus recognize that a given instruction was meant to activate the inserted TCU hardware ? the section's focus is dedicated to the decode side.
 
+%paragraph 1 : why decode had to be modified.
+As explained previously, to use the TCU accelerator a custom HMMA instruction must be used in the software level. Hence the first real modification applied in the hardware level of the RTL-level description of the FlexGrip Plus GPU was done in the decode stage related description. The final goal of the modification of such related code was that of being able to understand the HMMA operation. Once recognized by the unit, the instruction can carry control information towards the later pipeline stage.
+
+%paragraph 2: Opcode recognition
+
+In general, the assembly level instructions of the Flexgrip Plus GPU are of long type (64 bits), with the exception of a small set made up of 32 bit length as well. It was decided that the HMMA instruction henceforth would be encoded as a long type of instruction as well, also due to the fact that it has three source operands along with the destination register field. A new operation code has been assigned for the targeting of the HMMA instructions distinguishing the operation from the already available ones in the GPU's intruction set. 
+
+%paragraph 3: Introducing the Figure.
+
+With regards to the fields composing the endoded HMMA instruction, they are needed to distinguish the various parts needed for the TCU related operation. Some fields are reused from the original instruction layout like the bit indexes for the destination register, the source registers, and the operation code. This was done in order to limit the total amount of changes applied to the decode stage RTL description. Other fields are on the other hand HMMA specific, like the field for understanding the type of numerical format which is utilized in the operation from the program at hand, or the specific type of step of the HMMA instruction. Figure ~\ref{fig:hmma_instruction_encoding} presents an example of an HMMA instruction utilizing the posit16 format in the calculation. The Figure portrays what each bit in each location of the encoded instruction means needed for the decode stage to pass the proper signals to the next stage (the Read pipeline stage), for carrying the correct information related to the TCU operation.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/flexgripPlusHMMAinstruction.pdf}
+    \caption{Custom HMMA Instruction Encoding Used in the FlexGrip Plus Integration and Example of Instruction Content.}
+    \label{fig:hmma_instruction_encoding}
+\end{figure}
+
+%paragraph 4: Transition to Execute stage. closing the section.
+
+So the decode stage has been modified in order so that it is able to understand the operation code related to the HMMA instruction. It can consequently send the proper control related signals such as the source and destination register location, along with information regarding which type of HMMA instruction, which type of operands etcetra. This information is vital for the following stages of the pipeline of the instruction. The actual TCU hardware is instantiated in the later execution stage RTL-description which is described in the following section.
 
 \section{Double-TCU Wrapper Integration in the Execute Stage}
 
