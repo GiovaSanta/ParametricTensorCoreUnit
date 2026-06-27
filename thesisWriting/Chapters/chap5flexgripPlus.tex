@@ -63,6 +63,36 @@ With regards to the fields composing the endoded HMMA instruction, they are need
 So the decode stage has been modified in order so that it is able to understand the operation code related to the HMMA instruction. It can consequently send the proper control related signals such as the source and destination register location, along with information regarding which type of HMMA instruction, which type of operands etcetra. This information is vital for the following stages of the pipeline of the instruction. The actual TCU hardware is instantiated in the later execution stage RTL-description which is described in the following section.
 
 \section{Double-TCU Wrapper Integration in the Execute Stage}
+%this section will answer this: once the HMMA instruction is decoded, where does it go? How is the actual TCU hardware connected?...
+
+%paragraph1 : Link from decode to execute.
+
+This section explains the parts of the GPU in which the decoded instruction is executed: the execute stage of the pipeline. The decode stage related unit introduced previously is able to recognize the HMMA instruction and break up the fields of the instruction properly into the proper control related signals. But the decode does not perform the computation that is involved in the instruction itself. For that, the actual hardware activations happens in the execute stage. Therefore for this reason, the parametric double TCU RTL description files have been added inside the RTL code which describes the execution related components of the FlexGrip Plus. 
+
+%paragraph2 : Existing execute-stage structure.
+
+The Execute stage of the FlexGrip Plus already contains several execution paths in order for the actual execution of the many assembly instructions of the FlexGrip Plus to take place. For instance, many scalar processes are present in the model allowing the threads to utilize them for the execution of addition instructions or boolean logical related instruction. There are also floating point units which make it possible for the threads to utilize in the executing of instructions with floating point precisions. In the GPU there has also been found control flow unit which is able to execute the instructions related to the branch assembly instructions. Lastly, the initial version of the FlexGrip Plus also contains an accelerator called the special function unit utilized for making the threads execute special instructions like the trignometric sine and cosine. The double TCU path was included in the list of these already present components related to the execution stage so that the threads could have the hardware to really execute the hmma instruction at hand. The overall high level architecture of the components found inside the execute stage of the FlexGrip GPU is found in Figure~\ref{fig:flexgrip_execute_tcu_integration}. 
+
+The Figure also shows the two sets of pipeline registers which carry the relevant important control and data elements passed from the previous pipeline stage and the ones carrying the results of the execution stage passed forward to the write back stage of the pipeline. The Figure also highlights a control element which was found inside the execute module which controls the execute operation by understanding which units to activate, and also to signal when to start the execution and when execution is over in order to pass through the correct information to the pipeline registers for the following pipeline stage. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/FlexgripPlusExecuteStage.pdf}
+    \caption{Simplified View of the Execute-Stage Integration of the Double TCU Wrapper Inside FlexGrip Plus.}
+    \label{fig:flexgrip_execute_tcu_integration}
+\end{figure}
+
+%paragraph3 : Double TCU organization
+A dedicated start condition is generated for the HMMA-type operation codes. In fact, thanks to the decode stage related control signals related for the HMMA instruction, it was possible to modify the control related component found in execute stage. That related RTL description has been modified so that on the basis of such signals passed from the decode stage, the double TCU unit could be started to execute its intended behavior described in Chapter 4. 
+
+%paragraph4: Signals/connection concept 
+About the double TCU wrapper itself, it receives a start signal, along with the step signal, the width of the operands and the type of the operands through signals formed during the decode stage. Also, the wrapper receives staged operands through internal temportary registers used to contain the elements used in the MMA operation of the TCU. Lasltly, like explained in chapter 4, the parametric double TCU produces also the important results which are passed to the pipeline registers which are used in the write back stage for writing them back to the register files. 
+
+Specifically, the writing of the results from the double parametric TCU is controlled through the control related logic of the execute stage. The control logic of the execute module is able to wait for the accelerator to finish its operation to then register the results obtained. 
+
+%paragraph5: Transition
+
+Once the related changes in the decode and execute related components had been performed, everything needed for the integration of the double parametric TCU has been finalized to test the accelerator in the GPU environment. In light of this matter, the next section explains how the accelerator has been functionally verified through assembly encoded programs utilizing the FlexGrip Plus instruction set architecture.
 
 \section{Assembly-Level Verification Programs}
 
