@@ -124,4 +124,24 @@ After the extraction of the obtained matrix, the script compares the decoded mat
 
 %section explains that i verified that the results produced by the assembly programs
 
+\newpage
 \section{Summary}
+
+%paragraph1: restating of the chapter objective
+
+This chapter discussed the integration design process of a double TCU parametric module inside the RTL description of the FlexGrip Plus GPU.
+
+%paragraph2: summarizing decode + execute integration
+
+The main changes related to the success of the integration work consisted in modifying the present RTL description file implementing the decode section of the pipeline for the recognition of the novel HMMA instruction. The changing of RTL level code of the GPU also involved modifications in the execute stage RTL level description in order to actually introduced the implementation of the parametric accelerator described in detail in chapter 4.
+
+%paragraph3: summarizing Double TCU Wrapper
+This chapter also introduced the execution flow of the introduced accelerator in the FLexGrip Plus. It described also how it intended it to be executed by 32 threads in parallel and the reasons why there needed to be two instances of the parametric TCU instantiated in wrapper instantiated in the GPU. The wrapper acts as an architectural adaptation layer between the FlexGrip Plus warp-level execution model and the internal organization of the TCU.
+
+%paragraph4: summarize verification flow
+
+Lastly, the simulation flow involving specific assembly level benchmarks containing the related hmma instructions for each numerical format have been introduced, as well as the overall verification flow needed for the final functial correcteness of the accelerator inside the GPU. 
+
+%paragraph 5: transition to the next chapter.
+
+In the next chapter, there will be explained a similar work related to this chapter: the integration of the TCU accelerator inside a open source description of a RISC-V core.
