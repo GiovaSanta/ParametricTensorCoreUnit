@@ -113,6 +113,15 @@ There is a specific simulation flow which has been performed after the creation 
 
 It's important to remark that the flow involving the  simulation described in this section has been repeated for all the specific numerical formats which the parametric TCU can support. Each of which targets a different dedicated assembly benchmark with the same  described programming structure.
 
-\section{Result Collection and Functional Checking}
+\section{Result Collection and Functional Checking} 
+
+As explained in the previous section the assembly programs involving the TCU's operation related to a specific numerical format is simulated with a specific flow with the help of a first Python script. After the simulation is complete, there is a file resembling the global memory which contains the resultant matrix. For the correctness evalution, these final elements have been analyzed. Hence, the obtained global memory content is the interface bettwen the RTL simulation and the verification process.
+
+The memory file containing the  encoded resulting matrix elements is fed as input to another Python script for the verification purpose. This other script first extracts the encoded elements of the matrix and decodes them into the proper corresponding values depending on the format. For extracting the elements correctly, the script takes in consideration that the resulting matrix in the global memory file has its elements stored in row major layout and in little endian mode.
+
+After the extraction of the obtained matrix, the script compares the decoded matrix values with the expected values obtained by the first Python script which was introduced in the previous section. This way it has been possible to understand the error of the test at hand, and consequently validate the accuracy of the double TCU module of the FlexGrip Plus. The element wise error obtained by the script has been used to identify the mismatches bwetween the two matrices and observe the cases with the biggest obtained error. Like the simulation related flow, the verification flow has also been performed in sequence for each numerical format yielding different error results. Such results are presented in the related chapter regarding the obtained results of this thesis work.
+
+
+%section explains that i verified that the results produced by the assembly programs
 
 \section{Summary}
