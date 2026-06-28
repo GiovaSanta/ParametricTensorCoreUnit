@@ -95,7 +95,24 @@ Specifically, the writing of the results from the double parametric TCU is contr
 Once the related changes in the decode and execute related components had been performed, everything needed for the integration of the double parametric TCU has been finalized to test the accelerator in the GPU environment. In light of this matter, the next section explains how the accelerator has been functionally verified through assembly encoded programs utilizing the FlexGrip Plus instruction set architecture.
 
 \section{Assembly-Level Verification Programs}
+%what do the test programs do?
 
-\section{Result Collection and Functionall Checking}
+%this section will answer: How did i test the custom HMMA instructions from software/assembly ? 
+
+%The assembly programs are the bridge between the hardware integration and actual usable instruction execution.
+
+%this section explains bacicly: How the assembly program is structured?, How the input data for the program is generated? How the program is compiled and simulated.
+
+%paragraph1: why were assembly programs needed? 
+
+Once the double parametric TCU is inserted inside the GPU environment, the testing and verification of the unit involved also the software level assembly programs executed during the simulation of the test. 
+
+Each test program developed for the functional verification of the double TCU accelerator for the various numerical formats is very similar in structure. In fact for the specific format, there are first already available load instructions which load the operand matrices related to the execution from the global memory into the register files of the threads. Once the loading operations of the elements of the A, B and C operand matrices are loaded correctly into the register files, there is a set of hmma instructions which is utilized to perform a 16 by 16 matrix multiplication and accumulation process. Lastly, the benchmark assembly program involves the storing of the results found in the register files of the threads back into the global memory so that the final 16 by 16 encoded matrix can be evaluated in a single place. This was possible thanks to the store instructions of the FlexGrip Plus instruction set.  All the initial tests regarding all the assembly programs related to the formats have been simulated with the associated launching of a GPU kernel composed of one single grid, and one single block containing one single warp (32 threads).
+
+There is a specific simulation flow which has been performed after the creation of a given assembly level program related to a specific numerical format. Firstly, a python script generates random encoded and decoded matrices A B and C. The same script produces the expected result of the operation along with providing the file content resembling the content of the GPU's global memory storing the matrices. Specifically storing matrix A in row major layout, matrix B in column major layout and matric C in row major layout. The elements's bytes are stored in little endian way as well. After the forming of the file, the same script is able to launch the compilation of the RTL-level components composing the FlexGrip Plus through the modelsim Tool and afterwards launches the simulation. The simulation executes the assembly program which is called by the higher level RTL-testbench.  Lastly, as soon as the simulation finishes, the content of the final matrix is stored in a file which portrays the content of the final matrix stored in global memory in row major , litte endian style. 
+
+It's important to remark that the flow involving the  simulation described in this section has been repeated for all the specific numerical formats which the parametric TCU can support. Each of which targets a different dedicated assembly benchmark with the same  described programming structure.
+
+\section{Result Collection and Functional Checking}
 
 \section{Summary}
