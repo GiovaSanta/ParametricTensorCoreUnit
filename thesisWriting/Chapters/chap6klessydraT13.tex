@@ -38,8 +38,28 @@ The starting version of the Klessydra core has inner components arranged so that
 
 \section{Custom HMMA Instruction Encoding and Decode Path}
 
+Just like explained in the integration work related to the FlexGrip Plus GPU, the instantiated TCU in the integration of the Klessydra Core has to be executed through the related HMMA instruction. Hence, it was important to come up with a proper encoding structure for the HMMA instruction related to the Klessydra T13 core to target the parametric TCU. Like the structure of the HMMA instruction of chapter 5, the instruction needs to carry information regarding the operand register indices, the HMMA step, and the numerical format type chosen along with the bit width of operands. 
+
+%paragraph2 : explaining the encoding figure. 
+
+The instruction designed follows the RISC-V taxonomy utilized for the general instructions of the instruction set architecture of RISC-V. This implies that it contains the operation code for understanding that the type of instruction's intended operation. It also involves bits for the constainment of information regarding which registers contain the source operands of the instruction along with the destination register for which the instruction's result is saved. Lastly, very importantly, there is the space in the instruction for the 'funct7' and 'funct3' fields. These fields are used in the RISC-V's taxonomy to have more information regarding the execution of the instruction. For instance for an ALU instruction, RISC-V may use the funct7 bits to understand the type of logical operation. In the case of the HMMA instruction of focus, these bit fields have become important to distinguish which numerical type the parametric TCU needs to focus on and which width are the operands. While the understanding whether the HMMA instruction is of type step 0 or step 1 is done through the decoding of the lower significant bit in the funct3 bit field. 
+
+Figure~\ref{fig:klessydra_hmma_encoding} shows the custom HMMA instruction
+encoding used for the Klessydra integration. The Figure showcases which bit indexes of the instruction are dedicated to the previously introduced fields. An interesting remark to notice with respect to the HMMA instruction structure of the FlexGrip Plus is that the third source operand used for the accumulation is defined in the same field as the destination register. This was done due to the space limitations of the 32 bit wide instruction and also for program comodity since hmma instructions of various sets fetch the result obtained by previous hmma instruction for accumulation to eventually reach the final result of the bigger matrix. Along with the bit indexes the Figure showcases also the example of the content of an hmma step 0 instruction involving the fixed point 16 format operands.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/KlessydraHMMAinstruction.pdf}
+    \caption{Custom HMMA instruction encoding used to access the TCU branch in the Klessydra T13 core.}
+    \label{fig:klessydra_hmma_encoding}
+\end{figure}
+
+With regards to the HMMA instruction, changes have been made in the decode stage related RTL component of the core as well. The changes make it so that the accelerator's support is enabled for the later execution. There is a check in the decode unit regarding the funct7 and funct3 bits of the hmma instruction (whether funct7 bits correspond to a supported TCU numerical format). If the check is passed, a valid signal is asserted on by the decode unit which enable the TCU to perform the related accelerator work in the execution stage.
+
+Along with the valid signal, the Decode stage also recieves a related busy TCU related signal. This is an input for stall behavior in the decode circuit. In fact, while the TCU instruction executes in order to avoid out of order behavior by the core and avoid hazards, the stall by the decode may be raised in order to make the TCU finish its operation before performing work related to new assembly instructions. 
 
 \section{Dedicated TCU Branch Integration in the Processing Pipeline}
+rgrf
 
 \section{Internal Organization of the TCU Branch}
 
