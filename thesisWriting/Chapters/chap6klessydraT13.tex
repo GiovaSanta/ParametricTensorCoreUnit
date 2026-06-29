@@ -18,7 +18,26 @@ Lastly, the chapter disusess the methods utilized to confirm the validation of t
 
 \section{Integration Objective and RISC-V Klessydra T13 Core Context}
 
+%in this section, goal is to explain the context + the objective not yet the detailed RTL.
+
+% goal of the section is to explain why the Klessydra Integration is different from the FlexGrip Plus gpu architecture.
+
+%in this section, the reader should understand what environment im integrating into, Why Klessydra is different target from the FLexGrip Plus, Why the TCU maps naturally to a 16-hart configuration. What the integration objective was. What high-level architectural choice I made.
+
+The integration target focused in this chapter is different then the one described in chapter 5. In fact, the Klessydra T13 RISC-V core is not a GPU inspired architecture like the FLexGrip Plus. More spcifically, unlike the FlexGrip Plus which was a GPU warp oriented architecture containing many cores for thredas to execute in parallel, the Klessydra T13 core is a RISC-V multi-hart core environment. This means that this core is able to execute the program at hand with the help of multiple harts but by using different scheduling mechanisms. Very differently from the GPU, in most cases the harts dont utilize a inner unit all at once in parallel like it was possible in the FLexGrip Plus, but they are scheduled by means of a counter in round robin fashion sequentially. Each of the hart waits its turn to be scheduled in order to occupy a inner execution unit of the core. Hence, the existance of this different topology gives a different validation and integration approach of the TCU inside the core with respect to the integration performed in the FlexGrip Plus. Overall the objective of this integration was to evaluate the parametric TCU in a processor-oriented RISC-V environment rather than only in the GPU-style FLexGrip Plus execution flow.
+
+%paragraph2. Explain the 16-hart/single-wrapper match
+
+In the FLexGrip Plus integration work, the design problem was adapting a 32-thread warp executor to a 16-lane TCU. And like discussed in the previous chapter, this problem had been tackled by constructing a TCU wrapper which contained 2 instances of the parametric TCU. In the Klessydra T13 Core the problem at hand is a bit different. This type of Klessydra Core in fact normally executes at most through the help of 3 harts. However, when building the RTL processor through cmake, the configuration file allows to build the RTL supporting a maximum 16 harts. Hence, in this integration work a single parametric TCU has been instantiated in a Klessydra T13 core with a configuration based on 16 harts.
+
+%paragraph 3: Stating the real integration objective. ---> the objective was not only to instante the TCU. it was to make it usable from the Klessydra pipeline.
+
+The integration objective was not only to instantiate the single instance of the parametric TCU inside Klessydra, but it involved also that to perform additional RTL design work to make the accelerator usable through HMMA instruciton execution. The additional design work involved that of understanding how the core can recognzize the HMMA instruction, in which sections to instantiate the accelerator, additional controls and buffers before of the actual accelerator's execution, and other related decisions.
+
+The starting version of the Klessydra core has inner components arranged so that they follow a four staged pipeline execution involving fetch, decode, execute and write back while executing an instruction. Instead of instantiating the TCU accelerator inside the component related to the instruction execute component, it has been decided to instantiate it as its own seperate branch. Doing so, the TCU component branch receives a request from decode and manages write back and execute separetly.
+
 \section{Custom HMMA Instruction Encoding and Decode Path}
+
 
 \section{Dedicated TCU Branch Integration in the Processing Pipeline}
 
