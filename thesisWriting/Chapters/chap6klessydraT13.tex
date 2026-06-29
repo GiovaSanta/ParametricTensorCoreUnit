@@ -59,7 +59,28 @@ With regards to the HMMA instruction, changes have been made in the decode stage
 Along with the valid signal, the Decode stage also recieves a related busy TCU related signal. This is an input for stall behavior in the decode circuit. In fact, while the TCU instruction executes in order to avoid out of order behavior by the core and avoid hazards, the stall by the decode may be raised in order to make the TCU finish its operation before performing work related to new assembly instructions. 
 
 \section{Dedicated TCU Branch Integration in the Processing Pipeline}
-rgrf
+
+%This section should explain the top level pipeline integration, not yet the internal details of the TCU_Branch module. goal is also to explain where the TCU branch is placed in klessydra T13 pipeline and why this is an architectural branch and not just a modification inside the ie_Stage component.
+
+After the custom HMMA instruction is recognized by the decode stage, the
+operation must be forwarded to a hardware block capable of executing the
+tensor operation. In this implementation, the tensor core was not inserted directly inside the
+standard instruction execution stage. Instead, a dedicated TCU branch was added at the processing-pipeline level.
+
+%paragraph2: explain the pipeline-level modification
+
+In regards to the execution related components which were altrady found in the core which are on branches parallel to the TCU component, they are ones related to different types of instructions which the core already supports. For instance, there is the Load and Store Unit (LSU) which is executed by the harts when load or store instructions reach the execute stage. There is also the multi functional unit (MFU) which has its own branch and is an accelerator for higher precision mathematical instructions. Lastly in the execute there is the branch related to the general instruction execute, the IE STAGE component, which deals with most of the instructions such as the ones requireing the use of the arithmetic unit. Consequently, the parametric TCU has been placed on its own separate branch outside of the involvement of these already existing units. 
+
+The Figure~\ref{fig:klessydra_t13_tcu_pipeline} shows the version of the klessidra core in which the TCU was integrated on. This Figure portrays the various units utilized in the pipeline of the Klessydra T13 core from the fetch down to the write back stage related components. The Figure displays the design decision previously introduced: the TCU is integrated in its own separate environment in a different branch with respect to the other components composing the execute stage of the core.
+
+Regarding the interface of the TCU, it receives signals from the register files associated to the harts for operand collecting. It also is receiveing signals from the decode related RTL component of the core for the request of starting of the accelerator's operation due to the recognition of an HMMA instruction along with communication to it to make the decode stall in the case the TCU is busy executing. Lastly, it also sends information for writing back the results to the register file once all the harts finish the related HMMA instruction on the TCU hardware.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/KlessidraT13Core.pdf}
+    \caption{High-Level Organization of the Klessydra T13 Processing Pipeline with the Added TCU Branch.}
+    \label{fig:klessydra_t13_tcu_pipeline}
+\end{figure}
 
 \section{Internal Organization of the TCU Branch}
 
