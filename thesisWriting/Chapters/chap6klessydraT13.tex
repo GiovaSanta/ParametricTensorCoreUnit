@@ -1,0 +1,39 @@
+\chapter{Pulpino Klessydra Core Integration of Parametric TCU}
+
+\section{Chapter Overview}
+
+%paragraph1: start by linking from previous chapters.
+
+The previous chapters presented the standalone first release implementation of the parametric TCU accelerator. Later, the integration of the accelerator into the FlexGrip Plus GPU has also been described. In this new chapter, the focus will be on the intergration of the TCU accelerator inside a open source RTL description of a RISC-V core: the Klessydra T13. The goal of the integration in this environment is to evaluate the TCU's operation in a RISC-V/multi thread core which is a different architecture then a GPU.
+
+%paragraph 2: state the architectural objective.
+This chapter will show the design approach applied for the integration to take place. Explaining that a dedicated component branch has been implemented outside the already present instruction execute stage component of the core. Details related to the architecture of such component are provided in a related subsection.
+
+%paragprah 3: Explaining what the chapter will cover.
+In the explanation of the integration flow, the concepts related to the construction of custom HMMA instruction the RISC-V core are presented along with what is needed for the decode phase to be able to recognize the custom HMMA instructions. The internal organization of the branch is then analyzed, including instruction capture, operand staging, wrapper control, result capture,
+and register-file write-back. 
+
+%paragraph 4: Verification Preview.
+Lastly, the chapter disusess the methods utilized to confirm the validation of the integration work. software-level verification progmas and simualtion flow is used to exercise the TCU path and check the produced results by it.
+
+\section{Integration Objective and RISC-V Klessydra T13 Core Context}
+
+\section{Custom HMMA Instruction Encoding and Decode Path}
+
+\section{Dedicated TCU Branch Integration in the Processing Pipeline}
+
+\section{Internal Organization of the TCU Branch}
+
+\subsection{Instruction Capture and Format Selection}
+
+\subsection{Operand Collection and Lane Staging}
+
+\subsection{Controller FSM and Tensor-Core Wrapper Execution}
+
+\subsection{Result Capture and Register-File Write-Back}
+
+\section{Software-Level Verification Programs}
+
+\section{Simulation Setup and Functional Verification}
+
+\section{Summary}
