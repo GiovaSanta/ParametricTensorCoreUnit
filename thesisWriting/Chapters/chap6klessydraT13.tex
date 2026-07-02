@@ -82,16 +82,36 @@ Regarding the interface of the TCU, it receives signals from the register files 
     \label{fig:klessydra_t13_tcu_pipeline}
 \end{figure}
 
+\newpage
 \section{Internal Organization of the TCU Branch}
+
+%this section talks about how the tcu wrapper works internally in klessydra in order for the tcu accelerator to be integrated properly and function as expected.
+
+The previous section showed in high level terms where the parametric TCU is placed with respect to the pipeline of the Klessydra process. This section goes more in detail by explaining what is found inside the hardware branch which leads to the TCU. Furthermore, additional components have been introduced inside this wrapper with respect to the wrapper utilized during the FlexGrip Plus' TCU integration work. This is because the TCU itself is an accelerator which is design for GPU architecture rather then CPU's like the Klessydra one in this study. Nonetheless, with the proper wrapper RTL description the TCU accelerator is also able to function in this different target environment. The wrapper containing the parametric TCU's hardware handles instruction capture, staging of the openrands, execution of the accelerator, result capture and the writeback interface to the register files of the harts. To manage all these, there is also inside the wrapper an additional control FSM managing the execution with more organization.
+
+Figure~\ref{fig:klessydra_tcu_branch_internal} shows the internal organization of the dedicated TCU branch. The diagram highlights the main logic blocks used
+to connect the Klessydra pipeline interface to the parametric TCU and to the register-file write-back path.
 
 \subsection{Instruction Capture and Format Selection}
 
+The wrapper circuit receives an already accepted verified HMMA instruction from the RTL description of the decode stage of the core. At the same clock cycle of the decode stage, it extracts the relevant R-type fields for a given hart. Rs1, Rs2 and Rd identify the related operand/result registers which are involved. funct3 identifies the HMMA step, and funct3 identifes the numerical format/type. 
+
 \subsection{Operand Collection and Lane Staging}
+
+The Klessydra core exposes operands through the hart's register file context similarly to the FlexGrip Plus. Also, it is important to remind that the TCU instantiated inside the wrapper module expects lane-organize input vectors. For each of the scheduled harts, one at a time they will obtain the operands from the register file and feed them to operand collection Buffers. This is because as explained previously, the harts are not fetching the operands from the registers all in parallel, but are scheduled sequentially one after another as a paradigm of the Klessydra core. This leads to say that the process of TCU operand collecting from the register files is a slower with respect to the equivalent procedure done in the FlexGrip Plus. 
 
 \subsection{Controller FSM and Tensor-Core Wrapper Execution}
 
-\subsection{Result Capture and Register-File Write-Back}
+For the overall TCU execution in the Klessydra T13 core, the FSM controller unit is defined inside the wrapper as well. It controls the execution from the procedure described in the previous subsection related to the operand collection phase from the register files of the harts to the staging buffers, down to the write back related control for giving the results to the register files of the harts. For the operand collection phase, the controller is necessary because by means of internal signals it can understand when all harts are done with the operand collection so that they can move to the next state which is that of launching the instantiated TCU module. This avoids the wrong behavior of making a hart which is done collecting operands launch the TCU calculation while the other harts are not yet done collecting their own operands. Also this controller FSM unit is the one which is able to signal to the previous decode stage unit of the pipeline the need for stalling as soon as the TCU wrapper is operating through the means of a busy signal. While the internal instantiated parametric TCU is launched and performs its work as described in detail in chapter 4, the controller FSM found in the Klessydra TCU wrapper puts its harts in a wait state, waiting to be woken up by the parametric TCU in order to finish the operation in the write back phase. As soon as the parametric TCU is done performing its work related to the HMMA instruction since it is constructed to live inside a GPU architecture, it gives all the results related to all the harts in a single time. To not loose itsvalues then, these results are placed in result buffers each one for a related hart. The scheduled harts then take turns in round robin fashion in writing the repsctive result to the destination register of the related hart register file. After the last operation, the HMMA operation thanks to this outside controller unit is finished and the busy signal is zeroed to let the core understand that the execution of the next instruction of the program can continue.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/KlessydraT13TCUwrapper.pdf}
+    \caption{High-level internal organization of the TCU wrapper used to connect the Klessydra pipeline to the single TCU component.}
+    \label{fig:klessydra_tcu_branch_internal}
+\end{figure}
+
+\newpage
 \section{Software-Level Verification Programs}
 
 \section{Simulation Setup and Functional Verification}
