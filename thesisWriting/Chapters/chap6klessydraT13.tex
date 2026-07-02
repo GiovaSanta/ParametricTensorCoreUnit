@@ -114,6 +114,22 @@ For the overall TCU execution in the Klessydra T13 core, the FSM controller unit
 \newpage
 \section{Software-Level Verification Programs}
 
+Similarly to the FlexGrip Plus' integration, the testing done for targeting the related TCU component inside the Klessydra core have been done via software. Similar to the FlexGrip Plus, for each specific format which the parametric accelerator supports a C program has been formed. for the inclusion of the HMMA instructions however, the in line assembly library has been utilized. Through these programs the test from program instruction to hardware execution has been possible through the Modelsim tool.
+
+The structure of a specific test program is the same as the programs discussed in the integration work of the FlexGrip Plus chapter: the first phase involves in loading inside the memory of the core the 16 by 16 operand matrices, the second phase involves doing the matric multiply and accumulation through 8 HMMA instructions, and lastly, the resulting matrix is stored in the memory which is observable through a dedicated file.
+
 \section{Simulation Setup and Functional Verification}
 
+The simulation flow and functional verification is the same as discussed in the chapter related to the verification of the TCU inside the FlexGrip Plus GPU. This means that there are two Python scripts involved: the first one finds random operand matrices A, B, and C for a specific test of a specific numerical format and finds also the correct expected result from the matric multiply accumulate operation. This first script also patches the C program file's matrixe initialization and calls for the Modelsim testbench to be executed in order for the RTL simulation to take place. 
+
+The second Python script is the one involved in the verification flow . It finds the content of the final matrix formed in simulation time available through a file which shows the content of the core's memory and calcaulates the error with respect to the expected matrix result obtained via the first introduced script.
+
 \section{Summary}
+
+In conclusion, this chapter presented the integration steps performed to integrated the custom parametric TCU inside the RISC-V Klessydra T13 core. Unlike the previous chapter, this meant integrating an accelerator meant for GPU environment inside of a different hardware environment, which meant different challanges to takle. However, the goal of the integration work has been the adapterd with respect to that  of the integration of the accelerator in the FlexGrip Plus: expose the TCU as software-visible custom RISC-V type instruction path.
+
+This chapter has shows the steps in the integration flow by analyzing the design decision for the structure of the HMMA instruction bit fields which would target the accelerator, the decision of where to place the TCU with respect to the components already making up the core, along with design choices of the additional RTL-components that were needed to integrate properly the accelerator in the core.
+
+Lastly, the steps taken in order to verify the functionality of the TCU's integrated inside the novel code has been introduced and hinted to be similar to the simulation and verification flow applied during the FLexGrip Plus integration work. 
+
+In the next chapters an analysis and discussion to the results related to the verification steps to the internal DPU modules making up the TCU will be made along with summary tables regarding the functional verifications metrics obtained when performing the integration related tests performed in the previously discussed chapters. Also other results relating to the fault reliability, error, area, and performance metrics will be shown regarding each numerical format which has been focused on in this work.
