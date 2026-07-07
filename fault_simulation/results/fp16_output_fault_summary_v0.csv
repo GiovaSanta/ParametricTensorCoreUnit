@@ -1,0 +1,2 @@
+format,target_name,vector_id,total_faults,ND,SDC,ND_percent,SDC_percent
+FP16,R,0,16,0,16,0.0,100.0
