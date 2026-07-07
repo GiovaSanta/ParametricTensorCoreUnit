@@ -1,0 +1,545 @@
+\chapter{Background and Related Work}
+\label{ch:background}
+
+\section{Matrix-Based Computation in AI Workloads}
+\label{sec:matrix_ai_workloads}
+%purpose of the section: Explain why AI/DNN workloads become matrix-based workloads
+
+%Goal of this section:
+%
+%Explain why modern AI and DNN workloads are strongly based on matrix, vector and tensor computations. This section should prepare the reader for the next section on dot product and multiply-accumulate operations.
+%
+%Paragraph1:
+%
+% What kind of numerical objects are used in neural networks ?
+% Mention inputs, weights, activations, and outputs.
+% Explain that they are commonly represented as vectors, matrices, or tensors.
+% Do not discuss hardware details.
+%
+Neural networks operate on numerical data that is usually organized in the
+form of vectors, matrices, or tensors. Inputs, weights, intermediate
+activations, and outputs of a layer of a neural network can all be represented with these structures. This
+makes many neural network computations strongly related to linear algebra,
+because the same type of arithmetic operation is repeated many times over
+large groups of values. For this reason, matrix-based computation is one of
+the main computational patterns involved in modern AI workloads.
+
+%Paragraph 2:
+% Why do neural network layers involve linear algebra ?
+% Explain that many layers compute weighted combinations of input values.
+% Mention that this naturally leads to matrix-vector or matrix-matrix operations. 
+%
+Neural networks are composed of many layers, each computing its outputs from the previous layer's values. Specifically, each layer contains an interconnection of neurons, which form combinations of values to pass to the subsequent layers. Each neuron performs this operation by multiplying the input values by its learned weights. After these multiplications, the products computed by the neurons are summed together along with a bias. Therefore, in the layers of a neural network, there are groups of mathematical operations equivalent to a dot product plus bias. Specifically, one dot product operation is associated with the workload of a neuron, but since layers contain groups of neurons, the layer performs many dot product operations collectively. As a consequence, these many dot products can be grouped together mathematically as a matrix-vector multiplication; when multiple input samples are processed together as a batch, this becomes a matrix-matrix multiplication. For this reason, neural network layers are strongly connected to linear algebra operations \cite{higham2018deeplearning}.
+
+%Paragraph 3:
+
+% Where do matrix operations appear in actual DNN models ?
+% Mention fully connected layers and batched execution 
+% Mention that convolutional layers can also be implemented through matrix-based kernels such as GEMM-style approaches
+% Possible citation: \cite{anderson2017lowmemory}
+
+The matrix-based computations previously introduced appear in specific
+layers of a typical DNN. Since a DNN
+contains different types of layers, the amount of matrix-based computation
+depends on the layer type. Typically, fully connected layers and
+convolutional layers contain large numbers of matrix-based operations
+\cite{higham2018deeplearning}. In fact, even though convolutional layers
+are spatial/filter operations, they are often implemented or reorganized
+through matrix-based kernels. It is common for the operations performed by
+convolutional layers to transform the mathematical convolution into
+general matrix multiplication (GEMM), allowing the same computation to be
+performed through optimized matrix multiplication routines
+\cite{anderson2017lowmemory}. Therefore, since these layers are commonly found in deep neural networks, matrix multiplication appears repeatedly in DNN
+training and inference.
+
+%Paragraph 4:
+
+% Why are these operations computationally important ?
+% Explain that DNN training and inference repeat these operations many times over large numbers of parameters and activations.
+% Possible citation: \cite{sze2017efficient}
+Matrix-based operations are computationally important in DNNs because they are repeatedly executed across many layers. Modern neural networks contain many activations and parameters during both inference and training. During inference, the network performs a forward pass through the layers to produce an output. During training, the cost is higher because the model also performs backpropagation and updates the weights used by each layer. These computations are applied to large tensors, so the total number of arithmetic operations becomes very high. Therefore, matrix-based computation represents a major part of the DNN workload and one of the dominant sources of computational cost \cite{sze2017efficient}.
+
+%Paragraph 5:
+
+% Why does the computational cost of DNNs motivate hardware acceleration ?
+% Explain that when the dominant computation is regular and matrix-based, specialized hardware can exploit parallelism and repeated arithmetic patterns.
+% Possible citation: \cite{chetlur2014cudnn}
+Since matrix-based operations represent a major part of DNN workloads, they are natural candidates for acceleration. Their structure is regular and repetitive, because similar arithmetic patterns are applied over many tensor elements. This regularity exposes data-level parallelism. For this reason, GPUs and specialized accelerators can be useful, as they exploit parallelism by executing many arithmetic operations concurrently \cite{sze2017efficient}. For instance, this is also why optimized libraries such as cuDNN provide efficient implementations of common DNN primitives \cite{chetlur2014cudnn}. Consequently, studying dedicated hardware units for matrix, dot-product, and MAC acceleration is well motivated.
+%Paragraph 6:
+
+% Transition to the next section
+% Explain that matrix multiplication is ultimatly decomposed into dot products and multiply accumulate operations, which are the arithmetic kernels studied in the next section.
+DNN workloads are often described at the matrix level. Each element of an output matrix is computed from a row of one matrix and a column of another matrix. And this specific row-column calculation correspond to a dot-product operation, which is formed of repeated products and accumulations of such products. In the industry, the operation of a multiplication between two values and the addition of a third is known as Multiply and Accumulate (MAC). The next section focuses on dot product operations and MAC operations specifically, as  they are the basic kernels behind matrix multiplication acceleration.
+
+
+\section{Dot Product and Multiply-Accumulate Operations}
+\label{sec:dpus_structures}
+
+%This section goal is to say: matrix multiplication is internally made of dot products and MACs.
+
+%paragraph 1: dot product definition
+After the discussion of the relevance of matrix-based operations in neural network layers, the focus is shifted to a more detailed study of their inner operations, namely dot products. The dot product operation can be mathematically described by Equation~\eqref{eq:dot_product}. It consists of the accumulation of the respective products between the elements of two vectors containing elements $a_i$ and $b_i$. The final result is a single scalar value.
+
+\begin{equation}
+\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^{n} a_i b_i
+\label{eq:dot_product}
+\end{equation}
+The dot product is fundamental because it combines multiplication and accumulation operations in a simple mathematical formulation.
+
+%paragraph 2: Dot products inside matrix multiplication.
+With regard to how the dot product operation appears inside matrix
+multiplication, each element of the output matrix is computed from one
+row of the first operand matrix and one column of the second operand
+matrix. The respective row and column involved in the computation are
+treated as two vectors. The generic element $C_{ij}$ of the result
+matrix is therefore obtained from the dot product between one row of
+operand matrix $A$ and one column of operand matrix $B$, as shown in
+Equation~\eqref{eq:matrix_multiplication}.
+
+\begin{equation}
+C_{ij} = \sum_{k=1}^{n} A_{ik} B_{kj}
+\label{eq:matrix_multiplication}
+\end{equation}
+
+Hence, if the result matrix has dimensions $16 \times 16$, the
+computation of its elements requires 256 independent dot product
+operations.
+
+%paragraph 3
+
+Relating to the mathematical concept of the dot product operation, different hardware organizations can be used to implement the same computation. These possible hardware configurations can be described at a high level through functional blocks such as multipliers, adders, and multiply-accumulate units. The choice between different organizations depends on the desired balance between latency, throughput, and area \cite{hickmann2019matrixfunctionalunits}.
+One possible configuration involves chaining MAC circuits with each other, accumulating the products until the final result is reached. This configuration can be further divided into early-accumulate and late-accumulate organizations. In the former, the additional term $c_0$ is included at the beginning of the chain, while in the latter it is added at the end of the chain. These configurations are presented in Figure~\ref{fig:early_accumulate_mac_chain} and Figure~\ref{fig:late_accumulate_mac_chain}. The figures assume the dot product operation between two vectors containing four elements each, together with the contribution of the additional term $c_0$.
+Another type of configuration is the adder-tree organization. Contrary to the previously mentioned chain-based configurations, this structure is composed of separate multiplier (MUL) and adder (ADD) blocks, which perform the intermediate products and accumulations of the dot product. Figure~\ref{fig:adder_tree_dot_product} illustrates this organization, again considering four elements per operand vector.
+These possible configurations among others make it possible for designers to choose the optimal hardware configurations when designing the dot product unit. A more detailed study related to which configurations have been chosen regarding the parametric dot product unit designed for this work will be more discussed in Chapter~\ref{ch:parametric_dpu} of this document.
+\newpage
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.8cm,
+        minimum height=0.8cm,
+        align=center
+    },
+    title/.style={
+        font=\itshape
+    }
+]
+\node[smallblock] (c0) at (0.0,0.0) {$c_0$};
+\node[block] (mac0) at (2.0,0.0) {MAC};
+\node[block] (mac1) at (4.5,0.0) {MAC};
+\node[block] (mac2) at (7.0,0.0) {MAC};
+\node[block] (mac3) at (9.5,0.0) {MAC};
+\node[smallblock] (d0) at (11.5,0.0) {$d_0$};
+\draw[->] (c0) -- (mac0);
+\draw[->] (mac0) -- (mac1);
+\draw[->] (mac1) -- (mac2);
+\draw[->] (mac2) -- (mac3);
+\draw[->] (mac3) -- (d0);
+\node at ($(mac0.north)+(-0.35,0.8)$) (a0) {$a_0$};
+\node at ($(mac0.north)+(0.35,0.8)$) (b0) {$b_0$};
+\node at ($(mac1.north)+(-0.35,0.8)$) (a1) {$a_1$};
+\node at ($(mac1.north)+(0.35,0.8)$) (b1) {$b_1$};
+\node at ($(mac2.north)+(-0.35,0.8)$) (a2) {$a_2$};
+\node at ($(mac2.north)+(0.35,0.8)$) (b2) {$b_2$};
+\node at ($(mac3.north)+(-0.35,0.8)$) (a3) {$a_3$};
+\node at ($(mac3.north)+(0.35,0.8)$) (b3) {$b_3$};
+\draw[->] (a0) -- ($(mac0.north)+(-0.25,0.02)$);
+\draw[->] (b0) -- ($(mac0.north)+(0.25,0.02)$);
+\draw[->] (a1) -- ($(mac1.north)+(-0.25,0.02)$);
+\draw[->] (b1) -- ($(mac1.north)+(0.25,0.02)$);
+\draw[->] (a2) -- ($(mac2.north)+(-0.25,0.02)$);
+\draw[->] (b2) -- ($(mac2.north)+(0.25,0.02)$);
+\draw[->] (a3) -- ($(mac3.north)+(-0.25,0.02)$);
+\draw[->] (b3) -- ($(mac3.north)+(0.25,0.02)$);
+\end{tikzpicture}
+\caption{Conceptual early-accumulate organization for dot-product computation.}
+\label{fig:early_accumulate_mac_chain}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.75cm,
+        minimum height=0.65cm,
+        align=center
+    }
+]
+% Main computation chain
+\node[block] (mul0) at (0.0,0.0) {MUL};
+\node[block] (mac1) at (2.4,0.0) {MAC};
+\node[block] (mac2) at (4.8,0.0) {MAC};
+\node[block] (mac3) at (7.2,0.0) {MAC};
+\node[block] (add0) at (9.6,0.0) {ADD};
+\node (d0) at (11.4,0.0) {$d_0$};
+% Horizontal flow
+\draw[->] (mul0) -- (mac1);
+\draw[->] (mac1) -- (mac2);
+\draw[->] (mac2) -- (mac3);
+\draw[->] (mac3) -- (add0);
+\draw[->] (add0) -- (d0);
+% Input pair for MUL
+\node (b0) at (-0.35,1.5) {$b_0$};
+\node (a0) at (0.35,1.5) {$a_0$};
+\draw[->] (b0) -- (-0.25,0.45);
+\draw[->] (a0) -- (0.25,0.45);
+% Input pair for first MAC
+\node (b1) at (2.05,1.5) {$b_1$};
+\node (a1) at (2.75,1.5) {$a_1$};
+\draw[->] (b1) -- (2.15,0.45);
+\draw[->] (a1) -- (2.65,0.45);
+% Input pair for second MAC
+\node (b2) at (4.45,1.5) {$b_2$};
+\node (a2) at (5.15,1.5) {$a_2$};
+\draw[->] (b2) -- (4.55,0.45);
+\draw[->] (a2) -- (5.05,0.45);
+% Input pair for third MAC
+\node (b3) at (6.85,1.5) {$b_3$};
+\node (a3) at (7.55,1.5) {$a_3$};
+\draw[->] (b3) -- (6.95,0.45);
+\draw[->] (a3) -- (7.45,0.45);
+% Late addition of c0
+\node (c0) at (9.6,1.5) {$c_0$};
+\draw[->] (c0) -- (add0);
+\end{tikzpicture}
+\caption{Conceptual late-accumulate organization for dot-product computation.}
+\label{fig:late_accumulate_mac_chain}
+\end{figure}
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    line width=0.5pt,
+    block/.style={
+        draw,
+        rectangle,
+        minimum width=1.4cm,
+        minimum height=0.8cm,
+        align=center
+    },
+    smallblock/.style={
+        draw,
+        rectangle,
+        minimum width=0.75cm,
+        minimum height=0.65cm,
+        align=center
+    }
+]
+% Multiplication stage
+\node[block] (mul0) at (0.0,2.4) {MUL};
+\node[block] (mul1) at (2.0,2.4) {MUL};
+\node[block] (mul2) at (4.0,2.4) {MUL};
+\node[block] (mul3) at (6.0,2.4) {MUL};
+% Inputs above multipliers
+\node (a0) at (-0.35,3.5) {$a_0$};
+\node (b0) at (0.35,3.5) {$b_0$};
+\node (a1) at (1.65,3.5) {$a_1$};
+\node (b1) at (2.35,3.5) {$b_1$};
+\node (a2) at (3.65,3.5) {$a_2$};
+\node (b2) at (4.35,3.5) {$b_2$};
+\node (a3) at (5.65,3.5) {$a_3$};
+\node (b3) at (6.35,3.5) {$b_3$};
+\draw[->] (a0) -- (-0.25,2.8);
+\draw[->] (b0) -- (0.25,2.8);
+\draw[->] (a1) -- (1.75,2.8);
+\draw[->] (b1) -- (2.25,2.8);
+\draw[->] (a2) -- (3.75,2.8);
+\draw[->] (b2) -- (4.25,2.8);
+\draw[->] (a3) -- (5.75,2.8);
+\draw[->] (b3) -- (6.25,2.8);
+% First adder level
+\node[block] (add0) at (1.0,1.0) {ADD};
+\node[block] (add1) at (5.0,1.0) {ADD};
+\draw[->] (mul0.south) -- (0.0,1.7) -- (add0.north);
+\draw[->] (mul1.south) -- (2.0,1.7) -- (add0.north);
+\draw[->] (mul2.south) -- (4.0,1.7) -- (add1.north);
+\draw[->] (mul3.south) -- (6.0,1.7) -- (add1.north);
+% Second adder level
+\node[block] (add2) at (3.0,-0.4) {ADD};
+\draw[->] (add0.south) -- (1.0,0.2) -- (add2.north);
+\draw[->] (add1.south) -- (5.0,0.2) -- (add2.north);
+% Final accumulation with c0
+\node[block] (add3) at (3.0,-1.8) {ADD};
+\node[smallblock] (c0) at (1.0,-1.8) {$c_0$};
+\node[smallblock] (d0) at (5.0,-1.8) {$d_0$};
+\draw[->] (add2) -- (add3);
+\draw[->] (c0) -- (add3);
+\draw[->] (add3) -- (d0);
+\end{tikzpicture}
+\caption{Conceptual adder-tree organization for dot-product computation.}
+\label{fig:adder_tree_dot_product}
+\end{figure}
+%paragraph4: why did we discuss dot-products, MACs, and these hardware organizations? 
+
+Starting from these possible organizations, the dot product operation
+can be interpreted as a dedicated hardware block. Since matrix multiplication
+is composed of many independent dot products, this type of unit can be
+used as a basic computational block for matrix-oriented accelerators.
+This connection also motivates the discussion of Tensor Core Units,
+which extend dot-product-based computation toward matrix-level
+acceleration and are introduced in the following section.
+
+\section{Tensor Core Units and the HMMA-style Execution}
+\label{sec:tensor_core_hmma}
+%paragraph1: why tensor core units exist.
+
+As described in Section~\ref{sec:matrix_ai_workloads}, matrix-based operations play a central role in AI workloads. Since matrix multiplication is composed of many products and accumulations, executing these operations only through general-purpose scalar units can be inefficient. For this reason, modern GPU architectures introduce specialized hardware units for matrix-oriented computation. NVIDIA Tensor Cores are an example of this approach, as they are designed to accelerate matrix multiply-and-accumulate operations on small matrix fragments \cite{nvidia2017volta,markidis2018tensorcore}.
+%paragraph2: How tensor cores relate to matrix/tile multiplication.
+
+Since the matrices involved in DNN workloads can have large dimensions,
+matrix multiplication is usually decomposed into smaller tiles or
+fragments. Tensor Core-style units operate on these smaller matrix
+fragments, performing matrix multiply-and-accumulate operations that
+contribute to the final output matrix. The results of many fragment
+operations are then combined to produce the complete matrix result.
+%new inserted paragraph
+
+At a conceptual level, the connection between a Dot Product Unit and a Tensor Core-style accelerator comes from the structure of matrix multiplication itself. Each element of an output matrix tile can be obtained from the dot product between one row fragment of the first operand and one column fragment of the second operand. Therefore, a matrix-oriented accelerator can be viewed as an organization that groups multiple dot-product or MAC-based datapaths in order to compute several output elements of a tile in parallel. In this sense, the Tensor Core Unit extends the idea of dot-product acceleration from the scalar-output level to the matrix-fragment level.
+
+%paragraph3: What HMMA-style execution means at high level.
+At the programming level, NVIDIA exposes Tensor Core computation through interfaces such as the Warp Matrix Multiply Accumulate (WMMA) API. At a lower level, this computation is associated with matrix multiply-and-accumulate instructions, often referred to as HMMA- or MMA-style operations. These operations are executed cooperatively by a warp, which is a group of NVIDIA threads, rather than by a single thread \cite{raihan2019modeling}. Each thread holds only a fragment of the matrix operands and accumulators, while the warp as a whole performs the matrix operation. In this way, the computation is expressed as a warp-level matrix operation instead of a collection of independent scalar instructions. Conceptually, this type of operation computes a matrix multiply-and-accumulate of the form shown in Equation~\eqref{eq:hmma_mma}.
+
+\begin{equation}
+D = A \times B + C
+\label{eq:hmma_mma}
+\end{equation}
+
+In this expression, $A$ and $B$ represent input matrix fragments, $C$ represents the accumulator fragment, and $D$ represents the resulting output fragment.
+
+%paragraph4: Why this matters for your thesis and connected to your own TCU/DPU work.
+The TCU execution model shows how matrix-oriented workloads can be accelerated by grouping many multiply-and-accumulate operations into specialized HMMA-style hardware instructions. The efficiency of these units does not depend only on the hardware organization, but also on the numerical formats supported by the datapath. Different formats can influence performance, hardware cost, memory usage, numerical accuracy, and fault resilience. For this reason, the next section introduces the numerical formats considered in this thesis for hardware acceleration.
+
+
+\section{Numerical Formats in Hardware}
+\label{sec:numerical_formats_hardware}
+%paragraph1: Why do numerical formats mmatter in hardware accelerators? Why are we now talking about numerical formats ?
+Numerical formats define how values used in arithmetic operations are represented and manipulated inside specific datapaths. In hardware accelerators, the choice of format has a direct impact on precision, dynamic range, hardware cost, latency, memory usage, and fault resilience. This section introduces the numerical format families considered in this thesis, including standard representations such as integer, fixed-point, and floating-point formats, as well as alternative representations such as posit and logarithmic number system formats.
+
+\subsection{Integer Formats}
+
+Integer formats represent values using a fixed number of bits in the integer domain. Depending on the number of available bits, the representable values belong to a specific numerical range. Assuming a signed two's-complement representation, an 8-bit signed integer can represent values from $-128$ to $127$, while a 16-bit signed integer can represent values from $-32768$ to $32767$. Compared to formats used to represent fractional or real-valued data, integer arithmetic is simple and hardware-efficient.
+
+Integer formats are included in the scope of this thesis because low-bit integer representations can reduce memory footprint and simplify arithmetic datapaths, potentially improving latency and throughput. For this reason, integer arithmetic has also been used in quantization schemes for efficient neural-network inference \cite{jacob2018quantization}. However, integer formats have limited dynamic range and do not directly represent fractional values. Consequently, quantization and scaling are required when real-valued neural-network data is mapped to integer representations.
+
+Figure~\ref{fig:integerExample} shows an example of signed 16-bit two's-complement encoding for an integer value.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/IntegerFormatExample.pdf}
+\caption{Example of signed INT16 two's-complement encoding for the decimal value $-13$.}
+\label{fig:integerExample}
+\end{figure}
+
+\subsection{Fixed-Point Formats}
+
+The fixed-point numerical format is used to represent real values by assigning a fixed number of bits to the integer part and a fixed number of bits to the fractional part. Depending on the total number of bits available and on how these bits are divided, both the range and the precision of the represented values change. If more bits are assigned to the integer part, the representable range increases, but the resolution between consecutive values becomes coarser. On the other hand, if more bits are assigned to the fractional part, the precision increases, but the representable range decreases.
+
+Fixed-point formats are useful in hardware because they provide a simple and linear representation for real-valued quantities while keeping the arithmetic structure close to integer arithmetic. Since the position of the binary point is fixed, fixed-point operations do not require exponent alignment or normalization, which are typical of floating-point arithmetic. For neural-network inference, fixed-point representations have been studied as a way to reduce arithmetic complexity and memory cost compared to floating-point computation, especially in hardware-oriented and low-power implementations \cite{shin2017fixedpoint}. However, fixed-point formats require careful scaling, since an inappropriate choice of integer and fractional bits can lead to overflow or excessive quantization error.
+
+
+Figure~\ref{fig:FXPexample} shows an example of the signed 16-bit fixed-point input representation used for the fixed point 16 format width.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/FXPexample.pdf}
+\caption{Example of signed 16-bit fixed-point encoding for the decimal value $+3.25$, using one sign bit, five integer bits, and ten fractional bits.}
+\label{fig:FXPexample}
+\end{figure}
+
+
+\subsection{Floating-Point Formats}
+
+Floating-point formats are widely used to represent real numbers in general-purpose processors and hardware accelerators. Their encoding is composed of three main fields: a sign bit, an exponent field, and a fraction field. The sign bit determines whether the represented value is positive or negative. The exponent field scales the value by a power of two, allowing the position of the binary point to move. This is what gives floating-point formats a larger dynamic range than fixed-point formats. The fraction field, also referred to as the significand or mantissa field, stores the significant digits of the represented value.
+
+In a simplified form, a normalized floating-point value can be expressed as shown in Equation~\eqref{eq:floating_point_value}. In this expression, $s$ is the sign bit, $f$ is the fraction field, $E$ is the stored biased exponent, and $B$ is the exponent bias. Special encodings are also reserved for zero, subnormal values, infinities, and Not-a-Number (NaN) values.
+
+\begin{equation}
+x = (-1)^s \cdot (1.f)_2 \cdot 2^{E-B}
+\label{eq:floating_point_value}
+\end{equation}
+
+As happens also for integer and fixed-point formats, the total number of bits used for the floating-point representation changes the characteristics of the represented values. For instance, the IEEE 754 single-precision format, also known as binary32 or FP32, uses 32 bits divided into one sign bit, eight exponent bits with an exponent bias of $B=127$, and twenty-three explicitly stored fraction bits. Since normalized values include an implicit leading bit, the effective significand precision is 24 bits. The approximate normal range of positive values extends from $1.18 \times 10^{-38}$ to $3.40 \times 10^{38}$.
+
+The precision of floating-point numbers is not uniform over the entire representable range. Instead, the spacing between two consecutive representable values depends on the exponent. Around values whose exponent is $e$, the distance between adjacent normalized binary32 values is approximately
+
+\begin{equation}
+\Delta = 2^{e-23}.
+\label{eq:binary32_spacing}
+\end{equation}
+
+As a consequence, values close to one have a smaller absolute spacing than very large values. For example, between $1$ and $2$, the distance between two consecutive binary32 values is $2^{-23}$, while between $2$ and $4$ it becomes $2^{-22}$. This is why floating-point formats can cover a wide numerical range while still keeping an approximately constant relative precision.
+
+However, despite the high precision and wide dynamic range of FP32, single-precision floating-point arithmetic requires more memory and more complex hardware than lower-precision alternatives. This is one of the main reasons why half-precision formats, such as FP16, and even lower-precision variants have become important in modern accelerators. Mixed-precision approaches exploit this idea by using lower-precision formats for many arithmetic operations, while preserving numerical accuracy through higher-precision accumulation or scaling techniques \cite{micikevicius2018mixed}.
+
+More recently, even lower-precision floating-point formats such as FP8 have been proposed for deep-learning workloads. FP8 formats further reduce storage and arithmetic cost, but they also provide fewer exponent and fraction bits than FP16 or FP32. As a result, FP8 formats must carefully balance dynamic range and precision. For example, FP8 proposals often distinguish between different exponent/fraction allocations, such as exponent field to four bits and mantissa field equal to three bits (E4M3) or exponent bitwidth equal to five and mantissa bit width equal to rwo (E5M2), to support different numerical requirements in neural-network computation \cite{micikevicius2022fp8}.
+
+Figure~\ref{fig:fp16example} shows an example of the 16-bit floating-point representation for the value $+3.25$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/FP16example3dot25.drawio.pdf}
+\caption{Example of FP16 encoding for the decimal value $+3.25$, using one sign bit, five exponent bits, and ten fraction bits.}
+\label{fig:fp16example}
+\end{figure}
+
+\subsection{Posit Formats}
+
+The Posit numerical format is an emerging format utilized to encode real numbers. It has been constructed thinking to give an alternate way of rapresentation then the famous standard floating point one previously introduced. More specifically, this numerical format does not divide the bit pattern into a fixed-size exponent and fraction bits unlike the floating point format. Instead, the typical posit value is encoded using a sign bit, a variable-legth regime field , an exponent field and a fraction field. The number of bits available for the exponent and fraction depends on the length of the regime field \cite{gustafson2017posit}. 
+More in detail, for a nonzero posit encoded value, the numerical interpretation can be expressed in simplified form as shown in Equation~\eqref{eq}. In the Equation, $s$ is the sign bit, $k$ is the value associated with the regime field, $e$ is the exponent value, and $f$ is the fraction. The term $useed$ depends on the exponent-size parameter and is defined as $useed = 2^{2^{es}}$. 
+
+\begin{equation}
+x = (-1)^s \cdot useed^k \cdot 2^e \cdot (1.f)
+\label{eq}
+\end{equation}
+
+Because the regime field can consume a variable number of bits, the number of bits left for the fraction changes depending on the magnitude of the represented value. This gives posit formats a tapered precision behavior, where values close to one can be represented with more precision, while very large or very small values are represented with fewer fraction bits.
+
+With regard to hardware accelerator circuits, posfit formats have been studied as low-precision alternatives to floating-point formats. For example, one possible application is related to DNN inference workloads, where posit representations have been explored as a way to reduce the number of bits used for computation while preserving acceptable accuracy in some workloads \cite{carmichael2018deeppositron}. Additionally, posit formats are relevant to the scope of this thesis because previous work investigated the impact of hardware faults on TCU structures in GPUs when using different real-number formats, including floating-point and posit representations \cite{sierra2023realformatsreliability}. That work is particularly connected to this thesis because it links numerical format selection with the structural reliability of TCU-like accelerators. However, posit arithmetic also introduces hardware challenges, since the variable-length regime field requires additional decoding logic. For this reason, posit formats represent an interesting tradeoff to study when comparing numerical datapaths for dot-product and matrix-oriented acceleration.
+
+Figure~\ref{fig:posit16example} shows an example of the \texttt{Posit<16,1>} representation for the value $+3.25$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/posit16example.pdf}
+\caption{Example of \texttt{Posit<16,1>} encoding for the decimal value $+3.25$, using a sign bit, a variable-length regime field, one exponent bit, and the remaining fraction bits.}
+\label{fig:posit16example}
+\end{figure}
+
+
+
+\subsection{Logarithmic Number System Formats}
+
+Along with posit, another alternative way of encoding real values is the logarithmic number system (LNS) format. This numerical format represents real numbers by encoding the base-two logarithm of their magnitude rather than the magnitude itself. In a simplified form, a nonzero LNS value can be described using a sign bit and a logarithmic field that represents the absolute value of the number in the logarithmic domain. This makes the representation different from the fixed-point, floating-point, and posit formats introduced previously, since in those formats the numerical value is encoded more directly through integer, fraction, exponent, or regime-related fields. In LNS, the encoded value corresponds to the logarithm of the represented number, and the real value must be reconstructed through an exponential interpretation.
+
+Since the logarithm of zero is not finite, LNS formats usually require additional exception or class bits to distinguish normal finite values from special cases such as zero, overflow, underflow, or invalid results. These bits allow the encoded word to identify whether the remaining sign and logarithmic fields should be interpreted as a normal numerical value or as a special case. For normal finite values, the representation can be expressed as shown in Equation~\eqref{eq:lns_value}, where $s$ is the sign bit and $L$ corresponds to an encoded approximation of $\log_2(|x|)$.
+
+
+\begin{equation}
+x = (-1)^s \cdot 2^L
+\label{eq:lns_value}
+\end{equation}
+
+%paragraph 3: which should answer why is LNS included in the comparison? 
+
+The main advantage of LNS arithmetix is that the multiplication and division operation are easy to perform in hardware in the logarithmic domain. Since the logarithm of a product is the sum of the logarithms, multiplying two LNS values mainly requires adding their logarithmic fields and combining their sign bits. However, addition and subtraction operations are more complex if using LNS format, because the sum of the two values cannot be obtained by simply adding their logarithmic encodings. Addition operations in LNS format hence require also correction functions, approximations or lookup-table based methods. This creates an important tradeoff: LNS can simplify multiplication-heavy datapaths, but it can make accumulation more expensive than in linear-domain formats \cite{haselman2005comparison}.
+
+Figure~\ref{fig:lns16example} shows an example of the 16-bit logarithmic number system representation used for the LNS DPU.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/LNS16example.pdf}
+\caption{Example of LNS in 16 bits encoding for the decimal value $+3.25$, using two exception bits, one value-sign bit, and a signed logarithmic field.}
+\label{fig:lns16example}
+\end{figure}
+
+\subsection{Summary of Format Tradeoffs}
+
+The formats introduced in this section represent different tradeoffs in terms of precision, dynamic range, memory usage, and hardware complexity. Integer and fixed-point formats provide simple and efficient arithmetic structures, but they require careful scaling when real-valued data is represented. Floating-point formats provide a wider dynamic range and are widely used in general-purpose computation, but they require more complex hardware units. Posit formats introduce a tapered precision behavior that can be attractive for low-precision computation, although their variable-length encoding increases the complexity of the datapath. Finally, LNS formats simplify multiplication and division in the logarithmic domain, but make addition and accumulation more complex.
+
+These differences are important for the dot-product units and matrix-oriented accelerators that will be discussed in the following chapters. The choice of numerical format can therefore influence not only the numerical behavior of the accelerator, but also its area, latency, and suitability for hardware implementation. For this reason, the following chapters compare different datapath implementations based on these numerical formats in the context of dot-product acceleration.
+
+
+\section{GPU Architecture and the FlexGrip Plus}
+\label{sec:gpu_flexgrip_background}
+\subsection{GPU Parallel Execution Model}
+%paragraph1: explaining why GPUs matter for AI/matrix workloads.
+Graphic Processing Units (GPUs) are used to accelerate workloads which are composed by a lot of data-level parallelism. Henceforth, matrix-based computation is an optimal way to make use of these units. In fact, matrix-based computations consists of many operations which can be executed independently over different elements of vectors, matrices, or tensors. And since as discussed, modern AI workloads are stronly based on operations such as dot products, matrix multiplication, and convolution, GPUs rapresent an important hardware platform for accelerating these computations.
+
+In NVIDIA's CUDA programming model, parallel execution is organized through a hiererchy of threads, thread blocks, as well as grids. A thread is an execution element, while a thread block is a group of threads that can cooperate during the exeucution of a kernel. Multiple thread blocks of a kernel are then organized into a grid, which rapresents the complete workload which is launched by the GPU. This hirierchy constructed by NVIDIA allows large computational problems to be divided into smaller operations that can be mapped onto the available hardware resources of the GPU \cite{nvidiaCudaProgrammingGuide}.
+
+A key aspect of the GPU execution to remark is the Single Instruction, Multiple Threads (SIMT) model. In SIMT, groups of threads execute the same instruction stream while operating on different data elements. In NVIDIA GPUs, these groups are called warps which are typically composed of 32 threads. This model allows data-parallel workloads to be executed because the same operation can be applied at the same time independently to many elements of a vector, matrix, or tensor. Howevever, when threads inside the same warp follow different control-flow paths, execution divergence could occur, reducing the efficiency of parallel execution \cite{nvidiaCudaProgrammingGuide}. 
+
+Finally, the mentioned execution model is particularly useful for matrix-based workloads because the same pattern is repeated over many data elements for such operations. For instance, in matrix multiplication, different threads can compute different output elements or partial products while the overall computation follows a regular and highly parallel structure. This makes GPUs suitable for workloads where a large number of dot products or multiply-accumulate operations must be evaluated. For this reason, GPU architectures are an important reference point when studying hardware acceleration for matrix-oriented computation which is subject of this thesis.
+
+\subsection{GPU Datapaths and Specialized Units}
+%goal is to explain why GPUs do not rely on generic arithmetic units but also include specialized datapaths for common operations.
+Inside a GPU, parallel execution is supported by a large number of arithmetic datapaths distributed across the processing units of the architecture. These datapaths execute the operations issued by the launched threads of the kernel, allowing the GPU to exploit the high degree parallelism available in data-intensive workloads. Traditionlly, arithmetic operations involving integer and floating-point additions or multiplications are performed by general-purpose execution units inside the GPU. However, as the workloads become more dominated by specifc computational patters, such as matrix multiplication and dot-product operations, specialixed hardware units can be introduced in the datapath to improve the througput and other metrics related to the given workload.
+
+As discussed in Section~\ref{sec:tensor_core_hmma}, TCUs are specilized datapaths designed to accelerate matrix multiply-accumulate operations. It is important also to remark from an architectural point of view that GPU designs  allow the inclusion of TCUs for dedicated workloads.  This way, instead of relying only on general-purpose arithmeitc units, matrix-oriented datapaths can increase throughput by operating directly on small fragments of matrices or vectors.As already discussed, this is particularly important for AI workloads, where dot products and matrix multiplications are repeatedly executed across many layers.
+
+The design of these specialized datapaths is strongly connected to the numerical format adopted for the computation. As discussed in Section~\ref{sec:numerical_formats_hardware}, different formats lead to different tradeoffs in terms of precision, dynamic range, memory usage, and hardware complexity. For this reason, a matrix-oriented datapath designed for floating-point arithmetic can have a very different internal structure compared to one designed for integer, fixed-point, posit, or LNS arithmetic. The numerical format therefore affects both the behavior of the computation and the hardware resources required to implement the accelerator.
+
+\subsection{FlexGrip Plus as a GPU-like Research Platform}
+The FlexGrip Plus is an open-source soft GPU model described fully at the RTL level and inspired by the NVIDIA G80 microarchitecture. It representts a GPU-like platforms that can execute CUDA-compatible program under the SM 1.0 CUDA programming model. For this reason, the FlexGrip Plus is useful in research contects where the internal hardware structure of a GPU-like architecture must be inspected or analyzed in more detail than would be possible in a commerial closed GPU device \cite{condia2020flexgripplus}.
+
+In the context of this thesis, the FlexGrip Plus GPU is relevant because it provides a GPU-like reference architecture that can be studied at the RTL level. This is important when analyzing accelerators and specialized datapaths, since the internal behavior of the architecture can be observed more directly though simulation tolls. Moreover, since the FlexGrip Plus has been developed also for the purpose reliability analysis, it also represents a useful background platform for understanding how hardware faults can affect GPU-like execution and computations \cite{condia2020flexgripplus}.
+
+%connecting the FLexGrip Plus Gpu to the context of the thesis.
+
+Since FlexGrip Plus exposes the internal structure of the processing pipeline and execution units, it can be used as a reference environment for reasoning about how specialized datapaths could be integrated into a GPU-like architecture. In this thesis, it is relevant because the proposed dot-product datapaths and numerical-format comparisons related to the TCU accelerator are studied with the broaded objective of understanding how matrix-oriented acceleration could be supported in programmable architectures.
+
+
+\section{RISC-V Architecture and the Klessydra T13}
+\label{sec:riscv_klessydra_background}
+
+\subsection{RISC-V as an Open Instruction Set Architecture}
+RISC-V is an open source instruction set architecture based on the reduced instruction set computer design philosophy. Differently from proprietary instruction sets like the ARM variants, RISC-V is openly specified and can be used as basis for academic industrial, and research-oriented processor implementations. Henceforth, CPU cores contructed around the RISC-V istruction set architecture can be used as basis for academic, industrial and research-oriented processor implementations. This makes it particularly interesting in hardware research, where the processor architecture may need to be inspected, modified or extended with custom instructions and specialized accelerators \cite{riscvUnprivilegedSpec}. 
+
+One important characteristic of RISC-V is its modular organization. The base integer instruction set can be extended through standard extension like multiplication, atomic operations, floating-point support or vector processing support. In addition to these standard extensions, RISC-V also leaves space for custom instructions related extensions. This is particularly usefull in research-oriented processor designs, because new instructions or specialized execution units can be explored while keeping the processor compatible with general RISC-V programming model. 
+
+\subsection{Klessydra T13 Processor Architecture}
+%paragraph 1: for this as always we keep it broad by introducing what Klessydra is, why it is relevant , and its relationship with RISC-V and Pulpino. 
+
+Klessydra is a family of open-source RISC-V processing cores developed for research-oriented and embedded computing applications. The Klessydra cores are integrated within the PULPino environment environment, allowing them to be simulated, configured and tested at the RTL level as part of an open-source microcontroller platform. Within this family, the Klessydra T13 core is relevant to this thesis because it provides a RISC-V-compatible processor architecture that can be inspected and modified at RTL level, making it suitable for studying custom datapaths and accelerator integrationn \cite{klessydraPulpinoGithub}.
+
+A relevant characteristic of the Klessydra T13 architecture is the support for hardware multithreading. In fact for this specific Klessydra core,  instead of executing only a single software thread, the processor can manage, and schedule multiple hardware threads, also referred to as harts in the RISC-V terminology. This execution model allows the processor pipeline to interleave instructions coming from different threads, improving the ability to tolerate stalls and to exploit parallelism at processor level. 
+For this reason, Klessydra T13 provides an interesting architectural context for studying how custom execution units or accelerator-oriented datapaths could interact with a multi-threaded RISC-V pipeline. 
+
+The possibility of modifying and extending the RTL description of the processor is of particular importance for this thesis. Since the objective is to study dot-product datapaths and their possible role in matrix-oriented acceleration, an open and inspectable RISC-V based architecture provides useful environment for reasoning about custom hardware support. In this context, Klessydra T13 can be considered not only a processor core, but a reference platform for exploring how specialized datapaths could be connected to the instruction flow and the execution pipeline.
+
+\subsection{Relevance to Custom Accelerator Integration}
+
+The relevance of RISC-V and Klessydra T13 in this thesis is connected to the possibility of studying acceleration from the point of view of an open processor architecture alternative to the GPU. While GPU-like platforms are useful for understanding massively parallel execution and matrix-oriented datapaths, a RISC-V-based platform makes it possible to reason about custom instructions, inner circuits interaction, and execution-pipeline integration. This is important because dot-product acceleration does not only depend on the arithmetic datapath itself, but also on how that datapath can be connected to a programmable architecture.
+
+
+\section{Fault Resilience and Fault Injection in Hardware Accelerators}
+\label{sec:fault_resilience_background}
+
+%this section in the background is constructed to answer: what is the difference between a fault, an error, and a failure ? 
+%also to answer Why can hardware accelerators be vulnerable to faults ? What is fault injection? Why does the numerical format matter for fault behavior? Why is this relevant to dot product and TCU like accelerators ? 
+
+\subsection{Faults, Errors, and Failures}
+In this thesis, the study of the reliability of the constructed RTL hardware systems is of important matter. It is important to distinguish hence the concepts of faults, errors and failures. A fault is a physical or logical defect that affects the operation of the system, such as a bit flip, a transiant disturbance or a permanent defect in a hardware resource. An error on the other hand is the incorrect internal state that may be produced when a fault affects the computation. A failure occurs when the error propagates to the output and causes the system to produce an incorrect final result. The distinction is useful because not every fault necessarly becomes visible at the final output of the final computation.
+
+Faults can be classified according to the duration and the behavior. A transiant fault affects the system only for limited amount of time for instance because of a temporary disturbance that changes the value of a specific signal. A permanent fault is different because it involves remaining in the system until the affected hardware is repaired or replaced. More in detail a permanent fault may be present due to a damaged component or by manufacturing defects of the part. Another type to mention are intermittent faults which appear and disappear over time depending on the operating conditions of the circuit. These different fault types are relevant because they can affect hardware accelerators in different ways, and their impact depends on whether the fault is masked, corrected, or propagated to the final result \cite{avizienis2004dependability}. 
+
+\subsection{Reliability Challenges in Hardware Accelerators}
+
+%explaining why accelerators can be sensible to faults especially because they perform repeated arithmetic operations.
+As explained previously, hardware accelerators like the TCU are designed to improve the performance , energy efficiency  and other metrics by the execution of arithmetic operations in parallel. However, the related level of parallelism in such components can also make reliability analysis important, because faults effecting arithmetic units, storage elements, memories or interconnection logic may influence many operations or propagate through several stages of the computation. In matrix-oriented accelerators, an incorrect partial product or accumulated value can contribute in fact to the final dot product or matrix element, depending on whether the error is masked or propagated. 
+
+With respect to this thesis work, the specific numerical format utilized from the available ones implemented inside the accelerator can also influence the effect of faults. For example, a bit flip in a sign bit, exponent field, fraction field, regime field or logarithimic field of a specific encoded value may produce different numerical consequences depending on the given rapresentation. For instance, in floating-point formats, faults affecting exponent related bits can cause large changes in magnitude, while faults in fraction bits may produce smaller numerical perturbations. Additionally, in alternative emerging formats such as posit or LNS, the position and meaning of each bit are different hence the same type of hardware fault can lead to a different error behavior.For this reason, the impact of a hardware fault depends not only on
+where the fault occurs in the circuit, but also on the numerical format
+used to represent the data.
+
+\subsection{Fault Injection as an Evaluation Method}
+Fault injection is the method used to evaluate the reliability of a hardware system by intentionally introducing faults and observing their effects on the computation. Instead of waiting for real hardware faults to occur, fault injection allows on purpose and specific fault scenarios to be reproduced in a controlled way. This makes it possible for instance to study whether a specific injected fault is masked, whether it produces an internal error, or whether it propagates to the final output as an incorrect result.
+
+In many research contexts, fault injection is performed at the simulation level. In this approach, the hardware designed is simulated while faults are being introduced into signals and components of the RTL-level circuit. The output produced by the faulty execution can then be compared with a fault-free reference (the golden model) execution. This comparison allows the effect of the injected fault  to be classified, for example as masked if the final result is not affected, or as an error if the output differs from the expected results.
+
+Lastly, since there are different types of faults which can be introduced in the circuit, the type of fault introduced during fault-injection depends on the fault model for the analysis. A common  model is the bit-flip model, where the value of a selected bit is inverted for a given instant of the simulation cycle. Other models include the stuck-at faults, wehre a signal is forced permanently to zero or to one, and transient faults, where the disturbance affects the system temporarly.The choice of fault model is important because different models can produce different effects on the computation and may represent different physical phenomena or design-level assumptions.
+
+In the context of this thesis, fault injection is relevant because it provides a way to study how numerical datapaths behave when hardware-level disturbances affect the computation. Since dot-product units combine multiplication and accumulation operations, an injected fault may affect an intermediate product, a partial sum, or the final output. For this reason, fault injection represents a useful method for evaluating not only whether a datapath produces correct results in fault-free conditions, but also how its numerical behavior changes when faults are introduced.
+
+
+%\section{Related Work}

@@ -14,6 +14,9 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{verbatim}
+\usepackage{tikz}
+\usepackage{rotating}
+\usetikzlibrary{arrows.meta,positioning,calc}
 
 % Definition of a new language for listings
 %\lstdefinelanguage{P4}
@@ -123,13 +126,13 @@
 Write here you acknowledgments. 
 
 \abstract
-In recent years, Graphic Processing Units (GPUs) and their embedded hardware accelerators have become central to high-performance computing, particularly for deep learning and matrix-intensive workloads. A significant part of their efficiency comes from dedicated compute units that support different numerical formats directly in hardware. While traditional floating-point and integer representations remain dominant, emerging formats such as Floating Point 8 (FP8), logarithmic numbers, and posit representations are increasingly considered as alternatives. However, the architectural implications and practical benefits of integrating these formats into accelerator pipelines are not yet fully understood.
+In recent years, Graphics Processing Units (GPUs) and specialized hardware accelerators have become central to high-performance computing, particularly for deep learning and matrix-intensive workloads. A significant part of their efficiency comes from dedicated compute units that accelerate dot-product and multiply-accumulate operations using reduced-precision and format-specific arithmetic. While floating-point and integer representations remain widely used, alternative numerical formats such as lower precisiom floating-points and fixed-point, posit, and logarithmic number system representations are increasingly considered as possible solutions for improving efficiency, accuracy, or robustness. However, the architectural implications of supporting these formats inside tensor-core-like accelerator datapaths require further investigation.
 
-This thesis investigates the effectiveness of alternative number formats through the design and integration of multi-precision tensor compute units (TCUs) along their surrounding elements. The work begins with a study of tensor core architectures and data processing units, followed by the RTL-level development of arithmetic structures supporting multiply and accumulate (MAC) operations in different numerical representations. A generic multi-precision compute core is implemented and validated against golden reference models to ensure functional correctness.
+This thesis investigates the design, validation, and integration of configurable arithmetic architectures for matrix-oriented acceleration. The work first develops a parametric Dot Product Unit (DPU) supporting multiple numerical representations, including integer, fixed-point, floating-point, posit, and logarithmic formats. Each format-specific datapath implements the same dot-product computational model, allowing the behavior of different arithmetic representations to be compared under a common functional structure. The individual datapaths are developed at RTL level and validated through simulation-based testbenches against golden reference results.
 
-The developed accelerator is then integrated into both a GPU core and a RISC-V processor model, requiring the definition of new instruction extensions and control logic for matrix operations. Finally, the system is evaluated under various numerical formats to examine performance behavior and resilience characteristics in deep neural network workloads.
+Starting from the parametric DPU, the work extends the design toward a higher-level Tensor Core Unit (TCU) architecture intended to support matrix-oriented operations. The proposed accelerator is then considered in two different integration contexts: a GPU-like environment based on FlexGrip Plus and a RISC-V-based environment based on the PULPino-Klessydra core. These integration paths require dedicated control logic, operand handling, custom instruction support, and result writeback mechanisms.
 
-The results aim to clarify the trade-offs between precision, architectural complexity, and computational robustness, contributing to the design of future hardware accelerators supporting emerging number formats.
+The thesis evaluates the proposed architectures in terms of functional correctness, hardware resource utilization, numerical behavior, and resilience-related considerations. Overall, the work aims to clarify the trade-offs between numerical format choice, architectural complexity, and computational robustness, contributing to the study of future hardware accelerators supporting emerging number formats.
 
 \indici
 
@@ -137,93 +140,16 @@ The results aim to clarify the trade-offs between precision, architectural compl
 
 \input{chapters/introduction}
 
-\chapter{Background and Related Work}
+\input{chapters/chap2background}
 
-\section{Matrix Multiplication and Dot Product Acceleration}
+\input{chapters/chap3parametricDPU}
 
-\section{NVIDIA Tensor Cores and HMMA-Style Execution}
+\input{chapters/chap4parametricTCU}
 
-\section{Numerical Formats in Hardware}
+\input{chapters/chap5flexgripPlus}
 
-\section{GPU Architecture and the FlexGrip Plus}
-Here I will answer these questions: what are gpus and describe how they have increased in popularity in today's period of machine learning and artificial intelligence
+\input{chapters/chap6klessydraT13}
 
-\section{RISC-V Cores and the Klessydra T13}
-
-\section{Related Work}
-
-talk about previous related work on tensor core units, How vendors exploit tiling + mixed precision,talking about low precision formats for AI : FP16/BF16 in training, FP8 trend (training/inference), INT8/INT4 quantization for inference,
-Papers/approaches that implement FP8, posit, LNS, etc. in hardware. 
-introduce the concepts of Fault resilience / approximate computing which is what connects directly to the research question : 1.fault injection studies on DNN accelerators, 2.resilience of reduced precision / quantized networks, numerical noise vs hardware fault tolerance.
-
-then, one paragraph that talks about that many works either study formats at algorithm level or build units without full system integration, and introduce how my work is fundamental:
-
-\chapter{Parametric Dot Product Unit Architecture}
-
-\section{Design Goals}
-
-\section{Supported Numerical Formats}
-
-\section{DPU Input and Output Interface}
-
-\section{Internal Arithmetic Datapath}
-
-\section{Format Selection Logic}
-
-\section{DPU Verification}
-
-\section{DPU Design Trade-Offs}
-
-
-\chapter{Parametric Tensor Core Unit Architecture}
-
-\section{Design Goals}
-
-\section{DPU to TCU Composition}
-
-\section{Tensor Core Organization}
-
-\section{Operand Packing and Matrix Fragment Layout}
-
-\section{Input Staging Buffers and Result Handling}
-
-\section{Output Buffers and Result Handling}
-
-\section{Control Signals and Format Selection}
-
-\section{TCU Design Trade-Offs}
-
-\chapter{Integration in FlexGrip Plus}
-
-\section{FlexGrip Plus Execution Pipeline}
-
-\section{Custom HMMA Instruction Integration}
-
-\section{Operand Fetching and Register Packing}
-
-\section{TCU Datapath Integration}
-
-\section{Result Writeback}
-
-\section{FlexGrip Plus Testbenches and Functional Validation}
-
-\chapter{Integration in Pulpino-Klessydra T13 core}
-
-\section{Klessydra T13 Overview}
-
-\section{Custom TCU Instruction Detection}
-
-\section{TCU Branch Architecture}
-
-\section{Live Instruction Decode}
-
-\section{Packet Capture and Operand Staging}
-
-\section{Tensor Core Wrapper Interface}
-
-\section{Result Latching and Writeback}
-
-\section{Klessydra Functional Validation}
 
 \chapter{Experimental Results}
 
@@ -259,7 +185,7 @@ then, one paragraph that talks about that many works either study formats at alg
 
 
  
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{biblio}
 
 \end{document}
