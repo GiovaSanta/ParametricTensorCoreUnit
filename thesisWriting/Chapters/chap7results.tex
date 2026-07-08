@@ -1,0 +1,34 @@
+\chapter{Experimental Evaluation}
+
+\section{Chapter Overview}
+
+%main message: this chaper moves from architecture and integration to quantitive evaluation.
+
+After the implementation of the architectural parametric DPUs and TCU and the related work regarding the integration of the accelerator inside the FlexGrip Plus and the Klessydra T13 core, an experimental evaluation targeting the accelerator has been performed, and discussed in this chapter.
+
+The Evaluation is done from several point of view: hardware cost, timing/performance, numerical accuracy and resiliency/fault behavior. These qualities are compared among the different numerical formats which are supported in the TCU accelerator. Equivalently this means that the metrics are obtained for the various DPUs inside the TCU. This is because the DPU and its dot-produce/MAC operation is the basic main computational unit used inside the TCU. 
+
+This chapter will portray the results obtain in regards to the metrics mentioned along with providing a detail discussion relating to the obtained numerical results. In the next section, the relative experimental setup is explained for obtaining the metrics regarding the implemented RTL-level descriptions implemented in the thesis.
+
+\section{Experimental Setup}
+
+%purpose of this section is to describe what was evaluated and how. 
+
+As explained in detail in chapter 3, the numerical formats supported in this work for the parametric TCU to handle regard the FP8, FP16, FP32, Posit8, Posit16, Posit32, LNS16, INT8, INT16, FixedPoint8, FixedPoint16 numerical formats. Also, as explained in the background in chapter 2, the TCU accelerator performs the matrix multiply operation thanks to inner parametric DPUs which are implemented with a combination of DPUs each supporting specific numerical formats. In this thesis work it was decided to focus on the DPU level metrics to understand how the different internal DPUs distinguish themselves in terms of hardware area, performance, and resilience. Hence the experimental setup described in this work regards the granular level DPU found inside the TCU accelerator. This decision has been made to decrease the synthesis related and fault resilient timings that are necessary to obtain the results. Henceforth, the results regarding resiliancy performance and synthesi  related to the whole FlexGrip Plus GPU unit with the additional TCU and Klessydra Core unit with its own TCU are to be done in a future work.
+
+Regarding the DPU related tests done for the obtainement of the numerical results regarding the various DPUs, the Vivado Simulation and Synthesis Tools have been utilized. The synthesis tool has been utilized for the calculation of the slack metric related to the singular DPU for the calculation of the performance of DPUs for each of the formats. Furthermore, the synthesis process has also been performed for each of teh DPUs for the objective of obtaining how much gate level area each of teh DPUs for teh formats occupy. During the synthsis of the DPUs, it was decided to use the Vivado synthesis using the AMD/Xilinx Artix-7 FPGA as target device. 
+
+Regarding the results obtained relating to the numerical accuracy and resiliency for each of the DPUs of the formats, the Vivado simulation tool has been utilized confronting the simulated behavior of a specific numerical DPU with respect to the expected one. Both synthesis ans simulation related processes needed for the obtainmnet of the results have been utilized in conjunction with various TCL scripts for launching the synthesis or simulation along also python scripts for the generation of many random tests for the DPU used for example when calculating the numerical accuracy of each target DPU. 
+
+\section{Resource Utilization and Timing Results}
+
+\section{Numerical Accuracy Evaluation}
+
+\section{Fault-Injection Methodology}
+
+\section{Fault-Injection Results}
+
+\section{Discussion}
+
+\section{Summary}
+
