@@ -20,7 +20,125 @@ Regarding the DPU related tests done for the obtainement of the numerical result
 
 Regarding the results obtained relating to the numerical accuracy and resiliency for each of the DPUs of the formats, the Vivado simulation tool has been utilized confronting the simulated behavior of a specific numerical DPU with respect to the expected one. Both synthesis ans simulation related processes needed for the obtainmnet of the results have been utilized in conjunction with various TCL scripts for launching the synthesis or simulation along also python scripts for the generation of many random tests for the DPU used for example when calculating the numerical accuracy of each target DPU. 
 
-\section{Resource Utilization and Timing Results}
+\section{DPU Level Hardware Utilization}
+
+%This section should answer how expensive is each numerical format in hardware.
+%how fast is each implementation.
+% Which formats are cheaper or heavier and why.
+
+%Paragraph 1: Introducing that each DPU has been synthesised independently.
+
+%Paragraph 2: Explaining the resource metrics and what they mean: LUTs, FFs, DSPs, BRAMs.
+
+For the result obtained regarding the hardware utilization and timing, the synthesis tool has been utilized. Each DPU targeting a different format has been synthesized independently from the others. In regards to the analysis of the area hardware requirement for each of the DPUs, after the synthesis is complete, Vivado generated a resource related report with information regarding the RTL area required and other information. Regarding the area resource metrics, the synthesis report gave for the synthesized DPU at hand information about different area related metrics: 
+\begin{itemize} 
+    \item  Look Up Tables (LUTs): they are the basic blocks used to implement combinational logic. When the DPU of target in the synthesis needs adders, comparators, multiplexers format decoders and others, the synthesis shows this information through the LUT area metric.
+    \item Flip Flops (FFs): sequential storage elements used for registers, pipeline stages and intermediate signals.
+    \item (DSP): dedicated arithmetic resources in the FPGA fabric. They are mainly used for the multiplication and multiply-accumulate operation when the synthesis tool maps the target datapth to them.
+    \item (BRAM): Block RAMs are dedicated on-chip memory resources. They are mainly used for buffers, memories, and large lookup tables.
+\end{itemize}
+
+%Paragraph 3: In-sert the resource utilization table
+
+Table ~\ref{tab:dpu_resource_utilization} summarizes the resource utilization obtained after the synthesis done for each of the synthesized DPU variants. The table confronts the number of LUTs, FFs, DSP blocks and BRAMs required by each numerical format. Since all designs implement the same dot-product operation, the reported values provide a direct comparison of the hardware cost introduced by each arithmetic rapresentation. 
+
+\begin{table}[htbp]
+    \centering
+    \caption{Post-synthesis resource utilization of the implemented DPU variants.}
+    \label{tab:dpu_resource_utilization}
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Format} & \textbf{LUTs} & \textbf{FFs} & \textbf{DSPs} & \textbf{BRAMs} \\
+        \hline
+        FP8        & 1208 & 80  & 0  & 0 \\
+        FP16       & 2015 & 160 & 4  & 0 \\
+        FP32       & 4387 & 320 & 8  & 0 \\
+        Posit8     & 1430 & 80  & 0  & 0 \\
+        Posit16    & 2348 & 160 & 4  & 0 \\
+        Posit32    & 5499 & 320 & 16 & 0 \\
+        LNS16      & 4917 & 160 & 0  & 0 \\
+        FXP8/16    & 424  & 96  & 0  & 0 \\
+        FXP16/32   & 1621 & 192 & 0  & 0 \\
+        INT8/16    & 363  & 96  & 0  & 0 \\
+        INT16/32   & 32   & 64  & 5  & 0 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+%Paragraph 4: Discuss the main trends related to the Resource metrics for the DPUs. discussing in terms of what does the previous table tell the reader ? 
+
+The resource usage changes significantly depending on the format. In general as remarked by the previous table, for the dot product operation regarding the numerical formats with higher bit widths there is more hardware required. For instance as remarked in the table , the LUTs needed for FP32 format are about twice as much then the ones needed for the DPU which targets the FP16 format.  This is effect is shows for all the formats. In fact as observed in the Table, also the posit format is made of DPU which requires more LUT elements when the posit numerical format has widht of 32 bits. The reason for this obtained result is trivial and it is because larger operands require wider embedded adders , multipliers , normalization logic and more internal signals in their respective DPU level hardware organization. 
+
+Another remark which can be made related to the areas of the DPUs regarding the various formats is that the posit formats usually have higher LUT usage than the corresponding floating point formats. In fact for the syntheszed DPUs, the DPU which supports Posit 32 width elements has 1112 LUT elements more with respect to the FP32 synthesized DPU. This is due to the fact that Posit related DPUs involve more additional combinatorial circuits with respect to their floating point counter parts due to the needed regime deocding and the fact that it is a format witch excpects the regime filed of variable length like described in chapter 2. Basically, the Table suggests a trade off with the flexibility and area of implementation since the Posit rapresentation introduces
+additional decoding logic. 
+
+Another interesting result displayed by the table regards the LNS16 format compatible DPU. In fact it is seen that this DPU has a number of LUTs which is comparable to the amount of LUTs utilized for the FP32. This indicates how hardware expensive the LNS16 DPU is, as its LUT count is comparable to that of a DPU supporting elements of higher precision. The reason for this negative mismatch is due to the idea that the LNS16 DPU's inner addition modules are more complex then the other embedded addition related to the other formats studied as anticipated in the background chapter 2.
+
+Regarding the DPUs which support the Integer and fixed point formats, their simplestic RTL-description is convayed in the Table as for these formats there are less LUTs required with respect to the formats described previously. Also, interestingly the synthesis tool of Vivado maps very few LUTs for the INT16 related DPU, but this is due to the fact that it maps the synthesized model into an increased count of the DSPs instead.
+
+Regarding the columns regarding the BRAMs, the synthesis tool has mapped 0 BRAMs for each of the DPUs of the formats because they are isolated arithmetic datapaths, not full accelerator subsystems with local memories and buffers. On the other hand for each DPU of each format there is a number of FFs being synthesized because each DPU has included registers for its input operand elements and one register for the result. This was necessary to include for the obtaining of performance related metrics for the DPU which is described more in detail in the next section.
+
+\section{DPU Level Timing Analysis}
+
+%goal of this section is to answer how fast can each DPU implementation run after syntheis ? Which numerical formats create longer critical paths ? Why is that ? 
+
+The timing analysis is equally as important as the resource analysis given in the last section. This is because optimally, the TCU accelerator circuit is integrated inside environments which are almost always synchronous such as the FlexGrip Plus GPU or the Klessydra T13 core which this thesis focused on. So, even though the focus of the thesis gave priority in the functional behavior of the integrated parametric TCU at simulation level, it was still important to provide the performance related metrics of the first relase of the unit to some extend to understand what there is to improve for future versions. Also, this analysis is important to be done at the DPU granular level to find out the differences in the performance related metrics amonf the various implemented DPUs each utilizing a different numerical format of operands. 
+
+
+%Paragraph 5: Introduce the timing/Fmax metrics and the results data in general.
+
+For styduing the timing analysis and performance between the different DPUs inside the TCU, various related performance metrics have been focused on which are the following ones: 
+
+\begin{itemize}
+
+    \item Critical Path: the longest combinationl path possible between the input registers and result register of a specific synthesized DPU relating to a specific numerical format.
+    
+    \item Worst Negative Slack (WNS):  the metric portraying whether the design meets the synthesis constraints related to a selected clock frequency. If it is negative, the DPU design does not meet the clock constraints.
+    
+    \item Estimated Maximum Frequency (Fmax): the approximate maximum clock frequency the design could reach.
+
+\end{itemize}
+
+%Paragraph 6: Insert the main timing trends. 
+
+Just like the hardware resource analysis, the Vivado reports related to timings have been analyzed after the synthesis of each specific numerical format DPU. Also it is important to remark that the synthesis flow used a target clock period of 10 ns. The metrics explained above have been collected from the synthesis timing reports of Vivado for each numerical format and are all gathered in Table~\ref{tab:dpu_timing_results} . The table summarizes the WNS, the estimated critical-path delay and the estimated maximum frequency for all the implemented DPU variants.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Post-synthesis timing results of the implemented DPU variants.}
+    \label{tab:dpu_timing_results}
+    \begin{tabular}{lrrr}
+        \hline
+        \textbf{Format} & \textbf{WNS (ns)} & \textbf{Critical Path (ns)} & \textbf{Estimated Fmax (MHz)} \\
+        \hline
+        FP8        & -64.029  & 74.029  & 13.51  \\
+        FP16       & -95.564  & 105.564 & 9.47   \\
+        FP32       & -125.650 & 135.650 & 7.37   \\
+        Posit8     & -64.568  & 74.568  & 13.41  \\
+        Posit16    & -90.294  & 100.294 & 9.97   \\
+        Posit32    & -120.517 & 130.517 & 7.66   \\
+        LNS16      & -70.933  & 80.933  & 12.36  \\
+        FXP8/16    & -4.365   & 14.365  & 69.61  \\
+        FXP16/32   & -9.211   & 19.211  & 52.05  \\
+        INT8/16    & 0.516    & 9.484   & 105.44 \\
+        INT16/32   & -1.207   & 11.207  & 89.23  \\
+        \hline
+    \end{tabular}
+\end{table}
+
+%paragraph 7: Discuss the main timing trends.
+
+%the goal is to answer what the timing table shows, why some of the formats have lower Fmax with respect to others and what is the important takeAway..
+
+From the previously introduced table, it can be analyzed that out of all the first versions of the DPUs of the numerical formats, only the DPU which takes INT8 related operands respects the imposed clock constraint of 10 ns. Consequently, it makes sense that the similar DPU targeting INT16 operands is almost respecting the constraint with a slack of only -1.206 nanoseconds. The Fixed Point related DPUs are the next fastest DPUs after the integer related DPUs both with a slack less the -10 nanoseconds and are also much faster with respect to the DPUs which target the Posit, the Floating Point and the LNS formats. From the table it can be observed in fact that the Floating Point and Posit formats have much longer critical paths. Specifically the 32 bit variants of these formats are the slowest out of all the othe DPUs and this is because they contain wider datapaths which consequently increase the complexity of the embeeded arithmatic operations  circuits inside the DPU.
+
+Another interesting result is shown when confronting the WNS slack between the Posit8 and FP8 format, the Posit16 and FP16 format, and the Posit32 and FP32 format. When confronting the WNS values between the pairs it can be seen that they are very similar with each other (for instance the Posit 8 DPU has a WNS of -64.568 ns compared to the WNS of -64.029 ns related to the FP8 DPU ). When also considering , as explained in chapter 3, that the floating point DPUs have a different structure (Early Accumulate structure) with respect to the organization of the posit related DPUs (Tree Adder structure), this result shows that independent of the methodology of the DPU design, the critical path delay between these two formats is comparable metric. With regards to the LNS16 DPU, the table proves that it is slower than fixed/integer format DPUs, but comparable to 8 bit posi and floating point ones.
+
+%explaining WHy the results are the ones obtained. discussing a little basically. 
+
+The floating-point and posit implementations show significantly longer critical paths, especially for the 32-bit variants. This can be related to the larger datapath width and to the additional logic required for decoding, alignment, normalization, rounding, or regime handling. LNS16 also shows a relatively long critical path, which is mainly associated with the cost of logarithmic addition and subtraction. 
+
+Since these values are obtained from post-synthesis timing reports, they should be interpreted as comparative estimates rather than final placed-and-routed operating frequencies. Nevertheless, because all DPU variants were evaluated with the same synthesis setup, the results provide a useful indication of the relative timing cost of each numerical format.
 
 \section{Numerical Accuracy Evaluation}
 
