@@ -9,11 +9,6 @@ Outputs:
   DPU_Error_Analysis/plots/dnn_random_10k/final/real_mean_abs_error_by_format.png
   DPU_Error_Analysis/plots/dnn_random_10k/final/real_rmse_by_format.png
   DPU_Error_Analysis/plots/dnn_random_10k/final/exact_match_percent_by_format.png
-
-Notes:
-  - Mean absolute error and RMSE plots include only decoded-real-domain formats.
-  - Integer formats are excluded from real-error plots because their error unit is integer counts.
-  - Exact-match percentage is plotted for all formats.
 """
 
 import csv
@@ -27,6 +22,29 @@ SUMMARY_PATH = BASE_DIR / "reports" / "dnn_random_10k" / "dpu_error_summary_all_
 OUTPUT_DIR = BASE_DIR / "plots" / "dnn_random_10k" / "final"
 
 
+FORMAT_ORDER = [
+    "fp8",
+    "fp16",
+    "fp32",
+    "posit8",
+    "posit16",
+    "posit32",
+    "lns16",
+    "fxp8_16",
+    "fxp16_32",
+    "int8_16",
+    "int16_32",
+]
+
+# Assign one stable color to each format.
+# tab20 gives enough visually distinct colors for this number of formats.
+COLOR_MAP = plt.get_cmap("tab20")
+FORMAT_COLORS = {
+    fmt: COLOR_MAP(i)
+    for i, fmt in enumerate(FORMAT_ORDER)
+}
+
+
 def read_rows():
     with SUMMARY_PATH.open("r", encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -37,8 +55,21 @@ def to_float(value: str) -> float:
 
 
 def save_bar_plot(formats, values, title, ylabel, output_path, log_y=False):
+    colors = [
+        FORMAT_COLORS.get(fmt, "gray")
+        for fmt in formats
+    ]
+
     plt.figure(figsize=(11, 6))
-    plt.bar(formats, values)
+
+    plt.bar(
+        formats,
+        values,
+        color=colors,
+        edgecolor="black",
+        linewidth=0.4,
+    )
+
     plt.title(title)
     plt.ylabel(ylabel)
     plt.xlabel("DPU format")
@@ -49,6 +80,8 @@ def save_bar_plot(formats, values, title, ylabel, output_path, log_y=False):
         if positive_values:
             plt.yscale("log")
 
+    plt.grid(axis="y", linestyle="--", alpha=0.35)
+
     plt.tight_layout()
     plt.savefig(output_path, dpi=200)
     plt.close()
@@ -58,14 +91,26 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     rows = read_rows()
-    real_rows = [r for r in rows if r["metric_domain"] == "decoded_real_domain"]
+    real_rows = [
+        r for r in rows
+        if r["metric_domain"] == "decoded_real_domain"
+    ]
 
     real_formats = [r["format"] for r in real_rows]
-    real_mean_abs = [to_float(r["mean_abs_error"]) for r in real_rows]
-    real_rmse = [to_float(r["rmse"]) for r in real_rows]
+    real_mean_abs = [
+        to_float(r["mean_abs_error"])
+        for r in real_rows
+    ]
+    real_rmse = [
+        to_float(r["rmse"])
+        for r in real_rows
+    ]
 
     all_formats = [r["format"] for r in rows]
-    exact_match = [to_float(r["exact_match_percent"]) for r in rows]
+    exact_match = [
+        to_float(r["exact_match_percent"])
+        for r in rows
+    ]
 
     save_bar_plot(
         real_formats,
