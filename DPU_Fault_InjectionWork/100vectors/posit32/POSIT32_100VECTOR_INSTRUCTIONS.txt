@@ -1,0 +1,92 @@
+POSIT32 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/posit32/
+
+Extract all six files into that folder.
+
+Common source real vectors:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+Format:
+
+posit<32,2>
+32 total bits
+es = 2
+NaR = 80000000
+
+DPU:
+
+DotProductUnitPosit32
+
+RTL:
+
+DPU_Performance_Area_Comparison/src/posit32/
+    Posit32_2_DPU.vhd
+
+DPU_Performance_Area_Comparison/src/posit32/needed_flopoco_files/
+    Posit32_2_Add.vhd
+    Posit32_2_Mul.vhd
+
+1. Generate Posit32 vectors
+
+python script1_generate_posit32_vectors_100.py
+
+Expected:
+
+generated_posit32_vectors_100/posit32_vectors.txt   100 lines
+generated_posit32_vectors_100/posit32_report.csv    901 lines
+generated_posit32_vectors_100/real_vectors.txt      100 lines
+
+Each line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+Every token contains eight hexadecimal digits.
+
+2. Generate stuck-at cases
+
+python script2_generate_posit32_faults_100vectors.py
+
+Expected:
+
+posit32_input_faults_100/fault_vectors.txt          57600 lines
+posit32_input_faults_100/fault_manifest.csv          57601 lines
+
+Why:
+
+9 operands x 32 bits = 288 input bits per vector
+
+100 vectors x 288 bits x 2 stuck-at values = 57600 cases
+100 vectors x 288 bits = 28800 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/posit32/script3_run_posit32_fault_campaign_100vectors.tcl}
+
+Expected:
+
+Golden vectors written: 100; faulty cases written: 57600
+
+Outputs:
+
+posit32_results_100/golden_results.txt              100 lines
+posit32_results_100/faulty_results.txt               57600 lines
+
+4. Classify
+
+python script4_classify_posit32_faults_100vectors.py
+
+Outputs:
+
+posit32_results_100/fault_classification.csv
+posit32_results_100/fault_summary_overall.csv
+posit32_results_100/fault_summary_by_vector.csv
+posit32_results_100/fault_summary_by_operand_bit.csv
+
+The classifier counts NaR and zero outputs. An activated fault whose
+encoded output differs from the Posit32 golden result is classified as SDC.

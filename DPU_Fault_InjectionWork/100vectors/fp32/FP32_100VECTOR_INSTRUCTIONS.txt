@@ -1,0 +1,93 @@
+FP32 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/fp32/
+
+Extract all six files from this package into that folder.
+
+The campaign uses the same 100 source real-valued vectors as the other
+formats:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+FP32 format:
+
+IEEE-754 binary32
+1 sign bit
+8 exponent bits
+23 fraction bits
+32 bits for every operand and the result
+
+DPU:
+
+DotProductUnitFP32
+
+RTL:
+
+DPU_Performance_Area_Comparison/src/fp32/
+    DPU_FP32e8m23flopoco.vhd
+
+DPU_Performance_Area_Comparison/src/fp32/needed_flopoco_files/
+    FMA_FP32e8m23flopoco.vhd
+
+1. Generate encoded vectors
+
+python script1_generate_fp32_vectors_100.py
+
+Expected:
+
+generated_fp32_vectors_100/fp32_vectors.txt     100 lines
+generated_fp32_vectors_100/fp32_report.csv      901 lines
+generated_fp32_vectors_100/real_vectors.txt     100 lines
+
+Each vector line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+Each token contains eight hexadecimal digits.
+
+2. Generate the fault vectors
+
+python script2_generate_fp32_faults_100vectors.py
+
+Expected:
+
+fp32_input_faults_100/fault_vectors.txt         57600 lines
+fp32_input_faults_100/fault_manifest.csv         57601 lines
+
+Why:
+
+9 operands x 32 bits = 288 input bits per vector
+
+100 vectors x 288 bits x 2 stuck-at values = 57600 cases
+100 vectors x 288 bits = 28800 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/fp32/script3_run_fp32_fault_campaign_100vectors.tcl}
+
+Expected:
+
+Golden vectors written: 100; faulty cases written: 57600
+
+Outputs:
+
+fp32_results_100/golden_results.txt             100 lines
+fp32_results_100/faulty_results.txt              57600 lines
+
+4. Classify
+
+python script4_classify_fp32_faults_100vectors.py
+
+Outputs:
+
+fp32_results_100/fault_classification.csv
+fp32_results_100/fault_summary_overall.csv
+fp32_results_100/fault_summary_by_vector.csv
+fp32_results_100/fault_summary_by_operand_bit.csv
+
+The classifier reports exact encoded-output SDCs and also counts faulty
+NaN, Infinity, Subnormal and Zero outputs.

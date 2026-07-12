@@ -1,0 +1,83 @@
+POSIT16 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/posit16/
+
+Extract all six files from this package into that folder.
+
+The campaign reads the same 100 source real vectors used by FP8,
+Posit8, FXP8_16 and FP16:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+Posit16 convention used by the current FloPoCo RTL:
+
+posit<16,1>
+16 total bits
+1 exponent-size bit
+NaR encoding = 8000
+
+All nine DPU operands and the output are 16 bits.
+
+1. Generate Posit16 vectors
+
+python script1_generate_posit16_vectors_100.py
+
+Expected:
+generated_posit16_vectors_100/posit16_vectors.txt  100 lines
+generated_posit16_vectors_100/posit16_report.csv   901 lines
+generated_posit16_vectors_100/real_vectors.txt     100 lines
+
+Each vector line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+Every token contains four hexadecimal digits.
+
+2. Generate stuck-at cases
+
+python script2_generate_posit16_faults_100vectors.py
+
+Expected:
+posit16_input_faults_100/fault_vectors.txt         28800 lines
+posit16_input_faults_100/fault_manifest.csv        28801 lines
+
+Why:
+9 operands x 16 bits = 144 input bits per vector
+
+100 vectors x 144 bits x 2 stuck-at values = 28800 cases
+100 vectors x 144 bits = 14400 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/posit16/script3_run_posit16_fault_campaign_100vectors.tcl}
+
+Expected:
+Golden vectors written: 100; faulty cases written: 28800
+
+Outputs:
+posit16_results_100/golden_results.txt             100 lines
+posit16_results_100/faulty_results.txt             28800 lines
+
+4. Classify
+
+python script4_classify_posit16_faults_100vectors.py
+
+Outputs:
+posit16_results_100/fault_classification.csv
+posit16_results_100/fault_summary_overall.csv
+posit16_results_100/fault_summary_by_vector.csv
+posit16_results_100/fault_summary_by_operand_bit.csv
+
+The classifier:
+- compares every faulty output with its own vector's Posit16 golden;
+- distinguishes not-activated, masked and SDC cases;
+- reports faulty NaR outputs separately;
+- counts any changed encoded output, including NaR, as SDC.
+
+5. Inspect
+
+cat posit16_results_100/fault_summary_overall.csv

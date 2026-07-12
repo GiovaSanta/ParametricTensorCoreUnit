@@ -1,0 +1,17 @@
+metric,count,percentage
+num_vectors,100,
+total_cases,28800,100.000000
+not_activated,14400,50.000000
+activated_cases,14400,50.000000
+activated_masked,1819,12.631944
+activated_sdc,12581,87.368056
+faulty_zero_class_results,192,0.666667
+faulty_special_10_results,1,0.003472
+faulty_special_11_results,897,3.114583
+mean_vector_activated_sdc_percent,,87.368056
+stdev_vector_activated_sdc_percent,,6.441295
+standard_error_vector_sdc_percent,,0.644129
+approx_95ci_low_percent,,86.105562
+approx_95ci_high_percent,,88.630549
+min_vector_activated_sdc_percent,,63.888889
+max_vector_activated_sdc_percent,,100.000000

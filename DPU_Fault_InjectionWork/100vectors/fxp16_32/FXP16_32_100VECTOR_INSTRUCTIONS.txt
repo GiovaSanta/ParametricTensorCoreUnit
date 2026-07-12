@@ -1,0 +1,78 @@
+FXP16_32 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/fxp16_32/
+
+Extract all six files into that folder.
+
+Common source real vectors:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+Fixed-point formats:
+
+A0-A3 and B0-B3:
+  signed_5_M10
+  16-bit two's-complement
+  10 fractional bits
+
+C0 and R:
+  signed_11_M20
+  32-bit two's-complement
+  20 fractional bits
+
+1. Generate vectors
+
+python script1_generate_fxp16_32_vectors_100.py
+
+Expected:
+generated_fxp16_32_vectors_100/fxp16_32_vectors.txt  100 lines
+generated_fxp16_32_vectors_100/fxp16_32_report.csv   901 lines
+generated_fxp16_32_vectors_100/real_vectors.txt      100 lines
+
+Each line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+The first eight tokens have four hexadecimal digits.
+C0 has eight hexadecimal digits.
+
+2. Generate stuck-at cases
+
+python script2_generate_fxp16_32_faults_100vectors.py
+
+Expected:
+fxp16_32_input_faults_100/fault_vectors.txt          32000 lines
+fxp16_32_input_faults_100/fault_manifest.csv          32001 lines
+
+Why:
+8 A/B operands x 16 bits = 128 bits
+1 C operand x 32 bits    = 32 bits
+Total per vector         = 160 bits
+
+100 vectors x 160 bits x 2 stuck values = 32000 cases
+100 vectors x 160 bits = 16000 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/fxp16_32/script3_run_fxp16_32_fault_campaign_100vectors.tcl}
+
+Expected:
+Golden vectors written: 100; faulty cases written: 32000
+
+Outputs:
+fxp16_32_results_100/golden_results.txt              100 lines
+fxp16_32_results_100/faulty_results.txt              32000 lines
+
+4. Classify
+
+python script4_classify_fxp16_32_faults_100vectors.py
+
+Outputs:
+fxp16_32_results_100/fault_classification.csv
+fxp16_32_results_100/fault_summary_overall.csv
+fxp16_32_results_100/fault_summary_by_vector.csv
+fxp16_32_results_100/fault_summary_by_operand_bit.csv

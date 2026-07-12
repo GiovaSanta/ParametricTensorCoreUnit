@@ -1,0 +1,83 @@
+FXP8_16 100-VECTOR CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/fxp8_16/
+
+Extract all six files from this package into that folder.
+
+The campaign reads the same 100 source real vectors already used for
+the FP8 and Posit8 campaigns:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+Fixed-point formats:
+
+A0-A3, B0-B3:
+  signed_2_M5
+  8-bit two's-complement
+  5 fractional bits
+
+C0 and R:
+  signed_5_M10
+  16-bit two's-complement
+  10 fractional bits
+
+1. Generate FXP8_16 vectors
+
+python script1_generate_fxp8_16_vectors_100.py
+
+Expected:
+generated_fxp8_16_vectors_100/fxp8_16_vectors.txt  100 lines
+generated_fxp8_16_vectors_100/fxp8_16_report.csv   901 lines
+generated_fxp8_16_vectors_100/real_vectors.txt     100 lines
+
+Each encoded line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+The first eight tokens have two hex digits.
+C0 has four hex digits.
+
+2. Generate stuck-at cases
+
+python script2_generate_fxp8_16_faults_100vectors.py
+
+Expected:
+fxp8_16_input_faults_100/fault_vectors.txt         16000 lines
+fxp8_16_input_faults_100/fault_manifest.csv        16001 lines
+
+Why:
+8 A/B operands x 8 bits = 64 bits
+1 C operand x 16 bits   = 16 bits
+Total per vector        = 80 bits
+
+100 vectors x 80 bits x 2 stuck-at values = 16000 cases
+100 vectors x 80 bits = 8000 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/fxp8_16/script3_run_fxp8_16_fault_campaign_100vectors.tcl}
+
+Expected:
+Golden vectors written: 100; faulty cases written: 16000
+
+Outputs:
+fxp8_16_results_100/golden_results.txt             100 lines
+fxp8_16_results_100/faulty_results.txt             16000 lines
+
+4. Classify
+
+python script4_classify_fxp8_16_faults_100vectors.py
+
+Outputs:
+fxp8_16_results_100/fault_classification.csv
+fxp8_16_results_100/fault_summary_overall.csv
+fxp8_16_results_100/fault_summary_by_vector.csv
+fxp8_16_results_100/fault_summary_by_operand_bit.csv
+
+5. Inspect
+
+cat fxp8_16_results_100/fault_summary_overall.csv

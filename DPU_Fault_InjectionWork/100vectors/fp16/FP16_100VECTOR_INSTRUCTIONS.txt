@@ -1,0 +1,83 @@
+FP16 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+
+DPU_Fault_InjectionWork/100vectors/fp16/
+
+Extract all six files from this package into that folder.
+
+The campaign reads the same 100 source real vectors used by FP8,
+Posit8 and FXP8_16:
+
+../generated_fp8_vectors_100/real_vectors.txt
+
+FP16 convention:
+
+IEEE-754 binary16
+1 sign bit
+5 exponent bits
+10 fraction bits
+
+All nine DPU operands and the output are 16 bits.
+
+1. Generate FP16 vectors
+
+python script1_generate_fp16_vectors_100.py
+
+Expected:
+generated_fp16_vectors_100/fp16_vectors.txt       100 lines
+generated_fp16_vectors_100/fp16_report.csv        901 lines
+generated_fp16_vectors_100/real_vectors.txt       100 lines
+
+Each vector line contains:
+
+A0 A1 A2 A3 B0 B1 B2 B3 C0
+
+Every token contains four hexadecimal digits.
+
+2. Generate stuck-at cases
+
+python script2_generate_fp16_faults_100vectors.py
+
+Expected:
+fp16_input_faults_100/fault_vectors.txt           28800 lines
+fp16_input_faults_100/fault_manifest.csv          28801 lines
+
+Why:
+9 operands x 16 bits = 144 input bits per vector
+
+100 vectors x 144 bits x 2 stuck-at values = 28800 cases
+100 vectors x 144 bits = 14400 activated cases
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/fp16/script3_run_fp16_fault_campaign_100vectors.tcl}
+
+Expected:
+Golden vectors written: 100; faulty cases written: 28800
+
+Outputs:
+fp16_results_100/golden_results.txt               100 lines
+fp16_results_100/faulty_results.txt               28800 lines
+
+4. Classify
+
+python script4_classify_fp16_faults_100vectors.py
+
+Outputs:
+fp16_results_100/fault_classification.csv
+fp16_results_100/fault_summary_overall.csv
+fp16_results_100/fault_summary_by_vector.csv
+fp16_results_100/fault_summary_by_operand_bit.csv
+
+The classifier:
+- compares every faulty result to its own vector's FP16 golden output;
+- distinguishes not-activated, masked and SDC cases;
+- reports NaN, infinity and subnormal faulty outputs separately;
+- treats any changed encoded output as SDC, including NaN and infinity.
+
+5. Inspect
+
+cat fp16_results_100/fault_summary_overall.csv

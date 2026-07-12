@@ -1,0 +1,71 @@
+FP8 100-VECTOR CAMPAIGN
+
+Create this folder:
+DPU_Fault_InjectionWork/100vectors/
+
+Place all six files from this package inside it.
+
+The first 10 generated vectors are identical to the vectors from the
+10-vector seed-42 campaign. This allows a regression check.
+
+1. Generate 100 vectors
+
+python script1_generate_fp8_vectors_100.py
+
+Expected:
+generated_fp8_vectors_100/real_vectors.txt        100 lines
+generated_fp8_vectors_100/real_vectors.csv        101 lines
+generated_fp8_vectors_100/fp8_vectors.txt         100 lines
+generated_fp8_vectors_100/fp8_report.csv           901 lines
+
+2. Generate the fault cases
+
+python script2_generate_8bit_faults_100vectors.py \
+  generated_fp8_vectors_100/fp8_vectors.txt
+
+Expected:
+fp8_input_faults_100/fault_vectors.txt            14400 lines
+fp8_input_faults_100/fault_manifest.csv           14401 lines
+
+3. Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/script3_run_fp8_fault_campaign_100vectors.tcl}
+
+Expected final note:
+Golden vectors written: 100; faulty cases written: 14400
+
+Expected:
+fp8_results_100/golden_results.txt                100 lines
+fp8_results_100/faulty_results.txt                14400 lines
+
+4. Classify
+
+python script4_classify_fp8_faults_100vectors.py
+
+Expected outputs:
+fp8_results_100/fault_classification.csv
+fp8_results_100/fault_summary_overall.csv
+fp8_results_100/fault_summary_by_vector.csv
+fp8_results_100/fault_summary_by_operand_bit.csv
+
+5. Regression checks
+
+The first 10 generated FP8 input lines should match the old 10-vector file:
+
+head -n 10 generated_fp8_vectors_100/fp8_vectors.txt
+cat ../10vectors/generated_fp8_vectors_10/fp8_vectors.txt
+
+The first 10 golden outputs should also match:
+
+head -n 10 fp8_results_100/golden_results.txt
+cat ../10vectors/fp8_results_10/golden_results.txt
+
+6. Main sample sizes
+
+Total generated cases:
+100 x 9 x 8 x 2 = 14400
+
+Genuinely activated cases:
+100 x 9 x 8 = 7200

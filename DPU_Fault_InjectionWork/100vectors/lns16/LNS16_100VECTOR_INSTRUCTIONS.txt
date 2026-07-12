@@ -1,0 +1,57 @@
+LNS16 100-VECTOR INPUT STUCK-AT CAMPAIGN
+
+Expected working folder:
+DPU_Fault_InjectionWork/100vectors/lns16/
+
+Extract all six files from this package into that folder.
+
+The campaign reads:
+../generated_fp8_vectors_100/real_vectors.txt
+
+LNS16 format:
+- total width: 16 bits
+- wE = 4
+- wF = 9
+- scale = 512
+- zero = 0000
+- normal finite = bits 15:14 = 01, bit 13 = sign,
+  bits 12:0 = signed fixed-point log2 magnitude
+- minimum normal magnitude = 2^-8 = 0.00390625
+- smaller source magnitudes quantize to zero
+
+1. Generate encoded vectors
+
+python script1_generate_lns16_vectors_100.py
+
+Expected:
+generated_lns16_vectors_100/lns16_vectors.txt    100 lines
+generated_lns16_vectors_100/lns16_report.csv     901 lines
+generated_lns16_vectors_100/real_vectors.txt     100 lines
+
+2. Generate faults
+
+python script2_generate_lns16_faults_100vectors.py
+
+Expected:
+lns16_input_faults_100/fault_vectors.txt         28800 lines
+lns16_input_faults_100/fault_manifest.csv        28801 lines
+
+3. Run Vivado Tcl
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/lns16/script3_run_lns16_fault_campaign_100vectors.tcl}
+
+Expected:
+Golden vectors written: 100; faulty cases written: 28800
+
+4. Verify
+
+wc -l lns16_results_100/golden_results.txt
+wc -l lns16_results_100/faulty_results.txt
+
+Expected:
+100
+28800
+
+5. Classify
+
+python script4_classify_lns16_faults_100vectors.py

@@ -1,0 +1,62 @@
+POSIT8 100-VECTOR CAMPAIGN
+
+Extract all files directly into:
+
+DPU_Fault_InjectionWork/100vectors/
+
+This campaign reads the SAME 100 real vectors used by FP8:
+
+generated_fp8_vectors_100/real_vectors.txt
+
+The numerical format is Posit(8,0).
+
+STEP 1 - Generate the Posit8 encodings
+
+python script1_generate_posit8_vectors_100.py
+
+Expected:
+generated_posit8_vectors_100/posit8_vectors.txt   100 lines
+generated_posit8_vectors_100/posit8_report.csv    901 lines
+generated_posit8_vectors_100/real_vectors.txt     100 lines
+
+STEP 2 - Generate the 14,400 fault cases
+
+python script2_generate_posit8_faults_100vectors.py
+
+Expected:
+posit8_input_faults_100/fault_vectors.txt          14400 lines
+posit8_input_faults_100/fault_manifest.csv         14401 lines
+
+STEP 3 - Run Vivado
+
+In the Vivado Tcl Console:
+
+if {[llength [get_projects -quiet]] > 0} {close_project}; source {C:/Users/giovi/OneDrive/Desktop/Magistrale/Tesi/DPU_Fault_InjectionWork/100vectors/script3_run_posit8_fault_campaign_100vectors.tcl}
+
+Expected final note:
+Golden vectors written: 100; faulty cases written: 14400
+
+Expected outputs:
+posit8_results_100/golden_results.txt              100 lines
+posit8_results_100/faulty_results.txt              14400 lines
+
+STEP 4 - Classify
+
+python script4_classify_posit8_faults_100vectors.py
+
+Expected outputs:
+posit8_results_100/fault_classification.csv
+posit8_results_100/fault_summary_overall.csv
+posit8_results_100/fault_summary_by_vector.csv
+posit8_results_100/fault_summary_by_operand_bit.csv
+
+SAMPLE SIZES
+
+Total injections:
+100 x 9 x 8 x 2 = 14,400
+
+Activated faults:
+100 x 9 x 8 = 7,200
+
+Compare the Posit8 activated SDC percentage with FP8's 78.49%.
+Each faulty result is compared with the golden output of its own vector.
