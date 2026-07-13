@@ -42,3 +42,67 @@ Laslty, this work has also found out that the current first implementation requi
 
 \newpage
 \section{Future Work}
+
+Even though most of the main objectives of this thesis have been reached, the
+implemented parametric TCU still rapresents a first version of the
+accelerator and several improvements can be performed in a future work.
+The first important improvement regards the timing behavior of the
+implemented DPUs. In the current design, most of the DPU datapaths are
+mainly combinational and this produces very long critical paths,
+especially for the Floating-Point, Posit and LNS formats as discussed in previous sections of this document. A future
+version could introduce pipeline stages inside the multiplication,
+addition, normalization and accumulation operations. This would
+increase the number of registers and probably the number of clock
+cycles needed for obtaining one result, but it would also permit the
+accelerator to operate with a much higher clock frequency.
+
+Also another work that can be focused on in the future regards the shrinkage of the singular DPUs of each format family inside the TCU accelerator. It can be focused to perhaps in fact try and merge the DPUs of the posit formats regarding the different bit widths as operands, into one DPU which distinguishes to the other format DPU only by the type of format it rapresentes rather then making the DPUs be disdtuished by both the type of format and the vit width of the operands like it has been done in this initial version of the parametric accelerator.
+
+The hardware evaluation could also be extended with a complete
+implementation flow including placement and routing. In this thesis,
+most of the timing and area results have been obtained from synthesis
+reports and they are therefore useful mainly for a comparison between
+the different formats. A complete placed-and-routed implementation
+would provide more realistic results regarding maximum operating
+frequency, routing delays and final FPGA utilization. It would also be
+interesting to target a larger FPGA device or to study a possible ASIC
+implementation of the accelerator. Moreover, power and energy
+consumption were not analyzed in this work and they would be important
+metrics for understanding which numerical format is more convenient
+for embedded and high-performance applications.
+
+Regarding the resiliency study, the fault campaigns performed in this
+work were focused at the input interface of the single DPUs. A future
+analysis should extend the fault injection to internal signals,
+registers, arithmetic modules and to the FSM controller of the complete
+TCU. It would also be important to perform the fault campaigns directly
+inside the FlexGrip Plus GPU and Klessydra T13 environments during the
+execution of programs containing hmma instructions. This type of study
+would require a much larger simulation time, but it would provide a
+more complete understanding of how faults propagate through the
+accelerator and through the surrounding processor architecture.
+Transient faults and multiple faults could also be considered in
+addition to the permanent stuck-at faults used in this thesis.
+
+
+The numerical accuracy and resiliency analysis could also be repeated
+using a larger number of vectors and more realistic workloads obtained
+directly from neural network models. In this work the operands were
+mainly generated in a controlled range between -1 and 1 in order to
+make the comparison between the formats more coherent and to avoid
+overflow conditions. Future experiments could include operands
+extracted from complete convolutional and fully connected layers, and
+could study how the numerical errors affect the final inference
+accuracy of a neural network. Different operand ranges, scaling
+methods, datasets and network architectures could also be tested.
+
+Lastly, more software support could be developed for the custom hmma
+instruction. In the current work, the assembly and C programs used for
+the functional verification were prepared manually. A future compiler
+extension or a dedicated software library could automatically translate
+matrix multiplication operations into sequences of hmma instructions.
+This would permit the accelerator to be tested with larger matrix
+operations and complete applications, instead of only dedicated
+verification programs. In this way, the parametric TCU could be studied
+not only as an isolated hardware component, but as a complete
+accelerator usable by real software workloads.
