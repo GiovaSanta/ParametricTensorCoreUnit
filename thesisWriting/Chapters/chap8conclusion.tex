@@ -1,0 +1,44 @@
+\chapter{Conclusion and Future Work}
+
+This final chapter concludes the thesis by summarizing the main
+contributions of the work and the most relevant results obtained during
+the experimental evaluation. Finally, the limitations of the current
+implementation are discussed together with the possible directions for
+the future development of the parametric TCU accelerator.
+
+\section{Summary of Contributions}
+
+In this work, many implementative steps regarding the construction of the parametric TCU accelerator have been done. The work has focused on this task with a bottom up RTL design approach with the inclusion of functional testing and supportive Python and TCL scripts for achieving so. In fact, it was first made sure to develop the main embedded unit of the TCU accelerator, the parametric DPU which has been constructed by first understanding the DPU functional operation along with the details of the formats which the parametric DPU had to handle.
+
+After the understanding of the related functional operation of the DPU, the parametric DPU has been constructed and tested functionally through the use of many vectors as inputs generate always by means of several Python script for the functional testing and comparison with the expected results. 
+
+After the important work of finalizing the parametric DPU, the study of the execution of NVIDIA's TCU had been done. Specifically it has been made sure to understand what the related assignments that each thread in charge of the TCU unit had to perform in the execution of a singular hmma instruction. Also, many details like the findings of the fact that there are two different types of hmma instructions possible (step 0 and step 1), the understanding of the fact that sets of hmma instructions are handled at the assembly level along with understanding that in order to perform a matrix multiply and accumulate operation with elements bigger then 4 by 4 requires sets of hmma instructions. These and general details  regarding the hmma instruction have been mastered for getting TCU operation familiarity which lead to an easier design process.
+
+After the understanding of the related hmma instruction execution, the parametric TCU in an isolated environment has been developed in RTL description language. Specifically in this design it was understood how to design the accelerator and understanding how many buffers had to be needed for the TCU execution, how the FSM control's states had to be designed and the interface with the register files of the threads in which the result of the TCU had to be fetched and written to. Along with also understanding how to connect the parametric DPUs previously designed for composing the final accelerator. Later, the parametric TCU has been tested with many testbench rapresenting the execution of threads for all the implemented formats and Vivado signal waveforms have been debuged along the process to make sure of the expected execution. 
+
+After the finalization of the parametric TCU component and its isolated testing, the FlexGrip Plus GPU has been tested with already made programs. This step was done in order to familiarize with the environment which the parametric TCU had to be included in. And after the testing and familiarization with the functionality of the FlexGrip Plus instruction set architecture, the parametric TCU integration has been performed inside the GPU model. This step required the understanding of the additional modules to be inserted such as registers and buffers and others in order for the already tested accelerator to be compatible in the GPU model. Afterwards, the parametric TCU's integration has been tested on the functional level by first forming the bit level encoding of the hmma instruction into the FlexGrip Plus' instruction set architecture, and then dedicated assembly programs each targeting the available implemented formats of the DPUs have been developed for the functional verification of the accelerator in the new environment. 
+
+After the verification and integration of the accelerator inside the GPU model, it has been performed steps for the integration of the parametric accelerator into a RISC-V Klessydra T13 custom Core. This has been done by first understading the already available instructions of the CPU in order to familiarize to the RISC-V instruction set. After the familiarity had been achieved, it has been made possible to encode the hmma instruction similar to RISC-V conventions in order to target the accelerator which had to be integrated inside the Core. Afterwards, it has been studied which additional controllers, registers and buffer related logic had to be included in the Core in order to make the integratio of the parametric TCU well made. Then, just like the integration in the FlexGrip Plus, C level programs with the custom made assembly level instructions have been performed in order to test the parametric TCU unit and the additional components provided for its integration with the new core. 
+
+Lastly, the thesis work focused on providing the results at the DPU-level related to the area utilization, performance, numerical accuracy, and resiliency for all the implemented DPUs. This has been made in order to providing an analysis of the confrantation of the metrics of each format which has been studied. Afterwards there has been a study related to the synthesized components involved in the parametric TCU integration inside the GPU and CPU core to confront the final area and performance required regarding the integration work that had been performed in a previous step.
+
+\section{Main Findings}
+
+The main findings of the thesis have been mainly found in the chapter regarding the study of the embedded DPUs of the accelerator and TCU level area and performance in the different environments, discussed in chapter 7. This is because this study gave the opportunity to compare and confront the different numerical results associated to different various metrics related to the different formats studied and implemented in the thesis.
+
+It can be said that over all, it has been found out that in general as discussed in chapter 7, Integr and Fixed Point DPUs require generally smaller hardware and faster execution. While on the other hand, the Floating-Point, Posit, and LNS require more complex hardware overall with respect to the Integer and Fixed Point families. It has also been proved in the work through simulation and synthesis that , the longer the bit width of the format chosen for the DPU operation the more expensive is the si hardware being used and the longer is the associated critical path delay, encurring in the need of slower clock of the digital system. 
+
+Regarding the numerical accuracy it has been interestingly found out that the Posit emerging format produced lower numerical errors than the corresponding FLoating Point formats for the selected dataset when testing the operands of the DPU in the -1 to 1 specific decoded range. 
+
+Regarding the resiliency related findings, through the fault injection campaigns in the several DPUs it has been found out that althoguh higher-width formats imprve the accuracy they show greater exact-output sensitivity and encurr in lower chances of the faults in their inputs in getting masked when the output is confronted with the golden related value. 
+
+Also, it has been found out that the implemented DPU regarding the LNS16 has relatively high LUT usage due to logarithimic addition. Making this format not advisable if there is a constraint in the amount of LUTs that are available in the synthesis. 
+
+There have also been found out important remarks related to the higher level TCU acceleratot in general. In fact it has been proved that the FlexGrip Plus integration performs the hmma instruction faster with respect to the integration done in the Klessydra RISC-V core. This proved an expected belief since the TCU accelerator has been first designed by NVIDIA in the context of a GPU as described in chapter 2. In fact this has been observed in simulation time through the Modelsim signal waves portraying the parallel thread execution of the related singular instruction.
+
+In the TCU level findings it has also been proved that the dual-TCU environment inside the wrapper of the GPU requires twice as much LUTs compared to the ones needed by the accelerator integrated inside the Klessydra T13 core. This has been made possible after the Vivado synthesis tool had been performed as discussed in chapter 7 of this work.
+
+Laslty, this work has also found out that the current first implementation requires further optimization before it can mapped to the selected Artix-7 FPGA, as the number of LUTs of the selected FPGA during the TCU-level synthesis has not been enough for the selected device. Again, also this piece of information has been seen in chapter 7 more in detail supported by numerical values.
+
+\newpage
+\section{Future Work}
