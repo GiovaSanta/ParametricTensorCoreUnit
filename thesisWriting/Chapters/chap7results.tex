@@ -592,8 +592,38 @@ The results of performance in terms of clock cycles (ccs) leads to say several r
 
 Lastly, there are more metrics such as the resiliency that need to be done for completing the assessment of the TCU differences in between the two environments. But due to the very big amount of time for the fault campaign related to the simulation of a assembly program containing hmma instruction, and hence it has been not ready for this thesis. This is one of the crucial studies to perform in the future regarding the work of this thesis which are highlighted in the next last chapter of this thesis. 
 
-\newpage
 \section{Summary}
 
+This chapter presented the experimental evaluation of the different
+DPU implementations and of the parametric TCU integrated inside the
+FlexGrip Plus and Klessydra T13 environments. The comparison was done
+considering hardware utilization, timing, numerical accuracy and
+resiliency. The synthesis results showed that the Integer and
+Fixed-Point DPUs are generally the cheapest and fastest solutions,
+while the Floating-Point, Posit and LNS implementations require more
+hardware resources and present longer critical paths. In particular,
+the 32-bit Floating-Point and Posit variants resulted among the most
+hardware-expensive implementations, while the LNS16 DPU also required
+a high number of LUTs because of the complexity of its logarithmic
+addition operations.
+
+The numerical accuracy analysis showed that the higher-width formats
+produce lower errors, with Posit formats obtaining lower mean absolute
+error and RMSE than the corresponding Floating-Point formats for the
+selected dataset. The Integer DPUs reproduced the expected results for
+all the tested vectors. The fault campaigns also showed that lower-width formats provide more fault
+masking, but their behavior depends more strongly on the applied input
+vectors. Instead, the higher-width and Fixed-Point formats presented
+higher and more consistent SDC rates.
+
+Finally, the TCU-level analysis showed that the FlexGrip Plus
+dual-TCU wrapper requires approximately twice the LUT resources of the
+single Klessydra TCU wrapper. The HMMA Step~0 instruction is also
+executed in fewer clock cycles in FlexGrip Plus, mainly because the GPU
+threads can load the TCU inputs in parallel, while the Klessydra harts
+perform the operand collection in a round-robin manner. These results provide the main
+experimental observations of the implemented accelerator and also
+highlight the aspects that should be improved and studied in future
+work.
 
 
