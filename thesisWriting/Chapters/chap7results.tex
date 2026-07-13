@@ -6,7 +6,7 @@
 
 After the implementation of the architectural parametric DPUs and TCU and the related work regarding the integration of the accelerator inside the FlexGrip Plus and the Klessydra T13 core, an experimental evaluation targeting the accelerator has been performed, and discussed in this chapter.
 
-The Evaluation is done from several point of view: hardware cost, timing/performance, numerical accuracy and resiliency/fault behavior. These qualities are compared among the different numerical formats which are supported in the TCU accelerator. Equivalently this means that the metrics are obtained for the various DPUs inside the TCU. This is because the DPU and its dot-produce/MAC operation is the basic main computational unit used inside the TCU. 
+The evaluation is done from several point of view: hardware cost, timing/performance, numerical accuracy and resiliency/fault behavior. These qualities are compared among the different numerical formats which are supported in the TCU accelerator. Equivalently this means that the metrics are obtained for the various DPUs inside the TCU. This is because the DPU and its dot-product/MAC operation is the basic main computational unit used inside the TCU. 
 
 This chapter will portray the results obtain in regards to the metrics mentioned along with providing a detail discussion relating to the obtained numerical results. In the next section, the relative experimental setup is explained for obtaining the metrics regarding the implemented RTL-level descriptions implemented in the thesis.
 
@@ -14,13 +14,13 @@ This chapter will portray the results obtain in regards to the metrics mentioned
 
 %purpose of this section is to describe what was evaluated and how. 
 
-As explained in detail in chapter 3, the numerical formats supported in this work for the parametric TCU to handle regard the FP8, FP16, FP32, Posit8, Posit16, Posit32, LNS16, INT8, INT16, FixedPoint8, FixedPoint16 numerical formats. Also, as explained in the background in chapter 2, the TCU accelerator performs the matrix multiply operation thanks to inner parametric DPUs which are implemented with a combination of DPUs each supporting specific numerical formats. In this thesis work it was decided to focus on the DPU level metrics to understand how the different internal DPUs distinguish themselves in terms of hardware area, performance, and resilience. Hence the experimental setup described in this work regards the granular level DPU found inside the TCU accelerator. This decision has been made to decrease the synthesis related and fault resilient timings that are necessary to obtain the results. Henceforth, the results regarding resiliancy performance and synthesi  related to the whole FlexGrip Plus GPU unit with the additional TCU and Klessydra Core unit with its own TCU are to be done in a future work.
+As explained in detail in chapter 3, the numerical formats supported in this work for the parametric TCU to handle regard the FP8, FP16, FP32, Posit8, Posit16, Posit32, LNS16, INT8, INT16, FixedPoint8, FixedPoint16 numerical formats. Additionally, as explained in the background in chapter 2, the TCU accelerator performs the matrix multiply operation thanks to inner parametric DPUs which are implemented with a combination of DPUs each supporting specific numerical formats. In this thesis work it was decided to focus on the DPU level metrics to understand how the different internal DPUs distinguish themselves in terms of hardware area, performance, and resilience. Hence the experimental setup described in this work regards the granular level DPUs found inside the TCU accelerator. This decision has been made to decrease the synthesis related and fault resilient timings that are necessary to obtain the results. Henceforth, the results regarding resiliancy performance and synthesis related to the whole FlexGrip Plus GPU unit with the additional TCU and Klessydra Core unit with its own TCU are to be done in a future work, even though the performance is mentioned briefly at the end of this chapter.
 
-Regarding the DPU related tests done for the obtainement of the numerical results regarding the various DPUs, the Vivado Simulation and Synthesis Tools have been utilized. The synthesis tool has been utilized for the calculation of the slack metric related to the singular DPU for the calculation of the performance of DPUs for each of the formats. Furthermore, the synthesis process has also been performed for each of teh DPUs for the objective of obtaining how much gate level area each of teh DPUs for teh formats occupy. During the synthsis of the DPUs, it was decided to use the Vivado synthesis using the AMD/Xilinx Artix-7 FPGA as target device. 
+Regarding the DPU related tests done for the obtainement of the numerical results regarding the various formats, the Vivado Simulation and Synthesis Tools have been utilized. The synthesis tool has been utilized for the calculation of the slack metric related to the singular DPU for the calculation of the performance of the DPUs for each of the formats. Furthermore, the synthesis process has also been performed for each of teh DPUs for the objective of obtaining how much gate level area each of the DPUs occupy. During the synthsis of the DPUs, it was decided to use the Vivado synthesis using the AMD/Xilinx Artix-7 FPGA as target device. 
 
-Regarding the results obtained relating to the numerical accuracy and resiliency for each of the DPUs of the formats, the Vivado simulation tool has been utilized confronting the simulated behavior of a specific numerical DPU with respect to the expected one. Both synthesis ans simulation related processes needed for the obtainmnet of the results have been utilized in conjunction with various TCL scripts for launching the synthesis or simulation along also python scripts for the generation of many random tests for the DPU used for example when calculating the numerical accuracy of each target DPU. 
+Regarding the results obtained relating to the numerical accuracy for each of the DPUs of the formats, the Vivado simulation tool has been utilized confronting the simulated behavior of a specific numerical DPU with respect to the expected result. Similarly, for the analysis of the resiliency of each format, the same Vivado Simulation tool has been utilized. So this proves that both the synthesis and simulation related processes are needed for the discorvery of the metrics. Both tolls have been utilized in conjunction with various TCL scripts for launching the synthesis or simulation with the additional support of Python scripts for the generation of many random tests for the DPU used for instance when calculating the numerical accuracy of each target DPU. 
 
-\section{DPU Level Hardware Utilization}
+\section{DPU Level Hardware Utilization Analysis}
 
 %This section should answer how expensive is each numerical format in hardware.
 %how fast is each implementation.
@@ -30,17 +30,17 @@ Regarding the results obtained relating to the numerical accuracy and resiliency
 
 %Paragraph 2: Explaining the resource metrics and what they mean: LUTs, FFs, DSPs, BRAMs.
 
-For the result obtained regarding the hardware utilization and timing, the synthesis tool has been utilized. Each DPU targeting a different format has been synthesized independently from the others. In regards to the analysis of the area hardware requirement for each of the DPUs, after the synthesis is complete, Vivado generated a resource related report with information regarding the RTL area required and other information. Regarding the area resource metrics, the synthesis report gave for the synthesized DPU at hand information about different area related metrics: 
+For the results obtained regarding the hardware utilization and timing, the synthesis tool has been utilized. Each DPU targeting a different format has been synthesized independently from the others. In regards to the analysis of the area hardware required for each of the DPUs, after the synthesis is complete, Vivado generated a resource related report with information regarding the area required and other information regarding digital occupancy expressed through various resource metrics. Regarding the area resource metrics, the synthesis report gave  information about different area related metrics for the synthesized DPU: 
 \begin{itemize} 
-    \item  Look Up Tables (LUTs): they are the basic blocks used to implement combinational logic. When the DPU of target in the synthesis needs adders, comparators, multiplexers format decoders and others, the synthesis shows this information through the LUT area metric.
-    \item Flip Flops (FFs): sequential storage elements used for registers, pipeline stages and intermediate signals.
-    \item (DSP): dedicated arithmetic resources in the FPGA fabric. They are mainly used for the multiplication and multiply-accumulate operation when the synthesis tool maps the target datapth to them.
-    \item (BRAM): Block RAMs are dedicated on-chip memory resources. They are mainly used for buffers, memories, and large lookup tables.
+    \item  \textbf{Look Up Tables (LUTs)}: they are the basic blocks used to implement combinational logic. When the DPU of target in the synthesis needs adders, comparators, multiplexers format decoders and others, the synthesis shows this information through the LUT area metric.
+    \item \textbf{Flip Flops (FFs)}: sequential storage elements used for registers, pipeline stages and intermediate signals.
+    \item \textbf{Digital Signal Processing block (DSP)}: dedicated arithmetic resources in the FPGA fabric. They are mainly used for the multiplication and multiply-accumulate operation when the synthesis tool maps the target datapath to them.
+    \item \textbf{Block Random Access Memory (BRAM)}: Block RAMs are dedicated on-chip memory resources. They are mainly used for buffers, memories, and large lookup tables.
 \end{itemize}
 
 %Paragraph 3: In-sert the resource utilization table
 
-Table ~\ref{tab:dpu_resource_utilization} summarizes the resource utilization obtained after the synthesis done for each of the synthesized DPU variants. The table confronts the number of LUTs, FFs, DSP blocks and BRAMs required by each numerical format. Since all designs implement the same dot-product operation, the reported values provide a direct comparison of the hardware cost introduced by each arithmetic rapresentation. 
+Table ~\ref{tab:dpu_resource_utilization} summarizes the resource utilization obtained after the synthesis done for each of the synthesized DPU variants in terms of the measures introduced just previously. The table confronts the number of LUTs, FFs, DSP blocks and BRAMs required by each numerical format. Since all designs implement the same dot-product operation, the reported values provide a direct comparison of the hardware cost introduced by each arithmetic rapresentation. 
 
 \begin{table}[htbp]
     \centering
@@ -67,41 +67,41 @@ Table ~\ref{tab:dpu_resource_utilization} summarizes the resource utilization ob
 
 %Paragraph 4: Discuss the main trends related to the Resource metrics for the DPUs. discussing in terms of what does the previous table tell the reader ? 
 
-The resource usage changes significantly depending on the format. In general as remarked by the previous table, for the dot product operation regarding the numerical formats with higher bit widths there is more hardware required. For instance as remarked in the table , the LUTs needed for FP32 format are about twice as much then the ones needed for the DPU which targets the FP16 format.  This is effect is shows for all the formats. In fact as observed in the Table, also the posit format is made of DPU which requires more LUT elements when the posit numerical format has widht of 32 bits. The reason for this obtained result is trivial and it is because larger operands require wider embedded adders , multipliers , normalization logic and more internal signals in their respective DPU level hardware organization. 
+The resource usage changes significantly depending on the format. In general as remarked by the previous table, for the dot product operation regarding the numerical formats with higher bit widths there is more hardware required. For instance as remarked in the table, the LUTs needed for FP32 format are about twice as much then the ones needed for the DPU which targets the FP16 format. This is effect is shown for all the formats. In fact as observed in the Table, also the Posit format is made of DPU which requires more LUT elements when the posit numerical format has width of 32 bits. The reason for this result is trivial and it is because larger operands require wider embedded adders, multipliers , normalization logic and more internal signals in their respective DPU level hardware organization. 
 
-Another remark which can be made related to the areas of the DPUs regarding the various formats is that the posit formats usually have higher LUT usage than the corresponding floating point formats. In fact for the syntheszed DPUs, the DPU which supports Posit 32 width elements has 1112 LUT elements more with respect to the FP32 synthesized DPU. This is due to the fact that Posit related DPUs involve more additional combinatorial circuits with respect to their floating point counter parts due to the needed regime deocding and the fact that it is a format witch excpects the regime filed of variable length like described in chapter 2. Basically, the Table suggests a trade off with the flexibility and area of implementation since the Posit rapresentation introduces
-additional decoding logic. 
+Another remark which can be made related to the areas of the DPUs regarding the various formats is that the posit formats usually have higher LUT usage than the corresponding floating point formats. In fact for the synthesized DPUs, the DPU which supports Posit 32 width elements has 1112 LUT elements more with respect to the FP32 synthesized DPU. This is due to the fact that Posit related DPUs involve more additional combinatorial circuits with respect to their floating point counter parts due to the needed regime decoding and the fact that it is a format witch excpects the regime filled of variable length like described in chapter 2. Basically, the Table suggests a trade off with the flexibility and area of implementation since the Posit rapresentation introduces additional decoding logic. 
 
-Another interesting result displayed by the table regards the LNS16 format compatible DPU. In fact it is seen that this DPU has a number of LUTs which is comparable to the amount of LUTs utilized for the FP32. This indicates how hardware expensive the LNS16 DPU is, as its LUT count is comparable to that of a DPU supporting elements of higher precision. The reason for this negative mismatch is due to the idea that the LNS16 DPU's inner addition modules are more complex then the other embedded addition related to the other formats studied as anticipated in the background chapter 2.
+Another interesting result displayed by the Table regards the LNS16 format compatible DPU. In fact it is seen that this DPU has a number of LUTs which is comparable to the amount of LUTs utilized for the FP32. This indicates how hardware expensive the LNS16 DPU is, as its LUT count is comparable to that of a DPU supporting elements of higher precision. The reason for this negative mismatch is due to the idea that the LNS16 DPU's inner addition modules are a lot more complex then the other embedded addition related to the other available as anticipated in chapter 2.
 
-Regarding the DPUs which support the Integer and fixed point formats, their simplestic RTL-description is convayed in the Table as for these formats there are less LUTs required with respect to the formats described previously. Also, interestingly the synthesis tool of Vivado maps very few LUTs for the INT16 related DPU, but this is due to the fact that it maps the synthesized model into an increased count of the DSPs instead.
+Regarding the DPUs which support the Integer and Fixed Point formats, their simplistic RTL-description is convayed in the Table as for these formats there are less LUTs required with respect to the formats described previously. Also, interestingly the synthesis tool of Vivado maps very few LUTs for the INT16 related DPU, but this is due to the fact that it maps the synthesized model into an increased count of the DSPs instead.
 
-Regarding the columns regarding the BRAMs, the synthesis tool has mapped 0 BRAMs for each of the DPUs of the formats because they are isolated arithmetic datapaths, not full accelerator subsystems with local memories and buffers. On the other hand for each DPU of each format there is a number of FFs being synthesized because each DPU has included registers for its input operand elements and one register for the result. This was necessary to include for the obtaining of performance related metrics for the DPU which is described more in detail in the next section.
+Regarding the BRAM resource metric, the synthesis tool has mapped 0 BRAMs for each of the DPUs of the formats because they are isolated arithmetic datapaths, not full accelerator subsystems with local memories and buffers. In fact, since this work involved the construction of a first release of the TCU accelerator, for simplicity the embedded DPUs are fully combinatorial and there is no pipeline mechanism at the DPU level.
+
+Lastly, the Table indicates that in each DPU the format there is a number of FFs contributing to the area of each DPU. This is because during the synthesis of each DPU, there are included registers for its input operand elements and one register for the result. whose size vary depending on the expected bit width of the singular DPU. The inclusion of the registers at the input and output interface of the DPUs was necessary for the obtaining of performance related metrics for the DPU which is described more in detail in the subsequent section.
 
 \section{DPU Level Timing Analysis}
 
 %goal of this section is to answer how fast can each DPU implementation run after syntheis ? Which numerical formats create longer critical paths ? Why is that ? 
 
-The timing analysis is equally as important as the resource analysis given in the last section. This is because optimally, the TCU accelerator circuit is integrated inside environments which are almost always synchronous such as the FlexGrip Plus GPU or the Klessydra T13 core which this thesis focused on. So, even though the focus of the thesis gave priority in the functional behavior of the integrated parametric TCU at simulation level, it was still important to provide the performance related metrics of the first relase of the unit to some extend to understand what there is to improve for future versions. Also, this analysis is important to be done at the DPU granular level to find out the differences in the performance related metrics amonf the various implemented DPUs each utilizing a different numerical format of operands. 
-
+The timing analysis is equally as important as the resource analysis given in the last section. This is because optimally, the TCU accelerator circuit is integrated inside environments which are almost always synchronous such as the FlexGrip Plus GPU or the Klessydra T13 core which this thesis focused on. So, even though the focus of this thesis gave priority in the functional behavior of the integrated parametric TCU at simulation level, it was still important to provide the performance related metrics of this first relase of the unit to some extent in order to understand what there is to improve for future versions. Also, this analysis is important to be done at the DPU granular level to find out the differences in the performance related metrics among the various implemented DPUs each utilizing a different numerical format of operands. 
 
 %Paragraph 5: Introduce the timing/Fmax metrics and the results data in general.
 
-For styduing the timing analysis and performance between the different DPUs inside the TCU, various related performance metrics have been focused on which are the following ones: 
+For studying the timing analysis and performance between the different DPUs inside the TCU, various related performance metrics have been focused which are the following ones: 
 
 \begin{itemize}
 
-    \item Critical Path: the longest combinationl path possible between the input registers and result register of a specific synthesized DPU relating to a specific numerical format.
+    \item \textbf{Critical Path}: the longest combinationl path possible between the input registers and result register of a specific synthesized DPU relating to a specific numerical format.
     
-    \item Worst Negative Slack (WNS):  the metric portraying whether the design meets the synthesis constraints related to a selected clock frequency. If it is negative, the DPU design does not meet the clock constraints.
+    \item \textbf{Worst Negative Slack (WNS)}:  the metric portraying whether the design meets the synthesis constraints related to a selected clock frequency. If it is negative, the DPU design does not meet the clock constraints.
     
-    \item Estimated Maximum Frequency (Fmax): the approximate maximum clock frequency the design could reach.
+    \item \textbf{Estimated Maximum Frequency (Fmax)}: the approximate maximum clock frequency the design could reach.
 
 \end{itemize}
 
 %Paragraph 6: Insert the main timing trends. 
 
-Just like the hardware resource analysis, the Vivado reports related to timings have been analyzed after the synthesis of each specific numerical format DPU. Also it is important to remark that the synthesis flow used a target clock period of 10 ns. The metrics explained above have been collected from the synthesis timing reports of Vivado for each numerical format and are all gathered in Table~\ref{tab:dpu_timing_results} . The table summarizes the WNS, the estimated critical-path delay and the estimated maximum frequency for all the implemented DPU variants.
+Just like in the hardware resource analysis, the Vivado reports related to timings have been analyzed after the synthesis of each specific numerical format DPU. Also it is important to remark that the synthesis flow used a target clock period of 10 ns. The metrics explained at the beggining of the section have been collected from the synthesis timing reports of Vivado for each numerical format and are all gathered in Table~\ref{tab:dpu_timing_results}. The table summarizes the WNS, the estimated critical-path delay in nanoseconds (ns) and the estimated maximum frequency in MegaHertz (MHz) for all the implemented DPU variants.
 
 \begin{table}[htbp]
     \centering
@@ -130,13 +130,13 @@ Just like the hardware resource analysis, the Vivado reports related to timings 
 
 %the goal is to answer what the timing table shows, why some of the formats have lower Fmax with respect to others and what is the important takeAway..
 
-From the previously introduced table, it can be analyzed that out of all the first versions of the DPUs of the numerical formats, only the DPU which takes INT8 related operands respects the imposed clock constraint of 10 ns. Consequently, it makes sense that the similar DPU targeting INT16 operands is almost respecting the constraint with a slack of only -1.206 nanoseconds. The Fixed Point related DPUs are the next fastest DPUs after the integer related DPUs both with a slack less the -10 nanoseconds and are also much faster with respect to the DPUs which target the Posit, the Floating Point and the LNS formats. From the table it can be observed in fact that the Floating Point and Posit formats have much longer critical paths. Specifically the 32 bit variants of these formats are the slowest out of all the othe DPUs and this is because they contain wider datapaths which consequently increase the complexity of the embeeded arithmatic operations  circuits inside the DPU.
+From the previously introduced table, it can be analyzed that out of all the first versions of the DPUs of the numerical formats, only the DPU which takes INT8 related operands respects the imposed clock constraint of 10 ns. Consequently, it makes sense that the similar DPU targeting INT16 operands is almost respecting the constraint with a slack of only -1.206 ns. The Fixed Point related DPUs are the next fastest DPUs after the integer related DPUs both with a slack less  -10 nanoseconds and are also much faster with respect to the DPUs which target the Posit, the Floating Point and the LNS formats. From the Table it can be observed in fact that the Floating Point and Posit formats have much longer critical paths. Specifically the 32 bit variants of these formats are the slowest out of all the othe DPUs and this is because they contain wider datapaths which consequently increase the complexity of the embedded arithmetic operations  circuits inside the DPU.
 
-Another interesting result is shown when confronting the WNS slack between the Posit8 and FP8 format, the Posit16 and FP16 format, and the Posit32 and FP32 format. When confronting the WNS values between the pairs it can be seen that they are very similar with each other (for instance the Posit 8 DPU has a WNS of -64.568 ns compared to the WNS of -64.029 ns related to the FP8 DPU ). When also considering , as explained in chapter 3, that the floating point DPUs have a different structure (Early Accumulate structure) with respect to the organization of the posit related DPUs (Tree Adder structure), this result shows that independent of the methodology of the DPU design, the critical path delay between these two formats is comparable metric. With regards to the LNS16 DPU, the table proves that it is slower than fixed/integer format DPUs, but comparable to 8 bit posi and floating point ones.
+Another interesting result is shown when confronting the WNS slack between the Posit8 and FP8 format, the Posit16 and FP16 format, and the Posit32 and FP32 format. When confronting the WNS values between the pairs it can be seen that they are very similar with each other (for instance the Posit 8 DPU has a WNS of -64.568 ns compared to the WNS of -64.029 ns related to the FP8 DPU ). When also considering , as explained in chapter 3, that the floating point DPUs have a different structure (Early Accumulate structure) with respect to the organization of the posit related DPUs (Tree Adder structure), this result shows that independent of the methodology of the DPU design, the critical path delay between these two formats is comparable metric. With regards to the LNS16 DPU, the Table proves that it is slower than fixed/integer format DPUs, but comparable to 8 bit Posit and Floating Point ones.
 
 %explaining WHy the results are the ones obtained. discussing a little basically. 
 
-The floating-point and posit implementations show significantly longer critical paths, especially for the 32-bit variants. This can be related to the larger datapath width and to the additional logic required for decoding, alignment, normalization, rounding, or regime handling. LNS16 also shows a relatively long critical path, which is mainly associated with the cost of logarithmic addition and subtraction. 
+The Floating-Point and Posit implementations show significantly longer critical paths, especially for the 32-bit variants. This can be related to the larger datapath width and to the additional logic required for decoding, alignment, normalization, rounding, or regime handling. LNS16 also shows a relatively long critical path, which is mainly associated with the cost of logarithmic addition and subtraction. 
 
 Since these values are obtained from post-synthesis timing reports, they should be interpreted as comparative estimates rather than final placed-and-routed operating frequencies. Nevertheless, because all DPU variants were evaluated with the same synthesis setup, the results provide a useful indication of the relative timing cost of each numerical format.
 
@@ -150,25 +150,24 @@ This section shows the results which have been obtained after the validation tes
 
 Like explained in the background chapter of this work, the operation done by each of the DPUs is the following one: \begin{equation}
 R = A_0B_0 + A_1B_1 + A_2B_2 + A_3B_3 + C_0
-\end{equation} Furthermore the tested 10000  vectors contain values which are the typical ones found in DNN random vectors. The vectors were generated using the same flow described in the DPU error-analysis scripts in chapter 2. 
+\end{equation} Furthermore the tested 10000 vectors contain values which are the typical ones found in DNN random vectors. The vectors were generated using the same flow described in the DPU error-analysis scripts in chapter 2. 
 
 Regarding the reference result values for each of the tests for each of the formats, they rapresent the ideal full-precision real result calculated by the same Python script which also calculated the random test vectors for the testbench. Basically, for each format a Python script computes the full-precision reference test, then each of the generated operands are quantized into the target format. Then, the VHDL DPU computes the encoded result through simulation and that output is decoded back into a real value (always by means of a Python script) in order for the comparison to the expected result to be done. Finally for each format DPU, by means of comparison Python script, the decoded DPU result obtained in simulation is compared against the full-precision reference whose output is to be used for obtaining the error related metrics of the DPUs. 
 
 Like the results related to the hardware area and timing alysis explained in the previous sections of this chapter, the results obtained forming the numerical accuracy evaluation of each DPU regard various related metrics which involve the following, always obtained for each of the format related DPUs: 
 \begin{itemize}
-    \item Number of tests: total number of input vectors used for the
+    \item \textbf{Number of tests}: total number of input vectors used for the
     evaluation. In this experiment, each format was evaluated using 10,000 DNN-like random test vectors.
 
-    \item Exact-match percentage: percentage of test cases for which
-    the decoded DPU output exactly matches the corresponding reference result. This metric is especially meaningful for integer-domain formats related DPU, where a
-    100\% exact match indicates that the expected integer arithmetic was reproduced for all tested vectors.
+    \item \textbf{Exact-match percentage}: percentage of test cases for which
+    the decoded DPU output exactly matches the corresponding reference result. This metric is especially meaningful for integer-domain formats related DPU, where a 100\% exact match indicates that the expected integer arithmetic was reproduced for all tested vectors.
 
-    \item Mean absolute error: average absolute difference between
+    \item \textbf{Mean absolute error}: average absolute difference between
     the reference result and the decoded hardware result. This metric provides a general indication of the average numerical deviation introduced by the format and by the DPU arithmetic.
 
-    \item Maximum absolute error: largest absolute difference observed over the full set of test vectors. This metric highlights the worst-case deviation found during the experiment.
+    \item \textbf{Maximum absolute error}: largest absolute difference observed over the full set of test vectors. This metric highlights the worst-case deviation found during the experiment.
 
-    \item Root mean square error (RMSE): quadratic error metric that gives
+    \item \textbf{Root mean square error (RMSE)}: quadratic error metric that gives
     more weight to larger deviations. It is useful to compare the overall numerical behavior of the different real-valued formats.
 
 \end{itemize}
@@ -176,6 +175,8 @@ Like the results related to the hardware area and timing alysis explained in the
 For the real-valued formats, the absolute error, relative error, and RMSE are expressed in decoded real-value units. For the integer-domain formats, the corresponding error metrics are expressed in integer counts. For this reason, the integer-domain results are used mainly to verify arithmetic correctness and should not be interpreted in the same way as the real-valued error results.
 
 After the Vivado simulation for each of the DPUs for each of the numerical formats, the related accuracy related errors have been collected in Table~\ref{tab:dpu_numerical_accuracy}. The values of the metrics reported in the table are the ones corresponding to operands which are in the range -1 to 1 for all the formats which rapresent values in the Real domain. This is done to omit overflow and hence compare the accuracy of each particular DPU more precisly with one another.
+
+Observing the Table, it can be remarked that the results yield that 32-bit real-valued formats produce the lowest error. Specifically, the Posit32 format has the lowest mean absolute and RMSE among all the formats in the dataset. FP32 DPU is the next best solution with errors in the range of the nano scale magnitude. Regarding the operands with width of 16 bits, the DPU supporting the Posit16 format shows lower mean absolute error as well as lower RMSE with respect to the standard FP16, LNS16, and Fixed Point 16 counterparts. Regarding the DPUs treating with formats of the smallest width, FP8 and Posit8 DPUs show the largest errors as expected due to their reduced bit-width size. Also Obeserving the table it can be observed that the lower are the amounts of bits used for the result of the format the higher is the exact match percentage case however by just a small percentage case of variation. The error related metrics have also been plotted for all the 10000 tests into different seperate plots which portray the expected resulting value of each of the singular 10000 test versus the absolute error calculated from the simulated result of the DPU. These plots were usefull to understand the presence of outliers and other phenomenons and were also useful to compare the different DPU's obtained errors according on the format. For example,the Figure~\ref{fig:dpu_error_metrics_comparison} shows the plots reported for the confronting the errors of the 10000 tests of the Floating Point format DPUs against the Posit format related DPUs, and it can be observed also through these plots the difference in the magnitude of the error, where the Posit related DPUs result in a lower error with respect to the Floating Point ones. 
 
 \begin{table}[htbp]
     \centering
@@ -208,7 +209,7 @@ After the Vivado simulation for each of the DPUs for each of the numerical forma
     }
 \end{table}
 
-Observing the Table, it can be remarked that the results yields that 32-bit real-valued formats produce the lowest error. Specifically, the Posit32 format has the lowest mean absolute and RMSE among all the formats in the dataset. FP32 DPU is the next best solution with errors in the range of the nano scale magnitude. Regarding the operands with width of 16 bits, the DPU supporting the Posit16 format shows lower mean absolute error as well as lower RMSE with respect to the standard FP16, LNS16, and Fixed Point 16 counterparts. Regarding the DPUs treating with formats of the smallest width, FP8 and Posit8 DPUs show the largest errors as expected due to their reduced bit-width size. Also Obeserving the table it can be observed that the lower are the amounts of bits used for the result of the format the higher is the exact match percentage case however by just a small percentage case of variation. The error related metrics have also been plotted for all the 10000 tests into different seperate plots which portray the expected resulting value of each of the singular 10000 test versus the absolute error calculated from the simulated result of the DPU. These plots were usefull to understand the presence of outliers and other phenomenons and were also useful to compare the different DPU's obtained errors according on the format. For example,the Figure~\ref{fig:dpu_error_plots_grid} shows the plots reported for the confronting the errors of the 10000 tests of the Floating Point format DPUs against the Posit related DPUs, and it can be observed also through these plots the difference in the magnitude of the error, where the Posit related DPUs result in a lower error with respect to the Floating Point ones. 
+\newpage
 
 \begin{figure}[t]
     \centering
@@ -254,11 +255,11 @@ Observing the Table, it can be remarked that the results yields that 32-bit real
     \label{fig:dpu_error_metrics_comparison}
 \end{figure}
 
-Discussing more related to the numerical accuracy results just provided in this section, the posit formats over all show lower mean absolute error and RMSE than the
-corresponding floating-point formats in this experiment. This behavior can be related to the tapered-precision property of posit arithmetic, which allocates precision differently from conventional floating-point formats and can be particularly effective for values concentrated around a limited numerical range. But as a tradeoff of this when the range of the operand increases however, the behavior of the absolute area of the posit format will get closer to the numerical format of Floating Point. Regarding the other emerging format of LNS16,  even if the multiplications part of the dot product operation are convenient in LNS format, the DPU still needs several additions/accumulations part of the operation. And as a result of this, this is where the LNS16 related error metrics increase with respect to the floating point and posit related formats shown in the previously introduced table. In general,  this explains why LNS16 format is less accurate than FP16 and Posit16 in this experiment, while still remaining more accurate than the evaluated 8-bit formats due to the presence of more precision bits in that case. Lastly, for motivating the numerical format of fixed point, it can be remarked that Since fixed-point arithmetic uses a uniform quantization step, it cannot adapt its precision to the magnitude of the represented values as floating-point or posit formats do. As expected, FXP16 significantly reduces the error with respect to FXP8 due to the larger input and output precision. However, in this dataset, FXP16 remains less accurate than FP16 and Posit16, suggesting that the selected fixed-point scaling provides a simpler but less flexible approximation of the real-valued dot product.
+When discussing more about the related numerical accuracy results just provided in this section, the Posit formats over all show lower mean absolute error and RMSE than the corresponding floating-point formats in this experiment. This behavior can be related to the tapered-precision property of Posit arithmetic, which allocates precision differently from conventional Floating-Point formats and can be particularly effective for values concentrated around a limited numerical range. But as a tradeoff of this when the range of the operand increases however, the behavior of the absolute area of the posit format will get closer to the numerical format of Floating Point. Regarding the other emerging format of LNS16,  even if the multiplications part of the dot product operation are convenient in LNS format, the DPU still needs several additions/accumulations part of the operation. And as a result of this, this is where the LNS16 related error metrics increase with respect to the floating point and posit related formats shown in the previously introduced table. In general,  this explains why LNS16 format is less accurate than FP16 and Posit16 in this experiment, while still remaining more accurate than the evaluated 8-bit formats due to the presence of more precision bits in that case. Lastly, for motivating the numerical format of Fixed Point, it can be remarked that since Fixed-Point arithmetic uses a uniform quantization step, it cannot adapt its precision to the magnitude of the represented values as floating-point or posit formats do. As expected, FXP16 significantly reduces the error with respect to FXP8 due to the larger input and output precision. However, in this dataset, FXP16 remains less accurate than FP16 and Posit16, suggesting that the selected fixed-point scaling provides a simpler but less flexible approximation of the real-valued dot product.
 
-Lastly for closing the subsection there is included Figure~\ref{fig:real_mean_abs_error_by_format} which provides a graphical view of the mean absolute error reported in Table~\ref{tab:dpu_numerical_accuracy} for the decoded-real-domain formats. A logarithmic scale is used on the vertical axis because the error values span several orders of magnitude depending on the format tested for accuracy. This makes it possible to compare low-precision and high-precision formats in the same plot without hiding the smaller error values and a better general visualization of the discussion related to the accuracy for each format discussed in this section.
+Lastly for closing the subsection there is included Figure~\ref{fig:real_mean_abs_error_by_format} which provides a graphical view of the mean absolute error reported in Table~\ref{tab:dpu_numerical_accuracy} for all the decoded-real-domain formats. A logarithmic scale is used on the vertical axis because the error values span several orders of magnitude depending on the format tested for accuracy. This makes it possible to compare low-precision and high-precision formats in the same plot without hiding the smaller error values and a better general visualization of the discussion related to the accuracy for each format discussed in this section.
 
+\newpage
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.90\textwidth]{figures/real_mean_abs_error_by_format.png}
@@ -267,12 +268,332 @@ Lastly for closing the subsection there is included Figure~\ref{fig:real_mean_ab
 \end{figure}
 
 \newpage 
+\section{DPU-Level Resiliency Analysis}
 
-\section{Fault-Injection Methodology}
+Along with the analysis described in the previous sections, there is also the resiliency associated study of the various DPUs. This resiliency is also very fundamental for one of the objectives of the thesis which is that of finding out the resiliency characteristics of each of the formats of the accelerator implemented in this work. The resiliency in this work has been studied through the sensitivity analysis of each of the real value implemented DPUs to permanent stuck at faults of the input signals of each DPU. In fact for each of the specific format DPUs, faults have been injected at the input interface of the component before begining a related simulation flow through Vivado. More specifically the resulting resiliency behavior has been investigated through the many comparisons of the faulty result due to the faults with respect to the fault free result. In this work, the resiliency analysis has been done in the embedded DPUs of the TCU accelerator rather then the overall TCU principally due to timing constraints, as the fault campaigns involving the TCU and its surrounding environment takes many more time with respect to the fault campaign done with respect to the individual format specific DPUs. But nonetheless, injecting faults in the various specific formats is a beggining approach of the resiliency evaluation giving usefull distinguishment of resiliency of the various numerical format DPUs implemented in this work. Furthermore, the results characterize the sensitivity of the implemented DPU input datapaths and should not be interpreted as a complete gate-level reliability analysis of the entire TCU.
 
-\section{Fault-Injection Results}
+%describing the shared workload. 
 
-\section{Discussion}
+Regarding the specific methodology of the fault injection flow related to each of the different numerical supportive DPUs, the fault campaign flow involves 100 vectors of 9 operands of the format specific DPU targeted where each operand is in the range of -1 to 1 to avoid the overflow scenarios when testing all the formats and for mantaining test coherency. The decoded values of the 100 vectors of the campaign are the same for all the DPUs, the encodings however differ depending on the DPU targeted. Each faulty result obtained in simulation was compared with the fault-free golden output generated by the same DPU format and the same input vector.
 
+%Fault model
+
+With regard to the adopted fault model, as already introduced at the
+beginning of this section, permanent stuck-at faults were considered.
+For the resiliency evaluation of each DPU, the effects of applying
+stuck-at-0 and stuck-at-1 faults to the input bits of the operand lines
+were simulated individually.
+
+A fault was classified as not activated when the forced value was equal
+to the original value of the selected bit. Conversely, when the forced
+value differed from the original bit, the fault was considered
+activated. The activated faults were subsequently divided into two
+classes:
+
+\begin{itemize}
+    \item \textbf{Masked}: the faulty encoded output was identical to
+    the corresponding fault-free golden output;
+
+    \item \textbf{Silent Data Corruption (SDC)}: the faulty encoded
+    output differed from the corresponding fault-free golden output.
+\end{itemize}
+
+The number of injectable bits contained in one operand vector depends on
+the widths of the nine DPU input operands. Let $w_j$ denote the width of
+the $j$-th operand. The total number of injectable bits per vector is
+therefore defined as
+
+\begin{equation}
+N_{\mathrm{bits}}
+=
+\sum_{j=1}^{9} w_j .
+\label{eq:dpu_injectable_bits}
+\end{equation}
+
+For DPU variants in which all nine operands have the same width $w$,
+Equation~\ref{eq:dpu_injectable_bits} reduces to
+$N_{\mathrm{bits}}=9w$. For the mixed-width fixed-point variants, the
+actual width of each operand was considered separately.
+
+Since both stuck-at-0 and stuck-at-1 conditions were applied to every
+injectable bit of every vector, the total number of simulated fault
+cases is given by
+
+\begin{equation}
+N_{\mathrm{cases}}
+=
+2 N_{\mathrm{vectors}} N_{\mathrm{bits}},
+\label{eq:dpu_total_fault_cases}
+\end{equation}
+
+where the factor 2 accounts for the two stuck-at conditions (stuck at 0 and stuck at 1). Since one of the two forced values preserves the original bit and the other changes it, the number of activated faults is
+
+\begin{equation}
+N_{\mathrm{activated}}
+=
+N_{\mathrm{vectors}} N_{\mathrm{bits}}.
+\label{eq:dpu_activated_faults}
+\end{equation}
+
+For the comparison of the resiliency results among the different
+numerical-format-specific DPUs, the activated SDC rate was used as the
+main evaluation metric. It is defined as
+
+\begin{equation}
+\mathrm{SDC}_{\mathrm{activated}}
+=
+\frac{N_{\mathrm{SDC}}}
+{N_{\mathrm{SDC}}+N_{\mathrm{masked}}}
+\times 100,
+\label{eq:dpu_activated_sdc_rate}
+\end{equation}
+
+where
+$N_{\mathrm{SDC}}+N_{\mathrm{masked}}=N_{\mathrm{activated}}$.
+Therefore, Equation~\ref{eq:dpu_activated_sdc_rate} expresses the
+percentage of the faults that actually modified an input bit and
+subsequently produced an output different from the corresponding golden
+result.
+
+So with the help of the mentioned formulas and methedology, for FP8 and Posit8 format DPUs 14,400 total cases have been studied 7,200 activated faults. For FP16 , Posit16 and LNS16 28,800 total cases have been analyzied 14,400 of which are activated faults, and for FP32 and Posit32 DPUs 57,600 total cases have been studied in simulation each of where 28,800 are activated faults. For the width DPU width DPU of FixedPoint8 operands but with result on 16 bits, 16,000 total cases have been studied where 8,000 of them are activated faults. While for FixedPoint16 operand DPU 32,000 total fault cases aroise where 16,000 of them are activated faults. Since the number of injectable bits and consequently the number of fault cases differ among the formats, the comparison is mainly based on the activated SDC rate rather than on the absolute SDC count.
+
+The complete fault-classification results are reported in
+Table~\ref{tab:dpu_resiliency_results}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Fault-classification results of the evaluated DPU variants.}
+    \label{tab:dpu_resiliency_results}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrrr}
+        \hline
+        \textbf{Format} &
+        \textbf{Total Cases} &
+        \textbf{Not Activated} &
+        \textbf{Activated} &
+        \textbf{Masked} &
+        \textbf{Masked (\%)} &
+        \textbf{SDC} &
+        \textbf{Activated SDC (\%)} \\
+        \hline
+        FP8       & 14,400 & 7,200  & 7,200  & 1,549 & 21.51 & 5,651  & 78.49  \\
+        Posit8    & 14,400 & 7,200  & 7,200  & 1,209 & 16.79 & 5,991  & 83.21  \\
+        FP16      & 28,800 & 14,400 & 14,400 & 1,583 & 10.99 & 12,817 & 89.01  \\
+        Posit16   & 28,800 & 14,400 & 14,400 & 1,583 & 10.99 & 12,817 & 89.01  \\
+        LNS16     & 28,800 & 14,400 & 14,400 & 1,819 & 12.63 & 12,581 & 87.37  \\
+        FP32      & 57,600 & 28,800 & 28,800 & 1,572 & 5.46  & 27,228 & 94.54  \\
+        Posit32   & 57,600 & 28,800 & 28,800 & 1,775 & 6.16  & 27,025 & 93.84  \\
+        FXP8/16   & 16,000 & 8,000  & 8,000  & 88    & 1.10  & 7,912  & 98.90  \\
+        FXP16/32  & 32,000 & 16,000 & 16,000 & 0     & 0.00  & 16,000 & 100.00 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
+
+Both the masked and SDC percentages reported in
+Table~\ref{tab:dpu_resiliency_results} were calculated with respect to
+the number of activated faults. Consequently, for each DPU variant, the
+sum of the masked rate and the activated SDC rate is equal to 100\%.
+
+Some several observations can be made by the data portrayed inside the Table. First of all it is observed that the SDC rate increases with width for both FP and Posit format DPUs. As the numerical precision increases, smaller fault-induced perturbations are more likely to remain visible in the encoded output instead of being removed by quantization or rounding. Furthermore, neither Floating Point nor Posit showed uniform superiority across all widths. Also, with regards to the FIxed Point and LNS format DPU's resiliency, LNS16 format DPU has a lower SDC rate than FP16, Posit16 and Fixed Point 16. The highest SDC rates while simulating the fault campaign have been found in the Fixed Point format specific DPUs. This behavior can be related to the absence of normalization and rounding mechanisms capable of masking small fault-induced perturbations before they reach the output. Moreover, in the FXP16/32 campaign, none of the multiplicative operands was quantized to zero, allowing every activated input fault to propagate to the result.
+However is important to remark that a 100 percent SDC rate indicates complete exact-output sensitivity under the adopted fault model but does not imply that every corruption produced  a numerically severe catastrophic error.
+
+To prove a better more visually appealing comparison of the resiliency analysis of the formats of each DPU, Figure~\ref{fig:dpu_sdc_rate_comparison}  reports the mean per vector activated SDC rate obtained for each evaluated DPU format. The error bars rapresent the approximate 95\% confidence interval of the mean calculated from the 100 per-vector SDC rates. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\textwidth]
+    {figures/dpu_sdc_rate_comparison.png}
+    \caption{Mean activated SDC rate of the evaluated DPU variants.
+    Error bars represent approximate 95\% confidence intervals of the
+    mean per-vector SDC rate.}
+    \label{fig:dpu_sdc_rate_comparison}
+\end{figure}
+
+There are several resiliency related remarks that can be easily made with regards to the introduced Figure. The activated DC rate generally increases with operand width for both the Floating Point and Posit family DPUs. This behavior suggests that, as the
+number of representable output values increases, smaller fault-induced
+perturbations are more likely to remain visible in the encoded result
+instead of being masked by quantization or rounding. Going more specifically, when comparing the Floating-Point and Posit implementations of the same width, FP8 shows a lower SDC rate than Posit8, FP16 and Posit16 show very similar avarage SDC rate, while the Posit32 shows only a slighltly lower rate with respect to FP32. Therefore, neither numerical family of these twodemonstrates a uniform resiliency advantage across all its possible implemented bit widths of its operands, but if the user is constrained in choosing to use a format while being constrained on the bit size of the input operands, the data suggests that the format which is more resilient on 8 bit operand size is the FP8 format, while if the constraint is of 32 bit sized operands the more resilient DPU is the one targeting Posit32 format operands. The fixed-point variants exhibit
+the highest exact-output sensitivity, whereas LNS16 presents a slightly
+lower average SDC rate than the other 16-bit real-valued formats.  With regards to the confidence intervals portrayed in the Figure, they are relatively narrow for the higher-width formats and this indicates a more consistent average response across the 100 input vector. However, the overlapping intervals observed for some formats, particularly FP32 and Posit32, suggest that their small differences should not be interpreted as evidence of a clear superiority. 
+
+The previous introduced Figure is important high level detail of resiliency information for the DPUs, however the SDC mean alone does not show whether the result is stable across the 100 vectors. As a consequence a boxplot shown in Figure~\ref{fig:dpu_sdc_boxplot} is therefore used to examine how much the per-vector SDC rate varies for each DPU format, showing more information of the singular input 100 vector tests performed in each fault campaign for the DPUs.  In the presented boxplot the line inside each box is the median value of the SDC rate out of the 100 calculated rates. The whiskers and outliers in the plot show the broader variation, and the dashed lines of each of the boxes each regarding the format specific DPUs rapresent the mean (which is the same value shown in the previously presented bar plot diagram).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]
+    {figures/dpu_sdc_boxplot.png}
+    \caption{Distribution of the per-vector activated SDC rates for
+    the evaluated DPU variants. Each box represents the interquartile
+    range of the 100 per-vector results, the solid orange line indicates
+    the median, the dashed green line indicates the mean, the whiskers
+    represent the values within 1.5 times the interquartile range, and
+    the circles indicate outliers.}
+    \label{fig:dpu_sdc_boxplot}
+\end{figure}
+
+\newpage 
+Many important observations and analysis with respect to the formats can be made when analyzing the boxplot.  Regarding the FP8 and Posit8 DPUs, they present the widest distributions among the evaluated formats. FP8 has the lowest mean activated SDC rate, but also the greatest variability across the 100 vectors. Posit8 also shows a very broad distribution, although its central SDC rate is higher than that of FP8. The interpretation for these resiliancy related distribution results suggests that the fault-masking capability of the 8-bit formats depends strongly on the particular operand values being processed. The reason is because the reduced precision of the 8-bit representations can cause some fault induced perturbations to be removed by rounding or quantization, but whether this masking occurs depends on the encoded values of the test of the input vector applied. 
+
+With regards to the formats composed of 16 bit widths, they show even narrower distribution compared to the previously analyzed 8-bit formats. FP16 and Posit16 have the same average activated SDC rate, but the Posit16 box is slightly narrower. Even though the average sensitivity is the same, the Posit16 related format DPU behaves a little more consistently across the 100 vectors. With regards to the LNS16 DPU, it shows that it contains a slightly lower avarage SDC rate with respect to the FP16 and Posit16 counterparts but its distribution is broader and includes lower outliers It also  more masking on average, but its behavior is more dependent on the input vector. And this could be related to the fact that the different encoding and arithmetic behavior of the LNS16 format, where the effect of a bit fault depends strongly on the rapresented logarithmic magnitude and on how the perturbed value propagates through the addition stages. Therefore, among the 16-bit formats, the avarage SDC rate alone doesnt describe resilience, since formats with similar means can still exhbit different levels of input dependent variability. 
+
+For the 32 bit related formats operands, FP32 and Posit32, they have even more narrower distributions concentrated at very high activated SDC rates in general. This means that their fault response changed less across the 100 vectors than the response  of the lower width formats. Comparing them directly with one another, the boxplot also shows that Posit32 has a slightly lower mean SDC rate than the FP32, but the two boxes overlap strongly.  FOr this formats width hence it can be concluded that the difference is too small to support the claim that the present implementation of the Posit32 DPU is more resilient to faults with respect to the FP32 counterpart. The high precision of both formats makes even small fault-induced perturbations more likely to remain visible in the encoded output, reducing masking. Hence by the plot it can be inferred that at 32 bits, exact output sensitivity is consistnetly high and less dependednt on the selected input vector applied of the fault campaign.
+
+For the mixed width FXP16/32 format, the activated SDC rate was equal to 100\% for all the tested vectors. This means that every activated fault changed the output compared to the golden result. This can probably be related to the direct way in which fixed-point perturbations propagate through the arithmetic operations, without normalization or rounding effects that could mask them. However, this does not mean that every fault generated a very large error, because even a small difference from the golden output was still classified as an SDC.
+
+In conclusion for the resiliency analysis, in this work faults have been injected at the DPU input interface. With those campaigns, SDC classification has been extracted for each of the DPU specific formats and the classification was based on exact output comparison with respect to a golden simulation for each vector in a fault campaign. It has been observed a very small difference and a large error were both counted as SDC. Lastly, the resiliency result conclusions are valid for the selected 100 vectos and adopted stuck at fault model in this work, hence but not universally for every workload and based on the campaign's results it has been observed that lower-width formats showed more masking but also more dependence on the input vectors, while higher-width and fixed-point formats showed higher and more consistent exact-output sensitivity.
+
+\section{System-Level TCU Integration Analysis}
+
+After the detailed showcast and study of the results obtained for the area, performance, accuracy, and resilience of the embedded DPU level for each format, it is important also to compare some results related to the upper level accelerator, the parametric TCU. In fact, as explained in the integration chapters of this work, the designed parametric TCU has different surrounding and embedded components depending on in its integration environment. So this section presents some of the differences in the area and in the performance of the related accelerator RTL modules that have been integrated in the FlexGrip Plus GPU and in the Klessydra T13 Core.
+
+\newpage
+\subsection{TCU-Level Hardware Utilization}
+
+The first analysis regarding the parametric TCU differences regards the area utilization needed during the synthesis of the wrapper module containing the accelerator in the Flexgrip Plus GPU compared to that designed for the integration in the Klessydra T13 core. The main clarification is that (as explained in Chapter 5 regarding the integration work of the accelerator inside the GPU) involves an accelarator wrapper containing two TCU module datapath. While on the other hand, the accelerator inside the Klessydra T13 Core has only one instance of the parametric TCU as described more in detail in Chapter 6 of this work.
+
+For veryfying the expected results of area utilization described previously due to integration design sources, the same Vivado Synthesis toll has been utilized just like done with the DPU analysis. Similarly, the same FPGA target and the same area utilization metrics have been utilized for this synthesis process.
+
+Table~\ref{tab:tcu_area_comparison} compares the post-synthesis
+resource utilization of the FlexGrip Plus dual-TCU wrapper and the
+standalone parametric TCU developed for the Klessydra environment.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Post-synthesis resource utilization of the TCU
+    configurations developed for FlexGrip Plus and Klessydra.}
+    \label{tab:tcu_area_comparison}
+
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Resource}
+        & \shortstack{\textbf{FlexGrip Plus}\\
+          \textbf{dual-parametrics TCU wrapper}}
+        & \shortstack{\textbf{Klessydra}\\
+          \textbf{parametric TCU wrapper}} \\
+        \midrule
+
+        LUTs
+        & 972{,}031
+        & 460{,}949 \\
+
+        Registers
+        & 19{,}468
+        & 19{,}685 \\
+
+        DSP Blocks
+        & 240
+        & 240 \\
+
+        Block RAM Tiles
+        & 0
+        & 0 \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+As shown in Table~\ref{tab:tcu_area_comparison}, the complete FlexGrip Plus dual-TCU wrapper requires substantially more LUT resources than the Klessydra parametric TCU, while the two configurations exhibit similar sequential-resource utilization. This is due to the design choices described inside the related integration chapters of this work. The main reasons being that the FlexGrip Plus GPU allows the execution of two TCU modules in parallel as it performs execution at the warp level (32 threads) where a single TCU gets mapped to 16 threads. While the Klessydra T13 Core did not allow the availability of 32 harts, and consequently could only be provided one single TCU for its set of 16 harts. 
+
+Another remark that can be made related to the results is related to the FPGA device for which the synthesis has been done , the Xilinx Artix-7 XC7A100T. This board supports 240 DSPs hence each of the synthesiszed accelerator components use all the available DSPs. FurtherMore it uses not all the possible amount of registers available on the board which is 126,800 registers. This is good and makes sense as a result as it keeps register utilization at about 19\%, and may be due to the fact that in this first release of the accelerators the inner DPU components are not pipelined meaning that they dont contain registers embedded inside them. In a future release in which DPUs execution is pipelined, the registers utilization of the board is expected to be more at risk. Lastly, there is the bottle neck of this first design which is the LUTs. For both of the accelerators both environments require more then the available amount of LUTs of this selected Xilix board which is 63,400 Slice LUTs. And consequently this means that this first release of the accelerator cannot be mapped to the selected board for the synthesis and leads to make the decision of improving the design of the integration of the accelerator inside the two different environments, or selecting a more expensive Xilinx board. However,considering the LUTs number of the table, it does show that the TCU implemented in the GPU has about twice the value of LUTs needed in the TCU implemented for the Klessydra core as discussed and as expected earlier in this section.
+
+\subsection{TCU-Level Performance Analysis}
+
+As described in the integration related chapters, the two TCU accelaraots have been placed into synchronous environments of the FlexGrip Plus and Klessydra T13 core. As a consequence in this section it was counted the number of clock cycles performed in simulation when the integration had been done for the FLexGrip Plus and for the Klessydra T13 core. This count has been performed by functionally simulating with the use of Modelsim the execution of a assembly program containing HMMA instructions which activates the integrated accelerator modules. Before simulating, it was expected for the FlexGrip Plus GPU to have the faster execution of the instruction as it uses more threads and its threads are executing at the same clock cycle instead of the Klessydra T13 core which assigns one hart per clock cycle in round robin fashion scheduling. 
+
+A simple hmma instruction of step 0 type has been inserted in the assembly program to be simulated inside the FlexGrip Plus GPU and Klessydra T13 environment. Afterwards, the simulation with Modelsim tool has been performed counting the clock cycles needed for the related hmma instruction of step 0 type from the start of the execution pipeline phase until its end, beggining of the writeback. Then, Table~\ref{tab:hmma_step0_latency} has been formed gathering those values so that analysis and confrontation can be made. The reported values include operand collection, tensor-core computation and result capture, while instruction fetch, decoding and architectural register-file writeback are excluded.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Clock-cycle latency of the HMMA Step~0 execution
+    stage for the evaluated numerical formats.}
+    \label{tab:hmma_step0_latency}
+
+    \begin{tabular}{lcccc}
+        \toprule
+        \shortstack{\textbf{Numerical}\\\textbf{format}}
+        & \shortstack{\textbf{Operand}\\\textbf{width}}
+        & \shortstack{\textbf{Result}\\\textbf{width}}
+        & \shortstack{\textbf{FlexGrip}\\\textbf{Plus}\\\textbf{(ccs)}}
+        & \shortstack{\textbf{Klessydra}\\\textbf{T13}\\\textbf{(ccs)}} \\
+        \midrule
+
+        FP8
+        & 8 bit
+        & 8 bit
+        & 7
+        & 27 \\
+
+        FP16
+        & 16 bit
+        & 16 bit
+        & 7
+        & 27 \\
+
+        FP32
+        & 32 bit
+        & 32 bit
+        & 10
+        & 30 \\
+
+        Posit8
+        & 8 bit
+        & 8 bit
+        & 7
+        & 27 \\
+
+        Posit16
+        & 16 bit
+        & 16 bit
+        & 7
+        & 27 \\
+
+        Posit32
+        & 32 bit
+        & 32 bit
+        & 10
+        & 30 \\
+
+        LNS16
+        & 16 bit
+        & 16 bit
+        & 7
+        & 27 \\
+
+        FXP8\_16
+        & 8,16 bit
+        & 16 bit
+        & 7
+        & 27 \\
+
+        FXP16\_32
+        & 16,32 bit
+        & 32 bit
+        & 8
+        & 28 \\
+
+        INT8\_16
+        & 8,16 bit
+        & 16 bit
+        & 7
+        & 27 \\
+
+        INT16\_32
+        & 16,32 bit
+        & 32 bit
+        & 8
+        & 28 \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The results of performance in terms of clock cycles (ccs) leads to say several remarks which were expected when integrating the TCU accelerators into the environments. First of all, the singular hmma instruction executed in the FlexGrip Plus GPU environment produces the result more faster when compared to the Klessydra T13 Core counterpart. This is expected because the GPU launches the threads executed all together in chunks hence the loading of the buffers are being done in parallel. But for the Klessydra T13 Core , this does not happen, and in fact more clock cycles are needed as each of the execution harts take the turn in loading the related information from the respective register file into the buffers during the execution phase in order to fill the buffers related to the TCU accelerator. Another remark from this Table is that of considering the fact that it may take a different amount of clock cycles for a format of a specific environment with respect to another format always in the same environment of testing. For example, the hmma instruction with FP8 operands takes 7 clock cycles while the one related to FP32 takes 10 clock cycles in the execute pipeline stage. This difference is due to the TCU controller FSM (described in more detail in chapter 4) which for instance in this example requires 3 more clock cycles to load the FP32 operands used for the hmma execution inside the octect buffers of the accelerator, due to the traveling of more FSM states. 
+
+Lastly, there are more metrics such as the resiliency that need to be done for completing the assessment of the TCU differences in between the two environments. But due to the very big amount of time for the fault campaign related to the simulation of a assembly program containing hmma instruction, and hence it has been not ready for this thesis. This is one of the crucial studies to perform in the future regarding the work of this thesis which are highlighted in the next last chapter of this thesis. 
+
+\newpage
 \section{Summary}
+
+
 

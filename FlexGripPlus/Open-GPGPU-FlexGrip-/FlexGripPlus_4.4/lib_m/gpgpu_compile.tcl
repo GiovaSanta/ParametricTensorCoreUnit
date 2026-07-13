@@ -307,7 +307,7 @@ foreach src $gpgpu_vhdls {
 vsim -64 -voptargs=+acc work.tb_top_level
 #vsim -voptargs=+acc work.tb_top_level
 
-#do wave_custom_JDGB.do
+do wave_custom_JDGB.do
 
 run -all
 

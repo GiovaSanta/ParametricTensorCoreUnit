@@ -115,3 +115,9 @@ FlexGripPlus/Open-GPGPU-FlexGrip-/FlexGripPlus_4.4/lib_m/*.wlf
 *.backup.log
 # Vivado generated simulation projects for DPU error analysis
 DPU_Error_Analysis/vivado/projects/
+
+# Vivado checkpoints
+*.dcp
+
+# Vivado checkpoints
+*.dcp
